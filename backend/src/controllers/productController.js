@@ -1,22 +1,11 @@
-const supabase = require('../config/supabase');
+const db = require('../config/db');
 
-// Get all products (supports filtering by category or featured)
+// Get all products (supports filtering by category, featured, search)
 exports.getProducts = async (req, res) => {
   try {
-    const { category, featured } = req.query;
-    let query = supabase.from('products').select('*').order('created_at', { ascending: false });
-
-    if (category) {
-      query = query.eq('category', category);
-    }
-    if (featured === 'true') {
-      query = query.eq('is_featured', true);
-    }
-
-    const { data, error } = await query;
-    if (error) throw error;
-
-    res.status(200).json({ success: true, data });
+    const { category, featured, search } = req.query;
+    const products = await db.getProducts({ category, featured, search });
+    res.status(200).json({ success: true, count: products.length, data: products });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -25,16 +14,34 @@ exports.getProducts = async (req, res) => {
 // Create a new product (Admin)
 exports.createProduct = async (req, res) => {
   try {
-    const { name, category, price, old_price, badge, image_url, is_featured } = req.body;
+    const { name, category, price, old_price, badge, image_url, description, is_featured } = req.body;
+    if (!name || price === undefined) {
+      return res.status(400).json({ success: false, message: 'Name and price are required.' });
+    }
 
-    const { data, error } = await supabase
-      .from('products')
-      .insert([{ name, category, price, old_price, badge, image_url, is_featured }])
-      .select()
-      .single();
+    const data = await db.createProduct({
+      name,
+      category,
+      price,
+      old_price,
+      badge,
+      image_url,
+      description,
+      is_featured
+    });
 
-    if (error) throw error;
     res.status(201).json({ success: true, data });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+// Update an existing product (Admin)
+exports.updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await db.updateProduct(id, req.body);
+    res.status(200).json({ success: true, data });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -44,11 +51,19 @@ exports.createProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { error } = await supabase.from('products').delete().eq('id', id);
-
-    if (error) throw error;
-    res.status(200).json({ success: true, message: 'Product deleted successfully' });
+    await db.deleteProduct(id);
+    res.status(200).json({ success: true, message: 'Product deleted successfully', id });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+// Get stats overview (Admin)
+exports.getStats = async (req, res) => {
+  try {
+    const stats = await db.getStats();
+    res.status(200).json({ success: true, data: stats });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };

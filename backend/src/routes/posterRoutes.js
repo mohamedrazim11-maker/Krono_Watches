@@ -4,5 +4,6 @@ const { getPosters, updatePoster } = require('../controllers/posterController');
 
 router.get('/', getPosters);
 router.post('/update', updatePoster);
+router.post('/', updatePoster);
 
 module.exports = router;
