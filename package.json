@@ -1,0 +1,15 @@
+{
+  "name": "ecom-krono-watches",
+  "version": "1.0.0",
+  "description": "Krono Watches Luxury E-Commerce Platform",
+  "scripts": {
+    "dev": "npm run dev --prefix frontend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "build": "npm run build --prefix frontend",
+    "start": "npm run start --prefix frontend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
