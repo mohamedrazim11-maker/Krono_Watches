@@ -256,23 +256,72 @@ async function getProducts({ category, featured, search } = {}) {
   return list;
 }
 
+async function getCategories() {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('categories').select('*').order('name');
+      if (!error && data && data.length > 0) return data;
+    } catch (e) {
+      // fallback
+    }
+  }
+
+  const db = readLocalDb();
+  if (db.categories && db.categories.length > 0) return db.categories;
+
+  const products = db.products || [];
+  const uniqueCategories = [...new Set(products.map(p => p.category).filter(Boolean))];
+  return uniqueCategories.map((cat, i) => ({
+    id: `cat-${i + 1}`,
+    name: cat,
+    slug: cat.toLowerCase(),
+    description: `${cat} Swiss Timepiece Collection`,
+    is_active: true
+  }));
+}
+
+async function getProductById(id) {
+
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('products').select('*').eq('id', id).single();
+      if (!error && data) return data;
+    } catch (e) {
+      // fallback
+    }
+  }
+
+  const db = readLocalDb();
+  const product = (db.products || []).find(p => String(p.id) === String(id));
+  return product || null;
+}
+
 async function createProduct(productData) {
   const price = Number(productData.price) || 0;
   const old_price = productData.old_price ? Number(productData.old_price) : null;
   const discountPercent = old_price && old_price > price ? Math.round(((old_price - price) / old_price) * 100) : null;
 
+  const primaryImage = productData.image_url || (Array.isArray(productData.images) && productData.images[0]) || "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80";
+  const images = Array.isArray(productData.images) && productData.images.length > 0
+    ? productData.images.filter(Boolean)
+    : [primaryImage];
+
   const newProduct = {
     id: `prod-${Date.now()}`,
     name: productData.name || "Untitled Masterpiece",
+    brand: productData.brand || "Krono Swiss",
     category: productData.category || "Luxury",
+    gender: productData.gender || "Unisex",
+    case_size: productData.case_size || "40mm",
     price,
     old_price,
     badge: productData.badge || "New Release",
-    warranty: productData.warranty || "2 Years International Warranty",
+    warranty: productData.warranty || "5 Years International Warranty",
     promotion_period: productData.promotion_period || "Standard Warranty Included",
     is_on_promotion: Boolean(productData.is_on_promotion || (old_price && old_price > price)),
     promo_discount_percent: discountPercent || productData.promo_discount_percent || null,
-    image_url: productData.image_url || "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80",
+    image_url: primaryImage,
+    images: images,
     description: productData.description || "Precision engineered timepiece with premium materials and Swiss craftsmanship.",
     movement: productData.movement || "Swiss Automatic Movement",
     case_material: productData.case_material || "316L Stainless Steel",
@@ -282,6 +331,8 @@ async function createProduct(productData) {
     is_featured: Boolean(productData.is_featured),
     created_at: new Date().toISOString()
   };
+
+
 
   if (supabase) {
     try {
@@ -319,14 +370,20 @@ async function updateProduct(id, updates) {
   const old_price = updates.old_price !== undefined ? (updates.old_price ? Number(updates.old_price) : null) : current.old_price;
   const discountPercent = old_price && old_price > price ? Math.round(((old_price - price) / old_price) * 100) : current.promo_discount_percent;
 
+  const primaryImage = updates.image_url || (Array.isArray(updates.images) && updates.images[0]) || current.image_url;
+  const images = Array.isArray(updates.images) && updates.images.length > 0 ? updates.images.filter(Boolean) : (current.images || [primaryImage]);
+
   db.products[index] = {
     ...current,
     ...updates,
     price,
     old_price,
+    image_url: primaryImage,
+    images,
     promo_discount_percent: discountPercent,
     updated_at: new Date().toISOString()
   };
+
 
   writeLocalDb(db);
   return db.products[index];
@@ -396,6 +453,55 @@ async function updatePoster(posterData) {
   return updatedPoster;
 }
 
+async function createOrder(orderData) {
+  const newOrder = {
+    id: `KR-${Math.floor(100000 + Math.random() * 900000)}`,
+    customer_name: orderData.customer_name || orderData.fullName || 'Guest Client',
+    customer_email: orderData.customer_email || orderData.email || 'client@krono.luxury',
+    customer_phone: orderData.customer_phone || orderData.phone || '',
+    delivery_address: orderData.delivery_address || orderData.address || '',
+    city: orderData.city || 'Geneva',
+    postal_code: orderData.postal_code || orderData.postalCode || '1200',
+    country: orderData.country || 'Switzerland',
+    payment_method: orderData.payment_method || orderData.paymentMethod || 'card',
+    subtotal: Number(orderData.subtotal) || 0,
+    discount_amount: Number(orderData.discount_amount) || 0,
+    total_amount: Number(orderData.total_amount || orderData.total) || 0,
+    coupon_code: orderData.coupon_code || null,
+    items: orderData.items || [],
+    status: 'processing',
+    created_at: new Date().toISOString()
+  };
+
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('orders').insert([newOrder]).select().single();
+      if (!error && data) return data;
+    } catch (e) {
+      // fallback
+    }
+  }
+
+  const db = readLocalDb();
+  db.orders = [newOrder, ...(db.orders || [])];
+  writeLocalDb(db);
+  return newOrder;
+}
+
+async function getOrders() {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+      if (!error && data && data.length > 0) return data;
+    } catch (e) {
+      // fallback
+    }
+  }
+
+  const db = readLocalDb();
+  return db.orders || [];
+}
+
 async function getStats() {
   const db = readLocalDb();
   const products = db.products || [];
@@ -420,10 +526,17 @@ async function getStats() {
 
 module.exports = {
   getProducts,
+  getProductById,
+  getCategories,
   createProduct,
   updateProduct,
   deleteProduct,
   getPosters,
   updatePoster,
+  createOrder,
+  getOrders,
   getStats
 };
+
+
+

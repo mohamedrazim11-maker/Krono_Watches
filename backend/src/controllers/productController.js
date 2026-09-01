@@ -11,30 +11,48 @@ exports.getProducts = async (req, res) => {
   }
 };
 
+// Get all watch categories
+exports.getCategories = async (req, res) => {
+  try {
+    const categories = await db.getCategories();
+    res.status(200).json({ success: true, count: categories.length, data: categories });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+// Get single product by ID
+exports.getProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await db.getProductById(id);
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+    res.status(200).json({ success: true, data: product });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
 // Create a new product (Admin)
 exports.createProduct = async (req, res) => {
   try {
-    const { name, category, price, old_price, badge, image_url, description, is_featured } = req.body;
+    const { name, price } = req.body;
     if (!name || price === undefined) {
       return res.status(400).json({ success: false, message: 'Name and price are required.' });
     }
 
-    const data = await db.createProduct({
-      name,
-      category,
-      price,
-      old_price,
-      badge,
-      image_url,
-      description,
-      is_featured
-    });
+    const data = await db.createProduct(req.body);
 
     res.status(201).json({ success: true, data });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
 };
+
 
 // Update an existing product (Admin)
 exports.updateProduct = async (req, res) => {
