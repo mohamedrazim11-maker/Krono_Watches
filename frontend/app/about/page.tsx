@@ -4,6 +4,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TrustPillars from "@/components/TrustPillars";
+import SmoothImage from "@/components/SmoothImage";
 
 export default function AboutPage() {
   return (
@@ -43,12 +44,13 @@ export default function AboutPage() {
           </div>
 
           <div className="relative rounded-3xl border border-slate-200/80 dark:border-slate-800 p-3 overflow-hidden bg-white dark:bg-[#131B2A] shadow-lg">
-            <img
+            <SmoothImage
               src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80"
               alt="Horology Craftsmanship"
-              className="rounded-2xl w-full h-72 object-cover filter brightness-95"
+              className="rounded-2xl filter brightness-95"
+              containerClassName="rounded-2xl w-full h-72"
             />
-            <div className="absolute bottom-6 left-6 right-6 p-3 rounded-xl bg-white/95 dark:bg-[#0B0F17]/95 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-md">
+            <div className="absolute bottom-6 left-6 right-6 p-3 rounded-xl bg-white/95 dark:bg-[#0B0F17]/95 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-md pointer-events-none">
               <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase font-bold">Geneva Standard</div>
               <div className="text-xs text-slate-900 dark:text-white font-bold font-display">COSC Certified Calibre Regulation</div>
             </div>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import SmoothImage from "./SmoothImage";
 
 export const CATEGORIES_DATA = [
   {
@@ -74,14 +75,15 @@ export default function CategoryPillars({ selectedCategory, onSelectCategory }: 
               }`}
             >
               <div className="aspect-[4/5] w-full relative overflow-hidden bg-slate-100 dark:bg-slate-900">
-                <img
+                <SmoothImage
                   src={cat.image}
                   alt={cat.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 filter brightness-95 group-hover:brightness-100"
+                  className="transition-transform duration-700 group-hover:scale-105 filter brightness-95 group-hover:brightness-100"
+                  containerClassName="w-full h-full"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-900/30 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-900/30 to-transparent pointer-events-none"></div>
 
-                <div className="absolute top-3 left-3">
+                <div className="absolute top-3 left-3 pointer-events-none">
                   <span className="text-[8px] font-mono font-bold uppercase tracking-widest px-2.5 py-1 rounded bg-white text-slate-900 shadow-md">
                     {cat.badge}
                   </span>

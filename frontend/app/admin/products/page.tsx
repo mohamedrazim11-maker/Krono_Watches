@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { fetchProducts, deleteProduct, updateProduct, Product } from "@/lib/api";
+import SmoothImage from "@/components/SmoothImage";
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -155,10 +156,12 @@ export default function AdminProductsPage() {
                   <tr key={p.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
                     <td className="py-3.5 px-3">
                       <div className="flex items-center gap-3">
-                        <img
+                        <SmoothImage
                           src={p.image_url}
                           alt={p.name}
-                          className="h-12 w-12 rounded-xl bg-slate-50 dark:bg-[#0B0F17] object-contain p-1 border border-slate-200 dark:border-slate-700"
+                          objectFit="contain"
+                          className="p-1"
+                          containerClassName="h-12 w-12 rounded-xl bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-700 flex-shrink-0"
                         />
                         <div>
                           <div className="font-bold text-slate-900 dark:text-white text-xs font-display">{p.name}</div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface SmoothImageProps {
   src?: string | null;
@@ -10,6 +10,7 @@ interface SmoothImageProps {
   fallbackSrc?: string;
   loading?: "lazy" | "eager";
   priority?: boolean;
+  objectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
 }
 
 const DEFAULT_FALLBACK =
@@ -22,14 +23,30 @@ export default function SmoothImage({
   containerClassName = "",
   fallbackSrc = DEFAULT_FALLBACK,
   loading = "lazy",
+  objectFit = "cover",
 }: SmoothImageProps) {
   const [loaded, setLoaded] = useState(false);
   const [currentSrc, setCurrentSrc] = useState(src || fallbackSrc);
+  const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     setCurrentSrc(src || fallbackSrc);
-    setLoaded(false);
+    // Check if the image is already cached and loaded by browser
+    if (imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth > 0) {
+      setLoaded(true);
+    } else {
+      setLoaded(false);
+    }
   }, [src, fallbackSrc]);
+
+  const fitClass =
+    objectFit === "contain"
+      ? "object-contain"
+      : objectFit === "fill"
+      ? "object-fill"
+      : objectFit === "scale-down"
+      ? "object-scale-down"
+      : "object-cover";
 
   return (
     <div className={`relative overflow-hidden bg-slate-100 dark:bg-slate-900/80 ${containerClassName}`}>
@@ -42,6 +59,7 @@ export default function SmoothImage({
 
       {/* Actual Image with Silk-Smooth Unblur & Fade Transition */}
       <img
+        ref={imgRef}
         src={currentSrc}
         alt={alt}
         loading={loading}
@@ -53,7 +71,7 @@ export default function SmoothImage({
           }
           setLoaded(true);
         }}
-        className={`w-full h-full object-cover transform-gpu transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform ${
+        className={`w-full h-full ${fitClass} transform-gpu transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform ${
           loaded
             ? "opacity-100 blur-0 scale-100"
             : "opacity-0 blur-md scale-95"

@@ -468,10 +468,12 @@ export default function ProductDetailPage() {
             >
               ✕
             </button>
-            <img
+            <SmoothImage
               src={currentImage}
               alt={product.name}
-              className="max-h-[80vh] max-w-full object-contain mx-auto filter drop-shadow-2xl"
+              objectFit="contain"
+              className="max-h-[80vh] max-w-full mx-auto filter drop-shadow-2xl"
+              containerClassName="max-h-[80vh] bg-transparent"
             />
           </div>
         </div>

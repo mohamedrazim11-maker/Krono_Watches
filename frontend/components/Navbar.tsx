@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { fetchProducts, Product } from "@/lib/api";
+import SmoothImage from "./SmoothImage";
 
 interface NavbarProps {
   cartCount?: number;
@@ -246,15 +247,12 @@ export default function Navbar({
                         onClick={() => handleSelectProduct(prod.id)}
                         className="flex items-center gap-3 p-2.5 hover:bg-slate-50/90 dark:hover:bg-slate-800/60 cursor-pointer transition group"
                       >
-                        <div className="h-11 w-11 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex-shrink-0">
-                          <img
-                            src={prod.image_url}
-                            alt={prod.name}
-                            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform"
-                            loading="lazy"
-                            decoding="async"
-                          />
-                        </div>
+                        <SmoothImage
+                          src={prod.image_url}
+                          alt={prod.name}
+                          className="group-hover:scale-105 transition-transform"
+                          containerClassName="h-11 w-11 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden flex-shrink-0"
+                        />
 
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5 text-[9px] font-mono uppercase text-slate-500 dark:text-slate-400 font-bold">
@@ -454,10 +452,10 @@ export default function Navbar({
                       }}
                       className="flex items-center gap-3 p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/80 border-b border-slate-50 dark:border-slate-800/60 last:border-0 cursor-pointer"
                     >
-                      <img
+                      <SmoothImage
                         src={prod.image_url}
-                        alt=""
-                        className="h-9 w-9 rounded-lg object-cover bg-slate-100 dark:bg-slate-800"
+                        alt={prod.name}
+                        containerClassName="h-9 w-9 rounded-lg overflow-hidden flex-shrink-0"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="text-xs font-bold text-slate-900 dark:text-white truncate">

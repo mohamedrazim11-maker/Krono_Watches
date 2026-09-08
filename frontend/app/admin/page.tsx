@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { fetchStats, fetchProducts, deleteProduct, updateProduct, Product, Stats } from "@/lib/api";
+import SmoothImage from "@/components/SmoothImage";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
@@ -164,10 +165,12 @@ export default function AdminDashboard() {
               {recentProducts.map((p) => (
                 <tr key={p.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
                   <td className="px-5 py-3.5 flex items-center gap-3">
-                    <img
+                    <SmoothImage
                       src={p.image_url}
                       alt={p.name}
-                      className="h-10 w-10 rounded-xl bg-slate-50 dark:bg-[#0B0F17] object-contain p-1 border border-slate-200 dark:border-slate-700"
+                      objectFit="contain"
+                      className="p-1"
+                      containerClassName="h-10 w-10 rounded-xl bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-700 flex-shrink-0"
                     />
                     <div>
                       <div className="font-bold text-slate-900 dark:text-white font-display text-xs">{p.name}</div>
