@@ -12,9 +12,11 @@ interface CheckoutModalProps {
   isOpen: boolean;
   onClose: () => void;
   cart: CartItem[];
-  onOrderSuccess: () => void;
-  appliedCoupon: string;
-  couponDiscountPercent: number;
+  onOrderSuccess?: () => void;
+  onClearCart?: () => void;
+  totalAmount?: number;
+  appliedCoupon?: string;
+  couponDiscountPercent?: number;
 }
 
 export default function CheckoutModal({
@@ -22,8 +24,10 @@ export default function CheckoutModal({
   onClose,
   cart,
   onOrderSuccess,
-  appliedCoupon,
-  couponDiscountPercent,
+  onClearCart,
+  totalAmount,
+  appliedCoupon = "MONO20",
+  couponDiscountPercent = 20,
 }: CheckoutModalProps) {
   const [submitting, setSubmitting] = useState(false);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
@@ -99,13 +103,15 @@ export default function CheckoutModal({
       const orderRef = res?.order_number || `KRN-${Math.floor(100000 + Math.random() * 900000)}`;
       setConfirmedOrderNumber(orderRef);
       setOrderConfirmed(true);
-      onOrderSuccess();
+      if (onOrderSuccess) onOrderSuccess();
+      if (onClearCart) onClearCart();
     } catch (err: any) {
       console.error("Order error:", err);
       const fallbackRef = `KRN-${Math.floor(100000 + Math.random() * 900000)}`;
       setConfirmedOrderNumber(fallbackRef);
       setOrderConfirmed(true);
-      onOrderSuccess();
+      if (onOrderSuccess) onOrderSuccess();
+      if (onClearCart) onClearCart();
     } finally {
       setSubmitting(false);
     }

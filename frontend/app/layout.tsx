@@ -37,6 +37,8 @@ export const metadata: Metadata = {
     "Curators and creators of extraordinary mechanical horology. Certified Swiss calibres, serialized authenticity, and insured worldwide delivery.",
 };
 
+import { CartProvider } from "@/lib/CartContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -65,7 +67,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-[#F8F9FB] dark:bg-[#0B0F17] text-[#0F172A] dark:text-slate-100 selection:bg-slate-900 selection:text-white dark:selection:bg-amber-400 dark:selection:text-slate-950 font-sans transition-colors duration-200">
-        {children}
+        <CartProvider>{children}</CartProvider>
       </body>
     </html>
   );

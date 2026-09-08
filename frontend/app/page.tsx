@@ -11,10 +11,11 @@ import TrustPillars from "@/components/TrustPillars";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import ProductCard from "@/components/ProductCard";
 import KineticProductRow from "@/components/KineticProductRow";
-import CartDrawer, { CartItem } from "@/components/CartDrawer";
+import CartDrawer from "@/components/CartDrawer";
 import WishlistDrawer from "@/components/WishlistDrawer";
 import QuickViewModal from "@/components/QuickViewModal";
 import CheckoutModal from "@/components/CheckoutModal";
+import { useCart } from "@/lib/CartContext";
 
 type PriceFilterType = "all" | "under500k" | "500k-1m" | "over1m";
 
@@ -31,25 +32,31 @@ export default function Home() {
   const [sortBy, setSortBy] = useState<"featured" | "price-asc" | "price-desc" | "name">("featured");
   const [onlyInStock, setOnlyInStock] = useState(false);
 
-  // Modals & Drawers
+  // Quick View Modal
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
-  // Cart & Wishlist State
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [wishlist, setWishlist] = useState<Product[]>([]);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-
-  // Promo Coupon Code
-  const [appliedCoupon, setAppliedCoupon] = useState("MONO20");
-  const [couponDiscountPercent, setCouponDiscountPercent] = useState(20);
-
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
-  };
+  // Global Cart Context
+  const {
+    cart,
+    wishlist,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    toggleWishlist,
+    isCartOpen,
+    setIsCartOpen,
+    isWishlistOpen,
+    setIsWishlistOpen,
+    isCheckoutOpen,
+    setIsCheckoutOpen,
+    appliedCoupon,
+    couponDiscountPercent,
+    applyCoupon,
+    grandTotal,
+    toastMessage,
+    showToast,
+  } = useCart();
 
   useEffect(() => {
     async function loadData() {
@@ -69,13 +76,6 @@ export default function Home() {
     }
 
     loadData();
-
-    try {
-      const savedCart = localStorage.getItem("krono_cart");
-      if (savedCart) setCart(JSON.parse(savedCart));
-      const savedWishlist = localStorage.getItem("krono_wishlist");
-      if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
-    } catch {}
   }, []);
 
   // Scroll Tracking for Kinetic Row Parallax
@@ -96,66 +96,9 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleAddToCart = (product: Product, quantity = 1) => {
-    setCart((prev) => {
-      const existing = prev.find((item) => item.product.id === product.id);
-      if (existing) {
-        return prev.map((item) =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
-      }
-      return [...prev, { product, quantity }];
-    });
-    showToast(`Added ${product.name} to vault bag`);
-  };
-
-  const handleUpdateQuantity = (productId: string, delta: number) => {
-    setCart((prev) =>
-      prev
-        .map((item) => {
-          if (item.product.id === productId) {
-            const newQty = item.quantity + delta;
-            return newQty > 0 ? { ...item, quantity: newQty } : null;
-          }
-          return item;
-        })
-        .filter(Boolean) as CartItem[]
-    );
-  };
-
-  const handleRemoveFromCart = (productId: string) => {
-    setCart((prev) => prev.filter((item) => item.product.id !== productId));
-    showToast("Reference removed from bag");
-  };
-
-  const handleToggleWishlist = (product: Product) => {
-    setWishlist((prev) => {
-      const exists = prev.some((p) => p.id === product.id);
-      if (exists) {
-        showToast("Removed from wishlist");
-        return prev.filter((p) => p.id !== product.id);
-      } else {
-        showToast("Saved to private portfolio");
-        return [...prev, product];
-      }
-    });
-  };
-
-  const handleApplyCoupon = (code: string) => {
-    if (code.toUpperCase() === "MONO20" || code.toUpperCase() === "ROYAL20") {
-      setAppliedCoupon("MONO20");
-      setCouponDiscountPercent(20);
-      showToast("Voucher code applied: 20% privilege");
-      return true;
-    }
-    return false;
-  };
-
   const handleCopyCoupon = (code: string) => {
     navigator.clipboard.writeText(code);
-    handleApplyCoupon(code);
+    applyCoupon(code);
     showToast(`Copied voucher ${code}`);
   };
 
@@ -335,7 +278,7 @@ export default function Home() {
             </div>
 
             <div className="flex items-center justify-between px-3.5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
-              <span className="text-xs text-slate-600 dark:text-slate-400 font-mono font-semibold">In Vault Only</span>
+              <span className="text-xs text-slate-600 dark:text-slate-400 font-mono font-semibold">In Stock Only</span>
               <input
                 type="checkbox"
                 checked={onlyInStock}
@@ -392,8 +335,8 @@ export default function Home() {
                     rowIndex={rowIndex}
                     scrollY={scrollY}
                     speed={0.35}
-                    onAddToCart={(prod, qty) => handleAddToCart(prod, qty || 1)}
-                    onToggleWishlist={handleToggleWishlist}
+                    onAddToCart={(prod, qty) => addToCart(prod, qty || 1)}
+                    onToggleWishlist={(prod) => toggleWishlist(prod)}
                     isWishlisted={(id) => wishlist.some((p) => p.id === id)}
                     onQuickView={(prod) => setQuickViewProduct(prod)}
                   />
@@ -406,8 +349,8 @@ export default function Home() {
                 <ProductCard
                   key={product.id}
                   product={product}
-                  onAddToCart={(prod) => handleAddToCart(prod, 1)}
-                  onToggleWishlist={handleToggleWishlist}
+                  onAddToCart={(prod) => addToCart(prod, 1)}
+                  onToggleWishlist={(prod) => toggleWishlist(prod)}
                   isWishlisted={wishlist.some((p) => p.id === product.id)}
                   onQuickView={(prod) => setQuickViewProduct(prod)}
                 />
@@ -430,12 +373,12 @@ export default function Home() {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         cart={cart}
-        onUpdateQuantity={handleUpdateQuantity}
-        onRemoveItem={handleRemoveFromCart}
-        onClearCart={() => setCart([])}
+        onUpdateQuantity={updateQuantity}
+        onRemoveItem={removeFromCart}
+        onClearCart={clearCart}
         onProceedToCheckout={() => setIsCheckoutOpen(true)}
         appliedCoupon={appliedCoupon}
-        onApplyCoupon={handleApplyCoupon}
+        onApplyCoupon={applyCoupon}
         couponDiscountPercent={couponDiscountPercent}
       />
 
@@ -443,10 +386,10 @@ export default function Home() {
         isOpen={isWishlistOpen}
         onClose={() => setIsWishlistOpen(false)}
         wishlist={wishlist}
-        onRemoveFromWishlist={(id) => setWishlist((prev) => prev.filter((p) => p.id !== id))}
+        onRemoveFromWishlist={(id) => toggleWishlist({ id } as any)}
         onMoveToCart={(prod) => {
-          handleAddToCart(prod);
-          setWishlist((prev) => prev.filter((p) => p.id !== prod.id));
+          addToCart(prod, 1);
+          toggleWishlist(prod);
           setIsCartOpen(true);
         }}
       />
@@ -454,19 +397,15 @@ export default function Home() {
       <QuickViewModal
         product={quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
-        onAddToCart={handleAddToCart}
+        onAddToCart={(prod, qty) => addToCart(prod, qty)}
       />
 
       <CheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
         cart={cart}
-        onOrderSuccess={() => {
-          setCart([]);
-          localStorage.removeItem("krono_cart");
-        }}
-        appliedCoupon={appliedCoupon}
-        couponDiscountPercent={couponDiscountPercent}
+        totalAmount={grandTotal}
+        onClearCart={clearCart}
       />
     </div>
   );

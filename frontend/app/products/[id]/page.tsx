@@ -8,10 +8,11 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import SmoothImage from "@/components/SmoothImage";
-import CartDrawer, { CartItem } from "@/components/CartDrawer";
+import CartDrawer from "@/components/CartDrawer";
 import WishlistDrawer from "@/components/WishlistDrawer";
 import QuickViewModal from "@/components/QuickViewModal";
 import CheckoutModal from "@/components/CheckoutModal";
+import { useCart } from "@/lib/CartContext";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -21,7 +22,6 @@ export default function ProductDetailPage() {
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Gallery & Zoom states
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -35,24 +35,32 @@ export default function ProductDetailPage() {
   const [conciergeMsg, setConciergeMsg] = useState("");
   const [conciergeSent, setConciergeSent] = useState(false);
 
-  // Drawers & Modals
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  // Quick View Modal
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
-  // Cart & Wishlist state
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [wishlist, setWishlist] = useState<Product[]>([]);
-
-  // Promo
-  const [appliedCoupon, setAppliedCoupon] = useState("MONO20");
-  const [couponDiscountPercent, setCouponDiscountPercent] = useState(20);
-
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
-  };
+  // Global Cart Context
+  const {
+    cart,
+    wishlist,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    toggleWishlist,
+    isInWishlist,
+    isCartOpen,
+    setIsCartOpen,
+    isWishlistOpen,
+    setIsWishlistOpen,
+    isCheckoutOpen,
+    setIsCheckoutOpen,
+    appliedCoupon,
+    couponDiscountPercent,
+    applyCoupon,
+    grandTotal,
+    toastMessage,
+    showToast,
+  } = useCart();
 
   useEffect(() => {
     async function loadProductData() {
@@ -70,66 +78,15 @@ export default function ProductDetailPage() {
       } finally {
         setLoading(false);
       }
-
-      try {
-        const savedWishlist = localStorage.getItem("krono_wishlist");
-        if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
-        const savedCart = localStorage.getItem("krono_cart");
-        if (savedCart) setCart(JSON.parse(savedCart));
-      } catch {}
     }
     loadProductData();
   }, [productId]);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem("krono_cart", JSON.stringify(cart));
-    } catch {}
-  }, [cart]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem("krono_wishlist", JSON.stringify(wishlist));
-    } catch {}
-  }, [wishlist]);
-
-  const isWishlisted = product ? wishlist.some((p) => p.id === product.id) : false;
-
-  const toggleWishlist = (targetProduct?: Product) => {
-    const item = targetProduct || product;
-    if (!item) return;
-
-    setWishlist((prev) => {
-      const exists = prev.some((p) => p.id === item.id);
-      if (exists) {
-        showToast("Removed from wishlist");
-        return prev.filter((p) => p.id !== item.id);
-      } else {
-        showToast(`Saved to wishlist`);
-        return [...prev, item];
-      }
-    });
-  };
-
-  const handleAddToCart = (targetProduct?: Product, qty = quantity) => {
-    const item = targetProduct || product;
-    if (!item) return;
-
-    setCart((prev) => {
-      const existing = prev.find((p) => p.product.id === item.id);
-      if (existing) {
-        return prev.map((p) =>
-          p.product.id === item.id ? { ...p, quantity: p.quantity + qty } : p
-        );
-      }
-      return [...prev, { product: item, quantity: qty }];
-    });
-    showToast(`Added ${qty} × "${item.name}" to Vault Bag`);
-  };
+  const isWishlisted = product ? isInWishlist(product.id) : false;
 
   const handleBuyNow = () => {
     if (!product) return;
-    handleAddToCart(product, quantity);
+    addToCart(product, quantity);
     setIsCheckoutOpen(true);
   };
 
@@ -182,7 +139,7 @@ export default function ProductDetailPage() {
           <div className="text-4xl text-slate-300 dark:text-slate-700">▪</div>
           <h2 className="text-xl font-bold font-display text-slate-900 dark:text-white uppercase">Reference Not Found</h2>
           <Link href="/catalog" className="lux-btn-primary px-6 py-2.5 rounded-xl text-xs uppercase font-bold">
-            Return to Vault
+            Return to Catalogue
           </Link>
         </div>
         <Footer />
@@ -216,7 +173,7 @@ export default function ProductDetailPage() {
         <nav className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-mono uppercase font-semibold">
           <Link href="/" className="hover:text-slate-900 dark:hover:text-white">Home</Link>
           <span>/</span>
-          <Link href="/catalog" className="hover:text-slate-900 dark:hover:text-white">Vault</Link>
+          <Link href="/catalog" className="hover:text-slate-900 dark:hover:text-white">Catalogue</Link>
           <span>/</span>
           <span className="text-slate-900 dark:text-slate-200 truncate max-w-xs">{product.name}</span>
         </nav>
@@ -380,15 +337,15 @@ export default function ProductDetailPage() {
                 </div>
 
                 <button
-                  onClick={() => handleAddToCart()}
+                  onClick={() => addToCart(product, quantity)}
                   disabled={product.in_stock === false}
                   className="flex-1 py-3 px-6 rounded-xl lux-btn-primary text-xs font-black uppercase tracking-wider cursor-pointer shadow-md hover:shadow-lg transition"
                 >
-                  {product.in_stock === false ? "Reserved / Out of Vault" : "Add to Vault Bag"}
+                  {product.in_stock === false ? "Out of Stock" : "Add to Cart"}
                 </button>
 
                 <button
-                  onClick={() => toggleWishlist()}
+                  onClick={() => toggleWishlist(product)}
                   className={`p-3 rounded-xl border transition cursor-pointer shadow-sm ${
                     isWishlisted
                       ? "bg-slate-900 dark:bg-amber-400 text-white dark:text-slate-950 border-slate-900 dark:border-amber-400"
@@ -442,8 +399,8 @@ export default function ProductDetailPage() {
                 <ProductCard
                   key={rel.id}
                   product={rel}
-                  onAddToCart={(prod) => handleAddToCart(prod, 1)}
-                  onToggleWishlist={toggleWishlist}
+                  onAddToCart={(prod) => addToCart(prod, 1)}
+                  onToggleWishlist={(prod) => toggleWishlist(prod)}
                   isWishlisted={wishlist.some((p) => p.id === rel.id)}
                   onQuickView={(prod) => setQuickViewProduct(prod)}
                 />
@@ -549,18 +506,12 @@ export default function ProductDetailPage() {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         cart={cart}
-        onUpdateQuantity={(id, delta) => {
-          setCart((prev) =>
-            prev
-              .map((item) => (item.product.id === id ? { ...item, quantity: item.quantity + delta } : item))
-              .filter((i) => i.quantity > 0)
-          );
-        }}
-        onRemoveItem={(id) => setCart((prev) => prev.filter((i) => i.product.id !== id))}
-        onClearCart={() => setCart([])}
+        onUpdateQuantity={updateQuantity}
+        onRemoveItem={removeFromCart}
+        onClearCart={clearCart}
         onProceedToCheckout={() => setIsCheckoutOpen(true)}
         appliedCoupon={appliedCoupon}
-        onApplyCoupon={(code) => code.toUpperCase() === "MONO20"}
+        onApplyCoupon={applyCoupon}
         couponDiscountPercent={couponDiscountPercent}
       />
 
@@ -568,10 +519,10 @@ export default function ProductDetailPage() {
         isOpen={isWishlistOpen}
         onClose={() => setIsWishlistOpen(false)}
         wishlist={wishlist}
-        onRemoveFromWishlist={(id) => setWishlist((prev) => prev.filter((p) => p.id !== id))}
+        onRemoveFromWishlist={(id) => toggleWishlist({ id } as any)}
         onMoveToCart={(prod) => {
-          handleAddToCart(prod);
-          setWishlist((prev) => prev.filter((p) => p.id !== prod.id));
+          addToCart(prod, 1);
+          toggleWishlist(prod);
           setIsCartOpen(true);
         }}
       />
@@ -579,19 +530,15 @@ export default function ProductDetailPage() {
       <QuickViewModal
         product={quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
-        onAddToCart={handleAddToCart}
+        onAddToCart={(prod, qty) => addToCart(prod, qty)}
       />
 
       <CheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
         cart={cart}
-        onOrderSuccess={() => {
-          setCart([]);
-          localStorage.removeItem("krono_cart");
-        }}
-        appliedCoupon={appliedCoupon}
-        couponDiscountPercent={couponDiscountPercent}
+        totalAmount={grandTotal}
+        onClearCart={clearCart}
       />
     </div>
   );

@@ -7,10 +7,11 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import SmoothImage from "@/components/SmoothImage";
-import CartDrawer, { CartItem } from "@/components/CartDrawer";
+import CartDrawer from "@/components/CartDrawer";
 import WishlistDrawer from "@/components/WishlistDrawer";
 import QuickViewModal from "@/components/QuickViewModal";
 import CheckoutModal from "@/components/CheckoutModal";
+import { useCart } from "@/lib/CartContext";
 
 type ViewMode = "grid" | "list";
 
@@ -43,26 +44,31 @@ export default function CatalogPage() {
   const [sortBy, setSortBy] = useState<"featured" | "price-asc" | "price-desc" | "name">("featured");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Modals & Drawers
+  // Quick View Modal
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
-  // Cart & Wishlist
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [wishlist, setWishlist] = useState<Product[]>([]);
-
-  // Promo Code
-  const [appliedCoupon, setAppliedCoupon] = useState("MONO20");
-  const [couponDiscountPercent, setCouponDiscountPercent] = useState(20);
-
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
-  };
+  // Global Cart Context
+  const {
+    cart,
+    wishlist,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    toggleWishlist,
+    isCartOpen,
+    setIsCartOpen,
+    isWishlistOpen,
+    setIsWishlistOpen,
+    isCheckoutOpen,
+    setIsCheckoutOpen,
+    appliedCoupon,
+    couponDiscountPercent,
+    applyCoupon,
+    grandTotal,
+    toastMessage,
+  } = useCart();
 
   useEffect(() => {
     async function loadData() {
@@ -76,52 +82,9 @@ export default function CatalogPage() {
       } finally {
         setLoading(false);
       }
-
-      try {
-        const savedWishlist = localStorage.getItem("krono_wishlist");
-        if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
-        const savedCart = localStorage.getItem("krono_cart");
-        if (savedCart) setCart(JSON.parse(savedCart));
-      } catch {}
     }
     loadData();
   }, []);
-
-  const handleAddToCart = (product: Product, quantity = 1) => {
-    setCart((prev) => {
-      const existing = prev.find((item) => item.product.id === product.id);
-      if (existing) {
-        return prev.map((item) =>
-          item.product.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
-        );
-      }
-      return [...prev, { product, quantity }];
-    });
-    showToast(`Added ${product.name} to vault bag`);
-  };
-
-  const handleToggleWishlist = (product: Product) => {
-    setWishlist((prev) => {
-      const exists = prev.some((p) => p.id === product.id);
-      if (exists) {
-        showToast("Removed from wishlist");
-        return prev.filter((p) => p.id !== product.id);
-      } else {
-        showToast(`Saved to wishlist`);
-        return [...prev, product];
-      }
-    });
-  };
-
-  const handleApplyCoupon = (code: string) => {
-    if (code.toUpperCase() === "MONO20" || code.toUpperCase() === "ROYAL20") {
-      setAppliedCoupon("MONO20");
-      setCouponDiscountPercent(20);
-      showToast("Privilege voucher applied: 20% off");
-      return true;
-    }
-    return false;
-  };
 
   const formatCurrency = (amount: number) => {
     return `LKR ${Number(amount || 0).toLocaleString("en-US")}`;
@@ -451,7 +414,7 @@ export default function CatalogPage() {
 
             {/* In Stock */}
             <div className="flex items-center justify-between border-t border-slate-200 dark:border-slate-800 pt-3.5">
-              <span className="text-xs text-slate-700 dark:text-slate-300 font-mono font-semibold">In Vault Only</span>
+              <span className="text-xs text-slate-700 dark:text-slate-300 font-mono font-semibold">In Stock Only</span>
               <input
                 type="checkbox"
                 checked={onlyInStock}
@@ -530,8 +493,8 @@ export default function CatalogPage() {
                   <ProductCard
                     key={product.id}
                     product={product}
-                    onAddToCart={(prod) => handleAddToCart(prod, 1)}
-                    onToggleWishlist={handleToggleWishlist}
+                    onAddToCart={(prod) => addToCart(prod, 1)}
+                    onToggleWishlist={(prod) => toggleWishlist(prod)}
                     isWishlisted={wishlist.some((p) => p.id === product.id)}
                     onQuickView={(prod) => setQuickViewProduct(prod)}
                   />
@@ -606,17 +569,21 @@ export default function CatalogPage() {
                           👁
                         </button>
                         <button
-                          onClick={() => handleToggleWishlist(product)}
-                          className="p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white shadow-sm"
+                          onClick={() => toggleWishlist(product)}
+                          className={`p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition ${
+                            wishlist.some((p) => p.id === product.id)
+                              ? "text-red-500 font-bold"
+                              : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                          }`}
                           title="Wishlist"
                         >
                           ♡
                         </button>
                         <button
-                          onClick={() => handleAddToCart(product)}
+                          onClick={() => addToCart(product)}
                           className="lux-btn-primary px-3.5 py-1.5 rounded-xl text-xs uppercase font-extrabold shadow-sm"
                         >
-                          Acquire
+                          Add to Cart
                         </button>
                       </div>
                     </div>
@@ -790,7 +757,7 @@ export default function CatalogPage() {
 
                 {/* In Stock */}
                 <div className="flex items-center justify-between border-t border-slate-200 dark:border-slate-800 pt-4">
-                  <span className="text-xs text-slate-700 dark:text-slate-300 font-mono font-semibold">In Vault Only</span>
+                  <span className="text-xs text-slate-700 dark:text-slate-300 font-mono font-semibold">In Stock Only</span>
                   <input
                     type="checkbox"
                     checked={onlyInStock}
@@ -825,18 +792,12 @@ export default function CatalogPage() {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         cart={cart}
-        onUpdateQuantity={(id, delta) => {
-          setCart((prev) =>
-            prev
-              .map((item) => (item.product.id === id ? { ...item, quantity: item.quantity + delta } : item))
-              .filter((i) => i.quantity > 0)
-          );
-        }}
-        onRemoveItem={(id) => setCart((prev) => prev.filter((i) => i.product.id !== id))}
-        onClearCart={() => setCart([])}
+        onUpdateQuantity={updateQuantity}
+        onRemoveItem={removeFromCart}
+        onClearCart={clearCart}
         onProceedToCheckout={() => setIsCheckoutOpen(true)}
         appliedCoupon={appliedCoupon}
-        onApplyCoupon={handleApplyCoupon}
+        onApplyCoupon={applyCoupon}
         couponDiscountPercent={couponDiscountPercent}
       />
 
@@ -844,10 +805,10 @@ export default function CatalogPage() {
         isOpen={isWishlistOpen}
         onClose={() => setIsWishlistOpen(false)}
         wishlist={wishlist}
-        onRemoveFromWishlist={(id) => setWishlist((prev) => prev.filter((p) => p.id !== id))}
+        onRemoveFromWishlist={(id) => toggleWishlist({ id } as any)}
         onMoveToCart={(prod) => {
-          handleAddToCart(prod);
-          setWishlist((prev) => prev.filter((p) => p.id !== prod.id));
+          addToCart(prod, 1);
+          toggleWishlist(prod);
           setIsCartOpen(true);
         }}
       />
@@ -855,19 +816,15 @@ export default function CatalogPage() {
       <QuickViewModal
         product={quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
-        onAddToCart={handleAddToCart}
+        onAddToCart={(prod, qty) => addToCart(prod, qty)}
       />
 
       <CheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
         cart={cart}
-        onOrderSuccess={() => {
-          setCart([]);
-          localStorage.removeItem("krono_cart");
-        }}
-        appliedCoupon={appliedCoupon}
-        couponDiscountPercent={couponDiscountPercent}
+        totalAmount={grandTotal}
+        onClearCart={clearCart}
       />
     </div>
   );

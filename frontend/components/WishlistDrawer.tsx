@@ -112,7 +112,7 @@ export default function WishlistDrawer({
                       onClick={() => onMoveToCart(product)}
                       className="px-3 py-1 rounded-lg lux-btn-primary text-[10px] font-bold uppercase tracking-wider cursor-pointer shadow-sm"
                     >
-                      + Bag
+                      + Add to Cart
                     </button>
                   </div>
                 </div>
@@ -127,7 +127,7 @@ export default function WishlistDrawer({
                 onClick={onClose}
                 className="w-full py-2.5 rounded-xl lux-btn-secondary text-xs font-bold flex items-center justify-center gap-2 uppercase tracking-wider shadow-sm"
               >
-                Continue Exploring Vault →
+                Continue Exploring Catalogue →
               </Link>
             </div>
           )}

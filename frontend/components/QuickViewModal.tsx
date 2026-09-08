@@ -164,7 +164,7 @@ export default function QuickViewModal({
                 disabled={product.in_stock === false}
                 className="flex-1 py-3 px-4 rounded-xl lux-btn-primary text-xs font-black uppercase tracking-wider cursor-pointer shadow-md hover:shadow-lg transition"
               >
-                {product.in_stock === false ? "Reserved / Out of Vault" : "Add to Vault Bag"}
+                {product.in_stock === false ? "Out of Stock" : "Add to Cart"}
               </button>
             </div>
 

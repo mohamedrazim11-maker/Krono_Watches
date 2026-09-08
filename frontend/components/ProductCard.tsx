@@ -141,7 +141,7 @@ export default function ProductCard({
               </span>
             ) : (
               <span className="text-[10px] font-mono text-emerald-700 dark:text-emerald-400 font-semibold uppercase flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> In Vault
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> In Stock
               </span>
             )}
           </div>
@@ -158,7 +158,7 @@ export default function ProductCard({
                 : "lux-btn-primary"
             }`}
           >
-            {product.in_stock === false ? "Out of Vault" : "Acquire Piece"}
+            {product.in_stock === false ? "Out of Stock" : "Add to Cart"}
           </button>
         </div>
       </div>

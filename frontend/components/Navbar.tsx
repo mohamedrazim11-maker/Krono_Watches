@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { fetchProducts, Product } from "@/lib/api";
 import SmoothImage from "./SmoothImage";
+import { useCart } from "@/lib/CartContext";
 
 interface NavbarProps {
   cartCount?: number;
@@ -17,8 +18,8 @@ interface NavbarProps {
 }
 
 export default function Navbar({
-  cartCount = 0,
-  wishlistCount = 0,
+  cartCount,
+  wishlistCount,
   onOpenCart,
   onOpenWishlist,
   searchQuery = "",
@@ -27,6 +28,13 @@ export default function Navbar({
 }: NavbarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const cartContext = useCart();
+
+  const effectiveCartCount = cartCount !== undefined ? cartCount : cartContext.totalItems;
+  const effectiveWishlistCount = wishlistCount !== undefined ? wishlistCount : cartContext.wishlist.length;
+  const effectiveOpenCart = onOpenCart || (() => cartContext.setIsCartOpen(true));
+  const effectiveOpenWishlist = onOpenWishlist || (() => cartContext.setIsWishlistOpen(true));
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -36,7 +44,8 @@ export default function Navbar({
 
   const navLinks = [
     { label: "Boutique", href: "/" },
-    { label: "Vault Catalogue", href: "/catalog" },
+    { label: "Catalogue", href: "/catalog" },
+    { label: "Cart", href: "/cart" },
     { label: "Atelier Heritage", href: "/about" },
     { label: "Console", href: "/admin" },
   ];
@@ -276,7 +285,7 @@ export default function Navbar({
                             {formatCurrency(prod.price)}
                           </div>
                           <div className="text-[9px] font-mono text-emerald-700 dark:text-emerald-400 font-semibold">
-                            In Vault
+                            In Stock
                           </div>
                         </div>
                       </div>
@@ -299,7 +308,7 @@ export default function Navbar({
                     onClick={() => setIsDropdownOpen(false)}
                     className="text-[11px] font-mono font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white uppercase tracking-wider block py-1"
                   >
-                    View All in Catalogue Vault →
+                    View All in Catalogue →
                   </Link>
                 </div>
               </div>
@@ -327,64 +336,62 @@ export default function Navbar({
             )}
           </button>
 
-          {onOpenWishlist && (
-            <button
-              onClick={onOpenWishlist}
-              className="relative p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white hover:border-slate-400 dark:hover:border-slate-600 transition cursor-pointer shadow-sm"
-              title="Saved Items"
-              aria-label="Wishlist"
+          {/* Wishlist Button */}
+          <button
+            onClick={effectiveOpenWishlist}
+            className="relative p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white hover:border-slate-400 dark:hover:border-slate-600 transition cursor-pointer shadow-sm"
+            title="Saved Items"
+            aria-label="Wishlist"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.8}
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
-              {wishlistCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-[9px] font-black h-4 w-4 rounded-full flex items-center justify-center">
-                  {wishlistCount}
-                </span>
-              )}
-            </button>
-          )}
-
-          {onOpenCart && (
-            <button
-              onClick={onOpenCart}
-              className="relative flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white hover:border-slate-400 dark:hover:border-slate-600 transition cursor-pointer shadow-sm group"
-              title="Shopping Cart"
-              aria-label="Cart"
-            >
-              <svg
-                className="w-4 h-4 text-slate-800 dark:text-slate-200 group-hover:scale-105 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.8}
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
-              <span className="hidden sm:inline text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
-                Cart
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.8}
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+            {effectiveWishlistCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-[9px] font-black h-4 w-4 rounded-full flex items-center justify-center">
+                {effectiveWishlistCount}
               </span>
-              {cartCount > 0 && (
-                <span className="bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-[9px] font-black h-4.5 min-w-[18px] px-1 rounded-full flex items-center justify-center font-mono shadow-sm">
-                  {cartCount}
-                </span>
-              )}
-            </button>
-          )}
+            )}
+          </button>
+
+          {/* Cart Button (Step 1 - Dynamic Badge Counter Update) */}
+          <button
+            onClick={effectiveOpenCart}
+            className="relative flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white hover:border-slate-400 dark:hover:border-slate-600 transition cursor-pointer shadow-sm group"
+            title="Shopping Cart"
+            aria-label="Cart"
+          >
+            <svg
+              className="w-4 h-4 text-slate-800 dark:text-slate-200 group-hover:scale-105 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.8}
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+            <span className="hidden sm:inline text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+              Cart
+            </span>
+            {effectiveCartCount > 0 && (
+              <span className="bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-[9px] font-black h-4.5 min-w-[18px] px-1 rounded-full flex items-center justify-center font-mono shadow-sm">
+                {effectiveCartCount}
+              </span>
+            )}
+          </button>
 
           {/* Mobile hamburger toggle */}
           <button

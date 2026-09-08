@@ -77,18 +77,27 @@ export default function CartDrawer({
         {/* Header */}
         <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/80 dark:bg-[#0B0F17]/80">
           <div>
-            <h2 className="text-sm font-black font-display uppercase tracking-widest text-slate-900 dark:text-white">Vault Bag</h2>
+            <h2 className="text-sm font-black font-display uppercase tracking-widest text-slate-900 dark:text-white">Shopping Cart</h2>
             <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-mono font-semibold">
-              {totalItems} {totalItems === 1 ? "Reference" : "References"}
+              {totalItems} {totalItems === 1 ? "Item" : "Items"} Selected
             </div>
           </div>
 
-          <button
-            onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-800 dark:hover:text-white transition cursor-pointer font-bold"
-          >
-            ✕
-          </button>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/cart"
+              onClick={onClose}
+              className="text-[10px] font-mono font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-amber-400 uppercase tracking-wider underline mr-1"
+            >
+              Full Cart ↗
+            </Link>
+            <button
+              onClick={onClose}
+              className="p-2 text-slate-400 hover:text-slate-800 dark:hover:text-white transition cursor-pointer font-bold"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         {/* Free Shipping Alert */}
@@ -100,9 +109,9 @@ export default function CartDrawer({
         <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-2.5">
           {cart.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-4">
-              <div className="text-4xl text-slate-300 dark:text-slate-700">▪</div>
+              <div className="text-4xl text-slate-300 dark:text-slate-700">🛒</div>
               <div className="space-y-1">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider font-display">Vault Bag Empty</h3>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider font-display">Shopping Cart is Empty</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs">
                   Inspect master-calibre timepieces in our curated catalogue.
                 </p>
@@ -112,7 +121,7 @@ export default function CartDrawer({
                 onClick={onClose}
                 className="lux-btn-primary px-6 py-2.5 rounded-lg text-xs font-bold"
               >
-                Browse Vault
+                Browse Catalogue
               </Link>
             </div>
           ) : (
