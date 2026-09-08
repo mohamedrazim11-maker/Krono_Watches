@@ -134,7 +134,7 @@ INSERT INTO public.products (
     ARRAY[
         'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80',
         'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80',
-        'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80'
+        'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80'
     ],
     'Handcrafted luxury timepiece with Swiss automatic movement, anti-reflective sapphire crystal glass, and top-grain Italian leather strap.',
     'Swiss Automatic ETA 2824-2',
@@ -188,7 +188,7 @@ INSERT INTO public.products (
     'https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=900&q=80',
     ARRAY[
         'https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=900&q=80',
-        'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80'
+        'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80'
     ],
     'Legendary diver timepiece featuring 300m water resistance, scratch-resistant cerachrom bezel, and precision Oystersteel bracelet.',
     'Perpetual Calibre 3235 Automatic',
@@ -242,7 +242,7 @@ INSERT INTO public.products (
     'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80',
     ARRAY[
         'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80',
-        'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80'
+        'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80'
     ],
     '18k rose gold bezel with diamond index markers, skeleton open-heart dial, and genuine alligator grain leather band.',
     'In-House Skeleton Tourbillon Movement',
@@ -266,9 +266,9 @@ INSERT INTO public.products (
     'Valid until Sep 30, 2026',
     true,
     22,
-    'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80',
+    'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80',
     ARRAY[
-        'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80',
+        'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80',
         'https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=900&q=80'
     ],
     'Captivating guilloché mother-of-pearl dial with blued-steel sword-shaped hands, sapphire cabochon crown, and polished steel bracelet.',
@@ -323,7 +323,7 @@ INSERT INTO public.products (
     'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80',
     ARRAY[
         'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80',
-        'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80'
+        'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80'
     ],
     'Iconic claws design with pavé diamond bezel, mother-of-pearl dial, and Co-Axial Master Chronometer movement.',
     'Omega Calibre 8700 Co-Axial',

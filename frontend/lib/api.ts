@@ -1,0 +1,635 @@
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
+export interface Product {
+  id: string;
+  name: string;
+  brand?: string;
+  category: string;
+  gender?: "Men" | "Women" | "Unisex" | string;
+  case_size?: string;
+  price: number;
+  old_price?: number | null;
+  badge?: string;
+  warranty: string;
+  promotion_period?: string;
+  is_on_promotion?: boolean;
+  promo_discount_percent?: number | null;
+  image_url: string;
+  images?: string[];
+  description?: string;
+  movement?: string;
+  case_material?: string;
+  water_resistance?: string;
+  in_stock?: boolean;
+  stock_count?: number;
+  is_featured?: boolean;
+  created_at?: string;
+}
+
+export interface Poster {
+  section_id: string;
+  title: string;
+  subtitle?: string;
+  badge?: string;
+  discount_text?: string;
+  coupon_code?: string;
+  promotion_period?: string;
+  start_date?: string;
+  end_date?: string;
+  image_url: string;
+  action_link?: string;
+  button_text?: string;
+  days?: string;
+  hours?: string;
+  mins?: string;
+  featured_product_name?: string;
+  featured_product_price?: string;
+  is_active?: boolean;
+  updated_at?: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  image_url?: string;
+  badge?: string;
+  is_active?: boolean;
+}
+
+export interface Stats {
+  totalProducts: number;
+  activePosters: number;
+  totalInventoryValue: number;
+  categoryCount: number;
+  categories: string[];
+  featuredCount: number;
+  promoCount: number;
+  totalStockUnits: number;
+}
+
+export const FALLBACK_PRODUCTS: Product[] = [
+  {
+    id: "prod-rolex-sub",
+    name: "Rolex Submariner Date 41mm Cerachrom",
+    brand: "Rolex",
+    category: "Sport",
+    gender: "Men",
+    case_size: "41mm",
+    price: 680000,
+    old_price: 820000,
+    badge: "Iconic Diver",
+    warranty: "5 Years Certified Rolex International Guarantee",
+    promotion_period: "Valid until Sep 30, 2026",
+    is_on_promotion: true,
+    promo_discount_percent: 17,
+    image_url: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=1000&q=85"
+    ],
+    description: "The benchmark among divers' watches. Features 300m water resistance, black Cerachrom unidirectional bezel, and Perpetual Calibre 3235 with 70-hour power reserve.",
+    movement: "Rolex Perpetual Calibre 3235 Automatic",
+    case_material: "Oystersteel (904L Surgical Steel)",
+    water_resistance: "300m (30 ATM)",
+    in_stock: true,
+    stock_count: 5,
+    is_featured: true,
+    created_at: "2026-08-28T09:05:15.987Z"
+  },
+  {
+    id: "prod-rolex-dj",
+    name: "Rolex Datejust 36 Fluted Bezel Jubilee",
+    brand: "Rolex",
+    category: "Luxury",
+    gender: "Unisex",
+    case_size: "36mm",
+    price: 540000,
+    old_price: 650000,
+    badge: "Classic Prestige",
+    warranty: "5 Years Certified Rolex International Guarantee",
+    promotion_period: "Valid until Sep 30, 2026",
+    is_on_promotion: true,
+    promo_discount_percent: 17,
+    image_url: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=85"
+    ],
+    description: "The archetype of the classic watch. Fluted 18K white gold bezel with olive-green sunray dial, Roman numerals, and flexible five-piece link Jubilee bracelet.",
+    movement: "Rolex Calibre 3235 Superlative Chronometer",
+    case_material: "Rolesor (Oystersteel & 18K White Gold)",
+    water_resistance: "100m (10 ATM)",
+    in_stock: true,
+    stock_count: 7,
+    is_featured: true,
+    created_at: "2026-08-29T10:00:00.000Z"
+  },
+  {
+    id: "prod-rolex-daytona",
+    name: "Rolex Cosmograph Daytona 40mm Oystersteel",
+    brand: "Rolex",
+    category: "Sport",
+    gender: "Men",
+    case_size: "40mm",
+    price: 890000,
+    old_price: 1050000,
+    badge: "Motorsport Legend",
+    warranty: "5 Years Certified Rolex International Guarantee",
+    promotion_period: "VIP Allocation",
+    is_on_promotion: true,
+    promo_discount_percent: 15,
+    image_url: "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=1000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1000&q=85"
+    ],
+    description: "The benchmark chronograph for high-speed endurance. Black Cerachrom tachymetric scale bezel with white panda dial and Calibre 4131 chronograph movement.",
+    movement: "Rolex Calibre 4131 In-House Chronograph",
+    case_material: "Oystersteel 904L & Cerachrom Bezel",
+    water_resistance: "100m (10 ATM)",
+    in_stock: true,
+    stock_count: 3,
+    is_featured: true,
+    created_at: "2026-08-30T08:00:00.000Z"
+  },
+  {
+    id: "prod-omega-speed",
+    name: "Omega Speedmaster Professional Moonwatch",
+    brand: "Omega",
+    category: "Automatic",
+    gender: "Men",
+    case_size: "42mm",
+    price: 490000,
+    old_price: 590000,
+    badge: "Space Heritage",
+    warranty: "5 Years Omega Master Chronometer Warranty",
+    promotion_period: "Limited Season: Ends Sep 20, 2026",
+    is_on_promotion: true,
+    promo_discount_percent: 17,
+    image_url: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=1000&q=85"
+    ],
+    description: "The legendary Moonwatch qualified by NASA for all manned space missions. Sapphire crystal glass, step dial, and Co-Axial Master Chronometer Calibre 3861.",
+    movement: "Omega Co-Axial Master Chronometer 3861",
+    case_material: "316L Stainless Steel & Sapphire Sandwich",
+    water_resistance: "50m (5 ATM)",
+    in_stock: true,
+    stock_count: 8,
+    is_featured: true,
+    created_at: "2026-08-27T09:05:15.987Z"
+  },
+  {
+    id: "prod-omega-seamaster",
+    name: "Omega Seamaster Aqua Terra 150M",
+    brand: "Omega",
+    category: "Automatic",
+    gender: "Men",
+    case_size: "38mm",
+    price: 380000,
+    old_price: 460000,
+    badge: "Best Seller",
+    warranty: "5 Years Omega Master Chronometer Warranty",
+    promotion_period: "Valid until Sep 30, 2026",
+    is_on_promotion: true,
+    promo_discount_percent: 17,
+    image_url: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=85"
+    ],
+    description: "Tribute to Omega maritime heritage with teak concept dial inspired by luxury wooden yachts. 15,000 gauss magnetic resistance.",
+    movement: "Omega Calibre 8800 Co-Axial Automatic",
+    case_material: "Brushed & Polished Stainless Steel",
+    water_resistance: "150m (15 ATM)",
+    in_stock: true,
+    stock_count: 10,
+    is_featured: true,
+    created_at: "2026-08-26T09:05:15.986Z"
+  },
+  {
+    id: "prod-omega-const",
+    name: "Omega Constellation Diamond Mother-of-Pearl",
+    brand: "Omega",
+    category: "Luxury",
+    gender: "Women",
+    case_size: "36mm",
+    price: 520000,
+    old_price: 680000,
+    badge: "Diamond Edition",
+    warranty: "5 Years Master Chronometer Warranty",
+    promotion_period: "Valid until Sep 30, 2026",
+    is_on_promotion: true,
+    promo_discount_percent: 23,
+    image_url: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=85"
+    ],
+    description: "Iconic claws design with pavé diamond bezel, natural mother-of-pearl dial, Sedna gold accents, and Co-Axial Master Chronometer movement.",
+    movement: "Omega Calibre 8700 Co-Axial",
+    case_material: "18K Sedna Gold & Stainless Steel",
+    water_resistance: "50m (5 ATM)",
+    in_stock: true,
+    stock_count: 7,
+    is_featured: true,
+    created_at: "2026-08-31T11:00:00.000Z"
+  },
+  {
+    id: "prod-patek-naut",
+    name: "Patek Philippe Nautilus 5711/1A Sunburst Blue",
+    brand: "Patek Philippe",
+    category: "Luxury",
+    gender: "Men",
+    case_size: "40mm",
+    price: 950000,
+    old_price: 1150000,
+    badge: "Ultra Luxury",
+    warranty: "Patek Philippe Lifetime Extract & Certificate of Origin",
+    promotion_period: "Prestige VIP Drop: Limited Availability",
+    is_on_promotion: true,
+    promo_discount_percent: 17,
+    image_url: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1000&q=85"
+    ],
+    description: "The pinnacle of luxury sports watches. Rounded octagonal bezel, ingenious porthole construction, horizontally embossed sunburst blue dial.",
+    movement: "In-House Calibre 26-330 S C Automatic",
+    case_material: "Hand-Finished Stainless Steel",
+    water_resistance: "120m (12 ATM)",
+    in_stock: true,
+    stock_count: 3,
+    is_featured: true,
+    created_at: "2026-08-30T09:05:15.987Z"
+  },
+  {
+    id: "prod-patek-calat",
+    name: "Patek Philippe Calatrava 18K Rose Gold",
+    brand: "Patek Philippe",
+    category: "Luxury",
+    gender: "Men",
+    case_size: "39mm",
+    price: 780000,
+    old_price: 920000,
+    badge: "Dress Icon",
+    warranty: "Patek Philippe Lifetime Movement Guarantee",
+    promotion_period: "Valid until Sep 30, 2026",
+    is_on_promotion: true,
+    promo_discount_percent: 15,
+    image_url: "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=1000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1000&q=85"
+    ],
+    description: "Pure elegance in round form. Clous de Paris hobnail patterned bezel, ivory lacquered dial, and ultra-thin automatic movement.",
+    movement: "Patek Calibre 30-255 PS Manual/Auto",
+    case_material: "18K Solid Rose Gold & Sapphire Back",
+    water_resistance: "30m (3 ATM)",
+    in_stock: true,
+    stock_count: 4,
+    is_featured: false,
+    created_at: "2026-08-30T10:00:00.000Z"
+  },
+  {
+    id: "prod-ap-royaloak",
+    name: "Audemars Piguet Royal Oak Selfwinding 41mm",
+    brand: "Audemars Piguet",
+    category: "Luxury",
+    gender: "Men",
+    case_size: "41mm",
+    price: 1250000,
+    old_price: 1480000,
+    badge: "Iconic Tapisserie",
+    warranty: "5 Years Audemars Piguet International Guarantee",
+    promotion_period: "Haute Horlogerie Showcase",
+    is_on_promotion: true,
+    promo_discount_percent: 15,
+    image_url: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=85"
+    ],
+    description: "Legendary Gerald Genta design featuring an octagonal stainless steel bezel with 8 hexagonal screws, 'Grande Tapisserie' patterned blue dial, and Calibre 4302 selfwinding movement.",
+    movement: "AP Calibre 4302 Automatic (70h Power Reserve)",
+    case_material: "Hand-Finished Stainless Steel",
+    water_resistance: "50m (5 ATM)",
+    in_stock: true,
+    stock_count: 4,
+    is_featured: true,
+    created_at: "2026-08-28T14:00:00.000Z"
+  },
+  {
+    id: "prod-ap-offshore",
+    name: "Audemars Piguet Royal Oak Offshore Chronograph",
+    brand: "Audemars Piguet",
+    category: "Sport",
+    gender: "Men",
+    case_size: "44mm",
+    price: 1100000,
+    old_price: 1320000,
+    badge: "Bold Sport Haute",
+    warranty: "5 Years Audemars Piguet Guarantee",
+    promotion_period: "Limited Allocation",
+    is_on_promotion: true,
+    promo_discount_percent: 16,
+    image_url: "https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=1000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1000&q=85"
+    ],
+    description: "High-octane sports watch with black ceramic bezel, 'Méga Tapisserie' dial, integrated rubber strap, and Flyback Chronograph calibre.",
+    movement: "AP Calibre 4401 Integrated Flyback Chronograph",
+    case_material: "Titanium & Scratchproof Black Ceramic",
+    water_resistance: "100m (10 ATM)",
+    in_stock: true,
+    stock_count: 5,
+    is_featured: true,
+    created_at: "2026-08-30T14:00:00.000Z"
+  },
+  {
+    id: "prod-tag-carrera",
+    name: "TAG Heuer Carrera Chronograph Glassbox",
+    brand: "TAG Heuer",
+    category: "Sport",
+    gender: "Men",
+    case_size: "39mm",
+    price: 285000,
+    old_price: 350000,
+    badge: "Racing Heritage",
+    warranty: "5 Years International Movement Warranty",
+    promotion_period: "Season Launch Deal",
+    is_on_promotion: true,
+    promo_discount_percent: 18,
+    image_url: "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=1000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1000&q=85"
+    ],
+    description: "Seamlessly domed sapphire 'Glassbox' crystal giving unobstructed view of tachymeter scale. Powered by in-house Heuer 02 Calibre.",
+    movement: "In-House Heuer 02 (TH20-00) Automatic Chrono",
+    case_material: "Fine-Brushed 316L Stainless Steel",
+    water_resistance: "100m (10 ATM)",
+    in_stock: true,
+    stock_count: 9,
+    is_featured: true,
+    created_at: "2026-08-27T11:00:00.000Z"
+  },
+  {
+    id: "prod-tag-connect",
+    name: "TAG Heuer Connected Calibre E4 AMOLED",
+    brand: "TAG Heuer",
+    category: "Smart",
+    gender: "Unisex",
+    case_size: "45mm",
+    price: 165000,
+    old_price: 220000,
+    badge: "Smart Luxury",
+    warranty: "2 Years Hardware & Battery International Warranty",
+    promotion_period: "Special Promotion: Ends Sep 30, 2026",
+    is_on_promotion: true,
+    promo_discount_percent: 25,
+    image_url: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=1000&q=85"
+    ],
+    description: "High-end Swiss connected smartwatch with sapphire glass, heart rate & sports tracking, customizable luxury chronograph watch faces, and titanium crown.",
+    movement: "WearOS Dual-Core Qualcomm Snapdragon 4100+",
+    case_material: "DLC Grade 2 Titanium & Ceramic Bezel",
+    water_resistance: "50m Swimproof",
+    in_stock: true,
+    stock_count: 14,
+    is_featured: true,
+    created_at: "2026-08-29T09:05:15.987Z"
+  },
+  {
+    id: "prod-tag-monaco",
+    name: "TAG Heuer Monaco Calibre 11 Racing",
+    brand: "TAG Heuer",
+    category: "Automatic",
+    gender: "Men",
+    case_size: "39mm",
+    price: 360000,
+    old_price: 440000,
+    badge: "Steve McQueen Edition",
+    warranty: "5 Years International Movement Warranty",
+    promotion_period: "Exclusive Stock",
+    is_on_promotion: true,
+    promo_discount_percent: 18,
+    image_url: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1000&q=85",
+    images: [
+      "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1000&q=85",
+      "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=1000&q=85"
+    ],
+    description: "The square-faced icon worn by Steve McQueen in Le Mans. Left-hand crown, striking matte blue dial with red hands, and Calibre 11 automatic chronograph.",
+    movement: "TAG Heuer Calibre 11 Automatic Chronograph",
+    case_material: "Fine-Brushed & Polished 316L Stainless Steel",
+    water_resistance: "100m (10 ATM)",
+    in_stock: true,
+    stock_count: 6,
+    is_featured: true,
+    created_at: "2026-08-31T09:30:00.000Z"
+  }
+];
+
+export function formatLKR(amount: number): string {
+  return `LKR ${Number(amount || 0).toLocaleString("en-US")}`;
+}
+
+export const FALLBACK_POSTERS: Poster[] = [
+  {
+    section_id: "hero",
+    title: "Mastery in Horology. Crafted for Eternity.",
+    subtitle: "Discover master-crafted Swiss mechanical wristwatches from Rolex, Omega, Patek Philippe, TAG Heuer, Cartier, and Tissot.",
+    badge: "Official 2026 Registry",
+    discount_text: "VIP Privilege Privilege",
+    promotion_period: "Season Launch: Active until Sep 30, 2026",
+    coupon_code: "MONO20",
+    image_url: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
+    featured_product_name: "Rolex Submariner Date 41mm",
+    featured_product_price: "LKR 680,000",
+    days: "04",
+    hours: "18",
+    mins: "45",
+    is_active: true
+  },
+  {
+    section_id: "flash_deals",
+    title: "Exclusive 20% Masterpiece Privilege",
+    subtitle: "Acquire limited-edition collectors pieces with verified international warranty, authenticity certificate, and complimentary wooden presentation case.",
+    badge: "VIP Privilege Event",
+    discount_text: "20% OFF",
+    promotion_period: "Promotion Period: Aug 28 - Sep 30, 2026",
+    coupon_code: "MONO20",
+    image_url: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85",
+    featured_product_name: "Patek Philippe Nautilus 5711/1A",
+    featured_product_price: "LKR 950,000",
+    is_active: true
+  }
+];
+
+export async function fetchProducts(params?: { category?: string; featured?: boolean | string; search?: string }): Promise<Product[]> {
+  try {
+    const query = new URLSearchParams();
+    if (params?.category && params.category !== 'All') query.append('category', params.category);
+    if (params?.featured !== undefined) query.append('featured', String(params.featured));
+    if (params?.search) query.append('search', params.search);
+
+    const url = `${API_BASE_URL}/products${query.toString() ? `?${query.toString()}` : ''}`;
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`Failed to fetch products: ${res.statusText}`);
+    const json = await res.json();
+    if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+      return json.data;
+    }
+    return FALLBACK_PRODUCTS;
+  } catch (error) {
+    console.error('API fetchProducts falling back to curated dataset:', error);
+    return FALLBACK_PRODUCTS;
+  }
+}
+
+export async function fetchProductById(id: string): Promise<Product | null> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/products/${id}`, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`Failed to fetch product ${id}`);
+    const json = await res.json();
+    if (json.data) return json.data;
+    const fallback = FALLBACK_PRODUCTS.find((p) => p.id === id);
+    return fallback || null;
+  } catch (error) {
+    console.error(`API fetchProductById falling back for ${id}:`, error);
+    const fallback = FALLBACK_PRODUCTS.find((p) => p.id === id);
+    return fallback || null;
+  }
+}
+
+export async function fetchCategories(): Promise<Category[]> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/products/categories`, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`Failed to fetch categories: ${res.statusText}`);
+    const json = await res.json();
+    return json.data || [];
+  } catch (error) {
+    console.error('API fetchCategories error:', error);
+    return [
+      { id: "cat-1", name: "Luxury", slug: "Luxury", description: "Haute horlogerie & complications" },
+      { id: "cat-2", name: "Automatic", slug: "Automatic", description: "Swiss mechanical movements" },
+      { id: "cat-3", name: "Sport", slug: "Sport", description: "Chronographs & deep divers" },
+      { id: "cat-4", name: "Smart", slug: "Smart", description: "Biometric sapphire timepieces" }
+    ];
+  }
+}
+
+export async function createProduct(productData: Partial<Product>): Promise<Product> {
+  const res = await fetch(`${API_BASE_URL}/products`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(productData),
+  });
+  const json = await res.json();
+  if (!res.ok || !json.success) {
+    throw new Error(json.message || 'Failed to create product');
+  }
+  return json.data;
+}
+
+export async function updateProduct(id: string, productData: Partial<Product>): Promise<Product> {
+  const res = await fetch(`${API_BASE_URL}/products/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(productData),
+  });
+  const json = await res.json();
+  if (!res.ok || !json.success) {
+    throw new Error(json.message || 'Failed to update product');
+  }
+  return json.data;
+}
+
+export async function deleteProduct(id: string): Promise<boolean> {
+  const res = await fetch(`${API_BASE_URL}/products/${id}`, {
+    method: 'DELETE',
+  });
+  const json = await res.json();
+  if (!res.ok || !json.success) {
+    throw new Error(json.message || 'Failed to delete product');
+  }
+  return true;
+}
+
+export async function fetchPosters(): Promise<Poster[]> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/posters`, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`Failed to fetch posters: ${res.statusText}`);
+    const json = await res.json();
+    if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+      return json.data;
+    }
+    return FALLBACK_POSTERS;
+  } catch (error) {
+    console.error('API fetchPosters falling back:', error);
+    return FALLBACK_POSTERS;
+  }
+}
+
+export async function updatePoster(posterData: Partial<Poster>): Promise<Poster> {
+  const res = await fetch(`${API_BASE_URL}/posters/update`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(posterData),
+  });
+  const json = await res.json();
+  if (!res.ok || !json.success) {
+    throw new Error(json.message || 'Failed to update poster');
+  }
+  return json.data;
+}
+
+export async function createOrder(orderData: any): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/orders`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(orderData),
+  });
+  const json = await res.json();
+  if (!res.ok || !json.success) {
+    throw new Error(json.message || 'Failed to place order');
+  }
+  return json.data;
+}
+
+export async function fetchStats(): Promise<Stats> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/products/stats`, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`Failed to fetch stats: ${res.statusText}`);
+    const json = await res.json();
+    return json.data || {
+      totalProducts: 12,
+      activePosters: 2,
+      totalInventoryValue: 5690000,
+      categoryCount: 4,
+      categories: ["Luxury", "Automatic", "Sport", "Smart"],
+      featuredCount: 10,
+      promoCount: 12,
+      totalStockUnits: 110,
+    };
+  } catch (error) {
+    console.error('API fetchStats error:', error);
+    return {
+      totalProducts: 12,
+      activePosters: 2,
+      totalInventoryValue: 5690000,
+      categoryCount: 4,
+      categories: ["Luxury", "Automatic", "Sport", "Smart"],
+      featuredCount: 10,
+      promoCount: 12,
+      totalStockUnits: 110,
+    };
+  }
+}

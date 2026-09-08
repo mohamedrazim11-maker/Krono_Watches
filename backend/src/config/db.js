@@ -123,7 +123,7 @@ const INITIAL_DATA = {
       promotion_period: "Limited Batch: Ends Oct 05, 2026",
       is_on_promotion: false,
       promo_discount_percent: 19,
-      image_url: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80",
+      image_url: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=85",
       description: "Professional ISO-certified 300m diver timepiece featuring scratch-proof unidirectional ceramic bezel and helium escape valve.",
       movement: "Japanese Automatic 24-Jewel Movement",
       case_material: "Brushed 316L Steel & Scratchproof Ceramic",
