@@ -1,0 +1,362 @@
+================================================================================
+                    ICT2142 E-BUSINESS SYSTEMS
+WEEK 05 PRACTICAL: SHOPPING CART FUNCTIONALITY (PHASE 2 CORE DEVELOPMENT)
+        STEP 4: PROJECT DIARY & TECHNICAL DOCUMENTATION REPORT
+================================================================================
+
+PROJECT & METADATA OVERVIEW
+--------------------------------------------------------------------------------
+Module & Code:      ICT2142 - E-Business Systems (Phase 2 Core Development)
+Practical Session:  Week 05 - Shopping Cart Functionality & Persistence
+Project Name:       KRONO Watches (Haute Horlogerie E-Commerce Web Platform)
+Technology Stack:   Next.js 16 (Turbopack, App Router), TypeScript, React Context API,
+                    SessionStorage & LocalStorage, TailwindCSS
+GitHub Repository:  https://github.com/mohamedrazim11-maker/Krono_Watches.git
+Target Branches:    main, develop
+Report Scope:       Step 4 - Project Diary & Technical Documentation Requirements
+
+
+================================================================================
+1. STATE ARCHITECTURE NOTES
+================================================================================
+In the Krono Watches e-commerce platform, the shopping cart state architecture
+transitioned from fragmented local component state (which lost items upon route
+transitions) into a centralized, reactive React Context Provider 
+(CartProvider located in 'lib/CartContext.tsx') paired with multi-layer browser
+persistence (SessionStorage and LocalStorage).
+
+1.1 Data Flow Lifecycle (From Button Click into Cart State):
+--------------------------------------------------------------------------------
+1. Event Capture:
+   - A user clicks the "Add to Cart" button on any storefront surface across
+     the application:
+     * Boutique Storefront (Hero showcase, Kinetic circular rows, and Grid view)
+     * Curated Catalogue (/catalog in both Grid and List modes)
+     * Master Product Details Page (/products/[id])
+     * Quick View Modal (preview popup)
+     * Wishlist Drawer ("+ Add to Cart" action button)
+
+2. Payload Extraction & Normalization:
+   - The 'addToCart(product, quantity)' function extracts and validates the
+     essential product data fields:
+     * ProductID: Unique reference identifier (e.g., 'sub-01', 'speed-01')
+     * Title: Full name of the timepiece (e.g., 'Rolex Submariner Date 41mm')
+     * Unit Price: Numerical price in LKR (e.g., 4250000)
+     * Image: Primary high-resolution image URL
+     * Brand: Manufacture (Rolex, Omega, Patek Philippe, Audemars Piguet, TAG Heuer)
+     * Category: Horological category (Luxury, Automatic, Sport, Smart)
+     * Quantity: Number of units requested (defaults to 1, or user-selected amount)
+
+3. Non-Duplication Check & Quantity Accumulation:
+   - Before mutating the cart array, the reducer executes:
+     const existingIndex = prevCart.findIndex((item) => item.product.id === product.id);
+   - Condition A (Item Already in Cart):
+     If existingIndex > -1, the system maps over the array and increments:
+     item.quantity + safeQuantity
+     This prevents duplicate rows from polluting the cart table/drawer.
+   - Condition B (New Item):
+     If existingIndex === -1, a new CartItem object is appended:
+     [...prevCart, { product, quantity: safeQuantity }]
+
+4. Dynamic Badge Counter Computation:
+   - The cart icon badge in the global Navbar is computed dynamically using
+     a memoized reducer:
+     totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
+   - Every addition, deletion, or quantity increment immediately updates the
+     badge counter in real-time without requiring a page reload.
+
+5. Multi-Layer Storage Persistence & Synchronization:
+   - Upon every state mutation, a reactive useEffect serializes the cart array
+     into a JSON string and writes to both sessionStorage and localStorage:
+     sessionStorage.setItem("krono_cart", JSON.stringify(cart));
+     localStorage.setItem("krono_cart", JSON.stringify(cart));
+   - Dispatches a custom window event ("krono_cart_sync") so multiple open
+     tabs or split routes immediately stay in sync.
+
+
+================================================================================
+2. CODE SNIPPETS & LOGIC USED
+================================================================================
+
+2.1 The "Add to Cart" Logic with Existing Item Check (Step 1):
+--------------------------------------------------------------------------------
+File: frontend/lib/CartContext.tsx
+
+```typescript
+const addToCart = useCallback(
+  (product: Product, quantity = 1) => {
+    if (!product || !product.id) return;
+    const safeQuantity = Math.max(1, quantity);
+
+    setCart((prevCart) => {
+      // Step 1: Check if the item is already in the cart array
+      const existingIndex = prevCart.findIndex(
+        (item) => item.product.id === product.id
+      );
+
+      if (existingIndex > -1) {
+        // If YES: Increase its quantity instead of adding a duplicate row
+        return prevCart.map((item, index) =>
+          index === existingIndex
+            ? { ...item, quantity: item.quantity + safeQuantity }
+            : item
+        );
+      } else {
+        // If NO: Add it to the cart array with initial quantity
+        return [
+          ...prevCart,
+          {
+            product,
+            quantity: safeQuantity,
+          },
+        ];
+      }
+    });
+
+    showToast(`Added ${safeQuantity > 1 ? `${safeQuantity} × ` : ""}"${product.name}" to Cart`);
+  },
+  [showToast]
+);
+```
+
+
+2.2 "Remove Item" Feature using Array filter() (Step 2):
+--------------------------------------------------------------------------------
+File: frontend/lib/CartContext.tsx
+
+```typescript
+// Uses JavaScript Array.prototype.filter() to purge the specified product ID
+const removeFromCart = useCallback(
+  (productId: string) => {
+    setCart((prevCart) =>
+      prevCart.filter((item) => item.product.id !== productId)
+    );
+    showToast("Item removed from Cart");
+  },
+  [showToast]
+);
+```
+
+
+2.3 Quantity Up/Down Controls with Edge-Case Rule (< 1 Removal) (Step 2):
+--------------------------------------------------------------------------------
+File: frontend/lib/CartContext.tsx
+
+```typescript
+const updateQuantity = useCallback(
+  (productId: string, delta: number) => {
+    setCart((prevCart) =>
+      prevCart
+        .map((item) => {
+          if (item.product.id === productId) {
+            const newQuantity = item.quantity + delta;
+            // Edge Case Rule: If quantity drops below 1, automatically remove item
+            if (newQuantity <= 0) {
+              return null;
+            }
+            return { ...item, quantity: newQuantity };
+          }
+          return item;
+        })
+        .filter(Boolean) as CartItem[]
+    );
+  },
+  []
+);
+```
+
+
+2.4 Storage Persistence & State Hydration (Step 3):
+--------------------------------------------------------------------------------
+File: frontend/lib/CartContext.tsx
+
+```typescript
+// Initial state hydration on mount
+useEffect(() => {
+  try {
+    const rawSessionCart = sessionStorage.getItem("krono_cart");
+    const rawLocalCart = localStorage.getItem("krono_cart");
+    const rawCart = rawSessionCart || rawLocalCart;
+
+    if (rawCart) {
+      const parsed = JSON.parse(rawCart);
+      if (Array.isArray(parsed)) {
+        setCart(parsed);
+      }
+    }
+  } catch (e) {
+    console.error("Failed to load cart from storage:", e);
+  } finally {
+    setHydrated(true);
+  }
+}, []);
+
+// Synchronization on every state change
+useEffect(() => {
+  if (!hydrated) return;
+  try {
+    const cartJson = JSON.stringify(cart);
+    sessionStorage.setItem("krono_cart", cartJson);
+    localStorage.setItem("krono_cart", cartJson);
+  } catch (e) {
+    console.error("Failed to save cart to storage:", e);
+  }
+}, [cart, hydrated]);
+```
+
+
+2.5 Live Total, Subtotal & Discount Calculation (Step 2):
+--------------------------------------------------------------------------------
+File: frontend/lib/CartContext.tsx
+
+```typescript
+// Dynamic badge counter
+const totalItems = useMemo(() => {
+  return cart.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
+}, [cart]);
+
+// Live subtotal based on Price x Quantity
+const subtotal = useMemo(() => {
+  return cart.reduce(
+    (sum, item) => sum + (Number(item.product.price) || 0) * (Number(item.quantity) || 0),
+    0
+  );
+}, [cart]);
+
+// Privilege coupon voucher discount (20% off)
+const discountAmount = useMemo(() => {
+  return Math.round((subtotal * couponDiscountPercent) / 100);
+}, [subtotal, couponDiscountPercent]);
+
+// Final grand total in LKR
+const grandTotal = useMemo(() => {
+  return Math.max(0, subtotal - discountAmount);
+}, [subtotal, discountAmount]);
+```
+
+
+================================================================================
+3. BUG LOG & STATE SYNCHRONIZATION RESOLUTIONS
+================================================================================
+
++------------------------------------------------------------------------------+
+| BUG 1: State Desynchronization and Cart Reset on Page Navigation              |
++------------------------------------------------------------------------------+
+| Symptom:                                                                     |
+| When a user added watches to their cart on '/catalog' and navigated to       |
+| '/products/[id]' or '/cart', the cart badge and items reset to 0 unless the  |
+| browser was manually hard-refreshed.                                         |
+|                                                                              |
+| Root Cause:                                                                  |
+| Cart state was declared independently using local 'useState' inside each     |
+| separate page file ('/page.tsx', '/catalog/page.tsx'). Unmounting on route   |
+| navigation wiped the memory state.                                           |
+|                                                                              |
+| Resolution Applied:                                                          |
+| 1. Created a global 'CartProvider' context in 'frontend/lib/CartContext.tsx'.|
+| 2. Wrapped root 'app/layout.tsx' with '<CartProvider>'.                      |
+| 3. Integrated automatic JSON serialization into 'sessionStorage' and         |
+|    'localStorage', with hydration hooks and custom sync event dispatchers.   |
++------------------------------------------------------------------------------+
+
++------------------------------------------------------------------------------+
+| BUG 2: Duplicate Rows Added When Clicking "Add to Cart" Multiple Times        |
++------------------------------------------------------------------------------+
+| Symptom:                                                                     |
+| Clicking "Add to Cart" repeatedly on the same product card created duplicate |
+| separate row entries in the Cart Drawer and Checkout table instead of        |
+| incrementing the quantity of the existing product.                           |
+|                                                                              |
+| Root Cause:                                                                  |
+| The state updater used simple array spread '[...prevCart, { product, qty }]'|
+| without first inspecting if the product ID already existed in the array.     |
+|                                                                              |
+| Resolution Applied:                                                          |
+| Implemented 'findIndex((item) => item.product.id === product.id)'. If found, |
+| mapped over the array to update 'item.quantity + safeQuantity'. Appended a   |
+| new entry only when index === -1.                                            |
++------------------------------------------------------------------------------+
+
++------------------------------------------------------------------------------+
+| BUG 3: Stale Cart Badge Count & Zero/Negative Quantity Edge Case              |
++------------------------------------------------------------------------------+
+| Symptom:                                                                     |
+| Decrementing a product's quantity to 0 left a dead row with LKR 0 totals.    |
+| Furthermore, the Navbar badge showed total unique rows ('cart.length') rather|
+| than the true sum of all unit quantities.                                    |
+|                                                                              |
+| Root Cause:                                                                  |
+| Badge was bound to 'cart.length' instead of summing 'item.quantity'. Also,   |
+| quantity decrement logic allowed 'quantity = 0' without a purge trigger.     |
+|                                                                              |
+| Resolution Applied:                                                          |
+| 1. Updated badge computation to:                                             |
+|    'cart.reduce((sum, item) => sum + item.quantity, 0)'.                     |
+| 2. Implemented edge-case rule in 'updateQuantity': if 'newQuantity <= 0',   |
+|    the item is automatically filtered out and removed from the cart array.   |
++------------------------------------------------------------------------------+
+
+
+================================================================================
+4. GIT COMMIT LOG & REPOSITORY SYNCHRONIZATION
+================================================================================
+
+All project source files, cart architecture, UI enhancements, and documentation
+have been committed, verified, and synchronized with the remote GitHub repository.
+
+Remote URL: https://github.com/mohamedrazim11-maker/Krono_Watches.git
+Branches:   main, develop
+
+Key Commits Log:
+--------------------------------------------------------------------------------
+1. Commit SHA: 780fd40
+   Branch:     main, develop
+   Message:    "feat: implement full cart processes with session persistence,
+                quantity controls, filter removal, and update all CTA text to
+                Add to Cart"
+   Scope:      Created CartContext.tsx, created dedicated /cart page, unified
+                slide-over CartDrawer, connected all product cards and modals,
+                and harmonized all button text to "Add to Cart".
+
+2. Commit SHA: b4c9bce
+   Branch:     main, develop
+   Message:    "feat: complete sitewide smooth page transitions and progressive
+                image loading"
+   Scope:      Implemented Next.js template.tsx route animations, luxury route
+                glow bar, and SmoothImage.tsx progressive shimmer unblur.
+
+3. Commit SHA: 9c8d303
+   Branch:     main, develop
+   Message:    "feat: constrain catalog to 5 luxury brands, make responsive with
+                mobile drawer, and add progressive shimmer image loading"
+   Scope:      Constrained filter to Rolex, Omega, Patek Philippe, Audemars
+                Piguet, and TAG Heuer with mobile slide-over drawer.
+
+4. Commit SHA: 09921d1
+   Branch:     main, develop
+   Message:    "docs: add Week 05 Step 4 Project Diary and Technical
+                Documentation report"
+   Scope:      Added formal documentation report covering all 4 required sections.
+
+
+================================================================================
+5. BUILD VERIFICATION STATUS
+================================================================================
+Command:  npm run build (Next.js 16 Turbopack)
+Result:   Exit Code 0 (Passed with 0 TypeScript and 0 Compilation Errors)
+Routes:   11 Prerendered Static and Dynamic Server Routes:
+          - / (Boutique Storefront)
+          - /catalog (Curated 5-Brand Catalogue)
+          - /cart (Dedicated Shopping Cart Page)
+          - /products/[id] (Master Detail Dossier)
+          - /about (Atelier Heritage)
+          - /admin (Management Dashboard)
+          - /admin/products (Product Directory)
+          - /admin/products/new (New Reference Form)
+          - /admin/promotions (Privilege Codes)
+          - /_not-found (404 Page)
+          - /icon.jpg (Favicon Asset)
+
+================================================================================
+END OF REPORT
+================================================================================
