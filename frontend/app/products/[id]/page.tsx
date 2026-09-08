@@ -7,6 +7,7 @@ import { fetchProductById, fetchProducts, Product } from "@/lib/api";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
+import SmoothImage from "@/components/SmoothImage";
 import CartDrawer, { CartItem } from "@/components/CartDrawer";
 import WishlistDrawer from "@/components/WishlistDrawer";
 import QuickViewModal from "@/components/QuickViewModal";
@@ -246,14 +247,12 @@ export default function ProductDetailPage() {
                 )}
               </div>
 
-              <img
+              <SmoothImage
                 src={currentImage}
                 alt={product.name}
-                className={`w-full h-full object-cover transition-all duration-300 ${
+                className={`w-full h-full object-cover transition-opacity duration-300 ${
                   isHoverZooming ? "opacity-0" : "opacity-100"
                 }`}
-                loading="eager"
-                decoding="async"
               />
 
               {isHoverZooming && (
@@ -284,7 +283,7 @@ export default function ProductDetailPage() {
                         : "border-slate-200 dark:border-slate-800 opacity-60 hover:opacity-100"
                     }`}
                   >
-                    <img src={img} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                    <SmoothImage src={img} alt="" className="h-full w-full object-cover" />
                   </button>
                 ))}
               </div>

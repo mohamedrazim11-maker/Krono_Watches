@@ -201,3 +201,67 @@ img {
   max-width: 100%;
   display: block;
 }
+
+/* Page Transition & Image Loading Animations */
+@keyframes pageEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.998);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes routeGlow {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.2);
+  }
+  40% {
+    opacity: 1;
+    transform: scaleX(0.85);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-pageEnter {
+  animation: pageEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform;
+}
+
+.animate-routeGlow {
+  animation: routeGlow 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: left center;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+}
+
+/* Global Smooth Transitions */
+a, button {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

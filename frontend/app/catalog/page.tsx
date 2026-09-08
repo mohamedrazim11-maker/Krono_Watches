@@ -6,6 +6,7 @@ import { fetchProducts, fetchCategories, Product, Category } from "@/lib/api";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
+import SmoothImage from "@/components/SmoothImage";
 import CartDrawer, { CartItem } from "@/components/CartDrawer";
 import WishlistDrawer from "@/components/WishlistDrawer";
 import QuickViewModal from "@/components/QuickViewModal";
@@ -548,12 +549,10 @@ export default function CatalogPage() {
                       href={`/products/${product.id}`}
                       className="h-28 w-28 sm:h-24 sm:w-24 rounded-xl bg-slate-100 dark:bg-slate-900 flex-shrink-0 block overflow-hidden border border-slate-200 dark:border-slate-800 shadow-inner group/thumb"
                     >
-                      <img
+                      <SmoothImage
                         src={product.image_url}
                         alt={product.name}
-                        className="w-full h-full object-cover group-hover/thumb:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                        decoding="async"
+                        className="w-full h-full object-cover group-hover/thumb:scale-105 transition-transform duration-500"
                       />
                     </Link>
 

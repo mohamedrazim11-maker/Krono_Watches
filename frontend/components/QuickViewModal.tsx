@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Product } from "@/lib/api";
+import SmoothImage from "@/components/SmoothImage";
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -17,6 +18,12 @@ export default function QuickViewModal({
 }: QuickViewModalProps) {
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
   const [qty, setQty] = useState(1);
+
+  useEffect(() => {
+    if (product) {
+      setSelectedImg(null);
+    }
+  }, [product]);
 
   if (!product) return null;
 
@@ -48,12 +55,10 @@ export default function QuickViewModal({
           {/* Gallery View */}
           <div className="space-y-2.5">
             <div className="relative aspect-square rounded-2xl bg-slate-100 dark:bg-[#0B0F17] border border-slate-200/80 dark:border-slate-800 overflow-hidden shadow-inner">
-              <img
+              <SmoothImage
                 src={activeImg}
                 alt={product.name}
                 className="w-full h-full object-cover object-center"
-                loading="eager"
-                decoding="async"
               />
               {product.badge && (
                 <div className="absolute top-3 left-3">
@@ -76,7 +81,7 @@ export default function QuickViewModal({
                         : "border-slate-200 dark:border-slate-800 opacity-60 hover:opacity-100"
                     }`}
                   >
-                    <img src={img} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                    <SmoothImage src={img} alt="" className="h-full w-full object-cover" />
                   </button>
                 ))}
               </div>

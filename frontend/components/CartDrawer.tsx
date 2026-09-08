@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Product } from "@/lib/api";
+import SmoothImage from "@/components/SmoothImage";
 
 export interface CartItem {
   product: Product;
@@ -120,8 +121,8 @@ export default function CartDrawer({
                 key={item.product.id}
                 className="rounded-2xl border border-slate-200/80 dark:border-slate-800 p-3 flex gap-3 items-center justify-between bg-slate-50/50 dark:bg-[#0B0F17]/50 hover:bg-slate-50 dark:hover:bg-[#0B0F17] transition"
               >
-                <div className="h-14 w-14 rounded-xl bg-white dark:bg-[#131B2A] p-1 flex-shrink-0 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm">
-                  <img
+                <div className="h-14 w-14 rounded-xl bg-white dark:bg-[#131B2A] overflow-hidden p-1 flex-shrink-0 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <SmoothImage
                     src={item.product.image_url}
                     alt={item.product.name}
                     className="max-h-full max-w-full object-contain"

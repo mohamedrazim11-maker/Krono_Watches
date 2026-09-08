@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Product } from "@/lib/api";
-import { useState } from "react";
+import SmoothImage from "@/components/SmoothImage";
 
 interface ProductCardProps {
   product: Product;
@@ -19,10 +19,6 @@ export default function ProductCard({
   isWishlisted,
   onQuickView,
 }: ProductCardProps) {
-  const [imgSrc, setImgSrc] = useState(
-    product.image_url || "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=85"
-  );
-
   const formatCurrency = (amount: number) => {
     return `LKR ${Number(amount || 0).toLocaleString("en-US")}`;
   };
@@ -76,20 +72,15 @@ export default function ProductCard({
           </button>
         </div>
 
-        {/* Product Image Stage (Edge-to-Edge Flush Container) */}
+        {/* Product Image Stage with Smooth Transition */}
         <Link
           href={`/products/${product.id}`}
-          className="relative aspect-[4/3] w-full my-2.5 block overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-inner"
+          className="relative aspect-[4/3] w-full my-2.5 block overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-inner group/img"
         >
-          <img
-            src={imgSrc}
+          <SmoothImage
+            src={product.image_url}
             alt={product.name}
-            onError={() =>
-              setImgSrc("https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=800&q=80")
-            }
-            className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
-            decoding="async"
+            className="group-hover/img:scale-105 transition-transform duration-700 ease-out"
           />
         </Link>
       </div>

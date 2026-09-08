@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Poster, Product } from "@/lib/api";
+import SmoothImage from "@/components/SmoothImage";
 
 interface HeroBannerProps {
   posters?: Poster[];
@@ -150,16 +151,14 @@ export default function HeroBanner({
               href={`/products/${currentProduct.id}`}
               className="block w-full h-full relative"
             >
-              <img
+              <SmoothImage
                 key={currentProduct.id}
                 src={
                   currentProduct.image_url ||
                   "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=85"
                 }
                 alt={currentProduct.name}
-                className="w-full h-full object-cover object-center transition-all duration-[4000ms] ease-in-out group-hover:scale-105"
-                loading="eager"
-                decoding="async"
+                className="w-full h-full object-cover object-center transition-all duration-[2000ms] ease-out group-hover:scale-105"
               />
             </Link>
 
