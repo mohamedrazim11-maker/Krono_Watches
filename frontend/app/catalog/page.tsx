@@ -169,10 +169,10 @@ export default function CatalogPage() {
   ].filter(Boolean).length;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF8F5] dark:bg-[#080B10] text-[#121826] dark:text-[#F8FAFC] selection:bg-[#D4AF37] selection:text-[#080B10] transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-[#F8FAF9] dark:bg-[#06110D] text-[#0F172A] dark:text-[#F8FAFC] selection:bg-[#006039] selection:text-white transition-colors duration-300">
       {toastMessage && (
-        <div className="fixed bottom-5 right-5 z-50 bg-[#121826] dark:bg-[#141D2E] border border-[#D4AF37] text-white px-4 py-3 rounded-2xl shadow-2xl text-xs font-mono font-bold flex items-center gap-2.5 animate-pageEnter">
-          <span className="text-[#D4AF37] text-base">✦</span>
+        <div className="fixed bottom-5 right-5 z-50 bg-[#00482B] dark:bg-[#0B1C15] border border-[#006039] dark:border-[#00A362] text-white px-4 py-3 rounded-2xl shadow-2xl text-xs font-mono font-bold flex items-center gap-2.5 animate-pageEnter">
+          <span className="text-[#4ADE80] text-base">✦</span>
           <span>{toastMessage}</span>
         </div>
       )}
@@ -189,24 +189,24 @@ export default function CatalogPage() {
 
       <main className="flex-1 mx-auto max-w-7xl w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         {/* Editorial Vault Header */}
-        <div className="rounded-3xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] p-6 sm:p-8 bg-gradient-to-br from-white via-[#FAF8F5] to-[#F3EFEA] dark:from-[#0E1420] dark:via-[#080B10] dark:to-[#040609] shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] p-6 sm:p-8 bg-gradient-to-br from-white via-[#F8FAF9] to-[#F1F5F3] dark:from-[#0B1C15] dark:via-[#06110D] dark:to-[#030806] shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-2 min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#D4AF37] dark:text-[#E5C158] font-bold bg-[#FAF8F5] dark:bg-[#141D2E] px-3.5 py-1 rounded-full border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] shadow-sm">
+              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#006039] dark:text-[#4ADE80] font-bold bg-[#E8F5EE] dark:bg-[#11261D] px-3.5 py-1 rounded-full border border-[#006039]/30 shadow-sm">
                 Official Timepiece Registry
               </span>
               {selectedBrand !== "All" && (
-                <span className="text-[10px] font-mono uppercase tracking-wider text-[#8C6212] dark:text-[#F3E5AB] font-bold bg-[#D4AF37]/15 border border-[#D4AF37]/30 px-3 py-0.5 rounded-full flex items-center gap-1.5">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#006039] dark:text-[#4ADE80] font-bold bg-[#E8F5EE] dark:bg-[#11261D] border border-[#006039]/40 px-3 py-0.5 rounded-full flex items-center gap-1.5">
                   <span>Manufacture:</span>
                   <strong>{selectedBrand}</strong>
                   <button onClick={() => setSelectedBrand("All")} className="hover:text-red-500 ml-1 font-bold">×</button>
                 </span>
               )}
             </div>
-            <h1 className="text-2xl sm:text-4xl font-black font-display text-[#121826] dark:text-[#F8FAFC] tracking-tight uppercase">
-              Vault <span className="gold-gradient-text">Catalogue</span>
+            <h1 className="text-2xl sm:text-4xl font-black font-display text-[#0F172A] dark:text-[#F8FAFC] tracking-tight uppercase">
+              Vault <span className="rolex-gradient-text">Catalogue</span>
             </h1>
-            <p className="text-xs sm:text-sm text-[#645A4C] dark:text-[#CBD5E1] max-w-xl font-sans">
+            <p className="text-xs sm:text-sm text-[#475569] dark:text-[#CBD5E1] max-w-xl font-sans">
               Explore authentic calibres from the world&apos;s leading manufactures: Rolex, Omega, Patek Philippe, Audemars Piguet, and TAG Heuer.
             </p>
           </div>
@@ -218,14 +218,14 @@ export default function CatalogPage() {
             >
               <span>⚙ Filters</span>
               {activeFiltersCount > 0 && (
-                <span className="bg-[#D4AF37] text-[#080B10] font-bold px-1.5 py-0.2 rounded-full text-[10px] font-mono">
+                <span className="bg-[#006039] text-white font-bold px-1.5 py-0.2 rounded-full text-[10px] font-mono">
                   {activeFiltersCount}
                 </span>
               )}
             </button>
             <button
               onClick={resetFilters}
-              className="px-4 py-2.5 rounded-xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] bg-white dark:bg-[#0E1420] text-[#645A4C] dark:text-[#CBD5E1] hover:text-[#D4AF37] text-xs font-mono transition shadow-sm"
+              className="px-4 py-2.5 rounded-xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] bg-white dark:bg-[#0B1C15] text-[#475569] dark:text-[#CBD5E1] hover:text-[#006039] text-xs font-mono transition shadow-sm"
             >
               Reset All
             </button>
@@ -233,9 +233,9 @@ export default function CatalogPage() {
         </div>
 
         {/* 5 Real Luxury Brands Quick Selector Bar */}
-        <div className="rounded-2xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] p-3 bg-white dark:bg-[#0E1420] shadow-sm flex items-center gap-2.5 overflow-x-auto no-scrollbar">
-          <span className="text-[10px] font-mono uppercase font-bold text-[#D4AF37] whitespace-nowrap pl-1 pr-1.5 tracking-wider flex items-center gap-1.5 flex-shrink-0">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-ping"></span>
+        <div className="rounded-2xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] p-3 bg-white dark:bg-[#0B1C15] shadow-sm flex items-center gap-2.5 overflow-x-auto no-scrollbar">
+          <span className="text-[10px] font-mono uppercase font-bold text-[#006039] dark:text-[#4ADE80] whitespace-nowrap pl-1 pr-1.5 tracking-wider flex items-center gap-1.5 flex-shrink-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#006039] dark:bg-[#4ADE80] animate-ping"></span>
             Manufacture:
           </span>
           <div className="flex items-center gap-2 flex-nowrap sm:flex-wrap">
@@ -251,8 +251,8 @@ export default function CatalogPage() {
                   onClick={() => setSelectedBrand(brand)}
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-mono whitespace-nowrap transition-all flex items-center gap-1.5 border flex-shrink-0 cursor-pointer ${
                     isSelected
-                      ? "bg-gradient-to-r from-[#D4AF37] to-[#AA7A1E] text-[#080B10] font-black border-transparent shadow-md scale-105"
-                      : "bg-[#FAF8F5] dark:bg-[#141D2E] text-[#645A4C] dark:text-[#CBD5E1] border-[#E8E2D6] dark:border-[#1E293B] hover:border-[#D4AF37] hover:text-[#121826] dark:hover:text-white"
+                      ? "bg-[#006039] dark:bg-[#00824E] text-white font-bold border-transparent shadow-md scale-105"
+                      : "bg-[#F8FAF9] dark:bg-[#11261D] text-[#475569] dark:text-[#CBD5E1] border-[#E2E8F0] dark:border-[#1F4535] hover:border-[#006039] hover:text-[#006039] dark:hover:text-white"
                   }`}
                 >
                   <span>{brand === "All" ? "All Brands (5)" : brand}</span>
@@ -260,8 +260,8 @@ export default function CatalogPage() {
                     <span
                       className={`text-[9px] px-1.5 py-0.2 rounded-md font-mono ${
                         isSelected
-                          ? "bg-black/20 text-[#080B10]"
-                          : "bg-[#EBE5DB] dark:bg-[#080B10] text-[#8C7B65] dark:text-[#A3937C]"
+                          ? "bg-black/20 text-white"
+                          : "bg-[#E5ECE8] dark:bg-[#06110D] text-[#5A6D64] dark:text-[#8EAA9C]"
                       }`}
                     >
                       {brandCount}
@@ -276,19 +276,19 @@ export default function CatalogPage() {
         {/* Layout Grid (Desktop Sidebar + Main Content) */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
           {/* Desktop Sidebar */}
-          <aside className="hidden lg:block space-y-4 rounded-3xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] p-5 bg-white dark:bg-[#0E1420] shadow-md sticky top-28">
-            <div className="flex items-center justify-between border-b border-[#E8E2D6] dark:border-[rgba(212,175,55,0.15)] pb-3">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-[#121826] dark:text-[#F8FAFC] font-mono flex items-center gap-1.5">
-                <span className="text-[#D4AF37]">✦</span> Filter Parameters
+          <aside className="hidden lg:block space-y-4 rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] p-5 bg-white dark:bg-[#0B1C15] shadow-md sticky top-28">
+            <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.25)] pb-3">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-[#0F172A] dark:text-[#F8FAFC] font-mono flex items-center gap-1.5">
+                <span className="text-[#006039] dark:text-[#4ADE80]">✦</span> Filter Parameters
               </h3>
-              <button onClick={resetFilters} className="text-[10px] text-[#8C7B65] hover:text-[#D4AF37] font-mono font-bold">
+              <button onClick={resetFilters} className="text-[10px] text-[#5A6D64] hover:text-[#006039] font-mono font-bold">
                 Clear
               </button>
             </div>
 
             {/* 5 Real Brands Selection */}
             <div className="space-y-2">
-              <label className="text-[9px] text-[#D4AF37] uppercase font-bold font-mono tracking-widest block">
+              <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
                 Manufacture
               </label>
               <div className="space-y-1">
@@ -304,8 +304,8 @@ export default function CatalogPage() {
                       onClick={() => setSelectedBrand(brand)}
                       className={`w-full text-left px-3 py-2 rounded-xl text-xs font-mono transition flex items-center justify-between border cursor-pointer ${
                         isSelected
-                          ? "bg-gradient-to-r from-[#D4AF37] to-[#AA7A1E] text-[#080B10] font-black border-transparent shadow-sm"
-                          : "border-transparent text-[#645A4C] dark:text-[#CBD5E1] hover:bg-[#FAF8F5] dark:hover:bg-[#141D2E] hover:text-[#121826] dark:hover:text-white"
+                          ? "bg-[#006039] dark:bg-[#00824E] text-white font-bold border-transparent shadow-sm"
+                          : "border-transparent text-[#475569] dark:text-[#CBD5E1] hover:bg-[#F8FAF9] dark:hover:bg-[#11261D] hover:text-[#006039] dark:hover:text-white"
                       }`}
                     >
                       <span className="truncate pr-1">{brand === "All" ? "All 5 Brands" : brand}</span>
@@ -313,8 +313,8 @@ export default function CatalogPage() {
                         <span
                           className={`text-[9px] px-1.5 py-0.5 rounded font-mono ${
                             isSelected
-                              ? "bg-black/20 text-[#080B10]"
-                              : "bg-[#FAF8F5] dark:bg-[#141D2E] text-[#8C7B65] dark:text-[#A3937C]"
+                              ? "bg-black/20 text-white"
+                              : "bg-[#F8FAF9] dark:bg-[#11261D] text-[#5A6D64] dark:text-[#8EAA9C]"
                           }`}
                         >
                           {count}
@@ -327,9 +327,9 @@ export default function CatalogPage() {
             </div>
 
             {/* Metier Category */}
-            <div className="space-y-2 border-t border-[#EBE5DB] dark:border-[#182234] pt-3.5">
-              <label className="text-[9px] text-[#D4AF37] uppercase font-bold font-mono tracking-widest block">
-                Metier Category
+            <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-3.5">
+              <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
+                Collection
               </label>
               <div className="space-y-1">
                 {["All", "Luxury", "Automatic", "Sport", "Smart"].map((cat) => (
@@ -338,8 +338,8 @@ export default function CatalogPage() {
                     onClick={() => setSelectedCategory(cat)}
                     className={`w-full text-left px-3 py-2 rounded-xl text-xs font-mono transition flex items-center justify-between cursor-pointer ${
                       selectedCategory === cat
-                        ? "bg-gradient-to-r from-[#D4AF37] to-[#AA7A1E] text-[#080B10] font-black shadow-sm"
-                        : "text-[#645A4C] dark:text-[#CBD5E1] hover:bg-[#FAF8F5] dark:hover:bg-[#141D2E] hover:text-[#121826] dark:hover:text-white"
+                        ? "bg-[#006039] dark:bg-[#00824E] text-white font-bold shadow-sm"
+                        : "text-[#475569] dark:text-[#CBD5E1] hover:bg-[#F8FAF9] dark:hover:bg-[#11261D] hover:text-[#006039] dark:hover:text-white"
                     }`}
                   >
                     <span>{cat === "All" ? "All Series" : cat}</span>
@@ -350,10 +350,10 @@ export default function CatalogPage() {
             </div>
 
             {/* Price Range */}
-            <div className="space-y-2 border-t border-[#EBE5DB] dark:border-[#182234] pt-3.5">
+            <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-3.5">
               <div className="flex justify-between text-[10px] font-mono font-bold">
-                <span className="text-[#8C7B65] uppercase tracking-widest">Max Valuation</span>
-                <span className="text-[#121826] dark:text-[#F3E5AB] font-num">{formatCurrency(maxPriceRange)}</span>
+                <span className="text-[#5A6D64] uppercase tracking-widest">Max Valuation</span>
+                <span className="text-[#006039] dark:text-[#4ADE80] font-num">{formatCurrency(maxPriceRange)}</span>
               </div>
               <input
                 type="range"
@@ -362,19 +362,19 @@ export default function CatalogPage() {
                 step={50000}
                 value={maxPriceRange}
                 onChange={(e) => setMaxPriceRange(Number(e.target.value))}
-                className="w-full accent-[#D4AF37] h-1.5 bg-[#E8E2D6] dark:bg-[#1E293B] rounded cursor-pointer"
+                className="w-full accent-[#006039] h-1.5 bg-[#E2E8F0] dark:bg-[#1F4535] rounded cursor-pointer"
               />
             </div>
 
             {/* Movement */}
-            <div className="space-y-2 border-t border-[#EBE5DB] dark:border-[#182234] pt-3.5">
-              <label className="text-[9px] text-[#D4AF37] uppercase font-bold font-mono tracking-widest block">
+            <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-3.5">
+              <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
                 Calibre Escapement
               </label>
               <select
                 value={selectedMovement}
                 onChange={(e) => setSelectedMovement(e.target.value)}
-                className="w-full bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] rounded-xl px-3 py-2 text-xs text-[#121826] dark:text-[#F8FAFC] focus:outline-none focus:border-[#D4AF37] font-mono"
+                className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039] font-mono"
               >
                 {MOVEMENTS.map((m) => (
                   <option key={m} value={m}>
@@ -385,14 +385,14 @@ export default function CatalogPage() {
             </div>
 
             {/* Size */}
-            <div className="space-y-2 border-t border-[#EBE5DB] dark:border-[#182234] pt-3.5">
-              <label className="text-[9px] text-[#D4AF37] uppercase font-bold font-mono tracking-widest block">
+            <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-3.5">
+              <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
                 Case Diameter
               </label>
               <select
                 value={selectedSize}
                 onChange={(e) => setSelectedSize(e.target.value)}
-                className="w-full bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] rounded-xl px-3 py-2 text-xs text-[#121826] dark:text-[#F8FAFC] focus:outline-none focus:border-[#D4AF37] font-mono"
+                className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039] font-mono"
               >
                 {CASE_SIZES.map((s) => (
                   <option key={s} value={s}>
@@ -403,13 +403,13 @@ export default function CatalogPage() {
             </div>
 
             {/* In Stock */}
-            <div className="flex items-center justify-between border-t border-[#EBE5DB] dark:border-[#182234] pt-3.5">
-              <span className="text-xs text-[#645A4C] dark:text-[#CBD5E1] font-mono font-semibold">In Stock Only</span>
+            <div className="flex items-center justify-between border-t border-[#E5ECE8] dark:border-[#122B20] pt-3.5">
+              <span className="text-xs text-[#475569] dark:text-[#CBD5E1] font-mono font-semibold">In Stock Only</span>
               <input
                 type="checkbox"
                 checked={onlyInStock}
                 onChange={(e) => setOnlyInStock(e.target.checked)}
-                className="h-4 w-4 rounded accent-[#D4AF37] cursor-pointer"
+                className="h-4 w-4 rounded accent-[#006039] cursor-pointer"
               />
             </div>
           </aside>
@@ -417,20 +417,20 @@ export default function CatalogPage() {
           {/* Product Feed */}
           <div className="lg:col-span-3 space-y-4">
             {/* Top Toolbar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-2xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] bg-white dark:bg-[#0E1420] shadow-sm">
-              <div className="text-xs text-[#645A4C] dark:text-[#CBD5E1] font-mono flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
-                <span>Displaying <strong className="text-[#121826] dark:text-[#F8FAFC]">{filteredProducts.length}</strong> authenticated references</span>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-2xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] bg-white dark:bg-[#0B1C15] shadow-sm">
+              <div className="text-xs text-[#475569] dark:text-[#CBD5E1] font-mono flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
+                <span>Displaying <strong className="text-[#0F172A] dark:text-[#F8FAFC]">{filteredProducts.length}</strong> authenticated references</span>
                 {selectedBrand !== "All" && (
-                  <span className="text-[#D4AF37] font-bold">• {selectedBrand}</span>
+                  <span className="text-[#006039] dark:text-[#4ADE80] font-bold">• {selectedBrand}</span>
                 )}
               </div>
 
               <div className="flex items-center gap-2.5 w-full sm:w-auto justify-between sm:justify-end">
-                <div className="flex items-center gap-1 bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[#1E293B] rounded-xl p-0.5">
+                <div className="flex items-center gap-1 bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl p-0.5">
                   <button
                     onClick={() => setViewMode("grid")}
                     className={`px-3 py-1 rounded-lg text-xs font-mono transition cursor-pointer ${
-                      viewMode === "grid" ? "bg-white dark:bg-[#141D2E] text-[#121826] dark:text-[#F8FAFC] font-bold shadow-sm" : "text-[#8C7B65] hover:text-[#121826] dark:hover:text-white"
+                      viewMode === "grid" ? "bg-white dark:bg-[#11261D] text-[#0F172A] dark:text-[#F8FAFC] font-bold shadow-sm" : "text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white"
                     }`}
                   >
                     Grid
@@ -438,7 +438,7 @@ export default function CatalogPage() {
                   <button
                     onClick={() => setViewMode("list")}
                     className={`px-3 py-1 rounded-lg text-xs font-mono transition cursor-pointer ${
-                      viewMode === "list" ? "bg-white dark:bg-[#141D2E] text-[#121826] dark:text-[#F8FAFC] font-bold shadow-sm" : "text-[#8C7B65] hover:text-[#121826] dark:hover:text-white"
+                      viewMode === "list" ? "bg-white dark:bg-[#11261D] text-[#0F172A] dark:text-[#F8FAFC] font-bold shadow-sm" : "text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white"
                     }`}
                   >
                     List
@@ -448,7 +448,7 @@ export default function CatalogPage() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as any)}
-                  className="bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[#1E293B] rounded-xl px-3 py-1.5 text-xs text-[#121826] dark:text-[#F8FAFC] focus:outline-none focus:border-[#D4AF37] font-mono"
+                  className="bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-3 py-1.5 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039] font-mono"
                 >
                   <option value="featured">Featured First</option>
                   <option value="price-asc">Price: Low to High</option>
@@ -462,18 +462,18 @@ export default function CatalogPage() {
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 py-6">
                 {[...Array(6)].map((_, i) => (
-                  <div key={i} className="rounded-2xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.15)] p-4 space-y-4 animate-pulse bg-white dark:bg-[#0E1420]">
-                    <div className="aspect-square bg-[#FAF8F5] dark:bg-[#141D2E] rounded-xl"></div>
-                    <div className="h-4 bg-[#FAF8F5] dark:bg-[#141D2E] rounded w-3/4"></div>
+                  <div key={i} className="rounded-2xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.2)] p-4 space-y-4 animate-pulse bg-white dark:bg-[#0B1C15]">
+                    <div className="aspect-square bg-[#F8FAF9] dark:bg-[#11261D] rounded-xl"></div>
+                    <div className="h-4 bg-[#F8FAF9] dark:bg-[#11261D] rounded w-3/4"></div>
                   </div>
                 ))}
               </div>
             ) : filteredProducts.length === 0 ? (
-              <div className="text-center py-16 rounded-3xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] space-y-3 bg-white dark:bg-[#0E1420] shadow-sm px-4">
-                <div className="text-4xl text-[#D5CBBA] dark:text-[#1E293B]">⌕</div>
-                <h3 className="text-base font-bold text-[#121826] dark:text-[#F8FAFC] uppercase font-display">No References Located</h3>
-                <p className="text-xs text-[#8C7B65] font-mono">Try adjusting your brand selection or price range filter.</p>
-                <button onClick={resetFilters} className="lux-btn-gold px-6 py-2 rounded-xl text-xs uppercase font-bold">
+              <div className="text-center py-16 rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] space-y-3 bg-white dark:bg-[#0B1C15] shadow-sm px-4">
+                <div className="text-4xl text-[#CBD5E1] dark:text-[#1F4535]">⌕</div>
+                <h3 className="text-base font-bold text-[#0F172A] dark:text-[#F8FAFC] uppercase font-display">No References Located</h3>
+                <p className="text-xs text-[#5A6D64] font-mono">Try adjusting your brand selection or price range filter.</p>
+                <button onClick={resetFilters} className="lux-btn-primary px-6 py-2 rounded-xl text-xs uppercase font-bold">
                   Reset All Filters
                 </button>
               </div>
@@ -496,11 +496,11 @@ export default function CatalogPage() {
                 {filteredProducts.map((product) => (
                   <div
                     key={product.id}
-                    className="rounded-2xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.14)] p-4 flex flex-col sm:flex-row items-center gap-4 bg-white dark:bg-[#0E1420] hover:border-[#D4AF37] transition duration-300 shadow-md"
+                    className="rounded-2xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.25)] p-4 flex flex-col sm:flex-row items-center gap-4 bg-white dark:bg-[#0B1C15] hover:border-[#006039] transition duration-300 shadow-sm"
                   >
                     <Link
                       href={`/products/${product.id}`}
-                      className="h-28 w-28 sm:h-24 sm:w-24 rounded-xl bg-[#FAF8F5] dark:bg-[#080B10] flex-shrink-0 block overflow-hidden border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.15)] shadow-inner group/thumb"
+                      className="h-28 w-28 sm:h-24 sm:w-24 rounded-xl bg-[#F8FAF9] dark:bg-[#06110D] flex-shrink-0 block overflow-hidden border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.2)] shadow-inner group/thumb"
                     >
                       <SmoothImage
                         src={product.image_url}
@@ -512,39 +512,39 @@ export default function CatalogPage() {
                     <div className="flex-1 min-w-0 space-y-1 text-center sm:text-left w-full">
                       <div className="flex items-center justify-center sm:justify-start gap-2">
                         {product.brand && (
-                          <span className="text-[9px] uppercase tracking-widest text-[#D4AF37] font-mono font-bold">
+                          <span className="text-[9px] uppercase tracking-widest text-[#006039] dark:text-[#4ADE80] font-mono font-bold">
                             {product.brand}
                           </span>
                         )}
-                        <span className="text-[9px] uppercase tracking-widest text-[#8C7B65] dark:text-[#A3937C] font-mono">
+                        <span className="text-[9px] uppercase tracking-widest text-[#5A6D64] dark:text-[#8EAA9C] font-mono">
                           • {product.category}
                         </span>
                         {product.badge && (
-                          <span className="text-[8px] px-2 py-0.5 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#AA7A1E] text-[#080B10] font-bold font-mono uppercase">
+                          <span className="text-[8px] px-2 py-0.5 rounded-full bg-[#006039] text-white font-bold font-mono uppercase">
                             {product.badge}
                           </span>
                         )}
                       </div>
                       <Link
                         href={`/products/${product.id}`}
-                        className="text-sm font-bold text-[#121826] dark:text-[#F8FAFC] hover:text-[#D4AF37] transition block font-display tracking-tight"
+                        className="text-sm font-bold text-[#0F172A] dark:text-[#F8FAFC] hover:text-[#006039] dark:hover:text-[#4ADE80] transition block font-display tracking-tight"
                       >
                         {product.name}
                       </Link>
-                      <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-[10px] text-[#8C7B65] dark:text-[#A3937C] font-mono pt-0.5">
+                      <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-[10px] text-[#5A6D64] dark:text-[#8EAA9C] font-mono pt-0.5">
                         {product.movement && <span>{product.movement}</span>}
                         {product.case_size && <span>• {product.case_size}</span>}
                         {product.water_resistance && <span>• {product.water_resistance}</span>}
                       </div>
                     </div>
 
-                    <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center w-full sm:w-auto gap-3 flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#EBE5DB] dark:border-[#182234]">
+                    <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center w-full sm:w-auto gap-3 flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#E5ECE8] dark:border-[#122B20]">
                       <div className="text-left sm:text-right">
-                        <div className="text-sm sm:text-base font-black text-[#121826] dark:text-[#F3E5AB] font-num">
+                        <div className="text-sm sm:text-base font-black text-[#006039] dark:text-[#4ADE80] font-num">
                           {formatCurrency(product.price)}
                         </div>
                         {product.old_price && (
-                          <div className="text-xs text-[#8C7B65] line-through font-num">
+                          <div className="text-xs text-[#64748B] line-through font-num">
                             {formatCurrency(product.old_price)}
                           </div>
                         )}
@@ -553,17 +553,17 @@ export default function CatalogPage() {
                       <div className="flex items-center gap-1.5">
                         <button
                           onClick={() => setQuickViewProduct(product)}
-                          className="p-2 rounded-xl border border-[#E8E2D6] dark:border-[#1E293B] bg-[#FAF8F5] dark:bg-[#141D2E] text-[#8C7B65] hover:text-[#D4AF37] shadow-sm cursor-pointer"
+                          className="p-2 rounded-xl border border-[#E2E8F0] dark:border-[#1F4535] bg-[#F8FAF9] dark:bg-[#11261D] text-[#5A6D64] hover:text-[#006039] shadow-sm cursor-pointer"
                           title="Quick View"
                         >
                           👁
                         </button>
                         <button
                           onClick={() => toggleWishlist(product)}
-                          className={`p-2 rounded-xl border border-[#E8E2D6] dark:border-[#1E293B] bg-[#FAF8F5] dark:bg-[#141D2E] shadow-sm transition cursor-pointer ${
+                          className={`p-2 rounded-xl border border-[#E2E8F0] dark:border-[#1F4535] bg-[#F8FAF9] dark:bg-[#11261D] shadow-sm transition cursor-pointer ${
                             wishlist.some((p) => p.id === product.id)
                               ? "text-red-500 font-bold border-red-300"
-                              : "text-[#8C7B65] hover:text-[#D4AF37]"
+                              : "text-[#5A6D64] hover:text-[#006039]"
                           }`}
                           title="Wishlist"
                         >
@@ -571,7 +571,7 @@ export default function CatalogPage() {
                         </button>
                         <button
                           onClick={() => addToCart(product)}
-                          className="lux-btn-gold px-4 py-2 rounded-xl text-xs uppercase font-extrabold shadow-sm"
+                          className="lux-btn-primary px-4 py-2 rounded-xl text-xs uppercase font-extrabold shadow-sm"
                         >
                           Add to Cart
                         </button>
@@ -596,19 +596,19 @@ export default function CatalogPage() {
           />
 
           <div className="fixed inset-y-0 right-0 max-w-full flex">
-            <div className="w-screen max-w-sm bg-white dark:bg-[#0E1420] shadow-2xl flex flex-col justify-between border-l border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)]">
-              <div className="p-4 sm:p-5 border-b border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] flex items-center justify-between bg-[#FAF8F5] dark:bg-[#080B10]">
+            <div className="w-screen max-w-sm bg-white dark:bg-[#0B1C15] shadow-2xl flex flex-col justify-between border-l border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)]">
+              <div className="p-4 sm:p-5 border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] flex items-center justify-between bg-[#F8FAF9] dark:bg-[#06110D]">
                 <div>
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-[#121826] dark:text-[#F8FAFC] font-mono">
+                  <h3 className="text-sm font-bold uppercase tracking-widest text-[#0F172A] dark:text-[#F8FAFC] font-mono">
                     Filter Parameters
                   </h3>
-                  <p className="text-[11px] text-[#D4AF37] font-mono">
+                  <p className="text-[11px] text-[#006039] dark:text-[#4ADE80] font-mono">
                     {filteredProducts.length} matching calibres
                   </p>
                 </div>
                 <button
                   onClick={() => setIsMobileFilterOpen(false)}
-                  className="p-1.5 rounded-lg border border-[#E8E2D6] dark:border-[#1E293B] text-[#8C7B65] hover:text-[#121826] dark:hover:text-white text-xs font-bold"
+                  className="p-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#1F4535] text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white text-xs font-bold"
                 >
                   ✕
                 </button>
@@ -617,7 +617,7 @@ export default function CatalogPage() {
               <div className="p-4 sm:p-5 space-y-5 overflow-y-auto flex-1">
                 {/* 5 Real Brands Selection */}
                 <div className="space-y-2">
-                  <label className="text-[9px] text-[#D4AF37] uppercase font-bold font-mono tracking-widest block">
+                  <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
                     Manufacture
                   </label>
                   <div className="grid grid-cols-2 gap-1.5">
@@ -633,8 +633,8 @@ export default function CatalogPage() {
                           onClick={() => setSelectedBrand(brand)}
                           className={`text-left px-2.5 py-2 rounded-xl text-xs font-mono transition flex items-center justify-between border cursor-pointer ${
                             isSelected
-                              ? "bg-gradient-to-r from-[#D4AF37] to-[#AA7A1E] text-[#080B10] font-black border-transparent shadow-sm"
-                              : "border-[#E8E2D6] dark:border-[#1E293B] text-[#645A4C] dark:text-[#CBD5E1] hover:bg-[#FAF8F5] dark:hover:bg-[#141D2E]"
+                              ? "bg-[#006039] dark:bg-[#00824E] text-white font-bold border-transparent shadow-sm"
+                              : "border-[#E2E8F0] dark:border-[#1F4535] text-[#475569] dark:text-[#CBD5E1] hover:bg-[#F8FAF9] dark:hover:bg-[#11261D]"
                           }`}
                         >
                           <span className="truncate pr-1">{brand === "All" ? "All 5" : brand}</span>
@@ -642,8 +642,8 @@ export default function CatalogPage() {
                             <span
                               className={`text-[9px] px-1.5 py-0.2 rounded font-mono ${
                                 isSelected
-                                  ? "bg-black/20 text-[#080B10]"
-                                  : "bg-[#FAF8F5] dark:bg-[#080B10] text-[#8C7B65]"
+                                  ? "bg-black/20 text-white"
+                                  : "bg-[#F8FAF9] dark:bg-[#06110D] text-[#5A6D64]"
                               }`}
                             >
                               {count}
@@ -656,9 +656,9 @@ export default function CatalogPage() {
                 </div>
 
                 {/* Metier Category */}
-                <div className="space-y-2 border-t border-[#EBE5DB] dark:border-[#182234] pt-4">
-                  <label className="text-[9px] text-[#D4AF37] uppercase font-bold font-mono tracking-widest block">
-                    Metier Category
+                <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-4">
+                  <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
+                    Collection
                   </label>
                   <div className="grid grid-cols-2 gap-1.5">
                     {["All", "Luxury", "Automatic", "Sport", "Smart"].map((cat) => (
@@ -667,8 +667,8 @@ export default function CatalogPage() {
                         onClick={() => setSelectedCategory(cat)}
                         className={`text-left px-3 py-2 rounded-xl text-xs font-mono transition flex items-center justify-between border cursor-pointer ${
                           selectedCategory === cat
-                            ? "bg-gradient-to-r from-[#D4AF37] to-[#AA7A1E] text-[#080B10] font-black border-transparent shadow-sm"
-                            : "border-[#E8E2D6] dark:border-[#1E293B] text-[#645A4C] dark:text-[#CBD5E1] hover:bg-[#FAF8F5] dark:hover:bg-[#141D2E]"
+                            ? "bg-[#006039] dark:bg-[#00824E] text-white font-bold border-transparent shadow-sm"
+                            : "border-[#E2E8F0] dark:border-[#1F4535] text-[#475569] dark:text-[#CBD5E1] hover:bg-[#F8FAF9] dark:hover:bg-[#11261D]"
                         }`}
                       >
                         <span>{cat === "All" ? "All Series" : cat}</span>
@@ -679,10 +679,10 @@ export default function CatalogPage() {
                 </div>
 
                 {/* Price Range */}
-                <div className="space-y-2 border-t border-[#EBE5DB] dark:border-[#182234] pt-4">
+                <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-4">
                   <div className="flex justify-between text-[10px] font-mono font-bold">
-                    <span className="text-[#8C7B65] uppercase tracking-widest">Max Valuation</span>
-                    <span className="text-[#121826] dark:text-[#F3E5AB] font-num">{formatCurrency(maxPriceRange)}</span>
+                    <span className="text-[#5A6D64] uppercase tracking-widest">Max Valuation</span>
+                    <span className="text-[#006039] dark:text-[#4ADE80] font-num">{formatCurrency(maxPriceRange)}</span>
                   </div>
                   <input
                     type="range"
@@ -691,19 +691,19 @@ export default function CatalogPage() {
                     step={50000}
                     value={maxPriceRange}
                     onChange={(e) => setMaxPriceRange(Number(e.target.value))}
-                    className="w-full accent-[#D4AF37] h-2 bg-[#E8E2D6] dark:bg-[#1E293B] rounded cursor-pointer"
+                    className="w-full accent-[#006039] h-2 bg-[#E2E8F0] dark:bg-[#1F4535] rounded cursor-pointer"
                   />
                 </div>
 
                 {/* Movement */}
-                <div className="space-y-2 border-t border-[#EBE5DB] dark:border-[#182234] pt-4">
-                  <label className="text-[9px] text-[#D4AF37] uppercase font-bold font-mono tracking-widest block">
+                <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-4">
+                  <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
                     Calibre Escapement
                   </label>
                   <select
                     value={selectedMovement}
                     onChange={(e) => setSelectedMovement(e.target.value)}
-                    className="w-full bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[#1E293B] rounded-xl px-3 py-2 text-xs text-[#121826] dark:text-[#F8FAFC] focus:outline-none font-mono"
+                    className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none font-mono"
                   >
                     {MOVEMENTS.map((m) => (
                       <option key={m} value={m}>
@@ -714,14 +714,14 @@ export default function CatalogPage() {
                 </div>
 
                 {/* Size */}
-                <div className="space-y-2 border-t border-[#EBE5DB] dark:border-[#182234] pt-4">
-                  <label className="text-[9px] text-[#D4AF37] uppercase font-bold font-mono tracking-widest block">
+                <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-4">
+                  <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
                     Case Diameter
                   </label>
                   <select
                     value={selectedSize}
                     onChange={(e) => setSelectedSize(e.target.value)}
-                    className="w-full bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[#1E293B] rounded-xl px-3 py-2 text-xs text-[#121826] dark:text-[#F8FAFC] focus:outline-none font-mono"
+                    className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none font-mono"
                   >
                     {CASE_SIZES.map((s) => (
                       <option key={s} value={s}>
@@ -732,28 +732,28 @@ export default function CatalogPage() {
                 </div>
 
                 {/* In Stock */}
-                <div className="flex items-center justify-between border-t border-[#EBE5DB] dark:border-[#182234] pt-4">
-                  <span className="text-xs text-[#645A4C] dark:text-[#CBD5E1] font-mono font-semibold">In Stock Only</span>
+                <div className="flex items-center justify-between border-t border-[#E5ECE8] dark:border-[#122B20] pt-4">
+                  <span className="text-xs text-[#475569] dark:text-[#CBD5E1] font-mono font-semibold">In Stock Only</span>
                   <input
                     type="checkbox"
                     checked={onlyInStock}
                     onChange={(e) => setOnlyInStock(e.target.checked)}
-                    className="h-5 w-5 rounded accent-[#D4AF37] cursor-pointer"
+                    className="h-5 w-5 rounded accent-[#006039] cursor-pointer"
                   />
                 </div>
               </div>
 
               {/* Drawer Footer Actions */}
-              <div className="p-4 border-t border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] bg-[#FAF8F5] dark:bg-[#080B10] flex items-center gap-2.5">
+              <div className="p-4 border-t border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] bg-[#F8FAF9] dark:bg-[#06110D] flex items-center gap-2.5">
                 <button
                   onClick={resetFilters}
-                  className="px-4 py-2.5 rounded-xl border border-[#E8E2D6] dark:border-[#1E293B] bg-white dark:bg-[#141D2E] text-xs font-mono font-bold text-[#645A4C] dark:text-[#CBD5E1]"
+                  className="px-4 py-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#1F4535] bg-white dark:bg-[#11261D] text-xs font-mono font-bold text-[#475569] dark:text-[#CBD5E1]"
                 >
                   Reset
                 </button>
                 <button
                   onClick={() => setIsMobileFilterOpen(false)}
-                  className="flex-1 lux-btn-gold py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-center"
+                  className="flex-1 lux-btn-primary py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-center"
                 >
                   Show {filteredProducts.length} Results
                 </button>

@@ -1,36 +1,48 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FAF8F5;
-  --foreground: #121826;
+  --background: #F8FAF9;
+  --foreground: #0F172A;
   --card: #FFFFFF;
-  --card-elevated: #F6F3ED;
-  --card-border: #E8E2D6;
-  --accent: #D4AF37;
-  --accent-light: #F3E5AB;
-  --accent-dark: #996515;
-  --accent-muted: #8C7B65;
-  --border-subtle: #EBE5DB;
-  --border-strong: #D5CBBA;
-  --gold-glow: rgba(212, 175, 55, 0.15);
-  --emerald: #059669;
+  --card-elevated: #F1F5F3;
+  --card-border: #E2E8F0;
+  --accent: #006039;
+  --accent-light: #E8F5EE;
+  --accent-dark: #00482B;
+  --accent-muted: #5A6D64;
+  --rolex-green: #006039;
+  --rolex-green-dark: #00482B;
+  --rolex-green-light: #E8F5EE;
+  --rolex-gold: #C5A059;
+  --rolex-gold-dark: #997524;
+  --rolex-gold-light: #FDF8ED;
+  --border-subtle: #E5ECE8;
+  --border-strong: #CBD5E1;
+  --gold-glow: rgba(197, 160, 89, 0.2);
+  --emerald: #006039;
   --rose: #E11D48;
 }
 
 .dark {
-  --background: #080B10;
+  --background: #06110D;
   --foreground: #F8FAFC;
-  --card: #0E1420;
-  --card-elevated: #141D2E;
-  --card-border: rgba(212, 175, 55, 0.18);
-  --accent: #E5C158;
-  --accent-light: #FDF3C7;
-  --accent-dark: #B8860B;
-  --accent-muted: #A3937C;
-  --border-subtle: #182234;
-  --border-strong: #28364F;
-  --gold-glow: rgba(229, 193, 88, 0.22);
-  --emerald: #10B981;
+  --card: #0B1C15;
+  --card-elevated: #11261D;
+  --card-border: rgba(0, 96, 57, 0.35);
+  --accent: #00824E;
+  --accent-light: rgba(0, 130, 78, 0.15);
+  --accent-dark: #004D2E;
+  --accent-muted: #8EAA9C;
+  --rolex-green: #00A362;
+  --rolex-green-dark: #006039;
+  --rolex-green-light: #0B241A;
+  --rolex-gold: #D4AF37;
+  --rolex-gold-dark: #B8860B;
+  --rolex-gold-light: #1A180E;
+  --border-subtle: #122B20;
+  --border-strong: #1F4535;
+  --gold-glow: rgba(212, 175, 55, 0.25);
+  --emerald: #00A362;
   --rose: #F43F5E;
   color-scheme: dark;
 }
@@ -39,9 +51,13 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
-  --color-gold: #D4AF37;
-  --color-gold-light: #F3E5AB;
-  --color-gold-dark: #AA7A1E;
+  --color-rolex-green: #006039;
+  --color-rolex-green-dark: #00482B;
+  --color-rolex-gold: #C5A059;
+  --color-rolex-gold-dark: #997524;
+  --color-gold: #C5A059;
+  --color-gold-light: #FDF8ED;
+  --color-gold-dark: #997524;
   --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-display: var(--font-outfit), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-serif: var(--font-cormorant), Georgia, serif;
@@ -59,9 +75,9 @@ body {
   font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
   background-image: 
-    radial-gradient(ellipse 90% 60% at 50% -10%, rgba(212, 175, 55, 0.04), transparent 70%),
-    radial-gradient(ellipse 70% 50% at 95% 40%, rgba(184, 134, 11, 0.03), transparent 60%),
-    radial-gradient(ellipse 60% 40% at 5% 85%, rgba(212, 175, 55, 0.02), transparent 50%);
+    radial-gradient(ellipse 90% 50% at 50% -10%, rgba(0, 96, 57, 0.04), transparent 70%),
+    radial-gradient(ellipse 70% 50% at 95% 40%, rgba(197, 160, 89, 0.04), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 5% 85%, rgba(0, 96, 57, 0.03), transparent 50%);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -70,9 +86,9 @@ body {
 
 .dark body {
   background-image: 
-    radial-gradient(ellipse 80% 50% at 50% -15%, rgba(229, 193, 88, 0.08), transparent 70%),
-    radial-gradient(ellipse 70% 50% at 90% 40%, rgba(184, 134, 11, 0.05), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 10% 80%, rgba(56, 189, 248, 0.03), transparent 50%);
+    radial-gradient(ellipse 80% 50% at 50% -15%, rgba(0, 163, 98, 0.08), transparent 70%),
+    radial-gradient(ellipse 70% 50% at 90% 40%, rgba(212, 175, 55, 0.06), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 10% 80%, rgba(0, 96, 57, 0.05), transparent 50%);
 }
 
 * {
@@ -95,34 +111,47 @@ body {
   font-feature-settings: "tnum";
 }
 
-/* Gold Gradient Text */
+/* Rolex Crown Gold Gradient Text */
 .gold-gradient-text {
-  background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 50%, #B8860B 100%);
+  background: linear-gradient(135deg, #DFBA73 0%, #C5A059 50%, #997524 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .dark .gold-gradient-text {
-  background: linear-gradient(135deg, #FFF5D1 0%, #E5C158 50%, #C89622 100%);
+  background: linear-gradient(135deg, #FFF0B8 0%, #E5C158 50%, #B8860B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Rolex Green Gradient Text */
+.rolex-gradient-text {
+  background: linear-gradient(135deg, #007345 0%, #006039 50%, #00482B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .rolex-gradient-text {
+  background: linear-gradient(135deg, #4ADE80 0%, #00A362 50%, #00824E 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 /* Luxury Glassmorphic Surfaces */
 .lux-glass {
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-subtle);
-  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 24px -2px rgba(0, 96, 57, 0.04);
 }
 
 .dark .lux-glass {
-  background: rgba(14, 20, 32, 0.88);
+  background: rgba(11, 28, 21, 0.90);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(229, 193, 88, 0.15);
-  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(0, 96, 57, 0.3);
+  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.7);
 }
 
 .lux-card {
@@ -133,55 +162,55 @@ body {
 }
 
 .dark .lux-card {
-  background: #0E1420;
-  border: 1px solid rgba(229, 193, 88, 0.12);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+  background: #0B1C15;
+  border: 1px solid rgba(0, 96, 57, 0.25);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
 }
 
 .lux-card:hover {
-  border-color: rgba(212, 175, 55, 0.55);
+  border-color: rgba(0, 96, 57, 0.6);
   transform: translateY(-4px);
-  box-shadow: 0 16px 36px -8px rgba(212, 175, 55, 0.15);
+  box-shadow: 0 16px 36px -8px rgba(0, 96, 57, 0.15), 0 0 0 1px rgba(0, 96, 57, 0.1);
 }
 
 .dark .lux-card:hover {
-  border-color: rgba(229, 193, 88, 0.45);
+  border-color: rgba(0, 163, 98, 0.5);
   transform: translateY(-4px);
-  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.7), 0 0 20px rgba(229, 193, 88, 0.1);
+  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.8), 0 0 24px rgba(0, 163, 98, 0.15);
 }
 
-/* Luxury Gold & Obsidian Buttons */
+/* Rolex Green & Gold Buttons */
 .lux-btn-primary {
-  background: linear-gradient(135deg, #1C2434 0%, #0E1420 100%);
-  color: #F8FAFC;
-  border: 1px solid rgba(212, 175, 55, 0.4);
+  background: linear-gradient(135deg, #006039 0%, #00482B 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(197, 160, 89, 0.4);
   font-weight: 700;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   letter-spacing: 0.06em;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 96, 57, 0.25);
   position: relative;
   overflow: hidden;
 }
 
 .lux-btn-primary:hover {
-  background: linear-gradient(135deg, #D4AF37 0%, #AA7A1E 100%);
-  color: #080B10;
-  border-color: #F3E5AB;
+  background: linear-gradient(135deg, #007A48 0%, #006039 100%);
+  color: #FFFFFF;
+  border-color: #C5A059;
   transform: translateY(-1.5px);
-  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.35);
+  box-shadow: 0 8px 24px rgba(0, 96, 57, 0.4);
 }
 
 .dark .lux-btn-primary {
-  background: linear-gradient(135deg, #E5C158 0%, #B8860B 100%);
-  color: #080B10;
-  border: 1px solid #FFF5D1;
-  box-shadow: 0 4px 20px rgba(229, 193, 88, 0.25);
+  background: linear-gradient(135deg, #00A362 0%, #006039 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 96, 57, 0.35);
 }
 
 .dark .lux-btn-primary:hover {
-  background: linear-gradient(135deg, #FFF0B8 0%, #E5C158 100%);
-  color: #080B10;
-  box-shadow: 0 8px 30px rgba(229, 193, 88, 0.45);
+  background: linear-gradient(135deg, #00C274 0%, #00824E 100%);
+  color: #FFFFFF;
+  box-shadow: 0 8px 30px rgba(0, 163, 98, 0.5);
 }
 
 .lux-btn-primary:active {
@@ -189,18 +218,18 @@ body {
 }
 
 .lux-btn-gold {
-  background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 50%, #B8860B 100%);
-  color: #080B10;
+  background: linear-gradient(135deg, #DFBA73 0%, #C5A059 50%, #997524 100%);
+  color: #06110D;
   font-weight: 800;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 4px 18px rgba(212, 175, 55, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 18px rgba(197, 160, 89, 0.35);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lux-btn-gold:hover {
   transform: translateY(-1.5px);
-  box-shadow: 0 8px 28px rgba(212, 175, 55, 0.5);
-  filter: brightness(1.05);
+  box-shadow: 0 8px 28px rgba(197, 160, 89, 0.55);
+  filter: brightness(1.06);
 }
 
 .lux-btn-secondary {
@@ -212,26 +241,30 @@ body {
 }
 
 .dark .lux-btn-secondary {
-  background: #141D2E;
+  background: #11261D;
   color: #F8FAFC;
-  border-color: rgba(229, 193, 88, 0.2);
+  border-color: rgba(0, 96, 57, 0.35);
 }
 
 .lux-btn-secondary:hover {
-  background: #F5EFE6;
-  border-color: #D4AF37;
-  color: #121826;
+  background: #E8F5EE;
+  border-color: #006039;
+  color: #006039;
 }
 
 .dark .lux-btn-secondary:hover {
-  background: #1C273C;
-  border-color: rgba(229, 193, 88, 0.5);
-  color: #FFF5D1;
+  background: #19362A;
+  border-color: #00A362;
+  color: #4ADE80;
 }
 
 /* Luxury Border Glow */
 .gold-glow {
   box-shadow: 0 0 25px var(--gold-glow);
+}
+
+.rolex-glow {
+  box-shadow: 0 0 25px rgba(0, 96, 57, 0.25);
 }
 
 /* Luxury Scrollbar */
@@ -250,7 +283,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #D4AF37;
+  background: #006039;
 }
 
 button,

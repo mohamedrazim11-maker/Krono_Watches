@@ -33,20 +33,20 @@ export default function WishlistDrawer({
       />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-white dark:bg-[#0E1420] shadow-2xl flex flex-col justify-between border-l border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] animate-pageEnter">
-          <div className="p-4 sm:p-5 border-b border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] flex items-center justify-between bg-[#FAF8F5] dark:bg-[#080B10]">
+        <div className="w-screen max-w-md bg-white dark:bg-[#0B1C15] shadow-2xl flex flex-col justify-between border-l border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] animate-pageEnter">
+          <div className="p-4 sm:p-5 border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] flex items-center justify-between bg-[#F8FAF9] dark:bg-[#06110D]">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#D4AF37] dark:text-[#E5C158] font-bold bg-[#FAF8F5] dark:bg-[#141D2E] px-2.5 py-0.5 rounded-full border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)]">
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#006039] dark:text-[#4ADE80] font-bold bg-[#E8F5EE] dark:bg-[#11261D] px-2.5 py-0.5 rounded-full border border-[#006039]/30">
                 Curated Wishlist
               </span>
-              <span className="text-xs font-mono font-bold text-[#121826] dark:text-[#F8FAFC]">
+              <span className="text-xs font-mono font-bold text-[#0F172A] dark:text-[#F8FAFC]">
                 ({wishlist.length} Saved)
               </span>
             </div>
 
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg border border-[#E8E2D6] dark:border-[#1E293B] text-[#8C7B65] hover:text-[#121826] dark:hover:text-white transition cursor-pointer font-bold text-xs"
+              className="p-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#1F4535] text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white transition cursor-pointer font-bold text-xs"
             >
               ✕
             </button>
@@ -55,19 +55,19 @@ export default function WishlistDrawer({
           <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3">
             {wishlist.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-4">
-                <div className="text-5xl text-[#D5CBBA] dark:text-[#1E293B]">♡</div>
+                <div className="text-5xl text-[#CBD5E1] dark:text-[#1F4535]">♡</div>
                 <div className="space-y-1">
-                  <h3 className="text-sm font-bold text-[#121826] dark:text-[#F8FAFC] uppercase tracking-wider font-display">
+                  <h3 className="text-sm font-bold text-[#0F172A] dark:text-[#F8FAFC] uppercase tracking-wider font-display">
                     No Saved Timepieces
                   </h3>
-                  <p className="text-xs text-[#8C7B65] dark:text-[#CBD5E1] max-w-xs">
+                  <p className="text-xs text-[#5A6D64] dark:text-[#CBD5E1] max-w-xs">
                     Bookmark your desired Swiss calibres to build your personal horology registry.
                   </p>
                 </div>
                 <Link
                   href="/catalog"
                   onClick={onClose}
-                  className="lux-btn-gold px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider"
+                  className="lux-btn-primary px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider"
                 >
                   Browse Catalogue
                 </Link>
@@ -76,9 +76,9 @@ export default function WishlistDrawer({
               wishlist.map((product) => (
                 <div
                   key={product.id}
-                  className="rounded-2xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.14)] p-3.5 flex gap-3 items-center justify-between bg-[#FAF8F5]/80 dark:bg-[#080B10]/80 hover:border-[#D4AF37] transition shadow-sm"
+                  className="rounded-2xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.25)] p-3.5 flex gap-3 items-center justify-between bg-[#F8FAF9]/90 dark:bg-[#06110D]/90 hover:border-[#006039] transition shadow-sm"
                 >
-                  <div className="h-14 w-14 rounded-xl bg-white dark:bg-[#0E1420] overflow-hidden p-1 flex-shrink-0 flex items-center justify-center border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] shadow-sm">
+                  <div className="h-14 w-14 rounded-xl bg-white dark:bg-[#0B1C15] overflow-hidden p-1 flex-shrink-0 flex items-center justify-center border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] shadow-sm">
                     <SmoothImage
                       src={product.image_url}
                       alt={product.name}
@@ -90,14 +90,14 @@ export default function WishlistDrawer({
                     <Link
                       href={`/products/${product.id}`}
                       onClick={onClose}
-                      className="text-xs font-bold text-[#121826] dark:text-[#F8FAFC] hover:text-[#D4AF37] dark:hover:text-[#E5C158] truncate block font-display"
+                      className="text-xs font-bold text-[#0F172A] dark:text-[#F8FAFC] hover:text-[#006039] dark:hover:text-[#4ADE80] truncate block font-display"
                     >
                       {product.name}
                     </Link>
-                    <div className="text-[10px] text-[#D4AF37] font-mono uppercase font-semibold">
+                    <div className="text-[10px] text-[#006039] dark:text-[#4ADE80] font-mono uppercase font-semibold">
                       {product.category}
                     </div>
-                    <div className="text-xs font-bold text-[#121826] dark:text-[#F3E5AB] font-num pt-0.5">
+                    <div className="text-xs font-bold text-[#006039] dark:text-[#4ADE80] font-num pt-0.5">
                       {formatCurrency(product.price)}
                     </div>
                   </div>
@@ -105,14 +105,14 @@ export default function WishlistDrawer({
                   <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
                     <button
                       onClick={() => onRemoveFromWishlist(product.id)}
-                      className="text-[10px] text-[#8C7B65] hover:text-[#F43F5E] transition font-mono"
+                      className="text-[10px] text-[#5A6D64] hover:text-[#E11D48] transition font-mono"
                     >
                       Remove
                     </button>
 
                     <button
                       onClick={() => onMoveToCart(product)}
-                      className="px-3 py-1 rounded-lg lux-btn-gold text-[10px] font-bold uppercase tracking-wider cursor-pointer shadow-sm"
+                      className="px-3 py-1 rounded-lg lux-btn-primary text-[10px] font-bold uppercase tracking-wider cursor-pointer shadow-sm"
                     >
                       + Move to Cart
                     </button>
@@ -123,13 +123,14 @@ export default function WishlistDrawer({
           </div>
 
           {wishlist.length > 0 && (
-            <div className="p-4 border-t border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] bg-[#FAF8F5] dark:bg-[#080B10]">
+            <div className="p-4 border-t border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] bg-[#F8FAF9] dark:bg-[#06110D]">
               <Link
                 href="/catalog"
                 onClick={onClose}
                 className="w-full py-3 rounded-xl lux-btn-secondary text-xs font-bold flex items-center justify-center gap-2 uppercase tracking-wider shadow-sm"
               >
-                Continue Exploring Catalogue →
+                <span>Continue Shopping</span>
+                <span>→</span>
               </Link>
             </div>
           )}
