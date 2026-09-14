@@ -26,6 +26,8 @@ const PRESTIGE_BRANDS = [
   "TAG Heuer"
 ];
 
+const COLLECTIONS = ["All", "Luxury", "Automatic", "Sport", "Smart"];
+
 export default function CatalogPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -187,170 +189,134 @@ export default function CatalogPage() {
         showSearch={true}
       />
 
-      <main className="flex-1 mx-auto max-w-7xl w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6">
-        {/* Editorial Vault Header */}
-        <div className="rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] p-6 sm:p-8 bg-gradient-to-br from-white via-[#F8FAF9] to-[#F1F5F3] dark:from-[#0B1C15] dark:via-[#06110D] dark:to-[#030806] shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="space-y-2 min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#006039] dark:text-[#4ADE80] font-bold bg-[#E8F5EE] dark:bg-[#11261D] px-3.5 py-1 rounded-full border border-[#006039]/30 shadow-sm">
-                Official Timepiece Registry
-              </span>
-              {selectedBrand !== "All" && (
-                <span className="text-[10px] font-mono uppercase tracking-wider text-[#006039] dark:text-[#4ADE80] font-bold bg-[#E8F5EE] dark:bg-[#11261D] border border-[#006039]/40 px-3 py-0.5 rounded-full flex items-center gap-1.5">
-                  <span>Manufacture:</span>
-                  <strong>{selectedBrand}</strong>
-                  <button onClick={() => setSelectedBrand("All")} className="hover:text-red-500 ml-1 font-bold">×</button>
+      <main className="flex-1 mx-auto max-w-7xl w-full px-4 sm:px-6 py-6 sm:py-8 space-y-5">
+        {/* Optimized Header & Quick Filter Showcase */}
+        <div className="rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] p-6 sm:p-8 bg-gradient-to-br from-white via-[#F8FAF9] to-[#F1F5F3] dark:from-[#0B1C15] dark:via-[#06110D] dark:to-[#030806] shadow-sm space-y-5">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#006039] dark:text-[#4ADE80] font-bold bg-[#E8F5EE] dark:bg-[#11261D] px-3.5 py-1 rounded-full border border-[#006039]/30">
+                  Official Horological Vault
                 </span>
+                <span className="text-xs font-mono text-[#5A6D64] dark:text-[#8EAA9C]">
+                  • {filteredProducts.length} References Available
+                </span>
+              </div>
+              <h1 className="text-2xl sm:text-4xl font-black font-display text-[#0F172A] dark:text-[#F8FAFC] uppercase tracking-tight">
+                Vault <span className="rolex-gradient-text">Catalogue</span>
+              </h1>
+            </div>
+
+            {/* Quick Actions & Reset */}
+            <div className="flex items-center gap-2.5">
+              <button
+                onClick={() => setIsMobileFilterOpen(true)}
+                className="lg:hidden lux-btn-secondary px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2"
+              >
+                <span>⚙ Filters</span>
+                {activeFiltersCount > 0 && (
+                  <span className="bg-[#006039] text-white font-bold px-1.5 py-0.2 rounded-full text-[10px] font-mono">
+                    {activeFiltersCount}
+                  </span>
+                )}
+              </button>
+              {activeFiltersCount > 0 && (
+                <button
+                  onClick={resetFilters}
+                  className="px-3.5 py-2 rounded-xl border border-[#E2E8F0] dark:border-[#1F4535] bg-white dark:bg-[#0B1C15] text-[#5A6D64] hover:text-[#006039] text-xs font-mono font-bold transition shadow-sm"
+                >
+                  Reset ({activeFiltersCount})
+                </button>
               )}
             </div>
-            <h1 className="text-2xl sm:text-4xl font-black font-display text-[#0F172A] dark:text-[#F8FAFC] tracking-tight uppercase">
-              Vault <span className="rolex-gradient-text">Catalogue</span>
-            </h1>
-            <p className="text-xs sm:text-sm text-[#475569] dark:text-[#CBD5E1] max-w-xl font-sans">
-              Explore authentic calibres from the world&apos;s leading manufactures: Rolex, Omega, Patek Philippe, Audemars Piguet, and TAG Heuer.
-            </p>
           </div>
 
-          <div className="flex items-center gap-2.5 w-full sm:w-auto justify-between sm:justify-end flex-shrink-0">
-            <button
-              onClick={() => setIsMobileFilterOpen(true)}
-              className="lg:hidden lux-btn-secondary px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 flex-1 sm:flex-initial justify-center shadow-sm"
-            >
-              <span>⚙ Filters</span>
-              {activeFiltersCount > 0 && (
-                <span className="bg-[#006039] text-white font-bold px-1.5 py-0.2 rounded-full text-[10px] font-mono">
-                  {activeFiltersCount}
-                </span>
-              )}
-            </button>
-            <button
-              onClick={resetFilters}
-              className="px-4 py-2.5 rounded-xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] bg-white dark:bg-[#0B1C15] text-[#475569] dark:text-[#CBD5E1] hover:text-[#006039] text-xs font-mono transition shadow-sm"
-            >
-              Reset All
-            </button>
+          {/* Optimized Manufacture Bar */}
+          <div className="space-y-2 pt-2 border-t border-[#E5ECE8] dark:border-[#122B20]">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono uppercase font-bold text-[#006039] dark:text-[#4ADE80] tracking-wider flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#006039] dark:bg-[#4ADE80] animate-ping"></span>
+                Select Manufacture:
+              </span>
+              <div className="hidden sm:flex items-center gap-1 text-[10px] font-mono text-[#5A6D64] dark:text-[#8EAA9C]">
+                {selectedBrand !== "All" ? `Filtered: ${selectedBrand}` : "Showing All 5 Swiss Houses"}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+              {PRESTIGE_BRANDS.map((brand) => {
+                const brandCount = brand === "All"
+                  ? products.length
+                  : products.filter((p) => p.brand?.toLowerCase() === brand.toLowerCase()).length;
+                const isSelected = selectedBrand === brand;
+
+                return (
+                  <button
+                    key={brand}
+                    onClick={() => setSelectedBrand(brand)}
+                    className={`px-4 py-2 rounded-xl text-xs font-mono whitespace-nowrap transition-all flex items-center gap-2 border flex-shrink-0 cursor-pointer ${
+                      isSelected
+                        ? "bg-[#006039] dark:bg-[#00824E] text-white font-bold border-[#006039] shadow-md shadow-[#006039]/25 scale-[1.03]"
+                        : "bg-white dark:bg-[#11261D] text-[#475569] dark:text-[#CBD5E1] border-[#E2E8F0] dark:border-[#1F4535] hover:border-[#006039] hover:text-[#006039] shadow-sm"
+                    }`}
+                  >
+                    <span>{brand === "All" ? "All Manufactures" : brand}</span>
+                    {brandCount > 0 && (
+                      <span
+                        className={`text-[9px] px-1.5 py-0.5 rounded-md font-mono font-bold ${
+                          isSelected
+                            ? "bg-black/25 text-white"
+                            : "bg-[#E5ECE8] dark:bg-[#06110D] text-[#5A6D64] dark:text-[#8EAA9C]"
+                        }`}
+                      >
+                        {brandCount}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
 
-        {/* 5 Real Luxury Brands Quick Selector Bar */}
-        <div className="rounded-2xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] p-3 bg-white dark:bg-[#0B1C15] shadow-sm flex items-center gap-2.5 overflow-x-auto no-scrollbar">
-          <span className="text-[10px] font-mono uppercase font-bold text-[#006039] dark:text-[#4ADE80] whitespace-nowrap pl-1 pr-1.5 tracking-wider flex items-center gap-1.5 flex-shrink-0">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#006039] dark:bg-[#4ADE80] animate-ping"></span>
-            Manufacture:
-          </span>
-          <div className="flex items-center gap-2 flex-nowrap sm:flex-wrap">
-            {PRESTIGE_BRANDS.map((brand) => {
-              const brandCount = brand === "All"
-                ? products.length
-                : products.filter((p) => p.brand?.toLowerCase() === brand.toLowerCase()).length;
-              const isSelected = selectedBrand === brand;
-
+          {/* Collection Pills Bar */}
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1">
+            <span className="text-[10px] font-mono uppercase font-bold text-[#5A6D64] dark:text-[#8EAA9C] pr-1 flex-shrink-0">
+              Collection:
+            </span>
+            {COLLECTIONS.map((cat) => {
+              const isSelected = selectedCategory === cat;
               return (
                 <button
-                  key={brand}
-                  onClick={() => setSelectedBrand(brand)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-mono whitespace-nowrap transition-all flex items-center gap-1.5 border flex-shrink-0 cursor-pointer ${
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3 py-1 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition cursor-pointer ${
                     isSelected
-                      ? "bg-[#006039] dark:bg-[#00824E] text-white font-bold border-transparent shadow-md scale-105"
-                      : "bg-[#F8FAF9] dark:bg-[#11261D] text-[#475569] dark:text-[#CBD5E1] border-[#E2E8F0] dark:border-[#1F4535] hover:border-[#006039] hover:text-[#006039] dark:hover:text-white"
+                      ? "bg-[#006039] text-white shadow-sm"
+                      : "bg-[#F8FAF9] dark:bg-[#11261D] text-[#5A6D64] dark:text-[#CBD5E1] hover:text-[#006039] border border-[#E2E8F0] dark:border-[#1F4535]"
                   }`}
                 >
-                  <span>{brand === "All" ? "All Brands (5)" : brand}</span>
-                  {brandCount > 0 && (
-                    <span
-                      className={`text-[9px] px-1.5 py-0.2 rounded-md font-mono ${
-                        isSelected
-                          ? "bg-black/20 text-white"
-                          : "bg-[#E5ECE8] dark:bg-[#06110D] text-[#5A6D64] dark:text-[#8EAA9C]"
-                      }`}
-                    >
-                      {brandCount}
-                    </span>
-                  )}
+                  {cat === "All" ? "All Series" : cat}
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Layout Grid (Desktop Sidebar + Main Content) */}
+        {/* Layout Grid (Desktop Sidebar + Main Feed) */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
           {/* Desktop Sidebar */}
-          <aside className="hidden lg:block space-y-4 rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] p-5 bg-white dark:bg-[#0B1C15] shadow-md sticky top-28">
+          <aside className="hidden lg:block space-y-4 rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] p-5 bg-white dark:bg-[#0B1C15] shadow-sm sticky top-28">
             <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.25)] pb-3">
               <h3 className="text-xs font-bold uppercase tracking-widest text-[#0F172A] dark:text-[#F8FAFC] font-mono flex items-center gap-1.5">
-                <span className="text-[#006039] dark:text-[#4ADE80]">✦</span> Filter Parameters
+                <span className="text-[#006039] dark:text-[#4ADE80]">✦</span> Detailed Filter
               </h3>
               <button onClick={resetFilters} className="text-[10px] text-[#5A6D64] hover:text-[#006039] font-mono font-bold">
                 Clear
               </button>
             </div>
 
-            {/* 5 Real Brands Selection */}
+            {/* Price Range Slider */}
             <div className="space-y-2">
-              <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
-                Manufacture
-              </label>
-              <div className="space-y-1">
-                {PRESTIGE_BRANDS.map((brand) => {
-                  const count = brand === "All"
-                    ? products.length
-                    : products.filter((p) => p.brand?.toLowerCase() === brand.toLowerCase()).length;
-                  const isSelected = selectedBrand === brand;
-
-                  return (
-                    <button
-                      key={brand}
-                      onClick={() => setSelectedBrand(brand)}
-                      className={`w-full text-left px-3 py-2 rounded-xl text-xs font-mono transition flex items-center justify-between border cursor-pointer ${
-                        isSelected
-                          ? "bg-[#006039] dark:bg-[#00824E] text-white font-bold border-transparent shadow-sm"
-                          : "border-transparent text-[#475569] dark:text-[#CBD5E1] hover:bg-[#F8FAF9] dark:hover:bg-[#11261D] hover:text-[#006039] dark:hover:text-white"
-                      }`}
-                    >
-                      <span className="truncate pr-1">{brand === "All" ? "All 5 Brands" : brand}</span>
-                      {count > 0 && (
-                        <span
-                          className={`text-[9px] px-1.5 py-0.5 rounded font-mono ${
-                            isSelected
-                              ? "bg-black/20 text-white"
-                              : "bg-[#F8FAF9] dark:bg-[#11261D] text-[#5A6D64] dark:text-[#8EAA9C]"
-                          }`}
-                        >
-                          {count}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Metier Category */}
-            <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-3.5">
-              <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
-                Collection
-              </label>
-              <div className="space-y-1">
-                {["All", "Luxury", "Automatic", "Sport", "Smart"].map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-mono transition flex items-center justify-between cursor-pointer ${
-                      selectedCategory === cat
-                        ? "bg-[#006039] dark:bg-[#00824E] text-white font-bold shadow-sm"
-                        : "text-[#475569] dark:text-[#CBD5E1] hover:bg-[#F8FAF9] dark:hover:bg-[#11261D] hover:text-[#006039] dark:hover:text-white"
-                    }`}
-                  >
-                    <span>{cat === "All" ? "All Series" : cat}</span>
-                    {selectedCategory === cat && <span>✓</span>}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Price Range */}
-            <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-3.5">
               <div className="flex justify-between text-[10px] font-mono font-bold">
                 <span className="text-[#5A6D64] uppercase tracking-widest">Max Valuation</span>
                 <span className="text-[#006039] dark:text-[#4ADE80] font-num">{formatCurrency(maxPriceRange)}</span>
@@ -366,7 +332,7 @@ export default function CatalogPage() {
               />
             </div>
 
-            {/* Movement */}
+            {/* Movement Escapement */}
             <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-3.5">
               <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
                 Calibre Escapement
@@ -402,7 +368,7 @@ export default function CatalogPage() {
               </select>
             </div>
 
-            {/* In Stock */}
+            {/* In Stock Toggle */}
             <div className="flex items-center justify-between border-t border-[#E5ECE8] dark:border-[#122B20] pt-3.5">
               <span className="text-xs text-[#475569] dark:text-[#CBD5E1] font-mono font-semibold">In Stock Only</span>
               <input
@@ -661,7 +627,7 @@ export default function CatalogPage() {
                     Collection
                   </label>
                   <div className="grid grid-cols-2 gap-1.5">
-                    {["All", "Luxury", "Automatic", "Sport", "Smart"].map((cat) => (
+                    {COLLECTIONS.map((cat) => (
                       <button
                         key={cat}
                         onClick={() => setSelectedCategory(cat)}

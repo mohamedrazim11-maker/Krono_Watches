@@ -21,14 +21,20 @@ export default function CartPage() {
     updateQuantity,
     removeFromCart,
     clearCart,
+    toggleWishlist,
+    isInWishlist,
     applyCoupon,
     isCheckoutOpen,
     setIsCheckoutOpen,
     toastMessage,
+    showToast,
   } = useCart();
 
   const [couponInput, setCouponInput] = useState("");
   const [couponError, setCouponError] = useState("");
+  const [wristSize, setWristSize] = useState("Standard Factory (19cm)");
+  const [giftBox, setGiftBox] = useState(true);
+  const [specialNote, setSpecialNote] = useState("");
 
   const formatCurrency = (amount: number) => {
     return `LKR ${Number(amount || 0).toLocaleString("en-US")}`;
@@ -40,10 +46,19 @@ export default function CartPage() {
     if (!couponInput.trim()) return;
     const success = applyCoupon(couponInput.trim());
     if (!success) {
-      setCouponError("Invalid privilege voucher code. Try MONO20 or ROYAL20");
+      setCouponError("Invalid voucher code. Try MONO20 or ROYAL20");
     } else {
       setCouponInput("");
+      showToast(`Privilege code applied!`);
     }
+  };
+
+  const handleMoveToWishlist = (product: any) => {
+    if (!isInWishlist(product.id)) {
+      toggleWishlist(product);
+    }
+    removeFromCart(product.id);
+    showToast(`Moved ${product.name} to Wishlist.`);
   };
 
   return (
@@ -58,14 +73,14 @@ export default function CartPage() {
         </div>
       )}
 
-      <main className="flex-1 mx-auto max-w-6xl w-full px-4 sm:px-6 py-8 sm:py-12 space-y-8">
+      <main className="flex-1 mx-auto max-w-7xl w-full px-4 sm:px-6 py-8 sm:py-12 space-y-8 sm:space-y-12">
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] pb-5">
-          <div>
-            <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.25em] text-[#006039] dark:text-[#4ADE80] font-bold mb-1">
-              <Link href="/" className="hover:underline">Home</Link>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.25em] text-[#006039] dark:text-[#4ADE80] font-bold">
+              <Link href="/" className="hover:underline">Boutique</Link>
               <span>/</span>
-              <span className="text-[#0F172A] dark:text-[#F8FAFC]">Vault Portfolio</span>
+              <span className="text-[#0F172A] dark:text-[#F8FAFC]">Horological Portfolio</span>
             </div>
             <h1 className="text-2xl sm:text-4xl font-black font-display text-[#0F172A] dark:text-[#F8FAFC] uppercase tracking-tight">
               Vault <span className="rolex-gradient-text">Portfolio</span>
@@ -74,7 +89,7 @@ export default function CartPage() {
 
           {cart.length > 0 && (
             <div className="flex items-center gap-3">
-              <span className="text-xs font-mono text-[#5A6D64] dark:text-[#8EAA9C] font-semibold">
+              <span className="text-xs font-mono text-[#5A6D64] dark:text-[#8EAA9C] font-semibold bg-[#E8F5EE] dark:bg-[#11261D] px-3 py-1 rounded-full border border-[#006039]/20">
                 {totalItems} {totalItems === 1 ? "Piece" : "Pieces"} Allocated
               </span>
               <button
@@ -114,97 +129,187 @@ export default function CartPage() {
         ) : (
           /* Active Cart Grid */
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Cart Items List */}
-            <div className="lg:col-span-8 space-y-4">
-              <div className="rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] bg-white dark:bg-[#0B1C15] divide-y divide-[#E5ECE8] dark:divide-[#122B20] overflow-hidden shadow-sm">
-                {cart.map((item) => {
-                  const lineTotal = item.product.price * item.quantity;
-                  return (
-                    <div
-                      key={item.product.id}
-                      className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:bg-[#F8FAF9] dark:hover:bg-[#11261D]/50 transition"
-                    >
-                      {/* Product Image */}
-                      <Link
-                        href={`/products/${item.product.id}`}
-                        className="h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.25)] p-1.5 flex-shrink-0 flex items-center justify-center overflow-hidden group shadow-inner"
+            {/* Left Column: Cart Items & Bespoke Options */}
+            <div className="lg:col-span-8 space-y-6">
+              {/* Product Items Table / List */}
+              <div className="rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] bg-white dark:bg-[#0B1C15] overflow-hidden shadow-sm">
+                <div className="hidden sm:grid grid-cols-12 gap-4 px-6 py-3.5 bg-[#F8FAF9] dark:bg-[#06110D] border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.25)] text-[10px] font-mono uppercase font-bold text-[#5A6D64] dark:text-[#8EAA9C] tracking-wider">
+                  <div className="col-span-6">Timepiece & Calibre</div>
+                  <div className="col-span-2 text-center">Unit Price</div>
+                  <div className="col-span-2 text-center">Quantity</div>
+                  <div className="col-span-2 text-right">Subtotal</div>
+                </div>
+
+                <div className="divide-y divide-[#E5ECE8] dark:divide-[#122B20]">
+                  {cart.map((item) => {
+                    const lineTotal = item.product.price * item.quantity;
+                    return (
+                      <div
+                        key={item.product.id}
+                        className="p-5 sm:p-6 sm:grid sm:grid-cols-12 gap-4 items-center hover:bg-[#F8FAF9]/80 dark:hover:bg-[#11261D]/50 transition"
                       >
-                        <SmoothImage
-                          src={item.product.image_url}
-                          alt={item.product.name}
-                          objectFit="contain"
-                          className="group-hover:scale-105 transition-transform"
-                          containerClassName="w-full h-full"
-                        />
-                      </Link>
-
-                      {/* Title & Details */}
-                      <div className="flex-1 min-w-0 space-y-1">
-                        <div className="flex items-center gap-2 text-[10px] font-mono uppercase text-[#006039] dark:text-[#4ADE80] font-bold">
-                          <span>{item.product.brand || "Krono"}</span>
-                          <span>•</span>
-                          <span>{item.product.category}</span>
-                        </div>
-
-                        <Link
-                          href={`/products/${item.product.id}`}
-                          className="text-sm sm:text-base font-bold text-[#0F172A] dark:text-[#F8FAFC] hover:text-[#006039] transition font-display truncate block"
-                        >
-                          {item.product.name}
-                        </Link>
-
-                        <div className="text-xs font-semibold text-[#475569] dark:text-[#CBD5E1] font-num">
-                          {formatCurrency(item.product.price)} <span className="text-[10px] text-[#5A6D64] font-mono font-normal">/ unit</span>
-                        </div>
-                      </div>
-
-                      {/* Quantity Controls */}
-                      <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#E5ECE8] dark:border-[#122B20]">
-                        <div className="flex items-center gap-2 bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-2.5 py-1 text-xs shadow-inner">
-                          <button
-                            onClick={() => updateQuantity(item.product.id, -1)}
-                            className="text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white px-1.5 py-0.5 font-bold cursor-pointer transition text-sm"
-                            title="Decrease quantity"
+                        {/* Timepiece Info */}
+                        <div className="col-span-6 flex items-center gap-4">
+                          <Link
+                            href={`/products/${item.product.id}`}
+                            className="h-20 w-20 rounded-2xl bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.25)] p-1.5 flex-shrink-0 flex items-center justify-center overflow-hidden group shadow-inner"
                           >
-                            −
-                          </button>
-                          <span className="font-mono font-bold text-[#0F172A] dark:text-[#F8FAFC] min-w-[20px] text-center text-xs">
-                            {item.quantity}
-                          </span>
-                          <button
-                            onClick={() => updateQuantity(item.product.id, 1)}
-                            className="text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white px-1.5 py-0.5 font-bold cursor-pointer transition text-sm"
-                            title="Increase quantity"
-                          >
-                            +
-                          </button>
-                        </div>
+                            <SmoothImage
+                              src={item.product.image_url}
+                              alt={item.product.name}
+                              objectFit="contain"
+                              className="group-hover:scale-105 transition-transform"
+                              containerClassName="w-full h-full"
+                            />
+                          </Link>
 
-                        {/* Line Total */}
-                        <div className="text-right min-w-[110px]">
-                          <div className="text-sm font-black text-[#006039] dark:text-[#4ADE80] font-num">
-                            {formatCurrency(lineTotal)}
+                          <div className="min-w-0 space-y-1">
+                            <div className="flex items-center gap-2 text-[9px] font-mono uppercase text-[#006039] dark:text-[#4ADE80] font-bold tracking-wider">
+                              <span>{item.product.brand || "Swiss Manufacture"}</span>
+                              <span>•</span>
+                              <span>{item.product.category}</span>
+                            </div>
+
+                            <Link
+                              href={`/products/${item.product.id}`}
+                              className="text-sm font-bold text-[#0F172A] dark:text-[#F8FAFC] hover:text-[#006039] transition font-display line-clamp-1 block"
+                            >
+                              {item.product.name}
+                            </Link>
+
+                            <div className="flex items-center gap-3 text-[10px] text-[#5A6D64] dark:text-[#8EAA9C] font-mono">
+                              <span>{item.product.movement || "Swiss Calibre"}</span>
+                              {item.product.case_size && <span>• {item.product.case_size}</span>}
+                            </div>
+
+                            <div className="flex items-center gap-3 pt-1 text-[11px] font-mono">
+                              <button
+                                onClick={() => handleMoveToWishlist(item.product)}
+                                className="text-[#5A6D64] hover:text-[#006039] underline font-semibold cursor-pointer"
+                              >
+                                Save to Wishlist
+                              </button>
+                              <span>•</span>
+                              <button
+                                onClick={() => removeFromCart(item.product.id)}
+                                className="text-[#E11D48] hover:underline font-bold cursor-pointer"
+                              >
+                                Remove
+                              </button>
+                            </div>
                           </div>
-                          <button
-                            onClick={() => removeFromCart(item.product.id)}
-                            className="text-[10px] text-[#E11D48] hover:underline transition font-mono font-bold uppercase tracking-wider cursor-pointer"
-                          >
-                            Remove
-                          </button>
+                        </div>
+
+                        {/* Unit Price */}
+                        <div className="hidden sm:block col-span-2 text-center text-xs font-bold text-[#475569] dark:text-[#CBD5E1] font-num">
+                          {formatCurrency(item.product.price)}
+                        </div>
+
+                        {/* Quantity Stepper */}
+                        <div className="col-span-2 flex justify-center py-2 sm:py-0">
+                          <div className="flex items-center gap-2 bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-2.5 py-1 text-xs shadow-inner">
+                            <button
+                              onClick={() => updateQuantity(item.product.id, -1)}
+                              className="text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white px-1.5 py-0.5 font-bold cursor-pointer transition"
+                              title="Decrease"
+                            >
+                              −
+                            </button>
+                            <span className="font-mono font-bold text-[#0F172A] dark:text-[#F8FAFC] min-w-[20px] text-center text-xs">
+                              {item.quantity}
+                            </span>
+                            <button
+                              onClick={() => updateQuantity(item.product.id, 1)}
+                              className="text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white px-1.5 py-0.5 font-bold cursor-pointer transition"
+                              title="Increase"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Subtotal */}
+                        <div className="col-span-2 text-right pt-2 sm:pt-0 flex items-center justify-between sm:justify-end">
+                          <span className="sm:hidden text-xs text-[#5A6D64]">Subtotal:</span>
+                          <span className="text-sm font-black text-[#006039] dark:text-[#4ADE80] font-num">
+                            {formatCurrency(lineTotal)}
+                          </span>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
 
-              {/* Navigation CTA */}
-              <div className="flex items-center justify-between pt-2">
+              {/* Bespoke Concierge Sizing & Packaging Box */}
+              <div className="rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] bg-white dark:bg-[#0B1C15] p-6 space-y-4 shadow-sm">
+                <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.25)] pb-3">
+                  <h3 className="text-xs font-bold font-mono uppercase tracking-widest text-[#0F172A] dark:text-[#F8FAFC] flex items-center gap-2">
+                    <span className="text-[#006039] dark:text-[#4ADE80]">✦</span>
+                    <span>Complimentary Concierge Adjustments</span>
+                  </h3>
+                  <span className="text-[10px] font-mono uppercase font-bold text-[#006039] dark:text-[#4ADE80]">
+                    Atelier Included
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <label className="block text-[10px] uppercase font-mono font-bold text-[#5A6D64] dark:text-[#8EAA9C] mb-1.5">
+                      Bracelet Circumference Sizing
+                    </label>
+                    <select
+                      value={wristSize}
+                      onChange={(e) => setWristSize(e.target.value)}
+                      className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-3.5 py-2.5 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039] font-mono"
+                    >
+                      <option value="Standard Factory (19cm)">Standard Factory Bracelet (19cm)</option>
+                      <option value="Custom Sized 16-17cm">Slim Wrist (16–17cm adjusted)</option>
+                      <option value="Custom Sized 17.5-18.5cm">Medium Wrist (17.5–18.5cm adjusted)</option>
+                      <option value="Custom Sized 19.5-21cm">Broad Wrist (19.5–21cm adjusted)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] uppercase font-mono font-bold text-[#5A6D64] dark:text-[#8EAA9C] mb-1.5">
+                      Lacquered Hardwood Presentation Box
+                    </label>
+                    <div className="flex items-center gap-2.5 pt-2">
+                      <input
+                        type="checkbox"
+                        id="cart_gift_box"
+                        checked={giftBox}
+                        onChange={(e) => setGiftBox(e.target.checked)}
+                        className="h-4 w-4 rounded accent-[#006039] cursor-pointer"
+                      />
+                      <label htmlFor="cart_gift_box" className="text-xs text-[#475569] dark:text-[#CBD5E1] cursor-pointer font-semibold">
+                        Signature Green Lacquer Presentation Box & Certificate
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase font-mono font-bold text-[#5A6D64] dark:text-[#8EAA9C] mb-1.5">
+                    Special Delivery Instructions / Dedication
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Please include congratulatory envelope, private handover requested..."
+                    value={specialNote}
+                    onChange={(e) => setSpecialNote(e.target.value)}
+                    className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039]"
+                  />
+                </div>
+              </div>
+
+              {/* Navigation Back */}
+              <div className="flex items-center justify-between pt-1">
                 <Link
                   href="/catalog"
                   className="text-xs font-mono font-bold uppercase tracking-wider text-[#006039] dark:text-[#4ADE80] hover:underline transition flex items-center gap-1.5"
                 >
-                  <span>← Explore More References</span>
+                  <span>← Continue Discovering References</span>
                 </Link>
                 <span className="text-[11px] font-mono text-[#5A6D64] dark:text-[#8EAA9C]">
                   Insured air transit automatically included.
@@ -212,9 +317,9 @@ export default function CartPage() {
               </div>
             </div>
 
-            {/* Order Summary */}
-            <div className="lg:col-span-4 space-y-4">
-              <div className="rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] bg-gradient-to-br from-white via-[#F8FAF9] to-[#F1F5F3] dark:from-[#0B1C15] dark:via-[#06110D] dark:to-[#030806] p-6 space-y-5 shadow-md">
+            {/* Right Column: Sticky Investment Summary */}
+            <div className="lg:col-span-4 space-y-4 sticky top-28">
+              <div className="rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] bg-gradient-to-br from-white via-[#F8FAF9] to-[#F1F5F3] dark:from-[#0B1C15] dark:via-[#06110D] dark:to-[#030806] p-6 space-y-5 shadow-xl">
                 <h3 className="text-sm font-black font-display uppercase tracking-widest text-[#0F172A] dark:text-[#F8FAFC] border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] pb-3 flex items-center gap-2">
                   <span>Investment Summary</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-[#006039] dark:bg-[#4ADE80]"></span>
@@ -273,6 +378,13 @@ export default function CartPage() {
                     </span>
                   </div>
 
+                  <div className="flex justify-between text-[#475569] dark:text-[#CBD5E1]">
+                    <span>5-Year Concierge Warranty</span>
+                    <span className="text-[#006039] dark:text-[#10B981] font-mono font-bold">
+                      Included
+                    </span>
+                  </div>
+
                   <div className="flex justify-between items-baseline text-sm font-bold text-[#0F172A] dark:text-[#F8FAFC] pt-3 border-t border-[#E5ECE8] dark:border-[#122B20]">
                     <span>Total Valuation</span>
                     <span className="text-[#006039] dark:text-[#4ADE80] font-num text-xl font-black">
@@ -289,17 +401,34 @@ export default function CartPage() {
                   <span>Proceed to Checkout</span>
                   <span>→</span>
                 </button>
+
+                {/* Accepted Payment Strip */}
+                <div className="border-t border-[#E5ECE8] dark:border-[#122B20] pt-3 text-center space-y-2">
+                  <div className="text-[9px] font-mono uppercase text-[#5A6D64] dark:text-[#8EAA9C] font-semibold">
+                    Accepted Acquisition Methods
+                  </div>
+                  <div className="flex items-center justify-center gap-2 text-xs text-[#5A6D64] dark:text-[#CBD5E1] font-mono font-bold">
+                    <span className="px-2 py-0.5 rounded border border-[#E2E8F0] dark:border-[#1F4535] bg-white dark:bg-[#06110D]">VISA</span>
+                    <span className="px-2 py-0.5 rounded border border-[#E2E8F0] dark:border-[#1F4535] bg-white dark:bg-[#06110D]">MASTERCARD</span>
+                    <span className="px-2 py-0.5 rounded border border-[#E2E8F0] dark:border-[#1F4535] bg-white dark:bg-[#06110D]">AMEX</span>
+                    <span className="px-2 py-0.5 rounded border border-[#E2E8F0] dark:border-[#1F4535] bg-white dark:bg-[#06110D]">APPLE PAY</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Security Guarantee Box */}
-              <div className="rounded-2xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] bg-white dark:bg-[#0B1C15] p-4 space-y-2 text-[11px] text-[#5A6D64] dark:text-[#CBD5E1] font-mono shadow-sm">
-                <div className="flex items-center gap-2 text-[#0F172A] dark:text-[#F8FAFC] font-bold">
-                  <span className="text-[#006039] dark:text-[#4ADE80]">🔒</span>
-                  <span>Direct Atelier Concierge Guarantee</span>
+              {/* Private Salon Assistance Card */}
+              <div className="rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] bg-white dark:bg-[#0B1C15] p-5 space-y-2.5 text-xs shadow-sm">
+                <div className="flex items-center gap-2 text-[#0F172A] dark:text-[#F8FAFC] font-bold font-display">
+                  <span className="text-[#006039] text-base">✦</span>
+                  <span>Need Concierge Guidance?</span>
                 </div>
-                <p className="text-[10px] leading-relaxed">
-                  Every order includes Superlative Chronometer certification, serialized authenticity card, and 5-year international movement warranty.
+                <p className="text-[11px] text-[#5A6D64] dark:text-[#8EAA9C] leading-relaxed">
+                  Our certified horologists are available to assist with custom sizing, payment options, and worldwide dispatch schedules.
                 </p>
+                <div className="pt-1 flex items-center justify-between text-[11px] font-mono font-bold text-[#006039] dark:text-[#4ADE80]">
+                  <span>Geneva: +41 22 819 0000</span>
+                  <span>London: +44 20 7499 0000</span>
+                </div>
               </div>
             </div>
           </div>

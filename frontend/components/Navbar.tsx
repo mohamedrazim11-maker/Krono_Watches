@@ -156,15 +156,6 @@ export default function Navbar({
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#06110D]/95 border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] backdrop-blur-2xl transition-all duration-300 shadow-sm">
-      {/* Top VIP Announcement Ribbon - Rolex Deep Green */}
-      <div className="bg-[#00482B] dark:bg-[#040C09] text-[#C5A059] py-1 px-4 text-center text-[10px] font-mono tracking-[0.25em] flex items-center justify-center gap-2 sm:gap-4 border-b border-[#006039]/40">
-        <span className="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-ping"></span>
-        <span className="font-semibold text-[#FDF8ED] tracking-widest">
-          GENÈVE CERTIFIED MASTER CHRONOMETER • 5-YEAR INTERNATIONAL WARRANTY • COMPLIMENTARY INSURED COURIER
-        </span>
-        <span className="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-ping"></span>
-      </div>
-
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 py-3.5 gap-3 lg:gap-6">
         {/* Brand Crest & Logo */}
         <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
