@@ -15,18 +15,26 @@ import { useCart } from "@/lib/CartContext";
 
 type ViewMode = "grid" | "list";
 
-const MOVEMENTS = ["All", "Swiss Automatic", "Automatic ETA", "Quartz", "Manual-Wind", "Biometric"];
-const CASE_SIZES = ["All", "36mm", "38mm", "39mm", "40mm", "41mm", "42mm", "44mm", "45mm"];
+const MOVEMENTS = ["All", "Automatic", "Chronometer", "Spring Drive", "Powermatic 80", "Tough Solar", "Quartz", "Digital"];
+const CASE_SIZES = ["All", "38.5mm", "39mm", "39.3mm", "40mm", "41mm", "42mm", "42.8mm", "43mm", "43.2mm", "44.8mm", "49.8mm", "50.9mm", "54mm"];
 const PRESTIGE_BRANDS = [
   "All",
   "Rolex",
   "Omega",
-  "Patek Philippe",
-  "Audemars Piguet",
-  "TAG Heuer"
+  "Casio",
+  "Seiko",
+  "Tissot"
 ];
 
-const COLLECTIONS = ["All", "Luxury", "Automatic", "Sport", "Smart"];
+const COLLECTIONS = [
+  "All",
+  "Dive Watches",
+  "Dress Watches",
+  "Chronograph",
+  "Automatic",
+  "Digital",
+  "Sports Watches"
+];
 
 export default function CatalogPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -40,7 +48,7 @@ export default function CatalogPage() {
   const [selectedMovement, setSelectedMovement] = useState("All");
   const [onlyInStock, setOnlyInStock] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [maxPriceRange, setMaxPriceRange] = useState<number>(2000000);
+  const [maxPriceRange, setMaxPriceRange] = useState<number>(20000000);
 
   // Sorting & View
   const [sortBy, setSortBy] = useState<"featured" | "price-asc" | "price-desc" | "name">("featured");
@@ -99,7 +107,7 @@ export default function CatalogPage() {
     setSelectedMovement("All");
     setOnlyInStock(false);
     setSearchQuery("");
-    setMaxPriceRange(2000000);
+    setMaxPriceRange(20000000);
     setSortBy("featured");
   };
 
@@ -167,7 +175,7 @@ export default function CatalogPage() {
     selectedMovement !== "All",
     onlyInStock,
     searchQuery.trim() !== "",
-    maxPriceRange < 2000000,
+    maxPriceRange < 20000000,
   ].filter(Boolean).length;
 
   return (
@@ -324,8 +332,8 @@ export default function CatalogPage() {
               <input
                 type="range"
                 min={100000}
-                max={2000000}
-                step={50000}
+                max={20000000}
+                step={250000}
                 value={maxPriceRange}
                 onChange={(e) => setMaxPriceRange(Number(e.target.value))}
                 className="w-full accent-[#006039] h-1.5 bg-[#E2E8F0] dark:bg-[#1F4535] rounded cursor-pointer"
@@ -653,8 +661,8 @@ export default function CatalogPage() {
                   <input
                     type="range"
                     min={100000}
-                    max={2000000}
-                    step={50000}
+                    max={20000000}
+                    step={250000}
                     value={maxPriceRange}
                     onChange={(e) => setMaxPriceRange(Number(e.target.value))}
                     className="w-full accent-[#006039] h-2 bg-[#E2E8F0] dark:bg-[#1F4535] rounded cursor-pointer"

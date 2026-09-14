@@ -17,7 +17,7 @@ import CheckoutModal from "@/components/CheckoutModal";
 import SmoothImage from "@/components/SmoothImage";
 import { useCart } from "@/lib/CartContext";
 
-type PriceFilterType = "all" | "under500k" | "500k-1m" | "over1m";
+type PriceFilterType = "all" | "under500k" | "500k-2m" | "2m-5m" | "over5m";
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -105,8 +105,9 @@ export default function Home() {
       }
 
       if (priceFilter === "under500k" && product.price >= 500000) return false;
-      if (priceFilter === "500k-1m" && (product.price < 500000 || product.price > 1000000)) return false;
-      if (priceFilter === "over1m" && product.price <= 1000000) return false;
+      if (priceFilter === "500k-2m" && (product.price < 500000 || product.price > 2000000)) return false;
+      if (priceFilter === "2m-5m" && (product.price < 2000000 || product.price > 5000000)) return false;
+      if (priceFilter === "over5m" && product.price <= 5000000) return false;
 
       return true;
     }).sort((a, b) => {
@@ -168,7 +169,7 @@ export default function Home() {
 
             {/* Category Filter Pills */}
             <div className="flex flex-wrap items-center gap-2">
-              {["All", "Luxury", "Automatic", "Sport", "Smart"].map((cat) => (
+              {["All", "Dive Watches", "Dress Watches", "Chronograph", "Automatic", "Digital", "Sports Watches"].map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
@@ -212,8 +213,9 @@ export default function Home() {
               >
                 <option value="all">All Valuations</option>
                 <option value="under500k">Under LKR 500,000</option>
-                <option value="500k-1m">LKR 500,000 – LKR 1,000,000</option>
-                <option value="over1m">Over LKR 1,000,000</option>
+                <option value="500k-2m">LKR 500,000 – LKR 2,000,000</option>
+                <option value="2m-5m">LKR 2,000,000 – LKR 5,000,000</option>
+                <option value="over5m">Over LKR 5,000,000</option>
               </select>
             </div>
 

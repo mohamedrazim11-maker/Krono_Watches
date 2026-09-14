@@ -13,39 +13,39 @@ interface HeroBannerProps {
 
 const DEFAULT_FALLBACK_PRODUCTS = [
   {
-    id: "prod-rolex-sub",
+    id: "prod-rolex-submariner",
     name: "Rolex Submariner Date 41mm Cerachrom",
-    price: 680000,
-    category: "Sport",
+    price: 3100000,
+    category: "Dive Watches",
     badge: "Iconic Diver",
     movement: "Rolex Perpetual Calibre 3235",
     image_url: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    id: "prod-rolex-dj36",
-    name: "Rolex Datejust 36 Fluted Bezel Jubilee",
-    price: 540000,
-    category: "Luxury",
-    badge: "Classic Prestige",
-    movement: "Rolex Calibre 3235 Automatic",
-    image_url: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    id: "prod-omega-speedmaster",
+    id: "prod-omega-speedmaster-moonwatch",
     name: "Omega Speedmaster Professional Moonwatch",
-    price: 490000,
-    category: "Automatic",
-    badge: "Space Heritage",
+    price: 2450000,
+    category: "Chronograph",
+    badge: "Space Certified",
     movement: "Omega Co-Axial Master Chronometer 3861",
     image_url: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    id: "prod-tag-monaco",
-    name: "TAG Heuer Monaco Calibre 11 Chronograph",
-    price: 360000,
-    category: "Sport",
-    badge: "Racing Icon",
-    movement: "Calibre 11 Automatic",
+    id: "prod-grand-seiko-spring-drive-snowflake",
+    name: "Grand Seiko Heritage Spring Drive 'Snowflake'",
+    price: 2150000,
+    category: "Automatic",
+    badge: "Shinshu Snowflake",
+    movement: "Grand Seiko Calibre 9R65 Spring Drive",
+    image_url: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    id: "prod-tissot-prx-powermatic-80",
+    name: "Tissot PRX Powermatic 80 Ice Blue",
+    price: 245000,
+    category: "Automatic",
+    badge: "Integrated Bracelet",
+    movement: "Swiss Powermatic 80",
     image_url: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1000&q=85",
   },
 ];
@@ -123,7 +123,7 @@ export default function HeroBanner({
               Crafted for Eternity.
             </h1>
             <p className="text-xs sm:text-sm text-[#475569] dark:text-[#CBD5E1] max-w-lg font-normal leading-relaxed">
-              Discover certified Swiss luxury horology. Iconic references from Rolex, Omega, Patek Philippe, Audemars Piguet, and TAG Heuer engineered to supreme precision.
+              Discover certified luxury horology. Curated references from Rolex, Omega, Casio, Seiko, and Tissot engineered to supreme mechanical and electronic precision.
             </p>
           </div>
 

@@ -5,32 +5,46 @@ import SmoothImage from "./SmoothImage";
 
 export const CATEGORIES_DATA = [
   {
-    slug: "Luxury",
-    title: "Classic & Dress",
-    badge: "Haute Horlogerie",
+    slug: "Dive Watches",
+    title: "Deep Sea & Maritime Diver",
+    badge: "300m Professional",
+    image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80",
+    description: "Cerachrom ceramic bezels, Triplock helium crowns, and Lumibrite indices crafted for underwater resilience.",
+  },
+  {
+    slug: "Dress Watches",
+    title: "Classic & Haute Horlogerie",
+    badge: "Precious Metals",
     image: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80",
-    description: "Fluted bezels, precious dials, and perpetual movements crafted in 18k Everose, yellow, and white gold.",
+    description: "Solid 18k Everose, President bracelets, Zaratsu polish, and guilloché dials tailored for formal prestige.",
+  },
+  {
+    slug: "Chronograph",
+    title: "Motorsport & Space Telemetry",
+    badge: "Column-Wheel Calibre",
+    image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=900&q=80",
+    description: "Tachymeter scales, sub-second chronograph registers, and flight-qualified NASA timing heritage.",
   },
   {
     slug: "Automatic",
-    title: "Master Chronometer",
-    badge: "Geneva Standard",
-    image: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80",
-    description: "Self-winding mechanical calibres regulated to Superlative Chronometer -2/+2 sec precision.",
+    title: "Spring Drive & Mechanical",
+    badge: "Geneva & Japanese Craft",
+    image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80",
+    description: "Self-winding Swiss Powermatic and Grand Seiko Spring Drive calibres with continuous seconds glide.",
   },
   {
-    slug: "Sport",
-    title: "Professional & Diver",
-    badge: "Oystersteel & Ceramic",
-    image: "https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=900&q=80",
-    description: "Cerachrom ceramic bezels, Triplock crowns, and Helium Escape Valves tested for supreme resilience.",
+    slug: "Digital",
+    title: "Atomic & Tough Solar",
+    badge: "Multi-Band 6 Guard",
+    image: "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?auto=format&fit=crop&w=900&q=80",
+    description: "Full metal screw-back cases, triple sensor altimeters, and solar-powered smartphone radio sync.",
   },
   {
-    slug: "Smart",
-    title: "Avant-Garde Telemetry",
-    badge: "Connected Calibre",
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=80",
-    description: "Sapphire crystal displays and Grade 2 titanium chassis fused with Swiss ergonomics.",
+    slug: "Sports Watches",
+    title: "Dual Time & Extreme Endurance",
+    badge: "GMT & Dual Core",
+    image: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=900&q=80",
+    description: "Dual-timezone 24h bezels, carbon core guard architecture, and resilient Oystersteel casings.",
   },
 ];
 
@@ -55,12 +69,12 @@ export default function CategoryPillars({ selectedCategory, onSelectCategory }: 
           href="/catalog"
           className="text-xs font-mono font-bold text-[#5A6D64] dark:text-[#CBD5E1] hover:text-[#006039] dark:hover:text-[#4ADE80] transition flex items-center gap-1.5 uppercase tracking-wider"
         >
-          <span>Explore All 2026 References</span>
+          <span>Explore All 25 References</span>
           <span>→</span>
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {CATEGORIES_DATA.map((cat) => {
           const isSelected = selectedCategory === cat.slug;
           return (
@@ -73,7 +87,7 @@ export default function CategoryPillars({ selectedCategory, onSelectCategory }: 
                   : "border-[#E2E8F0] dark:border-[rgba(0,96,57,0.25)] hover:border-[#006039] dark:hover:border-[rgba(0,163,98,0.5)] hover:-translate-y-1 shadow-sm hover:shadow-xl"
               }`}
             >
-              <div className="aspect-[4/5] w-full relative overflow-hidden bg-[#F1F5F3] dark:bg-[#06110D]">
+              <div className="aspect-[4/3] w-full relative overflow-hidden bg-[#F1F5F3] dark:bg-[#06110D]">
                 <SmoothImage
                   src={cat.image}
                   alt={cat.title}
@@ -81,7 +95,7 @@ export default function CategoryPillars({ selectedCategory, onSelectCategory }: 
                   containerClassName="w-full h-full"
                 />
                 {/* Gradient vignette */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#040C09]/95 via-[#06110D]/40 to-transparent pointer-events-none"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#040C09]/95 via-[#06110D]/45 to-transparent pointer-events-none"></div>
 
                 <div className="absolute top-3 left-3 pointer-events-none">
                   <span className="text-[8px] font-mono font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-[#006039] text-white shadow-md">
@@ -91,7 +105,7 @@ export default function CategoryPillars({ selectedCategory, onSelectCategory }: 
 
                 <div className="absolute bottom-0 inset-x-0 p-4 space-y-1 text-white">
                   <div className="text-[9px] text-[#C5A059] font-mono uppercase tracking-wider font-semibold">
-                    {cat.slug} Series
+                    {cat.slug}
                   </div>
                   <h3 className="text-base font-bold text-white font-display">
                     {cat.title}
