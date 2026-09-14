@@ -10,11 +10,11 @@ import CategoryPillars from "@/components/CategoryPillars";
 import TrustPillars from "@/components/TrustPillars";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import ProductCard from "@/components/ProductCard";
-import KineticProductRow from "@/components/KineticProductRow";
 import CartDrawer from "@/components/CartDrawer";
 import WishlistDrawer from "@/components/WishlistDrawer";
 import QuickViewModal from "@/components/QuickViewModal";
 import CheckoutModal from "@/components/CheckoutModal";
+import SmoothImage from "@/components/SmoothImage";
 import { useCart } from "@/lib/CartContext";
 
 type PriceFilterType = "all" | "under500k" | "500k-1m" | "over1m";
@@ -23,7 +23,6 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [posters, setPosters] = useState<Poster[]>([]);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState<"kinetic" | "grid">("kinetic");
 
   // Filters & Search
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -78,28 +77,10 @@ export default function Home() {
     loadData();
   }, []);
 
-  // Scroll Tracking for Kinetic Row Parallax
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          setScrollY(window.scrollY);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   const handleCopyCoupon = (code: string) => {
     navigator.clipboard.writeText(code);
     applyCoupon(code);
-    showToast(`Copied voucher ${code}`);
+    showToast(`Copied privilege voucher ${code}`);
   };
 
   const filteredProducts = useMemo(() => {
@@ -139,11 +120,11 @@ export default function Home() {
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8F9FB] dark:bg-[#0B0F17] text-slate-900 dark:text-slate-100 selection:bg-slate-900 selection:text-white transition-colors duration-200">
-      {/* Toast */}
+    <div className="min-h-screen flex flex-col bg-[#FAF8F5] dark:bg-[#080B10] text-[#121826] dark:text-[#F8FAFC] selection:bg-[#D4AF37] selection:text-[#080B10] transition-colors duration-300">
+      {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-5 right-5 z-50 bg-slate-900 dark:bg-slate-800 border border-slate-700 dark:border-slate-600 text-white px-4 py-2.5 rounded-xl shadow-2xl text-xs font-mono font-bold flex items-center gap-2">
-          <span className="text-emerald-400">▪</span>
+        <div className="fixed bottom-5 right-5 z-50 bg-[#121826] dark:bg-[#141D2E] border border-[#D4AF37] text-white px-4 py-3 rounded-2xl shadow-2xl text-xs font-mono font-bold flex items-center gap-2.5 animate-pageEnter">
+          <span className="text-[#D4AF37] text-base">✦</span>
           <span>{toastMessage}</span>
         </div>
       )}
@@ -159,9 +140,9 @@ export default function Home() {
         showSearch={true}
       />
 
-      {/* Main Content Feed (Compact Spacing) */}
-      <main className="flex-1 mx-auto max-w-7xl px-4 sm:px-6 py-5 sm:py-6 space-y-8 sm:space-y-10">
-        {/* Editorial Hero Banner */}
+      {/* Main Container */}
+      <main className="flex-1 mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8 space-y-12 sm:space-y-16">
+        {/* Editorial Hero Showcase */}
         <HeroBanner posters={posters} products={products} onCopyCoupon={handleCopyCoupon} />
 
         {/* Metier Pillars */}
@@ -170,81 +151,53 @@ export default function Home() {
           onSelectCategory={(cat) => setSelectedCategory(cat)}
         />
 
-        {/* Minimalist Clean Grid Section */}
-        <section id="vault" className="space-y-4 sm:space-y-5">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800 pb-3">
+        {/* Masterpiece Catalogue Vault */}
+        <section id="vault" className="space-y-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] pb-4">
             <div>
-              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400 font-bold">
-                The Archive
+              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#D4AF37] dark:text-[#E5C158] font-bold">
+                The Master Registry
               </span>
-              <h2 className="text-2xl sm:text-3xl font-black font-display text-slate-900 dark:text-white uppercase tracking-tight">
-                Curated <span className="text-slate-900 dark:text-white underline decoration-slate-300 dark:decoration-slate-700 decoration-2">Catalogue Vault</span>
+              <h2 className="text-2xl sm:text-3xl font-black font-display text-[#121826] dark:text-[#F8FAFC] uppercase tracking-tight">
+                Curated <span className="gold-gradient-text">Catalogue Vault</span>
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-sans">
-                {filteredProducts.length} authenticated Swiss & mechanical timepieces
+              <p className="text-xs text-[#8C7B65] dark:text-[#CBD5E1] font-sans">
+                {filteredProducts.length} authenticated Swiss & mechanical timepieces available for immediate allocation
               </p>
             </div>
 
-            {/* Metier Pill Filters & View Toggle */}
+            {/* Category Filter Pills */}
             <div className="flex flex-wrap items-center gap-2">
-              <div className="flex flex-wrap items-center gap-1.5">
-                {["All", "Luxury", "Automatic", "Sport", "Smart"].map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold tracking-wider uppercase transition cursor-pointer ${
-                      selectedCategory === cat
-                        ? "bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-bold shadow-sm"
-                        : "border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-slate-700 shadow-sm"
-                    }`}
-                  >
-                    {cat === "All" ? "All Series" : cat}
-                  </button>
-                ))}
-              </div>
-
-              {/* Kinetic vs Standard Grid View Toggle */}
-              <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 ml-auto">
+              {["All", "Luxury", "Automatic", "Sport", "Smart"].map((cat) => (
                 <button
-                  onClick={() => setViewMode("kinetic")}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold uppercase transition flex items-center gap-1.5 cursor-pointer ${
-                    viewMode === "kinetic"
-                      ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
-                      : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase transition-all cursor-pointer ${
+                    selectedCategory === cat
+                      ? "bg-gradient-to-r from-[#D4AF37] to-[#AA7A1E] text-[#080B10] font-black shadow-md shadow-[#D4AF37]/25 scale-105"
+                      : "border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] bg-white dark:bg-[#0E1420] text-[#645A4C] dark:text-[#CBD5E1] hover:text-[#121826] dark:hover:text-[#F3E5AB] hover:border-[#D4AF37] shadow-sm"
                   }`}
-                  title="Kinetic Scroll-Cycling Carousel Mode"
                 >
-                  <span>⇋ Kinetic Carousel</span>
+                  {cat === "All" ? "All Series" : cat}
                 </button>
-                <button
-                  onClick={() => setViewMode("grid")}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold uppercase transition flex items-center gap-1.5 cursor-pointer ${
-                    viewMode === "grid"
-                      ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
-                      : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
-                  }`}
-                  title="Standard Static Grid"
-                >
-                  <span>⊞ Grid</span>
-                </button>
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Clean Quick Filter Bar */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#131B2A] shadow-sm">
+          {/* Quick Precision Filter Bar */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-4 rounded-2xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] bg-white dark:bg-[#0E1420] shadow-sm">
             <div className="relative">
               <input
                 type="text"
                 placeholder="Filter by reference..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-slate-800 dark:focus:border-slate-500"
+                className="w-full bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] rounded-xl px-3.5 py-2 text-xs text-[#121826] dark:text-[#F8FAFC] placeholder-[#8C7B65] focus:outline-none focus:border-[#D4AF37]"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-2 text-xs text-slate-400 hover:text-slate-800 dark:hover:text-white"
+                  className="absolute right-3 top-2.5 text-xs text-[#8C7B65] hover:text-[#121826] dark:hover:text-white"
                 >
                   ✕
                 </button>
@@ -255,7 +208,7 @@ export default function Home() {
               <select
                 value={priceFilter}
                 onChange={(e) => setPriceFilter(e.target.value as PriceFilterType)}
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-slate-800 dark:focus:border-slate-500 font-mono"
+                className="w-full bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] rounded-xl px-3.5 py-2 text-xs text-[#121826] dark:text-[#F8FAFC] focus:outline-none focus:border-[#D4AF37] font-mono"
               >
                 <option value="all">All Valuations</option>
                 <option value="under500k">Under LKR 500,000</option>
@@ -268,44 +221,47 @@ export default function Home() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-slate-800 dark:focus:border-slate-500 font-mono"
+                className="w-full bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] rounded-xl px-3.5 py-2 text-xs text-[#121826] dark:text-[#F8FAFC] focus:outline-none focus:border-[#D4AF37] font-mono"
               >
                 <option value="featured">Featured First</option>
-                <option value="price-asc">Price: Ascending</option>
-                <option value="price-desc">Price: Descending</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
                 <option value="name">Reference (A-Z)</option>
               </select>
             </div>
 
-            <div className="flex items-center justify-between px-3.5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
-              <span className="text-xs text-slate-600 dark:text-slate-400 font-mono font-semibold">In Stock Only</span>
+            <div className="flex items-center justify-between px-4 bg-[#FAF8F5] dark:bg-[#080B10] rounded-xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)]">
+              <span className="text-xs text-[#645A4C] dark:text-[#CBD5E1] font-mono font-semibold">In Stock Only</span>
               <input
                 type="checkbox"
                 checked={onlyInStock}
                 onChange={(e) => setOnlyInStock(e.target.checked)}
-                className="h-4 w-4 rounded accent-slate-900 dark:accent-white cursor-pointer"
+                className="h-4 w-4 rounded accent-[#D4AF37] cursor-pointer"
               />
             </div>
           </div>
 
-          {/* High-Precision Product Showcase */}
+          {/* Product Grid Showcase */}
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-6">
               {[...Array(8)].map((_, i) => (
                 <div
                   key={i}
-                  className="rounded-2xl border border-slate-200 dark:border-slate-800 p-4 space-y-4 animate-pulse bg-white dark:bg-[#131B2A]"
+                  className="rounded-2xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.15)] p-4 space-y-4 animate-pulse bg-white dark:bg-[#0E1420]"
                 >
-                  <div className="aspect-square bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
-                  <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-3/4"></div>
-                  <div className="h-8 bg-slate-100 dark:bg-slate-800 rounded"></div>
+                  <div className="aspect-[4/3] bg-[#FAF8F5] dark:bg-[#141D2E] rounded-xl"></div>
+                  <div className="h-4 bg-[#FAF8F5] dark:bg-[#141D2E] rounded w-3/4"></div>
+                  <div className="h-8 bg-[#FAF8F5] dark:bg-[#141D2E] rounded"></div>
                 </div>
               ))}
             </div>
           ) : filteredProducts.length === 0 ? (
-            <div className="text-center py-16 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-3 bg-white dark:bg-[#131B2A] shadow-sm">
-              <div className="text-3xl text-slate-300 dark:text-slate-600">⌕</div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white font-display uppercase tracking-wider">No References Match</h3>
+            <div className="text-center py-16 rounded-3xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] space-y-3 bg-white dark:bg-[#0E1420] shadow-sm">
+              <div className="text-4xl text-[#D5CBBA] dark:text-[#1E293B]">⌕</div>
+              <h3 className="text-base font-bold text-[#121826] dark:text-[#F8FAFC] font-display uppercase tracking-wider">
+                No References Match Your Query
+              </h3>
+              <p className="text-xs text-[#8C7B65]">Try resetting your search query or price valuation filters.</p>
               <button
                 onClick={() => {
                   setSelectedCategory("All");
@@ -313,35 +269,10 @@ export default function Home() {
                   setPriceFilter("all");
                   setOnlyInStock(false);
                 }}
-                className="lux-btn-primary px-6 py-2.5 rounded-xl text-xs uppercase font-bold"
+                className="lux-btn-gold px-6 py-2.5 rounded-xl text-xs uppercase font-bold"
               >
                 Reset Filters
               </button>
-            </div>
-          ) : viewMode === "kinetic" ? (
-            <div className="space-y-6 py-2">
-              {(() => {
-                // Split products into 2 or 3 kinetic rows for continuous loop cycling
-                const rowCount = filteredProducts.length > 6 ? 3 : filteredProducts.length > 3 ? 2 : 1;
-                const rows: Product[][] = Array.from({ length: rowCount }, () => []);
-                filteredProducts.forEach((prod, i) => {
-                  rows[i % rowCount].push(prod);
-                });
-
-                return rows.map((rowItems, rowIndex) => (
-                  <KineticProductRow
-                    key={rowIndex}
-                    products={rowItems}
-                    rowIndex={rowIndex}
-                    scrollY={scrollY}
-                    speed={0.35}
-                    onAddToCart={(prod, qty) => addToCart(prod, qty || 1)}
-                    onToggleWishlist={(prod) => toggleWishlist(prod)}
-                    isWishlisted={(id) => wishlist.some((p) => p.id === id)}
-                    onQuickView={(prod) => setQuickViewProduct(prod)}
-                  />
-                ));
-              })()}
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 py-2">
@@ -359,16 +290,87 @@ export default function Home() {
           )}
         </section>
 
-        {/* Guarantees */}
+        {/* Feature Spotlight: Micro-Mechanical Horology Anatomy */}
+        <section className="rounded-3xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] p-6 sm:p-8 lg:p-10 bg-gradient-to-br from-white via-[#FAF8F5] to-[#F3EFEA] dark:from-[#0E1420] dark:via-[#080B10] dark:to-[#040609] shadow-2xl relative overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative z-10">
+            <div className="space-y-4">
+              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#D4AF37] dark:text-[#E5C158] font-bold">
+                Atelier Engineering
+              </span>
+              <h2 className="text-2xl sm:text-4xl font-black font-display text-[#121826] dark:text-[#F8FAFC] uppercase tracking-tight">
+                Anatomy of a <br />
+                <span className="gold-gradient-text">Masterpiece Calibre</span>
+              </h2>
+              <p className="text-xs sm:text-sm text-[#645A4C] dark:text-[#CBD5E1] leading-relaxed">
+                Every Krono timepiece represents hundreds of hours of micromechanical regulation, certified Swiss tolerances, and hand-finished chamfered edges.
+              </p>
+
+              <div className="space-y-3 pt-2">
+                <div className="p-3.5 rounded-2xl bg-white/80 dark:bg-[#141D2E]/80 border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.15)] flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA7A1E] text-[#080B10] flex items-center justify-center font-bold text-xs flex-shrink-0">
+                    01
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-[#121826] dark:text-[#F8FAFC]">Swiss Chronometer Escapement</h4>
+                    <p className="text-[11px] text-[#8C7B65] dark:text-[#A3937C]">High-beat 28,800 vph balance wheel with glucydur balance and silicon hairspring.</p>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-white/80 dark:bg-[#141D2E]/80 border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.15)] flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA7A1E] text-[#080B10] flex items-center justify-center font-bold text-xs flex-shrink-0">
+                    02
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-[#121826] dark:text-[#F8FAFC]">Double Anti-Reflective Sapphire</h4>
+                    <p className="text-[11px] text-[#8C7B65] dark:text-[#A3937C]">Mohs hardness 9 synthetic sapphire crystal with dual-sided anti-glare coating.</p>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-white/80 dark:bg-[#141D2E]/80 border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.15)] flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA7A1E] text-[#080B10] flex items-center justify-center font-bold text-xs flex-shrink-0">
+                    03
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-[#121826] dark:text-[#F8FAFC]">Surgical 316L & 18K Solid Gold</h4>
+                    <p className="text-[11px] text-[#8C7B65] dark:text-[#A3937C]">Corrosion-immune stainless steel cases paired with solid gold fluted bezels.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative rounded-3xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.25)] p-2.5 overflow-hidden bg-white dark:bg-[#080B10] shadow-xl">
+              <SmoothImage
+                src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1000&q=85"
+                alt="Horological Calibre Anatomy"
+                className="rounded-2xl filter brightness-[0.95]"
+                containerClassName="rounded-2xl w-full h-80 sm:h-96"
+              />
+              <div className="absolute bottom-5 inset-x-5 p-3.5 rounded-xl bg-white/95 dark:bg-[#0E1420]/95 backdrop-blur-md border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.25)] shadow-xl flex items-center justify-between">
+                <div>
+                  <div className="text-[9px] text-[#D4AF37] uppercase font-mono font-bold">COSC Certified Calibre</div>
+                  <div className="text-xs font-bold text-[#121826] dark:text-[#F8FAFC]">Genève Hand-Assembled Movement</div>
+                </div>
+                <Link
+                  href="/catalog"
+                  className="lux-btn-gold px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider"
+                >
+                  View Pieces
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Guarantees of Excellence */}
         <TrustPillars />
 
-        {/* Testimonials */}
+        {/* Collector Reviews */}
         <TestimonialsSection />
       </main>
 
       <Footer />
 
-      {/* Slide Drawers & Modals */}
+      {/* Drawers & Modals */}
       <CartDrawer
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}

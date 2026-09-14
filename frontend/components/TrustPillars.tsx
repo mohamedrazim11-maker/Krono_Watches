@@ -25,29 +25,35 @@ export const TRUST_PILLARS_DATA = [
 
 export default function TrustPillars() {
   return (
-    <section className="rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 bg-white dark:bg-[#131B2A] shadow-sm transition-colors duration-200">
-      <div className="text-center max-w-xl mx-auto space-y-1.5 mb-6">
-        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400 font-bold">
+    <section className="rounded-3xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] p-6 sm:p-8 lg:p-10 bg-gradient-to-br from-white via-[#FAF8F5] to-[#F3EFEA] dark:from-[#0E1420] dark:via-[#080B10] dark:to-[#040609] shadow-xl transition-colors duration-300 relative overflow-hidden">
+      {/* Background Gold Accent */}
+      <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-[#D4AF37]/5 dark:bg-[#E5C158]/5 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div className="text-center max-w-xl mx-auto space-y-2 mb-8 relative z-10">
+        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#D4AF37] dark:text-[#E5C158] font-bold">
           The Atelier Standard
         </span>
-        <h2 className="text-2xl sm:text-3xl font-black font-display text-slate-900 dark:text-white tracking-tight uppercase">
-          Guarantees of <span className="text-slate-900 dark:text-white underline decoration-slate-300 dark:decoration-slate-700 decoration-2">Excellence</span>
+        <h2 className="text-2xl sm:text-3xl font-black font-display text-[#121826] dark:text-[#F8FAFC] tracking-tight uppercase">
+          Guarantees of <span className="gold-gradient-text">Excellence</span>
         </h2>
+        <p className="text-xs text-[#8C7B65] dark:text-[#CBD5E1]">
+          Uncompromising pedigree backed by Swiss certified horological mastery
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
         {TRUST_PILLARS_DATA.map((pillar, idx) => (
           <div
             key={idx}
-            className="rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 space-y-2 bg-slate-50/70 dark:bg-slate-900/60 hover:bg-white dark:hover:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md transition duration-300"
+            className="rounded-2xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.15)] p-5 space-y-3 bg-white/80 dark:bg-[#141D2E]/80 backdrop-blur-md hover:border-[#D4AF37] dark:hover:border-[#E5C158] hover:shadow-xl transition-all duration-300 group"
           >
-            <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 w-7 h-7 rounded-lg flex items-center justify-center bg-white dark:bg-slate-800 shadow-sm">
+            <div className="text-xs font-mono font-black text-[#080B10] w-8 h-8 rounded-xl flex items-center justify-center bg-gradient-to-r from-[#D4AF37] to-[#AA7A1E] shadow-md group-hover:scale-110 transition-transform">
               {pillar.icon}
             </div>
-            <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display">
+            <h3 className="text-sm font-bold text-[#121826] dark:text-[#F8FAFC] font-display">
               {pillar.title}
             </h3>
-            <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed font-sans">
+            <p className="text-xs text-[#645A4C] dark:text-[#CBD5E1] leading-relaxed font-sans">
               {pillar.desc}
             </p>
           </div>

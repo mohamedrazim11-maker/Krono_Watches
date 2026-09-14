@@ -120,25 +120,26 @@ export default function CheckoutModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="fixed inset-0 bg-slate-900/40 dark:bg-black/80 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity"
         onClick={orderConfirmed ? onClose : undefined}
       />
 
-      <div className="relative z-10 w-full max-w-2xl rounded-3xl bg-white dark:bg-[#131B2A] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
+      <div className="relative z-10 w-full max-w-2xl rounded-3xl bg-white dark:bg-[#0E1420] border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.25)] text-[#121826] dark:text-[#F8FAFC] shadow-2xl overflow-hidden max-h-[92vh] flex flex-col animate-pageEnter">
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/80 dark:bg-[#0B0F17]/80">
+        <div className="p-4 sm:p-5 border-b border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] flex items-center justify-between bg-[#FAF8F5] dark:bg-[#080B10]">
           <div>
-            <h2 className="text-sm font-black font-display uppercase tracking-widest text-slate-900 dark:text-white">
-              Concierge Checkout
+            <h2 className="text-sm font-black font-display uppercase tracking-widest text-[#121826] dark:text-[#F8FAFC] flex items-center gap-2">
+              <span>Concierge Checkout</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]"></span>
             </h2>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-mono font-semibold">
+            <div className="text-[10px] text-[#8C7B65] dark:text-[#A3937C] uppercase tracking-wider font-mono font-semibold">
               Direct Acquisition & Insured Air Transit
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-800 dark:hover:text-white transition cursor-pointer font-bold"
+            className="p-1.5 rounded-lg border border-[#E8E2D6] dark:border-[#1E293B] text-[#8C7B65] hover:text-[#121826] dark:hover:text-white transition cursor-pointer font-bold"
           >
             ✕
           </button>
@@ -148,40 +149,40 @@ export default function CheckoutModal({
         <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
           {orderConfirmed ? (
             <div className="text-center py-6 space-y-4">
-              <div className="w-12 h-12 rounded-full bg-slate-900 dark:bg-amber-400 text-white dark:text-slate-950 flex items-center justify-center text-xl mx-auto font-bold shadow-md">
+              <div className="w-14 h-14 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#AA7A1E] text-[#080B10] flex items-center justify-center text-2xl mx-auto font-black shadow-lg">
                 ✓
               </div>
-              <div className="space-y-1.5">
-                <span className="text-[10px] font-mono uppercase tracking-widest bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-400 font-bold px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
+              <div className="space-y-2">
+                <span className="text-[10px] font-mono uppercase tracking-widest bg-[#ECFDF5] dark:bg-[#064E3B]/40 text-[#059669] dark:text-[#10B981] font-bold px-3.5 py-1 rounded-full border border-[#10B981]/30">
                   Acquisition Authenticated
                 </span>
-                <h3 className="text-xl sm:text-2xl font-black font-display text-slate-900 dark:text-white uppercase tracking-tight">
-                  Order Confirmed
+                <h3 className="text-xl sm:text-2xl font-black font-display text-[#121826] dark:text-[#F8FAFC] uppercase tracking-tight">
+                  Order Successfully Registered
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-300 max-w-md mx-auto leading-relaxed">
-                  Your reference has been registered under concierge code{" "}
-                  <strong className="text-slate-900 dark:text-white font-mono">{confirmedOrderNumber}</strong>. A private horology consultant will contact you regarding serialized calibration and express transit.
+                <p className="text-xs text-[#645A4C] dark:text-[#CBD5E1] max-w-md mx-auto leading-relaxed">
+                  Your timepiece has been allocated under concierge dossier{" "}
+                  <strong className="text-[#D4AF37] dark:text-[#E5C158] font-mono font-bold">{confirmedOrderNumber}</strong>. A dedicated private horology consultant will contact you regarding serialized calibration and express transit dispatch.
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-800 max-w-md mx-auto text-left space-y-2 text-xs">
-                <div className="flex justify-between text-slate-500 dark:text-slate-400 font-mono font-semibold">
-                  <span>Reference</span>
-                  <span className="text-slate-900 dark:text-white font-bold">{confirmedOrderNumber}</span>
+              <div className="p-4 rounded-2xl bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] max-w-md mx-auto text-left space-y-2 text-xs">
+                <div className="flex justify-between text-[#8C7B65] dark:text-[#A3937C] font-mono font-semibold">
+                  <span>Dossier Reference</span>
+                  <span className="text-[#121826] dark:text-[#F8FAFC] font-bold">{confirmedOrderNumber}</span>
                 </div>
-                <div className="flex justify-between text-slate-500 dark:text-slate-400 font-mono font-semibold">
+                <div className="flex justify-between text-[#8C7B65] dark:text-[#A3937C] font-mono font-semibold">
                   <span>Client</span>
-                  <span className="text-slate-900 dark:text-white font-bold">{formData.name || "Valued Collector"}</span>
+                  <span className="text-[#121826] dark:text-[#F8FAFC] font-bold">{formData.name || "Valued Collector"}</span>
                 </div>
-                <div className="flex justify-between text-slate-500 dark:text-slate-400 font-mono font-semibold">
+                <div className="flex justify-between text-[#8C7B65] dark:text-[#A3937C] font-mono font-semibold">
                   <span>Investment Total</span>
-                  <span className="text-slate-900 dark:text-amber-400 font-bold font-num">{formatCurrency(grandTotal)}</span>
+                  <span className="text-[#121826] dark:text-[#F3E5AB] font-bold font-num">{formatCurrency(grandTotal)}</span>
                 </div>
               </div>
 
               <button
                 onClick={onClose}
-                className="lux-btn-primary px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer shadow-md"
+                className="lux-btn-gold px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer shadow-lg"
               >
                 Return to Boutique
               </button>
@@ -189,45 +190,46 @@ export default function CheckoutModal({
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               {errorMessage && (
-                <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-xs font-mono font-semibold">
+                <div className="p-3 rounded-xl bg-[#FFF1F2] dark:bg-[#4C0519]/40 border border-[#F43F5E]/30 text-[#F43F5E] text-xs font-mono font-semibold">
                   {errorMessage}
                 </div>
               )}
 
               {/* Order Items Review */}
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-800 space-y-2">
-                <div className="text-[9px] text-slate-500 dark:text-slate-400 font-mono uppercase tracking-widest font-bold">
+              <div className="p-4 rounded-2xl bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.15)] space-y-2">
+                <div className="text-[9px] text-[#D4AF37] dark:text-[#E5C158] font-mono uppercase tracking-widest font-bold">
                   Order Summary ({cart.length} Pieces)
                 </div>
                 <div className="max-h-24 overflow-y-auto space-y-1.5 pr-1">
                   {cart.map((item) => (
                     <div
                       key={item.product.id}
-                      className="flex justify-between items-center text-xs text-slate-700 dark:text-slate-300"
+                      className="flex justify-between items-center text-xs text-[#645A4C] dark:text-[#CBD5E1]"
                     >
                       <span className="truncate max-w-[280px]">
                         {item.quantity}x {item.product.name}
                       </span>
-                      <span className="font-num text-slate-900 dark:text-amber-400 font-bold">
+                      <span className="font-num text-[#121826] dark:text-[#F3E5AB] font-bold">
                         {formatCurrency(item.product.price * item.quantity)}
                       </span>
                     </div>
                   ))}
                 </div>
-                <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex justify-between text-xs font-bold font-mono">
-                  <span className="text-slate-500 dark:text-slate-400">Total:</span>
-                  <span className="text-slate-900 dark:text-amber-400 font-num text-sm">{formatCurrency(grandTotal)}</span>
+                <div className="pt-2 border-t border-[#EBE5DB] dark:border-[#182234] flex justify-between text-xs font-bold font-mono">
+                  <span className="text-[#8C7B65]">Total:</span>
+                  <span className="text-[#121826] dark:text-[#F3E5AB] font-num text-sm font-black">{formatCurrency(grandTotal)}</span>
                 </div>
               </div>
 
               {/* Client Contact */}
               <div className="space-y-2.5">
-                <div className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider font-mono">
-                  1. Contact & Identity
+                <div className="text-xs font-bold text-[#121826] dark:text-[#F8FAFC] uppercase tracking-wider font-mono flex items-center gap-1.5">
+                  <span className="text-[#D4AF37]">1.</span>
+                  <span>Contact & Identity</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div>
-                    <label className="block text-[9px] text-slate-500 dark:text-slate-400 uppercase font-mono font-bold mb-1">
+                    <label className="block text-[9px] text-[#8C7B65] dark:text-[#A3937C] uppercase font-mono font-bold mb-1">
                       Full Name *
                     </label>
                     <input
@@ -237,159 +239,159 @@ export default function CheckoutModal({
                       placeholder="e.g. Lord Alexander Sterling"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="w-full bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-slate-800 dark:focus:border-amber-400"
+                      className="w-full bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[#1E293B] rounded-xl px-3.5 py-2 text-xs text-[#121826] dark:text-[#F8FAFC] focus:outline-none focus:border-[#D4AF37]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[9px] text-slate-500 dark:text-slate-400 uppercase font-mono font-bold mb-1">
+                    <label className="block text-[9px] text-[#8C7B65] dark:text-[#A3937C] uppercase font-mono font-bold mb-1">
                       Email Address *
                     </label>
                     <input
                       type="email"
                       name="email"
                       required
-                      placeholder="collector@residence.com"
+                      placeholder="alexander@domain.com"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-slate-800 dark:focus:border-amber-400"
+                      className="w-full bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[#1E293B] rounded-xl px-3.5 py-2 text-xs text-[#121826] dark:text-[#F8FAFC] focus:outline-none focus:border-[#D4AF37]"
                     />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block text-[9px] text-slate-500 dark:text-slate-400 uppercase font-mono font-bold mb-1">
-                      Phone (Concierge Dispatch) *
+                    <label className="block text-[9px] text-[#8C7B65] dark:text-[#A3937C] uppercase font-mono font-bold mb-1">
+                      Private Telephone (for Air Courier Delivery) *
                     </label>
                     <input
                       type="tel"
                       name="phone"
                       required
-                      placeholder="+91 98765 43210"
+                      placeholder="+94 77 123 4567"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-slate-800 dark:focus:border-amber-400"
+                      className="w-full bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[#1E293B] rounded-xl px-3.5 py-2 text-xs text-[#121826] dark:text-[#F8FAFC] focus:outline-none focus:border-[#D4AF37]"
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Shipping Address */}
+              {/* Delivery Address */}
               <div className="space-y-2.5">
-                <div className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider font-mono">
-                  2. Destination
+                <div className="text-xs font-bold text-[#121826] dark:text-[#F8FAFC] uppercase tracking-wider font-mono flex items-center gap-1.5">
+                  <span className="text-[#D4AF37]">2.</span>
+                  <span>Insured Delivery Address</span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                  <div className="sm:col-span-3">
-                    <label className="block text-[9px] text-slate-500 dark:text-slate-400 uppercase font-mono font-bold mb-1">
-                      Residence / Suite Address *
+                <div className="space-y-2.5">
+                  <div>
+                    <label className="block text-[9px] text-[#8C7B65] dark:text-[#A3937C] uppercase font-mono font-bold mb-1">
+                      Street Address *
                     </label>
                     <input
                       type="text"
                       name="address"
                       required
-                      placeholder="Penthouse Suite, 42 Boulevard Avenue"
+                      placeholder="14 Royal Residences, Kensington Road"
                       value={formData.address}
                       onChange={handleInputChange}
-                      className="w-full bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-slate-800 dark:focus:border-amber-400"
+                      className="w-full bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[#1E293B] rounded-xl px-3.5 py-2 text-xs text-[#121826] dark:text-[#F8FAFC] focus:outline-none focus:border-[#D4AF37]"
                     />
                   </div>
-                  <div>
-                    <label className="block text-[9px] text-slate-500 dark:text-slate-400 uppercase font-mono font-bold mb-1">
-                      City *
-                    </label>
-                    <input
-                      type="text"
-                      name="city"
-                      required
-                      placeholder="Mumbai / London"
-                      value={formData.city}
-                      onChange={handleInputChange}
-                      className="w-full bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-slate-800 dark:focus:border-amber-400"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[9px] text-slate-500 dark:text-slate-400 uppercase font-mono font-bold mb-1">
-                      Postal Code *
-                    </label>
-                    <input
-                      type="text"
-                      name="postal_code"
-                      required
-                      placeholder="400001"
-                      value={formData.postal_code}
-                      onChange={handleInputChange}
-                      className="w-full bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-slate-800 dark:focus:border-amber-400"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[9px] text-slate-500 dark:text-slate-400 uppercase font-mono font-bold mb-1">
-                      Country
-                    </label>
-                    <input
-                      type="text"
-                      name="country"
-                      value={formData.country}
-                      onChange={handleInputChange}
-                      className="w-full bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-slate-800 dark:focus:border-amber-400"
-                    />
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                    <div>
+                      <label className="block text-[9px] text-[#8C7B65] dark:text-[#A3937C] uppercase font-mono font-bold mb-1">
+                        City *
+                      </label>
+                      <input
+                        type="text"
+                        name="city"
+                        required
+                        placeholder="Colombo"
+                        value={formData.city}
+                        onChange={handleInputChange}
+                        className="w-full bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[#1E293B] rounded-xl px-3.5 py-2 text-xs text-[#121826] dark:text-[#F8FAFC] focus:outline-none focus:border-[#D4AF37]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[9px] text-[#8C7B65] dark:text-[#A3937C] uppercase font-mono font-bold mb-1">
+                        Postal Code *
+                      </label>
+                      <input
+                        type="text"
+                        name="postal_code"
+                        required
+                        placeholder="00700"
+                        value={formData.postal_code}
+                        onChange={handleInputChange}
+                        className="w-full bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[#1E293B] rounded-xl px-3.5 py-2 text-xs text-[#121826] dark:text-[#F8FAFC] focus:outline-none focus:border-[#D4AF37]"
+                      />
+                    </div>
+                    <div className="col-span-2 sm:col-span-1">
+                      <label className="block text-[9px] text-[#8C7B65] dark:text-[#A3937C] uppercase font-mono font-bold mb-1">
+                        Country *
+                      </label>
+                      <select
+                        name="country"
+                        value={formData.country}
+                        onChange={handleInputChange}
+                        className="w-full bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[#1E293B] rounded-xl px-3 py-2 text-xs text-[#121826] dark:text-[#F8FAFC] focus:outline-none focus:border-[#D4AF37]"
+                      >
+                        <option value="Sri Lanka">Sri Lanka</option>
+                        <option value="India">India</option>
+                        <option value="Switzerland">Switzerland</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="United States">United States</option>
+                        <option value="United Arab Emirates">United Arab Emirates</option>
+                        <option value="Singapore">Singapore</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Sizing */}
+              {/* Horological Concierge Options */}
               <div className="space-y-2.5">
-                <div className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider font-mono">
-                  3. Wrist Sizing & Packaging
+                <div className="text-xs font-bold text-[#121826] dark:text-[#F8FAFC] uppercase tracking-wider font-mono flex items-center gap-1.5">
+                  <span className="text-[#D4AF37]">3.</span>
+                  <span>Bespoke Concierge Adjustments</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div>
-                    <label className="block text-[9px] text-slate-500 dark:text-slate-400 uppercase font-mono font-bold mb-1">
-                      Bracelet Sizing
+                    <label className="block text-[9px] text-[#8C7B65] dark:text-[#A3937C] uppercase font-mono font-bold mb-1">
+                      Wrist Circumference Sizing
                     </label>
                     <select
                       name="wrist_size"
                       value={formData.wrist_size}
                       onChange={handleInputChange}
-                      className="w-full bg-slate-50 dark:bg-[#0B0F17] border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-slate-800 dark:focus:border-amber-400 font-mono"
+                      className="w-full bg-[#FAF8F5] dark:bg-[#080B10] border border-[#E8E2D6] dark:border-[#1E293B] rounded-xl px-3 py-2 text-xs text-[#121826] dark:text-[#F8FAFC] focus:outline-none focus:border-[#D4AF37]"
                     >
-                      <option value="Standard (19cm)">Standard Unsized (All links included)</option>
-                      <option value="Fitted 16.5cm (Small)">Custom Sized: 16.5 cm Wrist</option>
-                      <option value="Fitted 17.5cm (Medium)">Custom Sized: 17.5 cm Wrist</option>
-                      <option value="Fitted 18.5cm (Large)">Custom Sized: 18.5 cm Wrist</option>
-                      <option value="Fitted 20cm (Extra Large)">Custom Sized: 20 cm Wrist</option>
+                      <option value="Standard (19cm)">Standard Factory Size (19cm)</option>
+                      <option value="Slim (16-17cm)">Slim Wrist (16–17cm adjusted)</option>
+                      <option value="Medium (17.5-18.5cm)">Medium Wrist (17.5–18.5cm)</option>
+                      <option value="Broad (19.5-21cm)">Broad Wrist (19.5–21cm)</option>
                     </select>
                   </div>
-
-                  <div className="flex items-center gap-3 pt-3 sm:pt-5">
+                  <div className="flex items-center gap-2 pt-4 px-2">
                     <input
                       type="checkbox"
                       id="gift_packaging"
                       name="gift_packaging"
                       checked={formData.gift_packaging}
                       onChange={handleInputChange}
-                      className="h-4 w-4 rounded accent-slate-900 dark:accent-amber-400"
+                      className="h-4 w-4 rounded accent-[#D4AF37] cursor-pointer"
                     />
-                    <label htmlFor="gift_packaging" className="text-xs text-slate-700 dark:text-slate-300 font-semibold">
-                      Lacquered Wooden Presentation Case
+                    <label htmlFor="gift_packaging" className="text-xs text-[#645A4C] dark:text-[#CBD5E1] cursor-pointer font-semibold">
+                      Signature Wooden Presentation Box
                     </label>
                   </div>
                 </div>
               </div>
 
-              {/* Submit Button */}
               <div className="pt-2">
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-3 rounded-xl lux-btn-primary text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 shadow-md hover:shadow-lg transition"
+                  className="w-full py-3.5 rounded-xl lux-btn-gold text-xs font-black uppercase tracking-widest cursor-pointer shadow-lg hover:shadow-xl transition-all"
                 >
-                  {submitting ? (
-                    <span>Calibrating Acquisition...</span>
-                  ) : (
-                    <>
-                      <span>Authorize Acquisition</span>
-                      <span>•</span>
-                      <span className="font-num">{formatCurrency(grandTotal)}</span>
-                    </>
-                  )}
+                  {submitting ? "Authenticating Acquisition..." : `Confirm Vault Acquisition • ${formatCurrency(grandTotal)}`}
                 </button>
               </div>
             </form>

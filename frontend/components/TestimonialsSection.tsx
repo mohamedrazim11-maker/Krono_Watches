@@ -26,18 +26,19 @@ export const TESTIMONIALS_DATA = [
 
 export default function TestimonialsSection() {
   return (
-    <section className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800 pb-3">
+    <section className="space-y-4 sm:space-y-5">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] pb-3.5">
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400 font-bold">
+          <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#D4AF37] dark:text-[#E5C158] font-bold">
             Collector Endorsements
           </span>
-          <h2 className="text-2xl sm:text-3xl font-black font-display text-slate-900 dark:text-white uppercase tracking-tight">
-            The <span className="text-slate-900 dark:text-white underline decoration-slate-300 dark:decoration-slate-700 decoration-2">Guild</span>
+          <h2 className="text-2xl sm:text-3xl font-black font-display text-[#121826] dark:text-[#F8FAFC] uppercase tracking-tight">
+            The <span className="gold-gradient-text">Horological Guild</span>
           </h2>
         </div>
-        <div className="text-xs text-slate-600 dark:text-slate-400 font-mono font-semibold">
-          <span>★★★★★ 4.98 / 5.0 (1,240+ Verified Collectors)</span>
+        <div className="text-xs text-[#D4AF37] dark:text-[#E5C158] font-mono font-bold flex items-center gap-1.5">
+          <span>★★★★★</span>
+          <span className="text-[#8C7B65] dark:text-[#CBD5E1]">4.98 / 5.0 (1,240+ Verified Collectors)</span>
         </div>
       </div>
 
@@ -45,20 +46,23 @@ export default function TestimonialsSection() {
         {TESTIMONIALS_DATA.map((item, idx) => (
           <div
             key={idx}
-            className="rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 space-y-3 flex flex-col justify-between bg-white dark:bg-[#131B2A] hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md transition duration-300 shadow-sm"
+            className="rounded-2xl border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.14)] p-5 space-y-4 flex flex-col justify-between bg-white dark:bg-[#0E1420] hover:border-[#D4AF37] dark:hover:border-[#E5C158] hover:shadow-xl transition-all duration-300 shadow-md"
           >
-            <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed italic font-normal">
-              "{item.quote}"
-            </p>
+            <div className="space-y-2">
+              <div className="text-[#D4AF37] text-sm">★★★★★</div>
+              <p className="text-xs text-[#645A4C] dark:text-[#CBD5E1] leading-relaxed italic font-normal">
+                "{item.quote}"
+              </p>
+            </div>
 
-            <div className="pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <div className="pt-3 border-t border-[#EBE5DB] dark:border-[#182234] flex items-center justify-between">
               <div>
-                <div className="text-xs font-bold text-slate-900 dark:text-white font-display">
+                <div className="text-xs font-bold text-[#121826] dark:text-[#F8FAFC] font-display">
                   {item.name}
                 </div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 font-sans">{item.role}</div>
+                <div className="text-[10px] text-[#8C7B65] dark:text-[#64748B] font-sans">{item.role}</div>
               </div>
-              <div className="text-[9px] uppercase font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 font-bold">
+              <div className="text-[9px] uppercase font-mono px-2.5 py-0.5 rounded-full bg-[#FAF8F5] dark:bg-[#141D2E] text-[#8C6212] dark:text-[#F3E5AB] border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] font-bold">
                 {item.city}
               </div>
             </div>

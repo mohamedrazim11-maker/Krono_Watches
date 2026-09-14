@@ -16,32 +16,34 @@ export default function Footer() {
   };
 
   return (
-    <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0B0F17] text-slate-600 dark:text-slate-400 text-xs font-sans transition-colors duration-200">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 lg:py-12 space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-6">
-          {/* Brand & Newsletter */}
-          <div className="lg:col-span-2 space-y-3">
+    <footer className="border-t border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] bg-white dark:bg-[#040609] text-[#645A4C] dark:text-[#CBD5E1] text-xs font-sans transition-colors duration-300">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 lg:py-16 space-y-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-8">
+          {/* Brand & VIP Gazette */}
+          <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-3 group">
-              <img
-                src="/icon.jpg"
-                alt="Krono Logo"
-                className="h-9 w-9 rounded-xl object-contain bg-white dark:bg-slate-800 p-0.5 border border-slate-200/90 dark:border-slate-700 shadow-sm group-hover:scale-105 transition"
-              />
-              <div className="text-sm font-black tracking-[0.25em] text-slate-900 dark:text-white uppercase font-display">
+              <div className="p-0.5 rounded-xl bg-gradient-to-br from-[#F3E5AB] via-[#D4AF37] to-[#8C6212] shadow-sm group-hover:scale-105 transition-transform duration-300">
+                <img
+                  src="/icon.jpg"
+                  alt="Krono Logo"
+                  className="h-9 w-9 rounded-[10px] object-contain bg-[#080B10] p-0.5"
+                />
+              </div>
+              <div className="text-base font-black tracking-[0.25em] text-[#121826] dark:text-[#F8FAFC] uppercase font-display">
                 K R O N O
               </div>
             </Link>
-            <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed max-w-sm">
-              Precision Swiss mechanical watchmaking. Hand-calibrated escapements, serialized exhibition casebacks, and diamond-grade sapphire crystal.
+            <p className="text-[#8C7B65] dark:text-[#CBD5E1] text-xs leading-relaxed max-w-sm">
+              Precision Swiss mechanical horology. Hand-calibrated escapements, serialized exhibition casebacks, and diamond-grade sapphire crystals.
             </p>
 
-            {/* Newsletter */}
-            <div className="pt-1">
-              <div className="text-[10px] uppercase tracking-[0.2em] text-slate-900 dark:text-slate-200 font-mono font-bold mb-1.5">
-                Private Gazette Subscription
+            {/* Newsletter Gazette Form */}
+            <div className="pt-2">
+              <div className="text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] dark:text-[#E5C158] font-mono font-bold mb-2">
+                Private Gazette Registry
               </div>
               {subscribed ? (
-                <div className="text-emerald-800 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 px-3 py-1.5 rounded-lg text-xs font-medium">
+                <div className="text-[#059669] dark:text-[#10B981] bg-[#ECFDF5] dark:bg-[#064E3B]/30 border border-[#10B981]/40 px-3.5 py-2 rounded-xl text-xs font-semibold">
                   ✓ Enrolled in the Krono Private Registry. Welcome.
                 </div>
               ) : (
@@ -52,11 +54,11 @@ export default function Footer() {
                     placeholder="Enter collector email..."
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-slate-900 dark:focus:border-slate-500"
+                    className="flex-1 bg-[#FAF8F5] dark:bg-[#0E1420] border border-[#E8E2D6] dark:border-[rgba(212,175,55,0.2)] rounded-xl px-3.5 py-2 text-xs text-[#121826] dark:text-[#F8FAFC] placeholder-[#8C7B65] dark:placeholder-[#64748B] focus:outline-none focus:border-[#D4AF37]"
                   />
                   <button
                     type="submit"
-                    className="lux-btn-primary px-3.5 py-2 rounded-lg text-xs cursor-pointer uppercase tracking-wider font-bold"
+                    className="lux-btn-gold px-4 py-2 rounded-xl text-xs cursor-pointer uppercase tracking-wider font-extrabold shadow-md"
                   >
                     Join
                   </button>
@@ -66,49 +68,49 @@ export default function Footer() {
           </div>
 
           {/* Salons */}
-          <div className="space-y-2.5">
-            <h4 className="text-slate-900 dark:text-white text-xs font-bold uppercase tracking-[0.2em] font-mono border-b border-slate-200 dark:border-slate-800 pb-1.5">
-              Boutiques
+          <div className="space-y-3">
+            <h4 className="text-[#121826] dark:text-[#F8FAFC] text-xs font-bold uppercase tracking-[0.2em] font-mono border-b border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] pb-1.5">
+              Private Salons
             </h4>
-            <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
+            <ul className="space-y-2 text-xs text-[#645A4C] dark:text-[#CBD5E1]">
               <li>
-                <span className="text-slate-900 dark:text-slate-200 font-semibold">Genève Atelier</span>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400">Rue du Rhône 42, Switzerland</div>
+                <span className="text-[#121826] dark:text-[#F3E5AB] font-semibold">Genève Atelier</span>
+                <div className="text-[11px] text-[#8C7B65] dark:text-[#64748B]">Rue du Rhône 42, Switzerland</div>
               </li>
               <li>
-                <span className="text-slate-900 dark:text-slate-200 font-semibold">London Mayfair</span>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400">14 New Bond Street, UK</div>
+                <span className="text-[#121826] dark:text-[#F3E5AB] font-semibold">London Mayfair</span>
+                <div className="text-[11px] text-[#8C7B65] dark:text-[#64748B]">14 New Bond Street, UK</div>
               </li>
               <li>
-                <span className="text-slate-900 dark:text-slate-200 font-semibold">New York 5th Ave</span>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400">745 Fifth Avenue, NY</div>
+                <span className="text-[#121826] dark:text-[#F3E5AB] font-semibold">New York 5th Ave</span>
+                <div className="text-[11px] text-[#8C7B65] dark:text-[#64748B]">745 Fifth Avenue, NY</div>
               </li>
             </ul>
           </div>
 
           {/* Collections */}
-          <div className="space-y-2.5">
-            <h4 className="text-slate-900 dark:text-white text-xs font-bold uppercase tracking-[0.2em] font-mono border-b border-slate-200 dark:border-slate-800 pb-1.5">
-              Collections
+          <div className="space-y-3">
+            <h4 className="text-[#121826] dark:text-[#F8FAFC] text-xs font-bold uppercase tracking-[0.2em] font-mono border-b border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] pb-1.5">
+              Curations
             </h4>
-            <ul className="space-y-1.5 text-xs">
+            <ul className="space-y-2 text-xs">
               <li>
-                <Link href="/catalog" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                <Link href="/catalog" className="text-[#645A4C] dark:text-[#CBD5E1] hover:text-[#D4AF37] dark:hover:text-[#E5C158] transition">
                   Grand Complications
                 </Link>
               </li>
               <li>
-                <Link href="/catalog" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                <Link href="/catalog" className="text-[#645A4C] dark:text-[#CBD5E1] hover:text-[#D4AF37] dark:hover:text-[#E5C158] transition">
                   Automatic Mechanicals
                 </Link>
               </li>
               <li>
-                <Link href="/catalog" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                <Link href="/catalog" className="text-[#645A4C] dark:text-[#CBD5E1] hover:text-[#D4AF37] dark:hover:text-[#E5C158] transition">
                   Titanium Chronographs
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                <Link href="/about" className="text-[#645A4C] dark:text-[#CBD5E1] hover:text-[#D4AF37] dark:hover:text-[#E5C158] transition">
                   Atelier Heritage
                 </Link>
               </li>
@@ -116,34 +118,41 @@ export default function Footer() {
           </div>
 
           {/* Guarantees */}
-          <div className="space-y-2.5">
-            <h4 className="text-slate-900 dark:text-white text-xs font-bold uppercase tracking-[0.2em] font-mono border-b border-slate-200 dark:border-slate-800 pb-1.5">
+          <div className="space-y-3">
+            <h4 className="text-[#121826] dark:text-[#F8FAFC] text-xs font-bold uppercase tracking-[0.2em] font-mono border-b border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] pb-1.5">
               Guarantees
             </h4>
-            <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
-              <li>• 5-Year Certified Warranty</li>
-              <li>• Insured Global Air Courier</li>
-              <li>• Serialized Authenticity Card</li>
-              <li className="pt-1">
-                <Link href="/admin" className="text-slate-900 dark:text-slate-200 font-bold hover:underline text-[11px]">
-                  Management Console →
+            <ul className="space-y-2 text-xs text-[#645A4C] dark:text-[#CBD5E1]">
+              <li className="flex items-center gap-1.5">
+                <span className="text-[#D4AF37]">✦</span> 5-Year Certified Warranty
+              </li>
+              <li className="flex items-center gap-1.5">
+                <span className="text-[#D4AF37]">✦</span> Insured Global Air Courier
+              </li>
+              <li className="flex items-center gap-1.5">
+                <span className="text-[#D4AF37]">✦</span> Serialized Authenticity Card
+              </li>
+              <li className="pt-2">
+                <Link href="/admin" className="text-[#D4AF37] dark:text-[#E5C158] font-bold hover:underline text-[11px] flex items-center gap-1">
+                  <span>Management Console</span>
+                  <span>→</span>
                 </Link>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom copyright */}
-        <div className="border-t border-slate-200 dark:border-slate-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500 dark:text-slate-400">
+        {/* Bottom copyright & Swiss Badges */}
+        <div className="border-t border-[#E8E2D6] dark:border-[rgba(212,175,55,0.18)] pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#8C7B65] dark:text-[#CBD5E1]">
           <div>
             © {new Date().getFullYear()} KRONO ATELIER S.A. Registered Swiss Horologists.
           </div>
-          <div className="flex items-center gap-4 text-slate-500 dark:text-slate-400 font-mono text-[10px]">
-            <span>COSC STANDARD</span>
+          <div className="flex items-center gap-4 text-[#8C7B65] dark:text-[#A3937C] font-mono text-[10px]">
+            <span className="text-[#D4AF37]">COSC CHRONOMETER</span>
             <span>•</span>
             <span>256-BIT SSL ENCRYPTION</span>
             <span>•</span>
-            <span>WORLDWIDE TRANSIT</span>
+            <span className="text-[#D4AF37]">GENÈVE REGISTRY</span>
           </div>
         </div>
       </div>
