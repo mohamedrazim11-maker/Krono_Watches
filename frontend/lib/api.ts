@@ -201,9 +201,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "VIP Allocation",
     is_on_promotion: true,
     promo_discount_percent: 8,
-    image_url: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/seastar_1000_powermatic.jpg",
     images: [
-      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/seastar_1000_powermatic.jpg",
       "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
       "/images/watches/submariner_deep_black_ceramic.jpg",
     ],
@@ -290,9 +290,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Valid Sep 2026",
     is_on_promotion: true,
     promo_discount_percent: 13,
-    image_url: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/seastar_1000_powermatic.jpg",
     images: [
-      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/seastar_1000_powermatic.jpg",
       "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
       "/images/watches/submariner_deep_black_ceramic.jpg",
     ],
@@ -495,9 +495,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Japan Domestic Masterpiece",
     is_on_promotion: true,
     promo_discount_percent: 12,
-    image_url: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/seastar_1000_powermatic.jpg",
     images: [
-      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/seastar_1000_powermatic.jpg",
       "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85"
     ],
@@ -530,7 +530,7 @@ export const FALLBACK_PRODUCTS: Product[] = [
     images: [
       "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/seastar_1000_powermatic.jpg"
     ],
     description: "The dial captures the serene texture of fresh snow on the Shinshu mountains. Powered by the unique Spring Drive Calibre 9R65 with a mesmerizing, perfectly continuous gliding seconds hand.",
     movement: "Grand Seiko Calibre 9R65 Spring Drive (+/- 1s/day)",
@@ -584,9 +584,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Manual Wind Master",
     is_on_promotion: true,
     promo_discount_percent: 11,
-    image_url: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/seastar_1000_powermatic.jpg",
     images: [
-      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/seastar_1000_powermatic.jpg",
       "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85"
     ],
@@ -646,7 +646,7 @@ export const FALLBACK_PRODUCTS: Product[] = [
     images: [
       "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/seastar_1000_powermatic.jpg"
     ],
     description: "Pure white enamel dial fired by master artisan Mitsuru Yokosawa. Traditional Roman numerals, tempered blue hands, and the new automatic Calibre 6R55 with 72 hours power reserve.",
     movement: "Seiko Automatic Calibre 6R55 (72-Hour Reserve)",
@@ -706,7 +706,7 @@ export const FALLBACK_PRODUCTS: Product[] = [
     images: [
       "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/seastar_1000_powermatic.jpg"
     ],
     description: "The ultimate daily watch for the modern gentleman. Deep sunburst blue dial, crosshair motif, exhibition caseback, and anti-magnetic silicon hairspring.",
     movement: "Swiss Powermatic 80 Silicium Automatic",
@@ -793,7 +793,7 @@ export const FALLBACK_PRODUCTS: Product[] = [
     images: [
       "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/seastar_1000_powermatic.jpg"
     ],
     description: "Official Swiss Chronometer Testing Institute (COSC) certified precision. Fluted bezel with guilloché inner dial ring, silicon balance spring, and stainless steel link bracelet.",
     movement: "COSC Certified Powermatic 80 Silicium",

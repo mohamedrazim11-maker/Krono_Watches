@@ -19,7 +19,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className="h-full antialiased"
+      className="dark h-full antialiased"
     >
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -32,18 +32,13 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                const theme = localStorage.getItem('krono_theme');
-                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                  document.documentElement.classList.add('dark');
-                } else {
-                  document.documentElement.classList.remove('dark');
-                }
+                document.documentElement.classList.add('dark');
               } catch (_) {}
             `,
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-[#FAF8F5] dark:bg-[#080B10] text-[#121826] dark:text-[#F8FAFC] selection:bg-[#D4AF37] selection:text-[#080B10] dark:selection:bg-[#E5C158] dark:selection:text-[#080B10] font-sans transition-colors duration-300">
+      <body className="min-h-full flex flex-col bg-[#050505] text-white selection:bg-[#C5A059] selection:text-black font-sans">
         <AuthProvider>
           <CartProvider>{children}</CartProvider>
         </AuthProvider>

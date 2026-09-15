@@ -6,7 +6,6 @@ import Link from "next/link";
 import { fetchProductById, fetchProducts, Product } from "@/lib/api";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import ProductCard from "@/components/ProductCard";
 import SmoothImage from "@/components/SmoothImage";
 import CartDrawer from "@/components/CartDrawer";
 import WishlistDrawer from "@/components/WishlistDrawer";
@@ -44,9 +43,6 @@ export default function ProductDetailPage() {
     cart,
     wishlist,
     addToCart,
-    removeFromCart,
-    updateQuantity,
-    clearCart,
     toggleWishlist,
     isInWishlist,
     isCartOpen,
@@ -55,10 +51,6 @@ export default function ProductDetailPage() {
     setIsWishlistOpen,
     isCheckoutOpen,
     setIsCheckoutOpen,
-    appliedCoupon,
-    couponDiscountPercent,
-    applyCoupon,
-    grandTotal,
     toastMessage,
     showToast,
   } = useCart();
@@ -99,51 +91,39 @@ export default function ProductDetailPage() {
     setZoomPos({ x, y });
   };
 
-  const handleConciergeSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setConciergeSent(true);
-    setTimeout(() => {
-      setIsConciergeOpen(false);
-      setConciergeSent(false);
-      setConciergeMsg("");
-      showToast("Consultation request transmitted to Geneva salon.");
-    }, 2000);
-  };
-
   const formatCurrency = (amount: number) => {
     return `LKR ${Number(amount || 0).toLocaleString("en-US")}`;
   };
-
-  const images = product ? getProductImages(product.id, product.images, product.image_url) : [];
-  const currentImage = images[activeImageIndex] || getProductImage(product?.id ?? '', product?.image_url);
 
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#E8EEF3] dark:bg-[#0E1A16] flex flex-col">
+      <div className="min-h-screen bg-[#050505] text-white flex flex-col">
         <Navbar cartCount={totalCartCount} wishlistCount={wishlist.length} />
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-center space-y-3 font-mono text-xs text-[#006039] dark:text-[#4ADE80]">
-            <div className="animate-spin text-2xl mx-auto">✦</div>
+          <div className="text-center space-y-3 font-mono text-xs text-[#C5A059] animate-pulse">
+            <div>✦</div>
             <div>Calibrating Horological Dossier...</div>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-[#E8EEF3] dark:bg-[#0E1A16] flex flex-col text-[#0F172A] dark:text-[#F8FAFC]">
+      <div className="min-h-screen bg-[#050505] text-white flex flex-col">
         <Navbar cartCount={totalCartCount} wishlistCount={wishlist.length} />
         <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-4 text-center">
-          <div className="text-4xl text-[#CBD5E1] dark:text-[#1F4535]">✦</div>
-          <h2 className="text-xl font-bold font-display text-[#0F172A] dark:text-[#F8FAFC] uppercase">
-            Reference Not Located
-          </h2>
-          <Link href="/catalog" className="neu-btn-primary px-6 py-2.5 rounded-2xl text-xs uppercase font-bold">
-            Return to Catalogue Vault
+          <div className="text-4xl text-[#C5A059]">✦</div>
+          <h2 className="text-xl font-bold uppercase tracking-tight">Reference Not Located</h2>
+          <Link
+            href="/catalog"
+            className="px-6 py-2.5 bg-[#C5A059] text-black text-xs font-mono font-bold uppercase tracking-wider hover:bg-[#b08d48]"
+          >
+            Return to Catalogue
           </Link>
         </div>
         <Footer />
@@ -151,20 +131,11 @@ export default function ProductDetailPage() {
     );
   }
 
-  const hasDiscount = product.old_price && product.old_price > product.price;
-  const discountPercent = hasDiscount
-    ? Math.round(((product.old_price! - product.price) / product.old_price!) * 100)
-    : product.promo_discount_percent || 0;
+  const galleryImages = getProductImages(product.id, product.images, product.image_url);
+  const activeImage = galleryImages[activeImageIndex] || galleryImages[0];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#E8EEF3] dark:bg-[#0E1A16] text-[#0F172A] dark:text-[#F8FAFC] selection:bg-[#006039] selection:text-white transition-colors duration-300">
-      {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 neu-raised-lg text-white bg-[#006039] dark:bg-[#0E1A16] px-5 py-3.5 rounded-2xl text-xs font-mono font-bold flex items-center gap-2.5 animate-pageEnter">
-          <span className="text-[#4ADE80]">✦</span>
-          <span>{toastMessage}</span>
-        </div>
-      )}
-
+    <div className="min-h-screen flex flex-col bg-[#050505] text-white selection:bg-[#C5A059] selection:text-black">
       <Navbar
         cartCount={totalCartCount}
         wishlistCount={wishlist.length}
@@ -172,378 +143,295 @@ export default function ProductDetailPage() {
         onOpenWishlist={() => setIsWishlistOpen(true)}
       />
 
-      <main className="flex-1 mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8 space-y-8 sm:space-y-12">
-        {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-xs text-[#5A6D64] dark:text-[#CBD5E1] font-mono uppercase font-semibold">
-          <Link href="/" className="hover:text-[#006039]">Home</Link>
+      {/* Global Toast */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-[#C5A059] text-black px-5 py-3 rounded-lg text-xs font-bold font-mono uppercase tracking-wider flex items-center gap-2 shadow-2xl">
+          <span>✦</span>
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 space-y-12">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-xs font-mono text-white/50">
+          <Link href="/" className="hover:text-white">Home</Link>
           <span>/</span>
-          <Link href="/catalog" className="hover:text-[#006039]">Catalogue</Link>
+          <Link href="/catalog" className="hover:text-white">Catalogue</Link>
           <span>/</span>
-          <span className="text-[#0F172A] dark:text-[#F8FAFC] truncate max-w-xs">{product.name}</span>
-        </nav>
+          <span className="text-[#C5A059] truncate max-w-xs">{product.name}</span>
+        </div>
 
         {/* Master Detail Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
           {/* Gallery View */}
-          <div className="lg:col-span-6 space-y-4">
+          <div className="lg:col-span-7 space-y-4">
             <div
               ref={imageContainerRef}
               onMouseEnter={() => setIsHoverZooming(true)}
               onMouseLeave={() => setIsHoverZooming(false)}
               onMouseMove={handleMouseMove}
               onClick={() => setIsLightboxOpen(true)}
-              className="relative aspect-square rounded-[2rem] neu-inset overflow-hidden cursor-zoom-in group"
+              className="relative aspect-square bg-[#0D0D0D] border border-[#1a1a1a] overflow-hidden cursor-zoom-in group"
             >
               {/* Badges */}
-              <div className="absolute top-4 left-4 z-20 flex flex-wrap gap-2">
+              <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
                 {product.badge && (
-                  <span className="text-[9px] font-mono font-bold uppercase tracking-wider px-3.5 py-1 rounded-full neu-raised-sm bg-[#006039] text-white">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest px-3 py-1 bg-[#C5A059] text-black shadow">
                     {product.badge}
                   </span>
                 )}
-                {discountPercent > 0 && (
-                  <span className="text-[9px] font-mono font-bold px-2.5 py-1 rounded-full border border-[#E11D48]/30 bg-[#FFF1F2] dark:bg-[#4C0519]/40 text-[#E11D48]">
-                    -{discountPercent}%
+                {product.is_on_promotion && (
+                  <span className="text-[10px] font-mono font-bold tracking-widest px-2.5 py-0.5 bg-red-600 text-white uppercase">
+                    -{product.promo_discount_percent || 10}% Special Allocation
                   </span>
                 )}
               </div>
 
-              <SmoothImage
-                src={currentImage}
-                alt={product.name}
-                className={`w-full h-full object-cover transition-opacity duration-300 ${
-                  isHoverZooming ? "opacity-0" : "opacity-100"
-                }`}
-              />
-
-              {isHoverZooming && (
+              {/* Zoom or Standard Image */}
+              {isHoverZooming ? (
                 <div
-                  className="absolute inset-0 pointer-events-none bg-no-repeat rounded-[2rem]"
+                  className="w-full h-full"
                   style={{
-                    backgroundImage: `url(${getProductImage(product.id, currentImage)})`,
+                    backgroundImage: `url(${activeImage})`,
                     backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
-                    backgroundSize: "240%",
+                    backgroundSize: "220%",
                   }}
                 />
+              ) : (
+                <SmoothImage
+                  src={activeImage}
+                  alt={product.name}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  priority
+                />
               )}
-
-              <div className="absolute bottom-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition text-[9px] font-mono uppercase text-[#0F172A] dark:text-[#F8FAFC] neu-raised px-3 py-1.5 rounded-xl">
-                Click to Expand
-              </div>
             </div>
 
-            {images.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto pb-2">
-                {images.map((img, idx) => (
+            {/* Thumbnail Strip */}
+            {galleryImages.length > 1 && (
+              <div className="flex items-center gap-3 overflow-x-auto pb-2">
+                {galleryImages.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveImageIndex(idx)}
-                    className={`h-16 w-16 sm:h-20 sm:w-20 rounded-2xl transition overflow-hidden flex-shrink-0 cursor-pointer ${
-                      activeImageIndex === idx
-                        ? "neu-inset border-2 border-[#006039] dark:border-[#00A362]"
-                        : "neu-btn opacity-60 hover:opacity-100"
+                    className={`w-20 h-20 bg-[#0D0D0D] border relative overflow-hidden flex-shrink-0 transition-all ${
+                      activeImageIndex === idx ? "border-[#C5A059] scale-105" : "border-[#1a1a1a] opacity-60 hover:opacity-100"
                     }`}
                   >
-                    <SmoothImage src={img} alt="" className="h-full w-full object-cover" />
+                    <SmoothImage src={img} alt={`Angle ${idx + 1}`} className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Specifications & Actions */}
-          <div className="lg:col-span-6 space-y-5">
-            <div className="flex items-center justify-between border-b border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] pb-3">
-              <span className="text-xs uppercase tracking-[0.2em] text-[#006039] dark:text-[#4ADE80] font-mono font-bold">
-                {product.category} Series • {product.brand || "Krono Atelier"}
-              </span>
-              <span className="text-[10px] text-[#006039] dark:text-[#10B981] neu-raised-sm px-3 py-1 rounded-full font-mono uppercase font-bold flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#006039] dark:bg-[#10B981] animate-pulse"></span> Superlative Chronometer
-              </span>
-            </div>
-
-            <h1 className="text-2xl sm:text-4xl font-black font-display text-[#0F172A] dark:text-[#F8FAFC] uppercase leading-tight tracking-tight">
-              {product.name}
-            </h1>
-
-            {/* Valuation Price Box */}
-            <div className="rounded-3xl neu-card p-5 sm:p-6 flex items-baseline justify-between">
-              <div>
-                <div className="text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase tracking-widest font-mono font-bold">
-                  Valuation
-                </div>
-                <div className="flex items-baseline gap-3 pt-1">
-                  <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#006039] dark:text-[#4ADE80] font-num">
-                    {formatCurrency(product.price)}
+          {/* Product Dossier & Buying Controls */}
+          <div className="lg:col-span-5 space-y-6">
+            <div className="space-y-2 border-b border-[#1a1a1a] pb-6">
+              <div className="flex items-center justify-between text-xs font-mono uppercase text-[#C5A059] font-bold tracking-widest">
+                <span>{product.brand}</span>
+                <span className="text-white/40">{product.category}</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-serif font-bold text-white leading-tight">
+                {product.name}
+              </h1>
+              <div className="flex items-baseline gap-3 pt-2">
+                <span className="text-2xl sm:text-3xl font-mono font-bold text-[#C5A059]">
+                  {formatCurrency(product.price)}
+                </span>
+                {product.old_price && product.old_price > product.price && (
+                  <span className="text-sm font-mono text-white/40 line-through">
+                    {formatCurrency(product.old_price)}
                   </span>
-                  {hasDiscount && (
-                    <span className="text-base text-[#64748B] line-through font-num">
-                      {formatCurrency(product.old_price!)}
-                    </span>
-                  )}
-                </div>
+                )}
               </div>
-              <div className="text-right text-[10px] text-[#5A6D64] dark:text-[#8EAA9C] font-mono">
-                <div>Insured Air Transit Included</div>
-                <div className="text-[#006039] dark:text-[#4ADE80] font-bold">5-Yr Concierge Warranty</div>
+              <div className="flex items-center gap-2 pt-1 text-xs font-mono">
+                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span className="text-emerald-400 font-bold uppercase tracking-wider">
+                  Vault Ready • Complimentary Armored Transit
+                </span>
               </div>
             </div>
 
-            <p className="text-xs sm:text-sm text-[#475569] dark:text-[#CBD5E1] leading-relaxed font-normal">
-              {product.description ||
-                "A triumph of micro-mechanical watchmaking. Engineered with a Superlative Chronometer escapement, serialized exhibition caseback revealing hand-finished perlage bevels, and anti-reflective double-domed sapphire crystal."}
-            </p>
+            {/* Description */}
+            <div className="space-y-2 text-xs text-white/70 font-mono leading-relaxed">
+              <p>{product.description}</p>
+            </div>
 
-            {/* Technical Matrix */}
-            <div className="space-y-2.5">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-[#0F172A] dark:text-[#F8FAFC] font-mono flex items-center gap-1.5">
-                <span className="text-[#006039] dark:text-[#4ADE80]">✦</span> Technical Matrix
-              </h3>
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="p-3.5 rounded-2xl neu-inset space-y-0.5">
-                  <span className="text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-semibold">Calibre</span>
-                  <div className="font-bold text-[#0F172A] dark:text-[#F8FAFC] truncate font-mono">{product.movement || "Swiss Calibre Automatic"}</div>
-                </div>
-                <div className="p-3.5 rounded-2xl neu-inset space-y-0.5">
-                  <span className="text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-semibold">Case Diameter</span>
-                  <div className="font-bold text-[#0F172A] dark:text-[#F8FAFC] truncate font-mono">{product.case_size || "41mm"}</div>
-                </div>
-                <div className="p-3.5 rounded-2xl neu-inset space-y-0.5">
-                  <span className="text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-semibold">Material</span>
-                  <div className="font-bold text-[#0F172A] dark:text-[#F8FAFC] truncate">{product.case_material || "Oystersteel (904L)"}</div>
-                </div>
-                <div className="p-3.5 rounded-2xl neu-inset space-y-0.5">
-                  <span className="text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-semibold">Water Resistance</span>
-                  <div className="font-bold text-[#0F172A] dark:text-[#F8FAFC] truncate font-mono">{product.water_resistance || "300M"}</div>
-                </div>
+            {/* Specifications Summary Grid */}
+            <div className="grid grid-cols-2 gap-3 py-4 border-y border-[#1a1a1a] text-xs font-mono">
+              <div className="bg-[#0D0D0D] p-3 border border-[#1a1a1a]">
+                <span className="text-white/40 uppercase block text-[10px]">Calibre Movement</span>
+                <span className="text-white font-semibold">{product.movement || "In-House Swiss Automatic"}</span>
+              </div>
+              <div className="bg-[#0D0D0D] p-3 border border-[#1a1a1a]">
+                <span className="text-white/40 uppercase block text-[10px]">Case Diameter</span>
+                <span className="text-white font-semibold">{product.case_size || "41mm"}</span>
+              </div>
+              <div className="bg-[#0D0D0D] p-3 border border-[#1a1a1a]">
+                <span className="text-white/40 uppercase block text-[10px]">Case Material</span>
+                <span className="text-white font-semibold">{product.case_material || "Oystersteel 904L"}</span>
+              </div>
+              <div className="bg-[#0D0D0D] p-3 border border-[#1a1a1a]">
+                <span className="text-white/40 uppercase block text-[10px]">Water Resistance</span>
+                <span className="text-white font-semibold">{product.water_resistance || "100m (10 ATM)"}</span>
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="space-y-3.5 pt-2">
+            {/* Action Buttons */}
+            <div className="space-y-3 pt-2">
               <div className="flex items-center gap-3">
-                <div className="flex items-center neu-inset rounded-2xl px-3.5 py-2.5 text-xs">
+                <div className="flex items-center border border-[#2a2a2a] bg-[#111]">
                   <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white px-2 font-bold cursor-pointer"
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    className="px-3 py-2 text-white/70 hover:text-white"
                   >
                     -
                   </button>
-                  <span className="font-mono text-[#0F172A] dark:text-[#F8FAFC] text-xs px-2 font-bold">
-                    {quantity}
-                  </span>
+                  <span className="px-4 py-2 font-mono text-xs font-bold">{quantity}</span>
                   <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white px-2 font-bold cursor-pointer"
+                    onClick={() => setQuantity((q) => q + 1)}
+                    className="px-3 py-2 text-white/70 hover:text-white"
                   >
                     +
                   </button>
                 </div>
 
                 <button
-                  onClick={() => addToCart(product, quantity)}
-                  disabled={product.in_stock === false}
-                  className="flex-1 py-3.5 px-6 rounded-2xl neu-btn-primary text-xs font-black uppercase tracking-wider cursor-pointer shadow-lg transition"
+                  onClick={() => {
+                    addToCart(product, quantity);
+                    showToast(`Added ${quantity} × ${product.name} to portfolio.`);
+                  }}
+                  className="flex-1 py-3 bg-white hover:bg-[#C5A059] hover:text-black text-black font-semibold text-xs tracking-widest uppercase transition-colors"
                 >
-                  {product.in_stock === false ? "Out of Stock" : "Add to Cart"}
+                  Add to Vault Cart
                 </button>
 
                 <button
                   onClick={() => toggleWishlist(product)}
-                  className={`p-3.5 rounded-2xl transition cursor-pointer ${
-                    isWishlisted
-                      ? "neu-inset text-[#E11D48]"
-                      : "neu-btn-icon text-[#5A6D64] hover:text-[#006039]"
+                  className={`p-3 border transition-colors ${
+                    isWishlisted ? "border-red-500 text-red-500" : "border-[#2a2a2a] text-white/60 hover:text-white"
                   }`}
-                  title="Wishlist"
+                  title="Save to Wishlist"
                 >
-                  ♡
+                  ♥
                 </button>
               </div>
 
               <button
                 onClick={handleBuyNow}
-                disabled={product.in_stock === false}
-                className="w-full py-3.5 rounded-2xl neu-btn text-xs font-black uppercase tracking-widest cursor-pointer hover:neu-raised"
+                className="w-full py-3.5 bg-[#C5A059] hover:bg-[#b08d48] text-black font-bold text-xs tracking-widest uppercase transition-all shadow-lg hover:shadow-[#C5A059]/20"
               >
-                Instant Concierge Checkout →
+                Instant Acquisition • Protected Checkout
               </button>
 
-              <div className="text-center pt-1">
-                <button
-                  onClick={() => setIsConciergeOpen(true)}
-                  className="text-xs text-[#006039] dark:text-[#4ADE80] hover:underline font-mono cursor-pointer font-bold"
-                >
-                  Request Private Salon Viewing or Custom Sizing →
-                </button>
-              </div>
+              <button
+                onClick={() => setIsConciergeOpen(true)}
+                className="w-full py-2.5 border border-white/20 hover:border-white text-white/80 hover:text-white text-xs font-mono uppercase tracking-wider transition-colors"
+              >
+                Private Concierge Consultation
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Related Timepieces */}
+        {/* Related References */}
         {relatedProducts.length > 0 && (
-          <section className="space-y-5 border-t border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] pt-8 sm:pt-10">
+          <div className="pt-12 border-t border-[#1a1a1a] space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#006039] dark:text-[#4ADE80] font-bold neu-raised-sm px-3 py-1 rounded-full">
-                  Complementary Calibres
+                <span className="text-[10px] font-mono text-[#C5A059] uppercase tracking-widest font-bold">
+                  Curated Pairings
                 </span>
-                <h2 className="text-xl sm:text-2xl font-black font-display text-[#0F172A] dark:text-[#F8FAFC] uppercase tracking-tight mt-1">
-                  Related <span className="rolex-gradient-text">Timepieces</span>
+                <h2 className="text-xl font-serif font-bold text-white uppercase">
+                  Related Horological References
                 </h2>
               </div>
-              <Link href="/catalog" className="text-xs font-mono font-bold text-[#006039] dark:text-[#4ADE80] hover:underline">
-                View All in Vault →
+              <Link href="/catalog" className="text-xs font-mono text-[#C5A059] hover:underline uppercase">
+                Explore All →
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              {relatedProducts.map((rel) => (
-                <ProductCard
-                  key={rel.id}
-                  product={rel}
-                  onAddToCart={(prod) => addToCart(prod, 1)}
-                  onToggleWishlist={(prod) => toggleWishlist(prod)}
-                  isWishlisted={wishlist.some((p) => p.id === rel.id)}
-                  onQuickView={(prod) => setQuickViewProduct(prod)}
-                />
-              ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {relatedProducts.map((rel) => {
+                const img = getProductImage(rel.id, rel.image_url);
+                return (
+                  <Link
+                    key={rel.id}
+                    href={`/products/${rel.id}`}
+                    className="bg-[#0D0D0D] border border-[#1a1a1a] hover:border-[#C5A059] p-4 transition-all group block"
+                  >
+                    <div className="aspect-square bg-black mb-3 overflow-hidden">
+                      <SmoothImage src={img} alt={rel.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    </div>
+                    <div className="text-[9px] font-mono text-[#C5A059] uppercase font-bold">
+                      {rel.brand}
+                    </div>
+                    <div className="text-xs font-semibold text-white group-hover:text-[#C5A059] truncate">
+                      {rel.name}
+                    </div>
+                    <div className="text-xs font-mono text-[#C5A059] font-bold mt-2">
+                      {formatCurrency(rel.price)}
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
-          </section>
+          </div>
         )}
       </main>
 
-      <Footer />
-
-      {/* Lightbox */}
-      {isLightboxOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 backdrop-blur-md"
-          onClick={() => setIsLightboxOpen(false)}
-        >
-          <div className="relative max-w-4xl max-h-[85vh] p-4">
-            <button
-              onClick={() => setIsLightboxOpen(false)}
-              className="absolute top-2 right-2 text-white text-2xl p-2 z-20 font-bold"
-            >
-              ✕
-            </button>
-            <SmoothImage
-              src={currentImage}
-              alt={product.name}
-              objectFit="contain"
-              className="max-h-[80vh] max-w-full mx-auto filter drop-shadow-2xl"
-              containerClassName="max-h-[80vh] bg-transparent"
-            />
-          </div>
-        </div>
-      )}
-
       {/* Concierge Modal */}
       {isConciergeOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm"
-            onClick={() => setIsConciergeOpen(false)}
-          />
-          <div className="relative z-10 w-full max-w-md rounded-[2rem] bg-[#E8EEF3] dark:bg-[#0E1A16] neu-modal p-6 text-[#0F172A] dark:text-[#F8FAFC] shadow-2xl space-y-4">
-            <div className="flex justify-between items-center border-b border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] pb-3">
-              <h3 className="text-sm font-bold font-display uppercase tracking-wider text-[#0F172A] dark:text-[#F8FAFC] flex items-center gap-1.5">
-                <span className="text-[#006039] dark:text-[#4ADE80]">✦</span> Private Salon Consultation
-              </h3>
-              <button onClick={() => setIsConciergeOpen(false)} className="p-1 rounded-xl neu-btn-icon text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white font-bold">
-                ✕
-              </button>
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#0D0D0D] border border-white/20 p-6 sm:p-8 max-w-md w-full space-y-4">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <span className="text-xs font-mono uppercase text-[#C5A059] font-bold tracking-widest">
+                Geneva Private Salon
+              </span>
+              <button onClick={() => setIsConciergeOpen(false)} className="text-white/60 hover:text-white">✕</button>
             </div>
-
             {conciergeSent ? (
               <div className="text-center py-6 space-y-2">
-                <div className="text-3xl text-[#006039]">✓</div>
-                <div className="text-xs font-mono font-bold text-[#0F172A] dark:text-[#F8FAFC]">Consultation Transmitted</div>
+                <div className="text-2xl text-[#C5A059]">✓</div>
+                <div className="text-sm font-serif font-bold">Inquiry Dispatched</div>
+                <p className="text-xs text-white/60 font-mono">Our senior horologist will contact you within 2 business hours.</p>
+                <button
+                  onClick={() => { setIsConciergeOpen(false); setConciergeSent(false); }}
+                  className="mt-4 px-4 py-2 bg-[#C5A059] text-black text-xs font-mono font-bold uppercase"
+                >
+                  Close
+                </button>
               </div>
             ) : (
-              <form onSubmit={handleConciergeSubmit} className="space-y-3 text-xs">
-                <p className="text-[#475569] dark:text-[#CBD5E1] text-[11px] leading-relaxed">
-                  Request an appointment at our Geneva, London, or New York salons for private inspection of{" "}
-                  <strong className="text-[#0F172A] dark:text-[#F8FAFC]">{product.name}</strong>.
+              <div className="space-y-3">
+                <p className="text-xs text-white/70 font-mono">
+                  Inquiring on: <span className="text-white font-semibold">{product.name}</span>
                 </p>
-                <div>
-                  <label className="block text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-bold mb-1">Your Name</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Lord Sterling"
-                    className="w-full neu-inset rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-bold mb-1">VIP Contact</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="+94 77 123 4567 or email@domain.com"
-                    className="w-full neu-inset rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-bold mb-1">Inquiries & Requirements</label>
-                  <textarea
-                    rows={3}
-                    placeholder="Specify preferred salon city or wrist sizing..."
-                    value={conciergeMsg}
-                    onChange={(e) => setConciergeMsg(e.target.value)}
-                    className="w-full neu-inset rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
-                  />
-                </div>
-                <button type="submit" className="w-full py-3 rounded-2xl neu-btn-primary text-xs font-bold uppercase tracking-wider shadow-md">
-                  Transmit Request
+                <textarea
+                  rows={3}
+                  value={conciergeMsg}
+                  onChange={(e) => setConciergeMsg(e.target.value)}
+                  placeholder="Inquire about bespoke sizing, vault inspection, or private wire transfer..."
+                  className="w-full bg-black border border-[#2a2a2a] p-3 text-xs text-white focus:outline-none focus:border-[#C5A059] font-mono resize-none"
+                />
+                <button
+                  onClick={() => setConciergeSent(true)}
+                  className="w-full py-2.5 bg-[#C5A059] text-black text-xs font-mono font-bold uppercase hover:bg-[#b08d48]"
+                >
+                  Dispatch to Concierge Desk
                 </button>
-              </form>
+              </div>
             )}
           </div>
         </div>
       )}
 
-      {/* Drawers */}
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cart={cart}
-        onUpdateQuantity={updateQuantity}
-        onRemoveItem={removeFromCart}
-        onClearCart={clearCart}
-        onProceedToCheckout={() => setIsCheckoutOpen(true)}
-        appliedCoupon={appliedCoupon}
-        onApplyCoupon={applyCoupon}
-        couponDiscountPercent={couponDiscountPercent}
-      />
+      {/* Cart & Wishlist Drawers */}
+      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} onOpenCheckout={() => { setIsCartOpen(false); setIsCheckoutOpen(true); }} />
+      <WishlistDrawer isOpen={isWishlistOpen} onClose={() => setIsWishlistOpen(false)} />
 
-      <WishlistDrawer
-        isOpen={isWishlistOpen}
-        onClose={() => setIsWishlistOpen(false)}
-        wishlist={wishlist}
-        onRemoveFromWishlist={(id) => toggleWishlist({ id } as any)}
-        onMoveToCart={(prod) => {
-          addToCart(prod, 1);
-          toggleWishlist(prod);
-          setIsCartOpen(true);
-        }}
-      />
-
-      <QuickViewModal
-        product={quickViewProduct}
-        onClose={() => setQuickViewProduct(null)}
-        onAddToCart={(prod, qty) => addToCart(prod, qty)}
-      />
-
-      <CheckoutModal
-        isOpen={isCheckoutOpen}
-        onClose={() => setIsCheckoutOpen(false)}
-        cart={cart}
-        totalAmount={grandTotal}
-        onClearCart={clearCart}
-      />
+      <Footer />
     </div>
   );
 }

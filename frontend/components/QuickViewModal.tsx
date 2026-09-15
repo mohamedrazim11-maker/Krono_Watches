@@ -8,14 +8,19 @@ import { getProductImage, getProductImages } from "@/lib/productImages";
 
 interface QuickViewModalProps {
   product: Product | null;
+  isOpen?: boolean;
   onClose: () => void;
   onAddToCart: (product: Product, quantity: number) => void;
+  onToggleWishlist?: (product: Product) => void;
+  isInWishlist?: boolean;
 }
 
 export default function QuickViewModal({
   product,
   onClose,
   onAddToCart,
+  onToggleWishlist,
+  isInWishlist,
 }: QuickViewModalProps) {
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
   const [qty, setQty] = useState(1);
@@ -41,118 +46,100 @@ export default function QuickViewModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="fixed inset-0 bg-black/75 backdrop-blur-md transition-opacity"
+        className="fixed inset-0 bg-black/85 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      <div className="relative z-10 w-full max-w-3xl rounded-[2rem] bg-[#E8EEF3] dark:bg-[#0E1A16] neu-modal p-5 sm:p-7 text-[#0F172A] dark:text-[#F8FAFC] shadow-2xl overflow-hidden animate-pageEnter">
+      <div className="relative z-10 w-full max-w-3xl bg-[#0D0D0D] border border-white/20 p-6 sm:p-8 text-white shadow-2xl overflow-hidden animate-pageEnter font-sans">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-xl neu-btn-icon text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white transition z-20 cursor-pointer font-bold"
+          className="absolute top-4 right-4 p-2 text-white/60 hover:text-white transition font-bold text-sm"
         >
           ✕
         </button>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-          {/* Gallery View */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 items-center">
+          {/* Image & Thumbnails */}
           <div className="space-y-3">
-            <div className="relative aspect-square rounded-2xl neu-inset overflow-hidden">
+            <div className="aspect-square bg-black border border-white/10 relative overflow-hidden">
               <SmoothImage
                 src={activeImg}
                 alt={product.name}
-                className="w-full h-full object-cover object-center"
+                className="w-full h-full object-cover"
               />
               {product.badge && (
-                <div className="absolute top-3 left-3">
-                  <span className="text-[9px] font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full neu-raised-sm bg-[#006039] text-white">
-                    {product.badge}
-                  </span>
-                </div>
+                <span className="absolute top-3 left-3 text-[9px] font-mono font-bold tracking-wider uppercase bg-[#C5A059] text-black px-2 py-0.5 shadow">
+                  {product.badge}
+                </span>
               )}
             </div>
 
             {images.length > 1 && (
-              <div className="flex gap-2.5 justify-center">
-                {images.map((img, idx) => (
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {images.map((img, i) => (
                   <button
-                    key={idx}
+                    key={i}
                     onClick={() => setSelectedImg(img)}
-                    className={`h-12 w-12 rounded-xl transition overflow-hidden cursor-pointer ${
-                      activeImg === img
-                        ? "neu-inset border-2 border-[#006039] dark:border-[#00A362]"
-                        : "neu-btn opacity-70 hover:opacity-100"
+                    className={`w-14 h-14 bg-black border relative overflow-hidden flex-shrink-0 transition-all ${
+                      activeImg === img ? "border-[#C5A059]" : "border-white/10 opacity-60 hover:opacity-100"
                     }`}
                   >
-                    <SmoothImage src={img} alt="" className="h-full w-full object-cover" />
+                    <SmoothImage src={img} alt={`View ${i + 1}`} className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Details & Specs */}
+          {/* Details */}
           <div className="space-y-4">
             <div>
-              <div className="text-[10px] text-[#006039] dark:text-[#4ADE80] uppercase tracking-widest font-mono font-bold">
-                {product.category} • Certified Reference
+              <div className="text-[10px] font-mono text-[#C5A059] uppercase font-bold tracking-widest">
+                {product.brand} • {product.category}
               </div>
-              <h2 className="text-xl sm:text-2xl font-black font-display text-[#0F172A] dark:text-[#F8FAFC] mt-0.5 uppercase">
+              <h3 className="text-xl font-serif font-bold text-white leading-tight mt-1">
                 {product.name}
-              </h2>
+              </h3>
             </div>
 
-            {/* Pricing */}
             <div className="flex items-baseline gap-3">
-              <span className="text-2xl font-black text-[#006039] dark:text-[#4ADE80] font-num">
+              <span className="text-xl font-mono font-bold text-[#C5A059]">
                 {formatCurrency(product.price)}
               </span>
               {hasDiscount && (
-                <span className="text-xs text-[#64748B] line-through font-num">
+                <span className="text-xs font-mono text-white/40 line-through">
                   {formatCurrency(product.old_price!)}
                 </span>
               )}
             </div>
 
-            <p className="text-xs text-[#475569] dark:text-[#CBD5E1] leading-relaxed line-clamp-3">
-              {product.description ||
-                "Master-crafted mechanical timepiece engineered with Superlative Chronometer escapement, serialized exhibition caseback, and 5-year certified atelier warranty."}
+            <p className="text-xs text-white/60 font-mono line-clamp-3 leading-relaxed">
+              {product.description}
             </p>
 
-            {/* Specs Grid */}
-            <div className="grid grid-cols-2 gap-2.5 text-xs pt-0.5">
-              <div className="p-3 rounded-2xl neu-inset">
-                <div className="text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-semibold">Calibre</div>
-                <div className="font-bold text-[#0F172A] dark:text-[#F8FAFC] truncate font-mono">{product.movement || "Rolex Calibre 3235"}</div>
+            <div className="grid grid-cols-2 gap-2 text-[11px] font-mono border-y border-[#1a1a1a] py-3">
+              <div>
+                <span className="text-white/40 block">Calibre:</span>
+                <span className="text-white font-medium">{product.movement || "Swiss Automatic"}</span>
               </div>
-              <div className="p-3 rounded-2xl neu-inset">
-                <div className="text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-semibold">Diameter</div>
-                <div className="font-bold text-[#0F172A] dark:text-[#F8FAFC] truncate font-mono">{product.case_size || "41mm"}</div>
-              </div>
-              <div className="p-3 rounded-2xl neu-inset">
-                <div className="text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-semibold">Case Alloy</div>
-                <div className="font-bold text-[#0F172A] dark:text-[#F8FAFC] truncate">{product.case_material || "Oystersteel (904L)"}</div>
-              </div>
-              <div className="p-3 rounded-2xl neu-inset">
-                <div className="text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-semibold">Water Resistance</div>
-                <div className="font-bold text-[#0F172A] dark:text-[#F8FAFC] truncate font-mono">{product.water_resistance || "300M / 30 ATM"}</div>
+              <div>
+                <span className="text-white/40 block">Diameter:</span>
+                <span className="text-white font-medium">{product.case_size || "41mm"}</span>
               </div>
             </div>
 
-            {/* Quantity and Actions */}
             <div className="flex items-center gap-3 pt-1">
-              <div className="flex items-center neu-inset rounded-2xl px-3 py-2 text-xs">
+              <div className="flex items-center border border-[#2a2a2a] bg-[#111]">
                 <button
-                  onClick={() => setQty(Math.max(1, qty - 1))}
-                  className="text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white px-2 font-bold cursor-pointer"
+                  onClick={() => setQty((q) => Math.max(1, q - 1))}
+                  className="px-2.5 py-1 text-white/70 hover:text-white"
                 >
                   -
                 </button>
-                <span className="font-mono text-[#0F172A] dark:text-[#F8FAFC] text-xs px-2 font-bold">
-                  {qty}
-                </span>
+                <span className="px-3 py-1 font-mono text-xs font-bold">{qty}</span>
                 <button
-                  onClick={() => setQty(qty + 1)}
-                  className="text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white px-2 font-bold cursor-pointer"
+                  onClick={() => setQty((q) => q + 1)}
+                  className="px-2.5 py-1 text-white/70 hover:text-white"
                 >
                   +
                 </button>
@@ -163,20 +150,30 @@ export default function QuickViewModal({
                   onAddToCart(product, qty);
                   onClose();
                 }}
-                disabled={product.in_stock === false}
-                className="flex-1 py-3 px-4 rounded-2xl neu-btn-primary text-xs font-black uppercase tracking-wider cursor-pointer shadow-lg transition"
+                className="flex-1 py-2.5 bg-white hover:bg-[#C5A059] hover:text-black text-black font-semibold text-xs tracking-wider uppercase transition-colors"
               >
-                {product.in_stock === false ? "Out of Stock" : "Add to Cart"}
+                Acquire Piece
               </button>
+
+              {onToggleWishlist && (
+                <button
+                  onClick={() => onToggleWishlist(product)}
+                  className={`p-2.5 border transition-colors ${
+                    isInWishlist ? "border-red-500 text-red-500" : "border-[#2a2a2a] text-white/60 hover:text-white"
+                  }`}
+                >
+                  ♥
+                </button>
+              )}
             </div>
 
-            <div className="text-center pt-1">
+            <div className="pt-2 text-center">
               <Link
                 href={`/products/${product.id}`}
                 onClick={onClose}
-                className="text-xs text-[#006039] dark:text-[#4ADE80] hover:underline font-mono font-bold"
+                className="text-xs font-mono text-[#C5A059] hover:underline uppercase tracking-wider"
               >
-                View Full Technical Dossier →
+                View Full Dossier &amp; Specifications →
               </Link>
             </div>
           </div>

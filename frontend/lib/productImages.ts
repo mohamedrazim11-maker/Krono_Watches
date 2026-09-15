@@ -1,12 +1,13 @@
 /**
  * productImages.ts
- * Maps product IDs and names to locally-generated, perfectly-matching luxury watch images.
- * Completely eliminates any non-watch images (makeup, coffee, etc.).
+ * Maps product IDs and names to locally-generated, verified luxury watch images.
+ * Completely eliminates any non-watch images (makeup, brushes, coffee, etc.).
  */
 
 const BANNED_IMAGE_PATTERNS = [
   'photo-1522335789203-aabd1fc54bc9', // Bobbi Brown makeup
   'photo-1509042239860-f550ce710b93', // Coffee cups
+  'photo-1523170335258-f5ed11844a49', // Makeup brushes
 ];
 
 function isCleanWatchImage(url?: string | null): boolean {
@@ -16,7 +17,7 @@ function isCleanWatchImage(url?: string | null): boolean {
 
 /** Map of product ID → primary local or verified watch image path */
 export const PRODUCT_IMAGE_MAP: Record<string, string> = {
-  // Legacy / numeric IDs
+  // Numeric IDs
   'prod-1': '/images/watches/aurelia_master_classic.jpg',
   'prod-2': '/images/watches/speedmaster_chrono_titanium.jpg',
   'prod-3': '/images/watches/submariner_deep_black_ceramic.jpg',
@@ -31,12 +32,12 @@ export const PRODUCT_IMAGE_MAP: Record<string, string> = {
   'prod-rolex-gmt-master-ii': 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1200&q=85',
   'prod-rolex-daytona': 'https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=1200&q=85',
   'prod-rolex-day-date-40': 'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85',
-  'prod-rolex-sky-dweller': 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85',
+  'prod-rolex-sky-dweller': '/images/watches/grand_horizon_rose_gold.jpg',
 
   // Omega
   'prod-omega-speedmaster-moonwatch': '/images/watches/speedmaster_chrono_titanium.jpg',
   'prod-omega-seamaster-diver-300m': '/images/watches/seastar_1000_powermatic.jpg',
-  'prod-omega-seamaster-aqua-terra': 'https://images.unsplash.com/photo-1526045478516-99145907023c?auto=format&fit=crop&w=1200&q=85',
+  'prod-omega-seamaster-aqua-terra': '/images/watches/seastar_1000_powermatic.jpg',
   'prod-omega-constellation': '/images/watches/constellation_diamond_bezel.jpg',
 
   // Grand Seiko & Tissot
@@ -74,7 +75,7 @@ export const PRODUCT_IMAGE_MAP: Record<string, string> = {
 
 /**
  * Returns the best local or verified image path for a given product.
- * Strips out any banned coffee or makeup images.
+ * Strips out any banned coffee, makeup, or brush images.
  */
 export function getProductImage(productId: string, fallbackUrl?: string): string {
   if (PRODUCT_IMAGE_MAP[productId]) {
@@ -83,12 +84,12 @@ export function getProductImage(productId: string, fallbackUrl?: string): string
   if (isCleanWatchImage(fallbackUrl)) {
     return fallbackUrl!;
   }
-  return '/images/watches/submariner_deep_black_ceramic.jpg';
+  return '/images/watches/seastar_1000_powermatic.jpg';
 }
 
 /**
  * Returns all clean image paths for a given product.
- * Filters out any banned coffee or makeup images.
+ * Filters out any banned coffee, makeup, or brush images.
  */
 export function getProductImages(
   productId: string,
@@ -98,7 +99,7 @@ export function getProductImages(
   const localImage = PRODUCT_IMAGE_MAP[productId];
   const cleanFallback = isCleanWatchImage(fallbackUrl)
     ? fallbackUrl!
-    : '/images/watches/submariner_deep_black_ceramic.jpg';
+    : '/images/watches/seastar_1000_powermatic.jpg';
 
   if (localImage) {
     const extraClean = (apiImages || [])

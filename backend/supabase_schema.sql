@@ -105,7 +105,7 @@ CREATE POLICY "Allow All on Orders" ON public.orders FOR ALL USING (true);
 -- Seed Categories
 INSERT INTO public.categories (id, name, slug, description, image_url, badge) VALUES
 ('cat-1', 'Luxury', 'luxury', 'Prestige 18K & Rose Gold Swiss Masterpieces', 'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80', 'Masterpiece'),
-('cat-2', 'Automatic', 'automatic', 'Swiss Calibre Mechanical & Open-Heart Movements', 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80', 'Heritage'),
+('cat-2', 'Automatic', 'automatic', 'Swiss Calibre Mechanical & Open-Heart Movements', '/images/watches/seastar_1000_powermatic.jpg', 'Heritage'),
 ('cat-3', 'Sport', 'sport', '300M Deep Divers & Grade 5 Titanium Chronographs', 'https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=900&q=80', 'Endurance'),
 ('cat-4', 'Smart', 'smart', 'Sapphire AMOLED Touchscreen with Biometric Sensors', 'https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&fit=crop&w=900&q=80', 'Innovation')
 ON CONFLICT (id) DO NOTHING;
@@ -130,9 +130,9 @@ INSERT INTO public.products (
     'Valid until Sep 30, 2026',
     true,
     26,
-    'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80',
+    '/images/watches/seastar_1000_powermatic.jpg',
     ARRAY[
-        'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80',
+        '/images/watches/seastar_1000_powermatic.jpg',
         'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80',
         'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80'
     ],
@@ -161,7 +161,7 @@ INSERT INTO public.products (
     'https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=900&q=80',
     ARRAY[
         'https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=900&q=80',
-        'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80'
+        '/images/watches/seastar_1000_powermatic.jpg'
     ],
     'Precision mechanical chronograph with lightweight Grade 5 titanium case, Super-LumiNova markers, and 48-hour power reserve.',
     'Mechanical Automatic Calibre 16',
@@ -296,7 +296,7 @@ INSERT INTO public.products (
     'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=900&q=80',
     ARRAY[
         'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=900&q=80',
-        'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80'
+        '/images/watches/seastar_1000_powermatic.jpg'
     ],
     'High-performance Swiss automatic diver with up to 80 hours power reserve and gradient sunray blue dial.',
     'Powermatic 80.111 Automatic',

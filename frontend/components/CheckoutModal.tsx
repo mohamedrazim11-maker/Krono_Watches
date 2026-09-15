@@ -38,9 +38,9 @@ export default function CheckoutModal({
     email: "",
     phone: "",
     address: "",
-    city: "",
-    postal_code: "",
-    country: "India",
+    city: "Colombo",
+    postal_code: "00100",
+    country: "Sri Lanka",
     wrist_size: "Standard (19cm)",
     gift_packaging: true,
     special_instructions: "",
@@ -61,7 +61,7 @@ export default function CheckoutModal({
   const grandTotal = Math.max(0, rawSubtotal - discountAmount);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
     if (type === "checkbox") {
@@ -99,7 +99,7 @@ export default function CheckoutModal({
       };
 
       const res = await createOrder(payload);
-      const orderRef = res?.order_number || `KRN-${Math.floor(100000 + Math.random() * 900000)}`;
+      const orderRef = res?.order_number || res?.order?.order_number || `KRN-${Math.floor(100000 + Math.random() * 900000)}`;
       setConfirmedOrderNumber(orderRef);
       setOrderConfirmed(true);
       if (onOrderSuccess) onOrderSuccess();
@@ -119,280 +119,236 @@ export default function CheckoutModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="fixed inset-0 bg-black/75 backdrop-blur-md transition-opacity"
+        className="fixed inset-0 bg-black/85 backdrop-blur-sm transition-opacity"
         onClick={orderConfirmed ? onClose : undefined}
       />
 
-      <div className="relative z-10 w-full max-w-2xl rounded-[2rem] bg-[#E8EEF3] dark:bg-[#0E1A16] neu-modal text-[#0F172A] dark:text-[#F8FAFC] shadow-2xl overflow-hidden max-h-[92vh] flex flex-col animate-pageEnter">
+      <div className="relative z-10 w-full max-w-2xl bg-[#0D0D0D] border border-white/20 text-white shadow-2xl overflow-hidden max-h-[92vh] flex flex-col animate-pageEnter font-sans">
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] flex items-center justify-between">
+        <div className="p-5 border-b border-[#1a1a1a] flex items-center justify-between">
           <div>
-            <h2 className="text-sm font-black font-display uppercase tracking-widest text-[#0F172A] dark:text-[#F8FAFC] flex items-center gap-2">
-              <span>Concierge Checkout</span>
-              <span className="w-2 h-2 rounded-full bg-[#006039] dark:bg-[#4ADE80] animate-pulse"></span>
+            <h2 className="text-sm font-bold uppercase tracking-widest text-white flex items-center gap-2">
+              <span>Insured Vault Acquisition</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             </h2>
-            <div className="text-[10px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase tracking-wider font-mono font-semibold">
-              Direct Acquisition & Insured Air Transit
+            <div className="text-[10px] text-white/50 uppercase tracking-wider font-mono">
+              Direct Calibration &amp; Armored Transit Dispatch
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl neu-btn-icon text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white transition cursor-pointer font-bold"
+            className="p-2 text-white/60 hover:text-white transition font-bold text-sm"
           >
             ✕
           </button>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {orderConfirmed ? (
             <div className="text-center py-6 space-y-4">
-              <div className="w-16 h-16 rounded-3xl neu-btn-primary flex items-center justify-center text-2xl mx-auto font-black shadow-lg">
+              <div className="w-16 h-16 rounded-full bg-[#C5A059]/20 border border-[#C5A059] flex items-center justify-center text-2xl mx-auto font-bold text-[#C5A059]">
                 ✓
               </div>
               <div className="space-y-2">
-                <span className="text-[10px] font-mono uppercase tracking-widest neu-inset text-[#006039] dark:text-[#4ADE80] font-bold px-3.5 py-1 rounded-full">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 font-bold px-3 py-1 bg-emerald-950/60 border border-emerald-500/30">
                   Acquisition Authenticated
                 </span>
-                <h3 className="text-xl sm:text-2xl font-black font-display text-[#0F172A] dark:text-[#F8FAFC] uppercase tracking-tight">
+                <h3 className="text-xl font-serif font-bold text-white uppercase">
                   Order Successfully Registered
                 </h3>
-                <p className="text-xs text-[#475569] dark:text-[#CBD5E1] max-w-md mx-auto leading-relaxed">
-                  Your timepiece has been allocated under concierge dossier{" "}
-                  <strong className="text-[#006039] dark:text-[#4ADE80] font-mono font-bold">{confirmedOrderNumber}</strong>. A dedicated private horology consultant will contact you regarding serialized calibration and express transit dispatch.
+                <p className="text-xs text-white/60 max-w-md mx-auto leading-relaxed font-mono">
+                  Your reference has been secured under dossier reference{" "}
+                  <strong className="text-[#C5A059]">{confirmedOrderNumber}</strong>. Serialized certificate of authenticity and armored dispatch tracking have been issued.
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl neu-inset max-w-md mx-auto text-left space-y-2 text-xs">
-                <div className="flex justify-between text-[#5A6D64] dark:text-[#8EAA9C] font-mono font-semibold">
+              <div className="bg-[#111] border border-[#222] p-4 max-w-md mx-auto text-left space-y-2 text-xs font-mono">
+                <div className="flex justify-between text-white/60">
                   <span>Dossier Reference</span>
-                  <span className="text-[#0F172A] dark:text-[#F8FAFC] font-bold">{confirmedOrderNumber}</span>
+                  <span className="text-white font-bold">{confirmedOrderNumber}</span>
                 </div>
-                <div className="flex justify-between text-[#5A6D64] dark:text-[#8EAA9C] font-mono font-semibold">
-                  <span>Client</span>
-                  <span className="text-[#0F172A] dark:text-[#F8FAFC] font-bold">{formData.name || "Valued Collector"}</span>
+                <div className="flex justify-between text-white/60">
+                  <span>Client Name</span>
+                  <span className="text-white font-bold">{formData.name || "Valued Collector"}</span>
                 </div>
-                <div className="flex justify-between text-[#5A6D64] dark:text-[#8EAA9C] font-mono font-semibold">
+                <div className="flex justify-between text-white/60">
                   <span>Investment Total</span>
-                  <span className="text-[#006039] dark:text-[#4ADE80] font-bold font-num">{formatCurrency(grandTotal)}</span>
+                  <span className="text-[#C5A059] font-bold">{formatCurrency(grandTotal)}</span>
                 </div>
               </div>
 
               <button
                 onClick={onClose}
-                className="neu-btn-primary px-8 py-3 rounded-2xl text-xs font-bold uppercase tracking-wider cursor-pointer shadow-lg"
+                className="mt-4 px-8 py-3 bg-[#C5A059] text-black font-bold text-xs uppercase tracking-widest hover:bg-[#b08d48]"
               >
-                Return to Boutique
+                Complete Transaction
               </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               {errorMessage && (
-                <div className="p-3 rounded-2xl bg-[#FFF1F2] dark:bg-[#4C0519]/40 border border-[#E11D48]/30 text-[#E11D48] text-xs font-mono font-semibold">
+                <div className="p-3 bg-red-950/50 border border-red-500/50 text-red-300 text-xs font-mono">
                   {errorMessage}
                 </div>
               )}
 
-              {/* Order Items Review */}
-              <div className="p-4 rounded-2xl neu-inset space-y-2">
-                <div className="text-[9px] text-[#006039] dark:text-[#4ADE80] font-mono uppercase tracking-widest font-bold">
-                  Order Summary ({cart.length} Pieces)
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] uppercase font-mono tracking-wider text-white/60 mb-1">
+                    Client Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="Lord Alexander Sterling"
+                    className="w-full bg-[#111] border border-[#2a2a2a] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059]"
+                  />
                 </div>
-                <div className="max-h-24 overflow-y-auto space-y-1.5 pr-1">
-                  {cart.map((item) => (
-                    <div
-                      key={item.product.id}
-                      className="flex justify-between items-center text-xs text-[#475569] dark:text-[#CBD5E1]"
-                    >
-                      <span className="truncate max-w-[280px]">
-                        {item.quantity}x {item.product.name}
-                      </span>
-                      <span className="font-num text-[#006039] dark:text-[#4ADE80] font-bold">
-                        {formatCurrency(item.product.price * item.quantity)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <div className="pt-2 border-t border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] flex justify-between text-xs font-bold font-mono">
-                  <span className="text-[#5A6D64]">Total:</span>
-                  <span className="text-[#006039] dark:text-[#4ADE80] font-num text-sm font-black">{formatCurrency(grandTotal)}</span>
+
+                <div>
+                  <label className="block text-[10px] uppercase font-mono tracking-wider text-white/60 mb-1">
+                    Direct Email *
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="sterling@geneva-vault.ch"
+                    className="w-full bg-[#111] border border-[#2a2a2a] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059]"
+                  />
                 </div>
               </div>
 
-              {/* Client Contact */}
-              <div className="space-y-2.5">
-                <div className="text-xs font-bold text-[#0F172A] dark:text-[#F8FAFC] uppercase tracking-wider font-mono flex items-center gap-1.5">
-                  <span className="text-[#006039] dark:text-[#4ADE80]">1.</span>
-                  <span>Contact & Identity</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] uppercase font-mono tracking-wider text-white/60 mb-1">
+                    Phone (Courier Coordination) *
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    required
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="+94 77 123 4567"
+                    className="w-full bg-[#111] border border-[#2a2a2a] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059]"
+                  />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-bold mb-1">
-                      Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      required
-                      placeholder="e.g. Lord Alexander Sterling"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="w-full neu-inset rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-bold mb-1">
-                      Email Address *
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      required
-                      placeholder="alexander@domain.com"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="w-full neu-inset rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
-                    />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <label className="block text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-bold mb-1">
-                      Private Telephone (for Air Courier Delivery) *
-                    </label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      required
-                      placeholder="+94 77 123 4567"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="w-full neu-inset rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
-                    />
-                  </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase font-mono tracking-wider text-white/60 mb-1">
+                    Wrist Sizing
+                  </label>
+                  <select
+                    name="wrist_size"
+                    value={formData.wrist_size}
+                    onChange={handleInputChange}
+                    className="w-full bg-[#111] border border-[#2a2a2a] px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059]"
+                  >
+                    <option value="Standard (19cm)">Standard (19cm)</option>
+                    <option value="Small (16cm - 17cm)">Small (16cm - 17cm)</option>
+                    <option value="Medium (17.5cm - 18.5cm)">Medium (17.5cm - 18.5cm)</option>
+                    <option value="Large (19.5cm - 21cm)">Large (19.5cm - 21cm)</option>
+                    <option value="Unsized Factory Links">Unsized (All Factory Links)</option>
+                  </select>
                 </div>
               </div>
 
-              {/* Delivery Address */}
-              <div className="space-y-2.5">
-                <div className="text-xs font-bold text-[#0F172A] dark:text-[#F8FAFC] uppercase tracking-wider font-mono flex items-center gap-1.5">
-                  <span className="text-[#006039] dark:text-[#4ADE80]">2.</span>
-                  <span>Insured Delivery Address</span>
+              <div>
+                <label className="block text-[10px] uppercase font-mono tracking-wider text-white/60 mb-1">
+                  Delivery Destination Address *
+                </label>
+                <input
+                  type="text"
+                  name="address"
+                  required
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  placeholder="Penthouse Suite, 42 Marina Boulevard"
+                  className="w-full bg-[#111] border border-[#2a2a2a] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059]"
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-[10px] uppercase font-mono tracking-wider text-white/60 mb-1">
+                    City *
+                  </label>
+                  <input
+                    type="text"
+                    name="city"
+                    required
+                    value={formData.city}
+                    onChange={handleInputChange}
+                    className="w-full bg-[#111] border border-[#2a2a2a] px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059]"
+                  />
                 </div>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-bold mb-1">
-                      Street Address *
-                    </label>
-                    <input
-                      type="text"
-                      name="address"
-                      required
-                      placeholder="14 Royal Residences, Kensington Road"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      className="w-full neu-inset rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    <div>
-                      <label className="block text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-bold mb-1">
-                        City *
-                      </label>
-                      <input
-                        type="text"
-                        name="city"
-                        required
-                        placeholder="Colombo"
-                        value={formData.city}
-                        onChange={handleInputChange}
-                        className="w-full neu-inset rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-bold mb-1">
-                        Postal Code *
-                      </label>
-                      <input
-                        type="text"
-                        name="postal_code"
-                        required
-                        placeholder="00700"
-                        value={formData.postal_code}
-                        onChange={handleInputChange}
-                        className="w-full neu-inset rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
-                      />
-                    </div>
-                    <div className="col-span-2 sm:col-span-1">
-                      <label className="block text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-bold mb-1">
-                        Country *
-                      </label>
-                      <select
-                        name="country"
-                        value={formData.country}
-                        onChange={handleInputChange}
-                        className="w-full neu-inset rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
-                      >
-                        <option value="Sri Lanka">Sri Lanka</option>
-                        <option value="India">India</option>
-                        <option value="Switzerland">Switzerland</option>
-                        <option value="United Kingdom">United Kingdom</option>
-                        <option value="United States">United States</option>
-                        <option value="United Arab Emirates">United Arab Emirates</option>
-                        <option value="Singapore">Singapore</option>
-                      </select>
-                    </div>
-                  </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase font-mono tracking-wider text-white/60 mb-1">
+                    Postal Code *
+                  </label>
+                  <input
+                    type="text"
+                    name="postal_code"
+                    required
+                    value={formData.postal_code}
+                    onChange={handleInputChange}
+                    className="w-full bg-[#111] border border-[#2a2a2a] px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase font-mono tracking-wider text-white/60 mb-1">
+                    Country *
+                  </label>
+                  <input
+                    type="text"
+                    name="country"
+                    required
+                    value={formData.country}
+                    onChange={handleInputChange}
+                    className="w-full bg-[#111] border border-[#2a2a2a] px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059]"
+                  />
                 </div>
               </div>
 
-              {/* Horological Concierge Options */}
-              <div className="space-y-2.5">
-                <div className="text-xs font-bold text-[#0F172A] dark:text-[#F8FAFC] uppercase tracking-wider font-mono flex items-center gap-1.5">
-                  <span className="text-[#006039] dark:text-[#4ADE80]">3.</span>
-                  <span>Bespoke Concierge Adjustments</span>
+              {/* Order total strip */}
+              <div className="bg-[#111] border border-[#222] p-4 space-y-2 text-xs font-mono">
+                <div className="flex justify-between text-white/60">
+                  <span>Subtotal:</span>
+                  <span>{formatCurrency(rawSubtotal)}</span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-bold mb-1">
-                      Wrist Circumference Sizing
-                    </label>
-                    <select
-                      name="wrist_size"
-                      value={formData.wrist_size}
-                      onChange={handleInputChange}
-                      className="w-full neu-inset rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
-                    >
-                      <option value="Standard (19cm)">Standard Factory Size (19cm)</option>
-                      <option value="Slim (16-17cm)">Slim Wrist (16–17cm adjusted)</option>
-                      <option value="Medium (17.5-18.5cm)">Medium Wrist (17.5–18.5cm)</option>
-                      <option value="Broad (19.5-21cm)">Broad Wrist (19.5–21cm)</option>
-                    </select>
+                {discountAmount > 0 && (
+                  <div className="flex justify-between text-emerald-400">
+                    <span>Privilege Voucher:</span>
+                    <span>- {formatCurrency(discountAmount)}</span>
                   </div>
-                  <div className="flex items-center gap-2.5 pt-4 px-2">
-                    <input
-                      type="checkbox"
-                      id="gift_packaging"
-                      name="gift_packaging"
-                      checked={formData.gift_packaging}
-                      onChange={handleInputChange}
-                      className="h-4 w-4 rounded accent-[#006039] cursor-pointer"
-                    />
-                    <label htmlFor="gift_packaging" className="text-xs text-[#475569] dark:text-[#CBD5E1] cursor-pointer font-semibold">
-                      Signature Green Presentation Box
-                    </label>
-                  </div>
+                )}
+                <div className="flex justify-between text-white/60">
+                  <span>Armored Courier Transit:</span>
+                  <span className="text-emerald-400 uppercase">Complimentary</span>
+                </div>
+                <div className="pt-2 border-t border-[#222] flex justify-between text-sm font-bold text-[#C5A059]">
+                  <span>Total Acquisition:</span>
+                  <span>{formatCurrency(grandTotal)}</span>
                 </div>
               </div>
 
-              <div className="pt-2">
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full py-3.5 rounded-2xl neu-btn-primary text-xs font-black uppercase tracking-widest cursor-pointer shadow-lg transition-all"
-                >
-                  {submitting ? "Authenticating Acquisition..." : `Confirm Vault Acquisition • ${formatCurrency(grandTotal)}`}
-                </button>
-              </div>
+              <button
+                type="submit"
+                disabled={submitting || cart.length === 0}
+                className="w-full py-3.5 bg-[#C5A059] hover:bg-[#b08d48] text-black font-bold text-xs tracking-widest uppercase transition-all shadow-lg hover:shadow-[#C5A059]/20 disabled:opacity-50"
+              >
+                {submitting ? "Authenticating Acquisition..." : `Confirm Acquisition • ${formatCurrency(grandTotal)}`}
+              </button>
             </form>
           )}
         </div>

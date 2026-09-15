@@ -16,7 +16,7 @@ const PRESET_GALLERY_SETS = [
   {
     name: "Steel Chrono",
     images: [
-      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80",
+      "/images/watches/seastar_1000_powermatic.jpg",
       "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=900&q=80",
     ],
   },

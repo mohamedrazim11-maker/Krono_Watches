@@ -18,7 +18,7 @@ const INITIAL_DATA = {
       promotion_period: "Valid until Sep 15, 2026",
       is_on_promotion: true,
       promo_discount_percent: 26,
-      image_url: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80",
+      image_url: "/images/watches/seastar_1000_powermatic.jpg",
       description: "Handcrafted luxury timepiece with Swiss automatic movement, anti-reflective sapphire crystal glass, and top-grain Italian leather strap.",
       movement: "Swiss Automatic ETA 2824-2",
       case_material: "316L Hand-Polished Stainless Steel",
@@ -301,7 +301,7 @@ async function createProduct(productData) {
   const old_price = productData.old_price ? Number(productData.old_price) : null;
   const discountPercent = old_price && old_price > price ? Math.round(((old_price - price) / old_price) * 100) : null;
 
-  const primaryImage = productData.image_url || (Array.isArray(productData.images) && productData.images[0]) || "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80";
+  const primaryImage = productData.image_url || (Array.isArray(productData.images) && productData.images[0]) || "/images/watches/seastar_1000_powermatic.jpg";
   const images = Array.isArray(productData.images) && productData.images.length > 0
     ? productData.images.filter(Boolean)
     : [primaryImage];
