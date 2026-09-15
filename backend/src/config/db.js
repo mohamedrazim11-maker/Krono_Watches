@@ -524,6 +524,75 @@ async function getStats() {
   };
 }
 
+// ─── User CRUD ────────────────────────────────────────────────────────────────
+async function getUserByEmail(email) {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('users').select('*').eq('email', email).single();
+      if (!error && data) return data;
+    } catch (e) {}
+  }
+  const db = readLocalDb();
+  return (db.users || []).find(u => u.email === email) || null;
+}
+
+async function getUserById(id) {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('users').select('*').eq('id', id).single();
+      if (!error && data) return data;
+    } catch (e) {}
+  }
+  const db = readLocalDb();
+  return (db.users || []).find(u => u.id === id) || null;
+}
+
+async function createUser({ name, email, hashedPw }) {
+  const newUser = {
+    id: `user-${Date.now()}`,
+    name,
+    email,
+    password_hash: hashedPw,
+    phone: null,
+    address: null,
+    status: 'Active Member',
+    created_at: new Date().toISOString(),
+  };
+
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('users').insert([{
+        id: newUser.id, name, email, password_hash: hashedPw,
+        status: 'Active Member', created_at: newUser.created_at
+      }]).select().single();
+      if (!error && data) return data;
+    } catch (e) {}
+  }
+
+  const db = readLocalDb();
+  db.users = db.users || [];
+  db.users.push(newUser);
+  writeLocalDb(db);
+  return newUser;
+}
+
+async function updateUser(id, fields) {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('users').update(fields).eq('id', id).select().single();
+      if (!error && data) return data;
+    } catch (e) {}
+  }
+
+  const db = readLocalDb();
+  db.users = db.users || [];
+  const idx = db.users.findIndex(u => u.id === id);
+  if (idx === -1) throw new Error('User not found');
+  db.users[idx] = { ...db.users[idx], ...fields };
+  writeLocalDb(db);
+  return db.users[idx];
+}
+
 module.exports = {
   getProducts,
   getProductById,
@@ -535,7 +604,11 @@ module.exports = {
   updatePoster,
   createOrder,
   getOrders,
-  getStats
+  getStats,
+  getUserByEmail,
+  getUserById,
+  createUser,
+  updateUser,
 };
 
 

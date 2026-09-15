@@ -85,9 +85,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "VIP Allocation",
     is_on_promotion: true,
     promo_discount_percent: 10,
-    image_url: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/submariner_deep_black_ceramic.jpg",
     images: [
-      "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/submariner_deep_black_ceramic.jpg",
       "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?auto=format&fit=crop&w=1200&q=85"
     ],
@@ -176,7 +176,7 @@ export const FALLBACK_PRODUCTS: Product[] = [
     images: [
       "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/speedmaster_chrono_titanium.jpg",
     ],
     description: "The ultimate symbol of prestige and leadership. Crafted in solid 18k yellow gold with Champagne fluted bezel, bespoke President bracelet, and day of the week spelled out in full.",
     movement: "Rolex Calibre 3255 Superlative Chronometer",
@@ -205,7 +205,7 @@ export const FALLBACK_PRODUCTS: Product[] = [
     images: [
       "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/submariner_deep_black_ceramic.jpg",
     ],
     description: "An elegant timepiece for global travelers. Features dual time zones, annual calendar with revolutionary Saros mechanism, month indicator, and fluted bidirectional Ring Command bezel.",
     movement: "Rolex Calibre 9002 Annual Calendar Automatic",
@@ -232,9 +232,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Collector Series",
     is_on_promotion: true,
     promo_discount_percent: 11,
-    image_url: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/speedmaster_chrono_titanium.jpg",
     images: [
-      "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/speedmaster_chrono_titanium.jpg",
       "https://images.unsplash.com/photo-1526045478516-99145907023c?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1200&q=85"
     ],
@@ -261,9 +261,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "VIP Offer",
     is_on_promotion: true,
     promo_discount_percent: 12,
-    image_url: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/submariner_deep_black_ceramic.jpg",
     images: [
-      "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/submariner_deep_black_ceramic.jpg",
       "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=1200&q=85"
     ],
@@ -294,7 +294,7 @@ export const FALLBACK_PRODUCTS: Product[] = [
     images: [
       "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/submariner_deep_black_ceramic.jpg",
     ],
     description: "A superb tribute to Omega's rich maritime heritage. Horizontal teak concept pattern dial inspired by the wooden decks of luxury yachts. Resistant to magnetic fields reaching 15,000 gauss.",
     movement: "Omega Master Chronometer Calibre 8900",
@@ -352,7 +352,7 @@ export const FALLBACK_PRODUCTS: Product[] = [
     images: [
       "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/speedmaster_chrono_titanium.jpg",
     ],
     description: "Timeless style and refined aesthetic. Sun-brushed blue PVD dial with alternating Roman numerals and cabochon indexes, encased in a slim stainless steel profile with 7-link bracelet.",
     movement: "Omega Co-Axial Master Chronometer 8800",
@@ -559,7 +559,7 @@ export const FALLBACK_PRODUCTS: Product[] = [
     images: [
       "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/submariner_deep_black_ceramic.jpg",
     ],
     description: "Celebrates the spring equinox (Shunbun) when pink cherry blossoms fall onto lake surfaces (Hana-Ikada). High-intensity titanium case with 62GS vintage bezel-free design.",
     movement: "Grand Seiko Calibre 9R65 Spring Drive",
@@ -613,9 +613,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Professional Diver",
     is_on_promotion: true,
     promo_discount_percent: 12,
-    image_url: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/submariner_deep_black_ceramic.jpg",
     images: [
-      "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/submariner_deep_black_ceramic.jpg",
       "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=1200&q=85"
     ],
@@ -731,9 +731,9 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Watersport Edition",
     is_on_promotion: true,
     promo_discount_percent: 12,
-    image_url: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/submariner_deep_black_ceramic.jpg",
     images: [
-      "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/submariner_deep_black_ceramic.jpg",
       "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=1200&q=85"
     ],
@@ -764,7 +764,7 @@ export const FALLBACK_PRODUCTS: Product[] = [
     images: [
       "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/speedmaster_chrono_titanium.jpg",
     ],
     description: "Named after Tissot's home city in the Swiss Jura mountains. Traditional Clous de Paris guilloché dial, classic Roman numerals, and ornate split-window exhibition caseback.",
     movement: "Swiss Powermatic 80 Automatic",
@@ -819,7 +819,7 @@ export const FALLBACK_POSTERS: Poster[] = [
     discount_text: "VIP Privilege",
     promotion_period: "Season Launch: Active until Sep 30, 2026",
     coupon_code: "MONO20",
-    image_url: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/submariner_deep_black_ceramic.jpg",
     featured_product_name: "Rolex Submariner Date 41mm",
     featured_product_price: "LKR 3,100,000",
     days: "04",
@@ -1004,3 +1004,73 @@ export async function fetchStats(): Promise<Stats> {
     };
   }
 }
+
+// ─── Auth Types & API ─────────────────────────────────────────────────────────
+
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  address?: string;
+  status?: string;
+  created_at?: string;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  message: string;
+  token?: string;
+  user?: AuthUser;
+}
+
+function getToken(): string | null {
+  try { return localStorage.getItem('krono_token'); } catch { return null; }
+}
+
+function authHeaders(): HeadersInit {
+  const token = getToken();
+  return token ? { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } : { 'Content-Type': 'application/json' };
+}
+
+export async function apiRegister(data: { name: string; email: string; password: string; confirmPassword: string }): Promise<AuthResponse> {
+  const res = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+export async function apiLogin(data: { email: string; password: string }): Promise<AuthResponse> {
+  const res = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+export async function apiGetProfile(): Promise<AuthResponse> {
+  const res = await fetch(`${API_BASE_URL}/auth/profile`, { headers: authHeaders() });
+  return res.json();
+}
+
+export async function apiUpdateProfile(data: { name?: string; phone?: string; address?: string }): Promise<AuthResponse> {
+  const res = await fetch(`${API_BASE_URL}/auth/profile`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+export async function apiChangePassword(data: { currentPassword: string; newPassword: string; confirmNewPassword: string }): Promise<AuthResponse> {
+  const res = await fetch(`${API_BASE_URL}/auth/change-password`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+

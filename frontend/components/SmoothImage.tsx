@@ -14,7 +14,7 @@ interface SmoothImageProps {
 }
 
 const DEFAULT_FALLBACK =
-  "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=85";
+  "/images/watches/aurelia_master_classic.jpg";
 
 export default function SmoothImage({
   src,

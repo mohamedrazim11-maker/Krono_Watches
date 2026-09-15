@@ -179,9 +179,9 @@ export default function CatalogPage() {
   ].filter(Boolean).length;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAF9] dark:bg-[#06110D] text-[#0F172A] dark:text-[#F8FAFC] selection:bg-[#006039] selection:text-white transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-[#E8EEF3] dark:bg-[#0E1A16] text-[#0F172A] dark:text-[#F8FAFC] selection:bg-[#006039] selection:text-white transition-colors duration-300">
       {toastMessage && (
-        <div className="fixed bottom-5 right-5 z-50 bg-[#00482B] dark:bg-[#0B1C15] border border-[#006039] dark:border-[#00A362] text-white px-4 py-3 rounded-2xl shadow-2xl text-xs font-mono font-bold flex items-center gap-2.5 animate-pageEnter">
+        <div className="fixed bottom-6 right-6 z-50 neu-raised-lg text-white bg-[#006039] dark:bg-[#0E1A16] px-5 py-3.5 rounded-2xl text-xs font-mono font-bold flex items-center gap-2.5 animate-pageEnter">
           <span className="text-[#4ADE80] text-base">✦</span>
           <span>{toastMessage}</span>
         </div>
@@ -197,13 +197,13 @@ export default function CatalogPage() {
         showSearch={true}
       />
 
-      <main className="flex-1 mx-auto max-w-7xl w-full px-4 sm:px-6 py-6 sm:py-8 space-y-5">
-        {/* Optimized Header & Quick Filter Showcase */}
-        <div className="rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] p-6 sm:p-8 bg-gradient-to-br from-white via-[#F8FAF9] to-[#F1F5F3] dark:from-[#0B1C15] dark:via-[#06110D] dark:to-[#030806] shadow-sm space-y-5">
+      <main className="flex-1 mx-auto max-w-7xl w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+        {/* Header & Quick Filter Showcase */}
+        <div className="rounded-[2rem] neu-raised-lg p-6 sm:p-8 space-y-5">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#006039] dark:text-[#4ADE80] font-bold bg-[#E8F5EE] dark:bg-[#11261D] px-3.5 py-1 rounded-full border border-[#006039]/30">
+                <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#006039] dark:text-[#4ADE80] font-bold neu-raised-sm px-3.5 py-1 rounded-full">
                   Official Horological Vault
                 </span>
                 <span className="text-xs font-mono text-[#5A6D64] dark:text-[#8EAA9C]">
@@ -219,7 +219,7 @@ export default function CatalogPage() {
             <div className="flex items-center gap-2.5">
               <button
                 onClick={() => setIsMobileFilterOpen(true)}
-                className="lg:hidden lux-btn-secondary px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2"
+                className="lg:hidden neu-btn px-4 py-2 rounded-2xl text-xs font-bold flex items-center gap-2"
               >
                 <span>⚙ Filters</span>
                 {activeFiltersCount > 0 && (
@@ -231,7 +231,7 @@ export default function CatalogPage() {
               {activeFiltersCount > 0 && (
                 <button
                   onClick={resetFilters}
-                  className="px-3.5 py-2 rounded-xl border border-[#E2E8F0] dark:border-[#1F4535] bg-white dark:bg-[#0B1C15] text-[#5A6D64] hover:text-[#006039] text-xs font-mono font-bold transition shadow-sm"
+                  className="px-4 py-2 rounded-2xl neu-btn text-[#5A6D64] hover:text-[#006039] text-xs font-mono font-bold transition"
                 >
                   Reset ({activeFiltersCount})
                 </button>
@@ -239,8 +239,8 @@ export default function CatalogPage() {
             </div>
           </div>
 
-          {/* Optimized Manufacture Bar */}
-          <div className="space-y-2 pt-2 border-t border-[#E5ECE8] dark:border-[#122B20]">
+          {/* Manufacture Selection Bar */}
+          <div className="space-y-2 pt-2 border-t border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)]">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono uppercase font-bold text-[#006039] dark:text-[#4ADE80] tracking-wider flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#006039] dark:bg-[#4ADE80] animate-ping"></span>
@@ -251,7 +251,7 @@ export default function CatalogPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+            <div className="flex items-center gap-2.5 overflow-x-auto pb-1.5 no-scrollbar">
               {PRESTIGE_BRANDS.map((brand) => {
                 const brandCount = brand === "All"
                   ? products.length
@@ -262,10 +262,10 @@ export default function CatalogPage() {
                   <button
                     key={brand}
                     onClick={() => setSelectedBrand(brand)}
-                    className={`px-4 py-2 rounded-xl text-xs font-mono whitespace-nowrap transition-all flex items-center gap-2 border flex-shrink-0 cursor-pointer ${
+                    className={`px-4 py-2 rounded-2xl text-xs font-mono whitespace-nowrap transition-all flex items-center gap-2 flex-shrink-0 cursor-pointer ${
                       isSelected
-                        ? "bg-[#006039] dark:bg-[#00824E] text-white font-bold border-[#006039] shadow-md shadow-[#006039]/25 scale-[1.03]"
-                        : "bg-white dark:bg-[#11261D] text-[#475569] dark:text-[#CBD5E1] border-[#E2E8F0] dark:border-[#1F4535] hover:border-[#006039] hover:text-[#006039] shadow-sm"
+                        ? "neu-btn-primary shadow-md scale-105 text-white font-bold"
+                        : "neu-btn text-[#475569] dark:text-[#CBD5E1]"
                     }`}
                   >
                     <span>{brand === "All" ? "All Manufactures" : brand}</span>
@@ -274,7 +274,7 @@ export default function CatalogPage() {
                         className={`text-[9px] px-1.5 py-0.5 rounded-md font-mono font-bold ${
                           isSelected
                             ? "bg-black/25 text-white"
-                            : "bg-[#E5ECE8] dark:bg-[#06110D] text-[#5A6D64] dark:text-[#8EAA9C]"
+                            : "neu-inset text-[#5A6D64] dark:text-[#8EAA9C]"
                         }`}
                       >
                         {brandCount}
@@ -297,10 +297,10 @@ export default function CatalogPage() {
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition cursor-pointer border ${
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-mono font-bold whitespace-nowrap transition cursor-pointer ${
                     isSelected
-                      ? "bg-[#006039] dark:bg-[#00824E] text-white border-[#006039] dark:border-[#00824E] shadow-md shadow-[#006039]/20"
-                      : "bg-[#F8FAF9] dark:bg-[#11261D] text-[#5A6D64] dark:text-[#CBD5E1] hover:text-[#006039] dark:hover:text-[#4ADE80] border-[#E2E8F0] dark:border-[#1F4535]"
+                      ? "neu-btn-primary text-white scale-105"
+                      : "neu-pill text-[#5A6D64] dark:text-[#CBD5E1]"
                   }`}
                 >
                   {cat === "All" ? "All Series" : cat}
@@ -313,12 +313,12 @@ export default function CatalogPage() {
         {/* Layout Grid (Desktop Sidebar + Main Feed) */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
           {/* Desktop Sidebar */}
-          <aside className="hidden lg:block space-y-4 rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] p-5 bg-white dark:bg-[#0B1C15] shadow-sm sticky top-28">
-            <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.25)] pb-3">
+          <aside className="hidden lg:block space-y-4 rounded-3xl neu-raised p-5 sticky top-28">
+            <div className="flex items-center justify-between border-b border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] pb-3">
               <h3 className="text-xs font-bold uppercase tracking-widest text-[#0F172A] dark:text-[#F8FAFC] font-mono flex items-center gap-1.5">
                 <span className="text-[#006039] dark:text-[#4ADE80]">✦</span> Detailed Filter
               </h3>
-              <button onClick={resetFilters} className="text-[10px] text-[#5A6D64] hover:text-[#006039] font-mono font-bold">
+              <button onClick={resetFilters} className="text-[10px] text-[#5A6D64] hover:text-[#006039] font-mono font-bold cursor-pointer">
                 Clear
               </button>
             </div>
@@ -336,19 +336,19 @@ export default function CatalogPage() {
                 step={250000}
                 value={maxPriceRange}
                 onChange={(e) => setMaxPriceRange(Number(e.target.value))}
-                className="w-full accent-[#006039] h-1.5 bg-[#E2E8F0] dark:bg-[#1F4535] rounded cursor-pointer"
+                className="w-full accent-[#006039] h-2 rounded-lg cursor-pointer"
               />
             </div>
 
             {/* Movement Escapement */}
-            <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-3.5">
+            <div className="space-y-2 border-t border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] pt-3.5">
               <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
                 Calibre Escapement
               </label>
               <select
                 value={selectedMovement}
                 onChange={(e) => setSelectedMovement(e.target.value)}
-                className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039] font-mono"
+                className="w-full neu-inset rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none font-mono"
               >
                 {MOVEMENTS.map((m) => (
                   <option key={m} value={m}>
@@ -359,14 +359,14 @@ export default function CatalogPage() {
             </div>
 
             {/* Size */}
-            <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-3.5">
+            <div className="space-y-2 border-t border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] pt-3.5">
               <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
                 Case Diameter
               </label>
               <select
                 value={selectedSize}
                 onChange={(e) => setSelectedSize(e.target.value)}
-                className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039] font-mono"
+                className="w-full neu-inset rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none font-mono"
               >
                 {CASE_SIZES.map((s) => (
                   <option key={s} value={s}>
@@ -377,7 +377,7 @@ export default function CatalogPage() {
             </div>
 
             {/* In Stock Toggle */}
-            <div className="flex items-center justify-between border-t border-[#E5ECE8] dark:border-[#122B20] pt-3.5">
+            <div className="flex items-center justify-between border-t border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] pt-3.5">
               <span className="text-xs text-[#475569] dark:text-[#CBD5E1] font-mono font-semibold">In Stock Only</span>
               <input
                 type="checkbox"
@@ -389,9 +389,9 @@ export default function CatalogPage() {
           </aside>
 
           {/* Product Feed */}
-          <div className="lg:col-span-3 space-y-4">
+          <div className="lg:col-span-3 space-y-5">
             {/* Top Toolbar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-2xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] bg-white dark:bg-[#0B1C15] shadow-sm">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-3xl neu-raised">
               <div className="text-xs text-[#475569] dark:text-[#CBD5E1] font-mono flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
                 <span>Displaying <strong className="text-[#0F172A] dark:text-[#F8FAFC]">{filteredProducts.length}</strong> authenticated references</span>
                 {selectedBrand !== "All" && (
@@ -400,11 +400,11 @@ export default function CatalogPage() {
               </div>
 
               <div className="flex items-center gap-2.5 w-full sm:w-auto justify-between sm:justify-end">
-                <div className="flex items-center gap-1 bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl p-0.5">
+                <div className="flex items-center gap-1 neu-inset rounded-xl p-1">
                   <button
                     onClick={() => setViewMode("grid")}
                     className={`px-3 py-1 rounded-lg text-xs font-mono transition cursor-pointer ${
-                      viewMode === "grid" ? "bg-white dark:bg-[#11261D] text-[#0F172A] dark:text-[#F8FAFC] font-bold shadow-sm" : "text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white"
+                      viewMode === "grid" ? "neu-raised text-[#0F172A] dark:text-[#F8FAFC] font-bold" : "text-[#5A6D64]"
                     }`}
                   >
                     Grid
@@ -412,7 +412,7 @@ export default function CatalogPage() {
                   <button
                     onClick={() => setViewMode("list")}
                     className={`px-3 py-1 rounded-lg text-xs font-mono transition cursor-pointer ${
-                      viewMode === "list" ? "bg-white dark:bg-[#11261D] text-[#0F172A] dark:text-[#F8FAFC] font-bold shadow-sm" : "text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white"
+                      viewMode === "list" ? "neu-raised text-[#0F172A] dark:text-[#F8FAFC] font-bold" : "text-[#5A6D64]"
                     }`}
                   >
                     List
@@ -422,7 +422,7 @@ export default function CatalogPage() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as any)}
-                  className="bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-3 py-1.5 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039] font-mono"
+                  className="neu-inset rounded-xl px-3 py-1.5 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none font-mono"
                 >
                   <option value="featured">Featured First</option>
                   <option value="price-asc">Price: Low to High</option>
@@ -434,25 +434,25 @@ export default function CatalogPage() {
 
             {/* Grid / List Results */}
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 py-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 py-6">
                 {[...Array(6)].map((_, i) => (
-                  <div key={i} className="rounded-2xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.2)] p-4 space-y-4 animate-pulse bg-white dark:bg-[#0B1C15]">
-                    <div className="aspect-square bg-[#F8FAF9] dark:bg-[#11261D] rounded-xl"></div>
-                    <div className="h-4 bg-[#F8FAF9] dark:bg-[#11261D] rounded w-3/4"></div>
+                  <div key={i} className="rounded-3xl neu-card p-5 space-y-4 animate-pulse">
+                    <div className="aspect-square neu-inset rounded-2xl"></div>
+                    <div className="h-4 bg-[rgba(166,180,200,0.4)] dark:bg-[rgba(255,255,255,0.06)] rounded w-3/4"></div>
                   </div>
                 ))}
               </div>
             ) : filteredProducts.length === 0 ? (
-              <div className="text-center py-16 rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] space-y-3 bg-white dark:bg-[#0B1C15] shadow-sm px-4">
+              <div className="text-center py-16 rounded-3xl neu-card space-y-3 px-4">
                 <div className="text-4xl text-[#CBD5E1] dark:text-[#1F4535]">⌕</div>
                 <h3 className="text-base font-bold text-[#0F172A] dark:text-[#F8FAFC] uppercase font-display">No References Located</h3>
                 <p className="text-xs text-[#5A6D64] font-mono">Try adjusting your brand selection or price range filter.</p>
-                <button onClick={resetFilters} className="lux-btn-primary px-6 py-2 rounded-xl text-xs uppercase font-bold">
+                <button onClick={resetFilters} className="neu-btn-primary px-6 py-2.5 rounded-2xl text-xs uppercase font-bold">
                   Reset All Filters
                 </button>
               </div>
             ) : viewMode === "grid" ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
                 {filteredProducts.map((product) => (
                   <ProductCard
                     key={product.id}
@@ -466,15 +466,15 @@ export default function CatalogPage() {
               </div>
             ) : (
               /* List Mode */
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {filteredProducts.map((product) => (
                   <div
                     key={product.id}
-                    className="rounded-2xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.25)] p-4 flex flex-col sm:flex-row items-center gap-4 bg-white dark:bg-[#0B1C15] hover:border-[#006039] transition duration-300 shadow-sm"
+                    className="rounded-3xl neu-card p-5 flex flex-col sm:flex-row items-center gap-5 transition duration-300"
                   >
                     <Link
                       href={`/products/${product.id}`}
-                      className="h-28 w-28 sm:h-24 sm:w-24 rounded-xl bg-[#F8FAF9] dark:bg-[#06110D] flex-shrink-0 block overflow-hidden border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.2)] shadow-inner group/thumb"
+                      className="h-28 w-28 sm:h-24 sm:w-24 rounded-2xl neu-inset flex-shrink-0 block overflow-hidden p-1 group/thumb"
                     >
                       <SmoothImage
                         src={product.image_url}
@@ -494,7 +494,7 @@ export default function CatalogPage() {
                           • {product.category}
                         </span>
                         {product.badge && (
-                          <span className="text-[8px] px-2 py-0.5 rounded-full bg-[#006039] text-white font-bold font-mono uppercase">
+                          <span className="text-[8px] px-2.5 py-0.5 rounded-full neu-raised-sm text-[#006039] dark:text-[#4ADE80] font-bold font-mono uppercase">
                             {product.badge}
                           </span>
                         )}
@@ -512,7 +512,7 @@ export default function CatalogPage() {
                       </div>
                     </div>
 
-                    <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center w-full sm:w-auto gap-3 flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#E5ECE8] dark:border-[#122B20]">
+                    <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center w-full sm:w-auto gap-3 flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)]">
                       <div className="text-left sm:text-right">
                         <div className="text-sm sm:text-base font-black text-[#006039] dark:text-[#4ADE80] font-num">
                           {formatCurrency(product.price)}
@@ -524,19 +524,19 @@ export default function CatalogPage() {
                         )}
                       </div>
 
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-2">
                         <button
                           onClick={() => setQuickViewProduct(product)}
-                          className="p-2 rounded-xl border border-[#E2E8F0] dark:border-[#1F4535] bg-[#F8FAF9] dark:bg-[#11261D] text-[#5A6D64] hover:text-[#006039] shadow-sm cursor-pointer"
+                          className="p-2.5 rounded-xl neu-btn-icon text-[#5A6D64] hover:text-[#006039] cursor-pointer"
                           title="Quick View"
                         >
                           👁
                         </button>
                         <button
                           onClick={() => toggleWishlist(product)}
-                          className={`p-2 rounded-xl border border-[#E2E8F0] dark:border-[#1F4535] bg-[#F8FAF9] dark:bg-[#11261D] shadow-sm transition cursor-pointer ${
+                          className={`p-2.5 rounded-xl neu-btn-icon transition cursor-pointer ${
                             wishlist.some((p) => p.id === product.id)
-                              ? "text-red-500 font-bold border-red-300"
+                              ? "text-red-500 font-bold neu-inset"
                               : "text-[#5A6D64] hover:text-[#006039]"
                           }`}
                           title="Wishlist"
@@ -545,7 +545,7 @@ export default function CatalogPage() {
                         </button>
                         <button
                           onClick={() => addToCart(product)}
-                          className="lux-btn-primary px-4 py-2 rounded-xl text-xs uppercase font-extrabold shadow-sm"
+                          className="neu-btn-primary px-4 py-2 rounded-xl text-xs uppercase font-extrabold"
                         >
                           Add to Cart
                         </button>
@@ -570,8 +570,8 @@ export default function CatalogPage() {
           />
 
           <div className="fixed inset-y-0 right-0 max-w-full flex">
-            <div className="w-screen max-w-sm bg-white dark:bg-[#0B1C15] shadow-2xl flex flex-col justify-between border-l border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)]">
-              <div className="p-4 sm:p-5 border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] flex items-center justify-between bg-[#F8FAF9] dark:bg-[#06110D]">
+            <div className="w-screen max-w-sm bg-[#E8EEF3] dark:bg-[#0E1A16] shadow-2xl flex flex-col justify-between border-l border-[rgba(255,255,255,0.7)] dark:border-[rgba(255,255,255,0.06)]">
+              <div className="p-4 sm:p-5 border-b border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-bold uppercase tracking-widest text-[#0F172A] dark:text-[#F8FAFC] font-mono">
                     Filter Parameters
@@ -582,7 +582,7 @@ export default function CatalogPage() {
                 </div>
                 <button
                   onClick={() => setIsMobileFilterOpen(false)}
-                  className="p-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#1F4535] text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white text-xs font-bold"
+                  className="p-2 rounded-xl neu-btn-icon text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white text-xs font-bold"
                 >
                   ✕
                 </button>
@@ -594,7 +594,7 @@ export default function CatalogPage() {
                   <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
                     Manufacture
                   </label>
-                  <div className="grid grid-cols-2 gap-1.5">
+                  <div className="grid grid-cols-2 gap-2">
                     {PRESTIGE_BRANDS.map((brand) => {
                       const count = brand === "All"
                         ? products.length
@@ -605,10 +605,10 @@ export default function CatalogPage() {
                         <button
                           key={brand}
                           onClick={() => setSelectedBrand(brand)}
-                          className={`text-left px-2.5 py-2 rounded-xl text-xs font-mono transition flex items-center justify-between border cursor-pointer ${
+                          className={`text-left px-3 py-2 rounded-xl text-xs font-mono transition flex items-center justify-between cursor-pointer ${
                             isSelected
-                              ? "bg-[#006039] dark:bg-[#00824E] text-white font-bold border-transparent shadow-sm"
-                              : "border-[#E2E8F0] dark:border-[#1F4535] text-[#475569] dark:text-[#CBD5E1] hover:bg-[#F8FAF9] dark:hover:bg-[#11261D]"
+                              ? "neu-btn-primary text-white font-bold"
+                              : "neu-btn text-[#475569] dark:text-[#CBD5E1]"
                           }`}
                         >
                           <span className="truncate pr-1">{brand === "All" ? "All 5" : brand}</span>
@@ -617,7 +617,7 @@ export default function CatalogPage() {
                               className={`text-[9px] px-1.5 py-0.2 rounded font-mono ${
                                 isSelected
                                   ? "bg-black/20 text-white"
-                                  : "bg-[#F8FAF9] dark:bg-[#06110D] text-[#5A6D64]"
+                                  : "neu-inset text-[#5A6D64]"
                               }`}
                             >
                               {count}
@@ -630,19 +630,19 @@ export default function CatalogPage() {
                 </div>
 
                 {/* Metier Category */}
-                <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-4">
+                <div className="space-y-2 border-t border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] pt-4">
                   <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
                     Collection
                   </label>
-                  <div className="grid grid-cols-2 gap-1.5">
+                  <div className="grid grid-cols-2 gap-2">
                     {COLLECTIONS.map((cat) => (
                       <button
                         key={cat}
                         onClick={() => setSelectedCategory(cat)}
-                        className={`text-left px-3 py-2 rounded-xl text-xs font-mono transition flex items-center justify-between border cursor-pointer ${
+                        className={`text-left px-3 py-2 rounded-xl text-xs font-mono transition flex items-center justify-between cursor-pointer ${
                           selectedCategory === cat
-                            ? "bg-[#006039] dark:bg-[#00824E] text-white font-bold border-transparent shadow-sm"
-                            : "border-[#E2E8F0] dark:border-[#1F4535] text-[#475569] dark:text-[#CBD5E1] hover:bg-[#F8FAF9] dark:hover:bg-[#11261D]"
+                            ? "neu-btn-primary text-white font-bold"
+                            : "neu-btn text-[#475569] dark:text-[#CBD5E1]"
                         }`}
                       >
                         <span>{cat === "All" ? "All Series" : cat}</span>
@@ -653,7 +653,7 @@ export default function CatalogPage() {
                 </div>
 
                 {/* Price Range */}
-                <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-4">
+                <div className="space-y-2 border-t border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] pt-4">
                   <div className="flex justify-between text-[10px] font-mono font-bold">
                     <span className="text-[#5A6D64] uppercase tracking-widest">Max Valuation</span>
                     <span className="text-[#006039] dark:text-[#4ADE80] font-num">{formatCurrency(maxPriceRange)}</span>
@@ -665,19 +665,19 @@ export default function CatalogPage() {
                     step={250000}
                     value={maxPriceRange}
                     onChange={(e) => setMaxPriceRange(Number(e.target.value))}
-                    className="w-full accent-[#006039] h-2 bg-[#E2E8F0] dark:bg-[#1F4535] rounded cursor-pointer"
+                    className="w-full accent-[#006039] h-2 rounded-lg cursor-pointer"
                   />
                 </div>
 
                 {/* Movement */}
-                <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-4">
+                <div className="space-y-2 border-t border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] pt-4">
                   <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
                     Calibre Escapement
                   </label>
                   <select
                     value={selectedMovement}
                     onChange={(e) => setSelectedMovement(e.target.value)}
-                    className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none font-mono"
+                    className="w-full neu-inset rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none font-mono"
                   >
                     {MOVEMENTS.map((m) => (
                       <option key={m} value={m}>
@@ -688,14 +688,14 @@ export default function CatalogPage() {
                 </div>
 
                 {/* Size */}
-                <div className="space-y-2 border-t border-[#E5ECE8] dark:border-[#122B20] pt-4">
+                <div className="space-y-2 border-t border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] pt-4">
                   <label className="text-[9px] text-[#006039] dark:text-[#4ADE80] uppercase font-bold font-mono tracking-widest block">
                     Case Diameter
                   </label>
                   <select
                     value={selectedSize}
                     onChange={(e) => setSelectedSize(e.target.value)}
-                    className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none font-mono"
+                    className="w-full neu-inset rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none font-mono"
                   >
                     {CASE_SIZES.map((s) => (
                       <option key={s} value={s}>
@@ -706,28 +706,28 @@ export default function CatalogPage() {
                 </div>
 
                 {/* In Stock */}
-                <div className="flex items-center justify-between border-t border-[#E5ECE8] dark:border-[#122B20] pt-4">
+                <div className="flex items-center justify-between border-t border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] pt-4">
                   <span className="text-xs text-[#475569] dark:text-[#CBD5E1] font-mono font-semibold">In Stock Only</span>
                   <input
                     type="checkbox"
                     checked={onlyInStock}
                     onChange={(e) => setOnlyInStock(e.target.checked)}
-                    className="h-5 w-5 rounded accent-[#006039] cursor-pointer"
+                    className="h-4 w-4 rounded accent-[#006039] cursor-pointer"
                   />
                 </div>
               </div>
 
               {/* Drawer Footer Actions */}
-              <div className="p-4 border-t border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] bg-[#F8FAF9] dark:bg-[#06110D] flex items-center gap-2.5">
+              <div className="p-4 border-t border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] bg-[#E8EEF3] dark:bg-[#0E1A16] flex items-center gap-2.5">
                 <button
                   onClick={resetFilters}
-                  className="px-4 py-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#1F4535] bg-white dark:bg-[#11261D] text-xs font-mono font-bold text-[#475569] dark:text-[#CBD5E1]"
+                  className="px-4 py-2.5 rounded-xl neu-btn text-xs font-mono font-bold text-[#475569] dark:text-[#CBD5E1]"
                 >
                   Reset
                 </button>
                 <button
                   onClick={() => setIsMobileFilterOpen(false)}
-                  className="flex-1 lux-btn-primary py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-center"
+                  className="flex-1 neu-btn-primary py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-center"
                 >
                   Show {filteredProducts.length} Results
                 </button>

@@ -119,17 +119,17 @@ export default function CheckoutModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
-        className="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity"
+        className="fixed inset-0 bg-black/75 backdrop-blur-md transition-opacity"
         onClick={orderConfirmed ? onClose : undefined}
       />
 
-      <div className="relative z-10 w-full max-w-2xl rounded-3xl bg-white dark:bg-[#0B1C15] border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] text-[#0F172A] dark:text-[#F8FAFC] shadow-2xl overflow-hidden max-h-[92vh] flex flex-col animate-pageEnter">
+      <div className="relative z-10 w-full max-w-2xl rounded-[2rem] bg-[#E8EEF3] dark:bg-[#0E1A16] neu-modal text-[#0F172A] dark:text-[#F8FAFC] shadow-2xl overflow-hidden max-h-[92vh] flex flex-col animate-pageEnter">
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] flex items-center justify-between bg-[#F8FAF9] dark:bg-[#06110D]">
+        <div className="p-4 sm:p-5 border-b border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] flex items-center justify-between">
           <div>
             <h2 className="text-sm font-black font-display uppercase tracking-widest text-[#0F172A] dark:text-[#F8FAFC] flex items-center gap-2">
               <span>Concierge Checkout</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#006039] dark:bg-[#4ADE80]"></span>
+              <span className="w-2 h-2 rounded-full bg-[#006039] dark:bg-[#4ADE80] animate-pulse"></span>
             </h2>
             <div className="text-[10px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase tracking-wider font-mono font-semibold">
               Direct Acquisition & Insured Air Transit
@@ -138,7 +138,7 @@ export default function CheckoutModal({
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#1F4535] text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white transition cursor-pointer font-bold"
+            className="p-2 rounded-xl neu-btn-icon text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white transition cursor-pointer font-bold"
           >
             ✕
           </button>
@@ -148,11 +148,11 @@ export default function CheckoutModal({
         <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
           {orderConfirmed ? (
             <div className="text-center py-6 space-y-4">
-              <div className="w-14 h-14 rounded-full bg-[#006039] text-white flex items-center justify-center text-2xl mx-auto font-black shadow-lg">
+              <div className="w-16 h-16 rounded-3xl neu-btn-primary flex items-center justify-center text-2xl mx-auto font-black shadow-lg">
                 ✓
               </div>
               <div className="space-y-2">
-                <span className="text-[10px] font-mono uppercase tracking-widest bg-[#E8F5EE] dark:bg-[#11261D] text-[#006039] dark:text-[#4ADE80] font-bold px-3.5 py-1 rounded-full border border-[#006039]/30">
+                <span className="text-[10px] font-mono uppercase tracking-widest neu-inset text-[#006039] dark:text-[#4ADE80] font-bold px-3.5 py-1 rounded-full">
                   Acquisition Authenticated
                 </span>
                 <h3 className="text-xl sm:text-2xl font-black font-display text-[#0F172A] dark:text-[#F8FAFC] uppercase tracking-tight">
@@ -164,7 +164,7 @@ export default function CheckoutModal({
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.25)] max-w-md mx-auto text-left space-y-2 text-xs">
+              <div className="p-4 rounded-2xl neu-inset max-w-md mx-auto text-left space-y-2 text-xs">
                 <div className="flex justify-between text-[#5A6D64] dark:text-[#8EAA9C] font-mono font-semibold">
                   <span>Dossier Reference</span>
                   <span className="text-[#0F172A] dark:text-[#F8FAFC] font-bold">{confirmedOrderNumber}</span>
@@ -181,7 +181,7 @@ export default function CheckoutModal({
 
               <button
                 onClick={onClose}
-                className="lux-btn-primary px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer shadow-lg"
+                className="neu-btn-primary px-8 py-3 rounded-2xl text-xs font-bold uppercase tracking-wider cursor-pointer shadow-lg"
               >
                 Return to Boutique
               </button>
@@ -189,13 +189,13 @@ export default function CheckoutModal({
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               {errorMessage && (
-                <div className="p-3 rounded-xl bg-[#FFF1F2] dark:bg-[#4C0519]/40 border border-[#E11D48]/30 text-[#E11D48] text-xs font-mono font-semibold">
+                <div className="p-3 rounded-2xl bg-[#FFF1F2] dark:bg-[#4C0519]/40 border border-[#E11D48]/30 text-[#E11D48] text-xs font-mono font-semibold">
                   {errorMessage}
                 </div>
               )}
 
               {/* Order Items Review */}
-              <div className="p-4 rounded-2xl bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.2)] space-y-2">
+              <div className="p-4 rounded-2xl neu-inset space-y-2">
                 <div className="text-[9px] text-[#006039] dark:text-[#4ADE80] font-mono uppercase tracking-widest font-bold">
                   Order Summary ({cart.length} Pieces)
                 </div>
@@ -214,7 +214,7 @@ export default function CheckoutModal({
                     </div>
                   ))}
                 </div>
-                <div className="pt-2 border-t border-[#E5ECE8] dark:border-[#122B20] flex justify-between text-xs font-bold font-mono">
+                <div className="pt-2 border-t border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] flex justify-between text-xs font-bold font-mono">
                   <span className="text-[#5A6D64]">Total:</span>
                   <span className="text-[#006039] dark:text-[#4ADE80] font-num text-sm font-black">{formatCurrency(grandTotal)}</span>
                 </div>
@@ -226,7 +226,7 @@ export default function CheckoutModal({
                   <span className="text-[#006039] dark:text-[#4ADE80]">1.</span>
                   <span>Contact & Identity</span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-bold mb-1">
                       Full Name *
@@ -238,7 +238,7 @@ export default function CheckoutModal({
                       placeholder="e.g. Lord Alexander Sterling"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039]"
+                      className="w-full neu-inset rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
                     />
                   </div>
                   <div>
@@ -252,7 +252,7 @@ export default function CheckoutModal({
                       placeholder="alexander@domain.com"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039]"
+                      className="w-full neu-inset rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
                     />
                   </div>
                   <div className="sm:col-span-2">
@@ -266,7 +266,7 @@ export default function CheckoutModal({
                       placeholder="+94 77 123 4567"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039]"
+                      className="w-full neu-inset rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
                     />
                   </div>
                 </div>
@@ -278,7 +278,7 @@ export default function CheckoutModal({
                   <span className="text-[#006039] dark:text-[#4ADE80]">2.</span>
                   <span>Insured Delivery Address</span>
                 </div>
-                <div className="space-y-2.5">
+                <div className="space-y-3">
                   <div>
                     <label className="block text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-bold mb-1">
                       Street Address *
@@ -290,10 +290,10 @@ export default function CheckoutModal({
                       placeholder="14 Royal Residences, Kensington Road"
                       value={formData.address}
                       onChange={handleInputChange}
-                      className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039]"
+                      className="w-full neu-inset rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
                     />
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     <div>
                       <label className="block text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-bold mb-1">
                         City *
@@ -305,7 +305,7 @@ export default function CheckoutModal({
                         placeholder="Colombo"
                         value={formData.city}
                         onChange={handleInputChange}
-                        className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039]"
+                        className="w-full neu-inset rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
                       />
                     </div>
                     <div>
@@ -319,7 +319,7 @@ export default function CheckoutModal({
                         placeholder="00700"
                         value={formData.postal_code}
                         onChange={handleInputChange}
-                        className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039]"
+                        className="w-full neu-inset rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
                       />
                     </div>
                     <div className="col-span-2 sm:col-span-1">
@@ -330,7 +330,7 @@ export default function CheckoutModal({
                         name="country"
                         value={formData.country}
                         onChange={handleInputChange}
-                        className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039]"
+                        className="w-full neu-inset rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
                       >
                         <option value="Sri Lanka">Sri Lanka</option>
                         <option value="India">India</option>
@@ -351,7 +351,7 @@ export default function CheckoutModal({
                   <span className="text-[#006039] dark:text-[#4ADE80]">3.</span>
                   <span>Bespoke Concierge Adjustments</span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-mono font-bold mb-1">
                       Wrist Circumference Sizing
@@ -360,7 +360,7 @@ export default function CheckoutModal({
                       name="wrist_size"
                       value={formData.wrist_size}
                       onChange={handleInputChange}
-                      className="w-full bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[#1F4535] rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039]"
+                      className="w-full neu-inset rounded-xl px-3 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
                     >
                       <option value="Standard (19cm)">Standard Factory Size (19cm)</option>
                       <option value="Slim (16-17cm)">Slim Wrist (16–17cm adjusted)</option>
@@ -368,7 +368,7 @@ export default function CheckoutModal({
                       <option value="Broad (19.5-21cm)">Broad Wrist (19.5–21cm)</option>
                     </select>
                   </div>
-                  <div className="flex items-center gap-2 pt-4 px-2">
+                  <div className="flex items-center gap-2.5 pt-4 px-2">
                     <input
                       type="checkbox"
                       id="gift_packaging"
@@ -388,7 +388,7 @@ export default function CheckoutModal({
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-3.5 rounded-xl lux-btn-primary text-xs font-black uppercase tracking-widest cursor-pointer shadow-lg hover:shadow-xl transition-all"
+                  className="w-full py-3.5 rounded-2xl neu-btn-primary text-xs font-black uppercase tracking-widest cursor-pointer shadow-lg transition-all"
                 >
                   {submitting ? "Authenticating Acquisition..." : `Confirm Vault Acquisition • ${formatCurrency(grandTotal)}`}
                 </button>

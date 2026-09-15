@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { fetchProducts, Product } from "@/lib/api";
 import SmoothImage from "./SmoothImage";
 import { useCart } from "@/lib/CartContext";
+import { useAuth } from "@/lib/AuthContext";
 
 interface NavbarProps {
   cartCount?: number;
@@ -28,6 +29,7 @@ export default function Navbar({
 }: NavbarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { user, isAuthenticated, logout } = useAuth();
   const cartContext = useCart();
 
   const effectiveCartCount = cartCount !== undefined ? cartCount : cartContext.totalItems;
@@ -155,40 +157,40 @@ export default function Navbar({
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#06110D]/95 border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] backdrop-blur-2xl transition-all duration-300 shadow-sm">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 py-3.5 gap-3 lg:gap-6">
+    <header className="sticky top-0 z-40 bg-[#E8EEF3]/90 dark:bg-[#0E1A16]/90 backdrop-blur-xl border-b border-[rgba(255,255,255,0.7)] dark:border-[rgba(255,255,255,0.06)] shadow-[0_6px_20px_rgba(166,180,200,0.35)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.6)] transition-all duration-300">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 py-3 gap-3 lg:gap-6">
         {/* Brand Crest & Logo */}
         <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
-          <div className="relative p-0.5 rounded-xl bg-gradient-to-br from-[#C5A059] via-[#006039] to-[#00482B] shadow-md shadow-[#006039]/20 group-hover:scale-105 transition-transform duration-300">
+          <div className="relative p-1 rounded-2xl neu-raised group-hover:scale-105 transition-transform duration-300 flex items-center justify-center">
             <img
               src="/icon.jpg"
               alt="Krono Logo"
-              className="h-8 w-8 sm:h-9 sm:w-9 rounded-[10px] object-contain bg-[#06110D] p-0.5"
+              className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl object-contain"
             />
           </div>
           <div>
             <div className="text-base font-black tracking-[0.25em] text-[#0F172A] dark:text-[#F8FAFC] font-display uppercase flex items-center gap-1.5">
               <span>K R O N O</span>
-              <span className="h-1.5 w-1.5 rounded-full bg-[#006039] dark:bg-[#00A362]"></span>
+              <span className="h-1.5 w-1.5 rounded-full bg-[#006039] dark:bg-[#00A362] animate-pulse"></span>
             </div>
-            <div className="text-[8px] uppercase tracking-[0.3em] text-[#5A6D64] dark:text-[#8EAA9C] font-mono">
+            <div className="text-[8px] uppercase tracking-[0.3em] text-[#5A6D64] dark:text-[#8EAA9C] font-mono font-semibold">
               Haute Horlogerie • Genève
             </div>
           </div>
         </Link>
 
-        {/* Center Navigation Links with Rolex Green & Gold Pills */}
-        <nav className="hidden lg:flex items-center gap-1 p-1 rounded-full border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] bg-[#F8FAF9]/90 dark:bg-[#0B1C15]/90 shadow-inner">
+        {/* Center Navigation Links with Soft Neumorphic Inset Well */}
+        <nav className="hidden lg:flex items-center gap-1.5 p-1.5 rounded-full neu-inset">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider transition-all duration-200 cursor-pointer ${
+                className={`px-4 py-1.5 rounded-full text-xs font-bold tracking-wider transition-all duration-200 cursor-pointer ${
                   isActive
-                    ? "bg-[#006039] dark:bg-[#00824E] text-white font-bold shadow-md shadow-[#006039]/30"
-                    : "text-[#475569] dark:text-[#CBD5E1] hover:text-[#006039] dark:hover:text-[#4ADE80] hover:bg-[#E8F5EE] dark:hover:bg-[#11261D]"
+                    ? "neu-btn-primary shadow-md scale-105 text-white"
+                    : "text-[#475569] dark:text-[#CBD5E1] hover:text-[#006039] dark:hover:text-[#4ADE80] hover:neu-raised-sm"
                 }`}
               >
                 {link.label}
@@ -197,7 +199,7 @@ export default function Navbar({
           })}
         </nav>
 
-        {/* Live Search Bar with Rolex Green Accent */}
+        {/* Live Search Bar with Neumorphic Inset Tray */}
         {showSearch && onSearchChange && (
           <div
             ref={searchContainerRef}
@@ -206,7 +208,7 @@ export default function Navbar({
             <div className="relative w-full">
               <input
                 type="text"
-                placeholder="Search reference, calibre, brand..."
+                placeholder="Search reference, calibre..."
                 value={searchQuery}
                 onFocus={() => {
                   if (searchQuery.trim()) setIsDropdownOpen(true);
@@ -215,7 +217,7 @@ export default function Navbar({
                   onSearchChange(e.target.value);
                   setIsDropdownOpen(true);
                 }}
-                className="w-full bg-[#F1F5F3] dark:bg-[#0B1C15] border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] rounded-full pl-4 pr-9 py-1.5 text-xs text-[#0F172A] dark:text-[#F8FAFC] placeholder-[#64748B] dark:placeholder-[#8EAA9C] focus:outline-none focus:border-[#006039] dark:focus:border-[#00A362] focus:ring-2 focus:ring-[#006039]/20 transition-all shadow-inner"
+                className="w-full neu-inset rounded-full pl-4 pr-9 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] placeholder-[#64748B] dark:placeholder-[#8EAA9C] focus:outline-none focus:ring-2 focus:ring-[#006039]/40 dark:focus:ring-[#00A362]/40 transition-all font-sans"
               />
               {searchQuery ? (
                 <button
@@ -234,10 +236,10 @@ export default function Navbar({
               )}
             </div>
 
-            {/* Live Interactive Search Results Dropdown */}
+            {/* Live Interactive Search Results Dropdown with Neumorphic Modal Surface */}
             {isDropdownOpen && searchQuery.trim() && (
-              <div className="absolute top-full left-0 right-0 mt-2 rounded-2xl bg-white dark:bg-[#0B1C15] border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.4)] shadow-2xl overflow-hidden z-50 animate-in fade-in duration-200">
-                <div className="p-2.5 bg-[#F8FAF9] dark:bg-[#06110D] border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] flex items-center justify-between text-[10px] font-mono text-[#5A6D64] dark:text-[#8EAA9C] uppercase tracking-wider">
+              <div className="absolute top-full left-0 right-0 mt-3 rounded-2xl neu-raised-lg overflow-hidden z-50 animate-pageEnter border border-[rgba(255,255,255,0.8)] dark:border-[rgba(255,255,255,0.08)]">
+                <div className="p-3 bg-[#E8EEF3] dark:bg-[#12221D] border-b border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] flex items-center justify-between text-[10px] font-mono text-[#5A6D64] dark:text-[#8EAA9C] uppercase tracking-wider">
                   <span>Vault References</span>
                   <span className="font-bold text-[#006039] dark:text-[#4ADE80]">
                     {searchResults.length} matches
@@ -245,18 +247,18 @@ export default function Navbar({
                 </div>
 
                 {searchResults.length > 0 ? (
-                  <div className="divide-y divide-[#E5ECE8] dark:divide-[#122B20] max-h-80 overflow-y-auto">
+                  <div className="divide-y divide-[rgba(166,180,200,0.2)] dark:divide-[rgba(255,255,255,0.04)] max-h-80 overflow-y-auto">
                     {searchResults.map((prod) => (
                       <div
                         key={prod.id}
                         onClick={() => handleSelectProduct(prod.id)}
-                        className="flex items-center gap-3 p-3 hover:bg-[#F1F5F3] dark:hover:bg-[#11261D] cursor-pointer transition group"
+                        className="flex items-center gap-3 p-3 hover:bg-[#DCE4EC] dark:hover:bg-[#182C25] cursor-pointer transition group"
                       >
                         <SmoothImage
                           src={prod.image_url}
                           alt={prod.name}
                           className="group-hover:scale-105 transition-transform duration-300"
-                          containerClassName="h-11 w-11 rounded-xl bg-[#F8FAF9] dark:bg-[#06110D] border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] overflow-hidden flex-shrink-0"
+                          containerClassName="h-11 w-11 rounded-xl neu-inset overflow-hidden flex-shrink-0"
                         />
 
                         <div className="flex-1 min-w-0">
@@ -298,7 +300,7 @@ export default function Navbar({
                   </div>
                 )}
 
-                <div className="p-2.5 bg-[#F8FAF9] dark:bg-[#06110D] border-t border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] text-center">
+                <div className="p-3 bg-[#E8EEF3] dark:bg-[#12221D] border-t border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] text-center">
                   <Link
                     href={`/catalog?q=${encodeURIComponent(searchQuery)}`}
                     onClick={() => setIsDropdownOpen(false)}
@@ -312,12 +314,12 @@ export default function Navbar({
           </div>
         )}
 
-        {/* Action Controls: Theme Toggle, Wishlist, Cart & Mobile Menu */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
+        {/* Action Controls: Neumorphic Theme Toggle, Wishlist, Cart & Mobile Menu */}
+        <div className="flex items-center gap-2.5 sm:gap-3">
           {/* Dark / Light Mode Toggle */}
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] bg-white dark:bg-[#0B1C15] text-[#0F172A] dark:text-[#F8FAFC] hover:border-[#006039] dark:hover:border-[#00A362] transition-all cursor-pointer shadow-sm hover:shadow-md"
+            className="p-2.5 neu-btn-icon rounded-2xl"
             title={theme === "light" ? "Switch to Night Mode" : "Switch to Day Mode"}
             aria-label="Toggle Theme"
           >
@@ -326,7 +328,7 @@ export default function Navbar({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
               </svg>
             ) : (
-              <svg className="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
             )}
@@ -335,12 +337,12 @@ export default function Navbar({
           {/* Wishlist Button */}
           <button
             onClick={effectiveOpenWishlist}
-            className="relative p-2 rounded-xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] bg-white dark:bg-[#0B1C15] text-[#0F172A] dark:text-[#F8FAFC] hover:border-[#006039] dark:hover:border-[#00A362] transition-all cursor-pointer shadow-sm"
+            className="relative p-2.5 neu-btn-icon rounded-2xl"
             title="Saved Timepieces"
             aria-label="Wishlist"
           >
             <svg
-              className="w-4 h-4 text-[#0F172A] dark:text-[#C5A059]"
+              className="w-4 h-4 text-[#0F172A] dark:text-[#D4AF37]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -353,16 +355,16 @@ export default function Navbar({
               />
             </svg>
             {effectiveWishlistCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 bg-[#E11D48] text-white text-[9px] font-black h-4 w-4 rounded-full flex items-center justify-center shadow-md">
+              <span className="absolute -top-1.5 -right-1.5 bg-[#E11D48] text-white text-[9px] font-black h-4.5 w-4.5 rounded-full flex items-center justify-center shadow-md">
                 {effectiveWishlistCount}
               </span>
             )}
           </button>
 
-          {/* Cart Button in Rolex Green */}
+          {/* Cart Button in Neumorphic Emerald */}
           <button
             onClick={effectiveOpenCart}
-            className="relative flex items-center gap-2 px-3 py-1.5 rounded-xl border border-[#006039] dark:border-[#00A362] bg-[#E8F5EE] dark:bg-[#11261D] text-[#006039] dark:text-[#4ADE80] hover:bg-[#006039] hover:text-white dark:hover:bg-[#00824E] transition-all cursor-pointer shadow-sm group"
+            className="relative flex items-center gap-2 px-3.5 py-2 rounded-2xl neu-btn hover:neu-raised text-[#006039] dark:text-[#4ADE80] transition-all cursor-pointer group"
             title="Shopping Cart"
             aria-label="Cart"
           >
@@ -383,16 +385,55 @@ export default function Navbar({
               Cart
             </span>
             {effectiveCartCount > 0 && (
-              <span className="bg-[#006039] text-white dark:bg-[#00A362] dark:text-[#06110D] text-[9px] font-black h-4.5 min-w-[18px] px-1 rounded-full flex items-center justify-center font-mono shadow-sm">
+              <span className="bg-[#006039] text-white dark:bg-[#00A362] dark:text-[#0E1A16] text-[9px] font-black h-4.5 min-w-[18px] px-1 rounded-full flex items-center justify-center font-mono shadow-sm">
                 {effectiveCartCount}
               </span>
             )}
           </button>
 
+          {/* User Profile / Auth State Controls (Milestone 2) */}
+          {isAuthenticated && user ? (
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <Link
+                href="/profile"
+                className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-1.5 rounded-2xl neu-btn hover:neu-raised text-[#0F172A] dark:text-[#F8FAFC] transition-all group"
+                title={`Signed in as ${user.name} (${user.email})`}
+              >
+                <div className="w-6 h-6 rounded-full bg-[#C5A059] text-black font-serif font-bold text-xs flex items-center justify-center">
+                  {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                </div>
+                <span className="hidden md:inline text-xs font-medium max-w-[90px] truncate">
+                  {user.name.split(" ")[0]}
+                </span>
+              </Link>
+              <button
+                onClick={logout}
+                className="p-2.5 neu-btn-icon rounded-2xl text-red-500 hover:text-red-600 transition-colors"
+                title="Secure Sign Out"
+                aria-label="Logout"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl neu-btn hover:neu-raised text-xs font-semibold text-[#0F172A] dark:text-[#F8FAFC] transition-all"
+              title="Client Sign In"
+            >
+              <svg className="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span className="hidden sm:inline">Sign In</span>
+            </Link>
+          )}
+
           {/* Mobile hamburger menu toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] text-[#0F172A] dark:text-[#F8FAFC] hover:text-[#006039] lg:hidden"
+            className="p-2.5 neu-btn-icon rounded-2xl lg:hidden"
             aria-label="Toggle navigation"
           >
             <svg
@@ -423,7 +464,7 @@ export default function Navbar({
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] bg-white dark:bg-[#06110D] px-5 py-4 space-y-3 shadow-2xl">
+        <div className="lg:hidden neu-raised-lg border-t border-[rgba(255,255,255,0.7)] dark:border-[rgba(255,255,255,0.06)] px-5 py-4 space-y-3 animate-pageEnter">
           {showSearch && onSearchChange && (
             <div ref={mobileSearchContainerRef} className="relative">
               <input
@@ -437,13 +478,13 @@ export default function Navbar({
                   onSearchChange(e.target.value);
                   setIsDropdownOpen(true);
                 }}
-                className="w-full bg-[#F1F5F3] dark:bg-[#0B1C15] border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] rounded-xl px-4 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none focus:border-[#006039]"
+                className="w-full neu-inset rounded-xl px-4 py-2.5 text-xs text-[#0F172A] dark:text-[#F8FAFC] focus:outline-none"
               />
 
               {/* Mobile Live Results */}
               {isDropdownOpen && searchQuery.trim() && (
-                <div className="mt-2 rounded-xl bg-white dark:bg-[#0B1C15] border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.4)] shadow-xl overflow-hidden">
-                  <div className="p-2 bg-[#F8FAF9] dark:bg-[#06110D] border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] text-[10px] font-mono text-[#006039] dark:text-[#4ADE80] uppercase font-bold">
+                <div className="mt-2 rounded-xl neu-raised overflow-hidden">
+                  <div className="p-2 bg-[#E8EEF3] dark:bg-[#12221D] border-b border-[rgba(166,180,200,0.3)] text-[10px] font-mono text-[#006039] dark:text-[#4ADE80] uppercase font-bold">
                     Live Matches ({searchResults.length})
                   </div>
                   {searchResults.map((prod) => (
@@ -453,12 +494,12 @@ export default function Navbar({
                         handleSelectProduct(prod.id);
                         setMobileMenuOpen(false);
                       }}
-                      className="flex items-center gap-3 p-2.5 hover:bg-[#F1F5F3] dark:hover:bg-[#11261D] border-b border-[#E5ECE8] dark:border-[#122B20] last:border-0 cursor-pointer"
+                      className="flex items-center gap-3 p-2.5 hover:bg-[#DCE4EC] dark:hover:bg-[#182C25] border-b border-[rgba(166,180,200,0.2)] last:border-0 cursor-pointer"
                     >
                       <SmoothImage
                         src={prod.image_url}
                         alt={prod.name}
-                        containerClassName="h-9 w-9 rounded-lg overflow-hidden flex-shrink-0"
+                        containerClassName="h-9 w-9 rounded-lg neu-inset overflow-hidden flex-shrink-0"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="text-xs font-bold text-[#0F172A] dark:text-[#F8FAFC] truncate">
@@ -475,7 +516,7 @@ export default function Navbar({
             </div>
           )}
 
-          <nav className="flex flex-col space-y-1">
+          <nav className="flex flex-col space-y-1.5 pt-2">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -483,14 +524,59 @@ export default function Navbar({
                 onClick={() => setMobileMenuOpen(false)}
                 className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-between ${
                   pathname === link.href
-                    ? "bg-[#006039] text-white shadow-md"
-                    : "text-[#475569] dark:text-[#CBD5E1] hover:bg-[#E8F5EE] dark:hover:bg-[#11261D]"
+                    ? "neu-btn-primary text-white"
+                    : "neu-btn text-[#475569] dark:text-[#CBD5E1]"
                 }`}
               >
                 <span>{link.label}</span>
                 <span className="text-[10px]">→</span>
               </Link>
             ))}
+
+            {/* Mobile Auth Links */}
+            <div className="pt-2 border-t border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] space-y-1.5">
+              {isAuthenticated && user ? (
+                <>
+                  <Link
+                    href="/profile"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-4 py-2.5 rounded-xl text-xs font-bold neu-btn text-[#C5A059] flex items-center justify-between"
+                  >
+                    <span>My Vault Profile ({user.name})</span>
+                    <span className="text-[10px]">→</span>
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      logout();
+                    }}
+                    className="w-full px-4 py-2.5 rounded-xl text-xs font-bold neu-btn text-red-400 flex items-center justify-between"
+                  >
+                    <span>Secure Sign Out</span>
+                    <span className="text-[10px]">✕</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-4 py-2.5 rounded-xl text-xs font-bold neu-btn text-[#C5A059] flex items-center justify-between"
+                  >
+                    <span>Client Sign In</span>
+                    <span className="text-[10px]">→</span>
+                  </Link>
+                  <Link
+                    href="/register"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-4 py-2.5 rounded-xl text-xs font-bold neu-btn text-white/70 flex items-center justify-between"
+                  >
+                    <span>Register New Account</span>
+                    <span className="text-[10px]">→</span>
+                  </Link>
+                </>
+              )}
+            </div>
           </nav>
         </div>
       )}

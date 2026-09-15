@@ -28,15 +28,15 @@ export default function WishlistDrawer({
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
       <div
-        className="absolute inset-0 bg-black/75 backdrop-blur-md transition-opacity"
+        className="absolute inset-0 bg-black/70 backdrop-blur-md transition-opacity"
         onClick={onClose}
       />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-white dark:bg-[#0B1C15] shadow-2xl flex flex-col justify-between border-l border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] animate-pageEnter">
-          <div className="p-4 sm:p-5 border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] flex items-center justify-between bg-[#F8FAF9] dark:bg-[#06110D]">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#006039] dark:text-[#4ADE80] font-bold bg-[#E8F5EE] dark:bg-[#11261D] px-2.5 py-0.5 rounded-full border border-[#006039]/30">
+        <div className="w-screen max-w-md bg-[#E8EEF3] dark:bg-[#0E1A16] shadow-2xl flex flex-col justify-between border-l border-[rgba(255,255,255,0.7)] dark:border-[rgba(255,255,255,0.06)] animate-pageEnter">
+          <div className="p-4 sm:p-5 border-b border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#006039] dark:text-[#4ADE80] font-bold neu-raised-sm px-3 py-1 rounded-full">
                 Curated Wishlist
               </span>
               <span className="text-xs font-mono font-bold text-[#0F172A] dark:text-[#F8FAFC]">
@@ -46,13 +46,13 @@ export default function WishlistDrawer({
 
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#1F4535] text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white transition cursor-pointer font-bold text-xs"
+              className="p-2 rounded-xl neu-btn-icon text-[#5A6D64] hover:text-[#0F172A] dark:hover:text-white transition cursor-pointer font-bold text-xs"
             >
               ✕
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3.5">
             {wishlist.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-4">
                 <div className="text-5xl text-[#CBD5E1] dark:text-[#1F4535]">♡</div>
@@ -67,7 +67,7 @@ export default function WishlistDrawer({
                 <Link
                   href="/catalog"
                   onClick={onClose}
-                  className="lux-btn-primary px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider"
+                  className="neu-btn-primary px-6 py-2.5 rounded-2xl text-xs font-bold uppercase tracking-wider"
                 >
                   Browse Catalogue
                 </Link>
@@ -76,9 +76,9 @@ export default function WishlistDrawer({
               wishlist.map((product) => (
                 <div
                   key={product.id}
-                  className="rounded-2xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.25)] p-3.5 flex gap-3 items-center justify-between bg-[#F8FAF9]/90 dark:bg-[#06110D]/90 hover:border-[#006039] transition shadow-sm"
+                  className="rounded-2xl neu-card p-3.5 flex gap-3.5 items-center justify-between transition group"
                 >
-                  <div className="h-14 w-14 rounded-xl bg-white dark:bg-[#0B1C15] overflow-hidden p-1 flex-shrink-0 flex items-center justify-center border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] shadow-sm">
+                  <div className="h-14 w-14 rounded-xl neu-inset overflow-hidden p-1 flex-shrink-0 flex items-center justify-center">
                     <SmoothImage
                       src={product.image_url}
                       alt={product.name}
@@ -102,17 +102,17 @@ export default function WishlistDrawer({
                     </div>
                   </div>
 
-                  <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                  <div className="flex flex-col items-end gap-2 flex-shrink-0">
                     <button
                       onClick={() => onRemoveFromWishlist(product.id)}
-                      className="text-[10px] text-[#5A6D64] hover:text-[#E11D48] transition font-mono"
+                      className="text-[10px] text-[#5A6D64] hover:text-[#E11D48] transition font-mono cursor-pointer"
                     >
                       Remove
                     </button>
 
                     <button
                       onClick={() => onMoveToCart(product)}
-                      className="px-3 py-1 rounded-lg lux-btn-primary text-[10px] font-bold uppercase tracking-wider cursor-pointer shadow-sm"
+                      className="px-3.5 py-1.5 rounded-xl neu-btn-primary text-[10px] font-bold uppercase tracking-wider cursor-pointer"
                     >
                       + Move to Cart
                     </button>
@@ -123,11 +123,11 @@ export default function WishlistDrawer({
           </div>
 
           {wishlist.length > 0 && (
-            <div className="p-4 border-t border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] bg-[#F8FAF9] dark:bg-[#06110D]">
+            <div className="p-4 border-t border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] bg-[#E8EEF3] dark:bg-[#0E1A16]">
               <Link
                 href="/catalog"
                 onClick={onClose}
-                className="w-full py-3 rounded-xl lux-btn-secondary text-xs font-bold flex items-center justify-center gap-2 uppercase tracking-wider shadow-sm"
+                className="w-full py-3 rounded-2xl neu-btn text-xs font-bold flex items-center justify-center gap-2 uppercase tracking-wider"
               >
                 <span>Continue Shopping</span>
                 <span>→</span>

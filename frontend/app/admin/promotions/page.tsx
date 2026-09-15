@@ -3,32 +3,89 @@
 import { useEffect, useState } from "react";
 import { fetchPosters, updatePoster, Poster } from "@/lib/api";
 
+const inputStyle: React.CSSProperties = {
+  width: "100%", background: "#141820", border: "1px solid #1E2530",
+  borderRadius: "6px", padding: "8px 12px",
+  fontSize: "12px", color: "#E2E8F0", outline: "none",
+  boxSizing: "border-box", transition: "border-color 150ms",
+  fontFamily: "inherit",
+};
+
+const labelStyle: React.CSSProperties = {
+  display: "block", fontSize: "10px", fontWeight: 700,
+  color: "#475569", textTransform: "uppercase", letterSpacing: "0.07em",
+  marginBottom: "5px",
+};
+
+const cardStyle: React.CSSProperties = {
+  background: "#0D1117", border: "1px solid #1E2530",
+  borderRadius: "8px", overflow: "hidden",
+};
+
+function Field({
+  label, value, onChange, type = "text", rows,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  type?: string;
+  rows?: number;
+}) {
+  const [focused, setFocused] = useState(false);
+  const focusStyle = focused ? { borderColor: "#3B82F6", boxShadow: "0 0 0 2px rgba(59,130,246,0.15)" } : {};
+
+  return (
+    <div>
+      <label style={labelStyle}>{label}</label>
+      {rows ? (
+        <textarea
+          rows={rows}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          style={{ ...inputStyle, ...focusStyle, resize: "vertical" }}
+        />
+      ) : (
+        <input
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          style={{ ...inputStyle, ...focusStyle }}
+        />
+      )}
+    </div>
+  );
+}
+
 export default function AdminPromotionsPage() {
   const [loading, setLoading] = useState(true);
   const [savingHero, setSavingHero] = useState(false);
   const [savingSale, setSavingSale] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
   const [heroData, setHeroData] = useState<Partial<Poster>>({
-    section_id: "hero",
-    badge: "2026 Atelier Collection",
-    title: "Mastery in Every Calibre.",
-    subtitle: "Immerse yourself in precision horology. Certified Swiss ETA calibres, scratch-resistant sapphire crystals, and guaranteed 5-year global concierge warranty.",
-    featured_product_name: "Krono Royal Sovereign ETA 2824-2",
-    featured_product_price: "LKR 485,000",
-    discount_text: "Exclusive Release",
-    image_url: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=80",
+    section_id: "hero_drop",
+    badge: "2026 Season Collection",
+    title: "Mastery in horology. Crafted for eternity.",
+    subtitle: "Discover master-crafted Swiss mechanical wristwatches designed for visionaries.",
+    featured_product_name: "Aurelia Master Classic",
+    featured_product_price: "LKR 385,000",
+    discount_text: "Save 30% Today",
+    image_url: "",
     is_active: true,
   });
 
   const [saleData, setSaleData] = useState<Partial<Poster>>({
-    section_id: "flash_deals",
-    badge: "VIP Privilege Event",
-    title: "Exclusive 20% Masterpiece Privilege",
-    subtitle: "Unlock private boutique pricing across our certified ETA calibres and grand complications. Complimentary insured courier included.",
-    coupon_code: "MONO20",
-    discount_text: "20% OFF",
-    image_url: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=80",
+    section_id: "weekend_sale",
+    badge: "Exclusive Flash Promotion",
+    title: "Up to 50% off iconic luxury timepieces.",
+    subtitle: "Limited-edition collectors pieces with verified international warranty.",
+    coupon_code: "FLASH50",
+    discount_text: "Up to 50% OFF",
+    image_url: "",
     is_active: true,
   });
 
@@ -37,32 +94,30 @@ export default function AdminPromotionsPage() {
       setLoading(true);
       try {
         const posters = await fetchPosters();
-        const hero = posters.find((p) => p.section_id === "hero" || p.section_id === "hero_drop");
+        const hero = posters.find((p) => p.section_id === "hero_drop" || p.section_id === "hero");
         if (hero) setHeroData(hero);
-
-        const sale = posters.find((p) => p.section_id === "flash_deals" || p.section_id === "weekend_sale");
+        const sale = posters.find((p) => p.section_id === "weekend_sale" || p.section_id === "flash_deals");
         if (sale) setSaleData(sale);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
+      } catch (e) { console.error(e); }
+      finally { setLoading(false); }
     }
     load();
   }, []);
+
+  const showToast = (msg: string, type: "success" | "error" = "success") => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3500);
+  };
 
   const handleSaveHero = async (e: React.FormEvent) => {
     e.preventDefault();
     setSavingHero(true);
     try {
       await updatePoster(heroData);
-      setToastMessage("Hero Banner updated and synced with storefront!");
-      setTimeout(() => setToastMessage(null), 3000);
+      showToast("Hero banner published successfully.");
     } catch (err: any) {
-      alert(err.message || "Failed to update hero banner");
-    } finally {
-      setSavingHero(false);
-    }
+      showToast(err.message || "Failed to publish hero banner.", "error");
+    } finally { setSavingHero(false); }
   };
 
   const handleSaveSale = async (e: React.FormEvent) => {
@@ -70,188 +125,218 @@ export default function AdminPromotionsPage() {
     setSavingSale(true);
     try {
       await updatePoster(saleData);
-      setToastMessage("VIP Campaign updated successfully!");
-      setTimeout(() => setToastMessage(null), 3000);
+      showToast("Campaign published successfully.");
     } catch (err: any) {
-      alert(err.message || "Failed to update campaign");
-    } finally {
-      setSavingSale(false);
-    }
+      showToast(err.message || "Failed to publish campaign.", "error");
+    } finally { setSavingSale(false); }
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
-      {/* Header */}
-      <div>
-        <span className="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400">Campaigns</span>
-        <h1 className="text-3xl font-black font-display text-slate-900 dark:text-white uppercase tracking-tight mt-1">Promotions & Store Banners</h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-          Control hero showcase, VIP deals, voucher codes, and promotional photography.
-        </p>
-      </div>
+    <div style={{ maxWidth: "1100px", margin: "0 auto", fontFamily: "inherit" }}>
 
-      {toastMessage && (
-        <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-400 text-xs font-mono font-semibold flex items-center justify-between">
-          <span>✓ {toastMessage}</span>
-          <button onClick={() => setToastMessage(null)} className="text-slate-400 hover:text-slate-800 dark:hover:text-white font-bold">
-            ✕
-          </button>
+      {/* Toast */}
+      {toast && (
+        <div style={{
+          position: "fixed", bottom: "24px", right: "28px", zIndex: 9999,
+          background: "#0D1117",
+          border: `1px solid ${toast.type === "success" ? "#22C55E" : "#F87171"}`,
+          borderLeft: `3px solid ${toast.type === "success" ? "#22C55E" : "#F87171"}`,
+          borderRadius: "6px", padding: "12px 18px",
+          fontSize: "12px", fontWeight: 600,
+          color: toast.type === "success" ? "#22C55E" : "#F87171",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.5)", animation: "slideUp 0.2s ease",
+        }}>
+          {toast.type === "success" ? "✓" : "✕"} {toast.msg}
         </div>
       )}
 
+      {/* Page Header */}
+      <div style={{ marginBottom: "28px" }}>
+        <div style={{ fontSize: "11px", fontWeight: 600, color: "#3B82F6", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "5px" }}>
+          Marketing
+        </div>
+        <h1 style={{ fontSize: "22px", fontWeight: 700, color: "#F1F5F9", margin: 0, letterSpacing: "-0.4px" }}>
+          Campaigns & Banners
+        </h1>
+        <p style={{ fontSize: "12px", color: "#64748B", marginTop: "4px" }}>
+          Control hero showcase, promotional banners, voucher codes, and discount events.
+        </p>
+      </div>
+
       {loading ? (
-        <div className="space-y-4">
-          <div className="h-64 rounded-2xl bg-white dark:bg-[#131B2A] border border-slate-200 dark:border-slate-800 animate-pulse shadow-sm"></div>
-          <div className="h-64 rounded-2xl bg-white dark:bg-[#131B2A] border border-slate-200 dark:border-slate-800 animate-pulse shadow-sm"></div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+          {[0, 1].map((i) => (
+            <div key={i} style={{ ...cardStyle, height: "420px", animation: "pulse 1.5s ease-in-out infinite" }} />
+          ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Card 1 */}
-          <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 space-y-4 bg-white dark:bg-[#131B2A] shadow-sm">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
-              <h2 className="text-sm font-bold font-display uppercase tracking-wider text-slate-900 dark:text-white">Main Hero Showcase</h2>
-              <span className="text-[9px] font-mono uppercase bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-2.5 py-0.5 rounded font-bold">
-                hero
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+
+          {/* Hero Banner Card */}
+          <div style={cardStyle}>
+            <div style={{
+              padding: "16px 20px", borderBottom: "1px solid #1E2530",
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+            }}>
+              <div>
+                <div style={{ fontSize: "13px", fontWeight: 700, color: "#E2E8F0" }}>Hero Banner</div>
+                <div style={{ fontSize: "11px", color: "#64748B", marginTop: "2px" }}>Main storefront showcase section</div>
+              </div>
+              <span style={{
+                padding: "2px 8px", borderRadius: "4px", fontSize: "10px", fontWeight: 700,
+                background: "rgba(59,130,246,0.12)", color: "#60A5FA",
+                border: "1px solid rgba(59,130,246,0.25)", fontFamily: "monospace",
+              }}>
+                hero_drop
               </span>
             </div>
 
-            <form onSubmit={handleSaveHero} className="space-y-3.5 text-xs">
-              <div>
-                <label className="text-slate-600 dark:text-slate-300 font-mono text-[10px] uppercase font-bold block mb-1">Badge</label>
-                <input
-                  type="text"
-                  value={heroData.badge || ""}
-                  onChange={(e) => setHeroData({ ...heroData, badge: e.target.value })}
-                  className="w-full rounded-xl bg-slate-50 dark:bg-[#0B0F17] px-3.5 py-2 text-xs text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 focus:border-slate-800 dark:focus:border-amber-400 focus:outline-none"
-                />
+            <form onSubmit={handleSaveHero} style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "14px" }}>
+              <Field label="Badge Text" value={heroData.badge || ""} onChange={(v) => setHeroData({ ...heroData, badge: v })} />
+              <Field label="Headline" value={heroData.title || ""} onChange={(v) => setHeroData({ ...heroData, title: v })} />
+              <Field label="Subtitle" value={heroData.subtitle || ""} onChange={(v) => setHeroData({ ...heroData, subtitle: v })} rows={2} />
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                <Field label="Featured Product" value={heroData.featured_product_name || ""} onChange={(v) => setHeroData({ ...heroData, featured_product_name: v })} />
+                <Field label="Price Display" value={heroData.featured_product_price || ""} onChange={(v) => setHeroData({ ...heroData, featured_product_price: v })} />
               </div>
 
-              <div>
-                <label className="text-slate-600 dark:text-slate-300 font-mono text-[10px] uppercase font-bold block mb-1">Title</label>
-                <input
-                  type="text"
-                  value={heroData.title || ""}
-                  onChange={(e) => setHeroData({ ...heroData, title: e.target.value })}
-                  className="w-full rounded-xl bg-slate-50 dark:bg-[#0B0F17] px-3.5 py-2 text-xs text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 focus:border-slate-800 dark:focus:border-amber-400 focus:outline-none"
-                />
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                <Field label="Discount Tag" value={heroData.discount_text || ""} onChange={(v) => setHeroData({ ...heroData, discount_text: v })} />
+                <Field label="Coupon Code" value={heroData.coupon_code || ""} onChange={(v) => setHeroData({ ...heroData, coupon_code: v })} />
               </div>
 
-              <div>
-                <label className="text-slate-600 dark:text-slate-300 font-mono text-[10px] uppercase font-bold block mb-1">Subtitle</label>
-                <textarea
-                  rows={2}
-                  value={heroData.subtitle || ""}
-                  onChange={(e) => setHeroData({ ...heroData, subtitle: e.target.value })}
-                  className="w-full rounded-xl bg-slate-50 dark:bg-[#0B0F17] px-3.5 py-2 text-xs text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 focus:border-slate-800 dark:focus:border-amber-400 focus:outline-none"
-                />
-              </div>
+              <Field label="Background Image URL" type="url" value={heroData.image_url || ""} onChange={(v) => setHeroData({ ...heroData, image_url: v })} />
 
-              <div className="grid grid-cols-2 gap-3">
+              {/* Active toggle */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", background: "#141820", borderRadius: "6px", border: "1px solid #1E2530" }}>
                 <div>
-                  <label className="text-slate-600 dark:text-slate-300 font-mono text-[10px] uppercase font-bold block mb-1">Watch Name</label>
-                  <input
-                    type="text"
-                    value={heroData.featured_product_name || ""}
-                    onChange={(e) => setHeroData({ ...heroData, featured_product_name: e.target.value })}
-                    className="w-full rounded-xl bg-slate-50 dark:bg-[#0B0F17] px-3.5 py-2 text-xs text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 focus:border-slate-800 dark:focus:border-amber-400 focus:outline-none"
-                  />
+                  <div style={{ fontSize: "12px", fontWeight: 600, color: "#E2E8F0" }}>Active</div>
+                  <div style={{ fontSize: "11px", color: "#64748B", marginTop: "1px" }}>Show this banner on storefront</div>
                 </div>
-                <div>
-                  <label className="text-slate-600 dark:text-slate-300 font-mono text-[10px] uppercase font-bold block mb-1">Valuation</label>
-                  <input
-                    type="text"
-                    value={heroData.featured_product_price || ""}
-                    onChange={(e) => setHeroData({ ...heroData, featured_product_price: e.target.value })}
-                    className="w-full rounded-xl bg-slate-50 dark:bg-[#0B0F17] px-3.5 py-2 text-xs text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 focus:border-slate-800 dark:focus:border-amber-400 focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="text-slate-600 dark:text-slate-300 font-mono text-[10px] uppercase font-bold block mb-1">Image URL</label>
-                <input
-                  type="url"
-                  value={heroData.image_url || ""}
-                  onChange={(e) => setHeroData({ ...heroData, image_url: e.target.value })}
-                  className="w-full rounded-xl bg-slate-50 dark:bg-[#0B0F17] px-3.5 py-2 text-xs text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 focus:border-slate-800 dark:focus:border-amber-400 focus:outline-none"
-                />
+                <button
+                  type="button"
+                  onClick={() => setHeroData({ ...heroData, is_active: !heroData.is_active })}
+                  style={{
+                    width: "36px", height: "20px", borderRadius: "10px", border: "none", cursor: "pointer",
+                    background: heroData.is_active ? "#3B82F6" : "#1E2530",
+                    position: "relative", transition: "background 200ms",
+                    flexShrink: 0,
+                  }}
+                >
+                  <span style={{
+                    position: "absolute", top: "2px", width: "16px", height: "16px",
+                    borderRadius: "50%", background: "white",
+                    left: heroData.is_active ? "18px" : "2px",
+                    transition: "left 200ms", display: "block",
+                  }} />
+                </button>
               </div>
 
               <button
                 type="submit"
                 disabled={savingHero}
-                className="w-full lux-btn-primary py-3 rounded-xl font-bold uppercase tracking-wider text-xs cursor-pointer shadow-md"
+                style={{
+                  width: "100%", padding: "10px", borderRadius: "6px", border: "none",
+                  background: savingHero ? "#1D4ED8" : "#3B82F6",
+                  color: "white", fontSize: "12px", fontWeight: 700,
+                  cursor: savingHero ? "not-allowed" : "pointer",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
+                  transition: "background 150ms",
+                  letterSpacing: "0.02em",
+                }}
               >
-                {savingHero ? "Publishing..." : "Publish Hero Changes"}
+                {savingHero ? (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}
+                      style={{ animation: "spin 1s linear infinite" }}>
+                      <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48 2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48 2.83-2.83" />
+                    </svg>
+                    Publishing...
+                  </>
+                ) : "Publish Hero Changes"}
               </button>
             </form>
           </div>
 
-          {/* Card 2 */}
-          <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 space-y-4 bg-white dark:bg-[#131B2A] shadow-sm">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
-              <h2 className="text-sm font-bold font-display uppercase tracking-wider text-slate-900 dark:text-white">Privilege Campaign & Voucher</h2>
-              <span className="text-[9px] font-mono uppercase bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-2.5 py-0.5 rounded font-bold">
-                flash_deals
+          {/* Flash Sale / Campaign Card */}
+          <div style={cardStyle}>
+            <div style={{
+              padding: "16px 20px", borderBottom: "1px solid #1E2530",
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+            }}>
+              <div>
+                <div style={{ fontSize: "13px", fontWeight: 700, color: "#E2E8F0" }}>Flash Campaign</div>
+                <div style={{ fontSize: "11px", color: "#64748B", marginTop: "2px" }}>Promotional banner with voucher code</div>
+              </div>
+              <span style={{
+                padding: "2px 8px", borderRadius: "4px", fontSize: "10px", fontWeight: 700,
+                background: "rgba(249,115,22,0.12)", color: "#FB923C",
+                border: "1px solid rgba(249,115,22,0.25)", fontFamily: "monospace",
+              }}>
+                weekend_sale
               </span>
             </div>
 
-            <form onSubmit={handleSaveSale} className="space-y-3.5 text-xs">
-              <div>
-                <label className="text-slate-600 dark:text-slate-300 font-mono text-[10px] uppercase font-bold block mb-1">Badge</label>
-                <input
-                  type="text"
-                  value={saleData.badge || ""}
-                  onChange={(e) => setSaleData({ ...saleData, badge: e.target.value })}
-                  className="w-full rounded-xl bg-slate-50 dark:bg-[#0B0F17] px-3.5 py-2 text-xs text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 focus:border-slate-800 dark:focus:border-amber-400 focus:outline-none"
-                />
-              </div>
+            <form onSubmit={handleSaveSale} style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "14px" }}>
+              <Field label="Badge Text" value={saleData.badge || ""} onChange={(v) => setSaleData({ ...saleData, badge: v })} />
+              <Field label="Headline" value={saleData.title || ""} onChange={(v) => setSaleData({ ...saleData, title: v })} />
+              <Field label="Subtitle" value={saleData.subtitle || ""} onChange={(v) => setSaleData({ ...saleData, subtitle: v })} rows={2} />
 
-              <div>
-                <label className="text-slate-600 dark:text-slate-300 font-mono text-[10px] uppercase font-bold block mb-1">Headline</label>
-                <input
-                  type="text"
-                  value={saleData.title || ""}
-                  onChange={(e) => setSaleData({ ...saleData, title: e.target.value })}
-                  className="w-full rounded-xl bg-slate-50 dark:bg-[#0B0F17] px-3.5 py-2 text-xs text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 focus:border-slate-800 dark:focus:border-amber-400 focus:outline-none"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label className="text-slate-600 dark:text-slate-300 font-mono text-[10px] uppercase font-bold block mb-1">Voucher Code</label>
+                  <label style={labelStyle}>Voucher Code</label>
                   <input
                     type="text"
                     value={saleData.coupon_code || ""}
                     onChange={(e) => setSaleData({ ...saleData, coupon_code: e.target.value })}
-                    className="w-full rounded-xl bg-slate-50 dark:bg-[#0B0F17] px-3.5 py-2 text-xs text-slate-900 dark:text-white font-mono uppercase font-bold border border-slate-200 dark:border-slate-700 focus:border-slate-800 dark:focus:border-amber-400 focus:outline-none"
+                    style={{ ...inputStyle, fontFamily: "monospace", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em" }}
+                    onFocus={(e) => { (e.target as HTMLElement).style.borderColor = "#3B82F6"; }}
+                    onBlur={(e) => { (e.target as HTMLElement).style.borderColor = "#1E2530"; }}
                   />
                 </div>
-                <div>
-                  <label className="text-slate-600 dark:text-slate-300 font-mono text-[10px] uppercase font-bold block mb-1">Discount Tag</label>
-                  <input
-                    type="text"
-                    value={saleData.discount_text || ""}
-                    onChange={(e) => setSaleData({ ...saleData, discount_text: e.target.value })}
-                    className="w-full rounded-xl bg-slate-50 dark:bg-[#0B0F17] px-3.5 py-2 text-xs text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 focus:border-slate-800 dark:focus:border-amber-400 focus:outline-none"
-                  />
-                </div>
+                <Field label="Discount Tag" value={saleData.discount_text || ""} onChange={(v) => setSaleData({ ...saleData, discount_text: v })} />
               </div>
 
-              <div>
-                <label className="text-slate-600 dark:text-slate-300 font-mono text-[10px] uppercase font-bold block mb-1">Image URL</label>
-                <input
-                  type="url"
-                  value={saleData.image_url || ""}
-                  onChange={(e) => setSaleData({ ...saleData, image_url: e.target.value })}
-                  className="w-full rounded-xl bg-slate-50 dark:bg-[#0B0F17] px-3.5 py-2 text-xs text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 focus:border-slate-800 dark:focus:border-amber-400 focus:outline-none"
-                />
+              <Field label="Promotion Period" value={saleData.promotion_period || ""} onChange={(v) => setSaleData({ ...saleData, promotion_period: v })} />
+              <Field label="Background Image URL" type="url" value={saleData.image_url || ""} onChange={(v) => setSaleData({ ...saleData, image_url: v })} />
+
+              {/* Active toggle */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", background: "#141820", borderRadius: "6px", border: "1px solid #1E2530" }}>
+                <div>
+                  <div style={{ fontSize: "12px", fontWeight: 600, color: "#E2E8F0" }}>Active</div>
+                  <div style={{ fontSize: "11px", color: "#64748B", marginTop: "1px" }}>Show this campaign on storefront</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSaleData({ ...saleData, is_active: !saleData.is_active })}
+                  style={{
+                    width: "36px", height: "20px", borderRadius: "10px", border: "none", cursor: "pointer",
+                    background: saleData.is_active ? "#3B82F6" : "#1E2530",
+                    position: "relative", transition: "background 200ms",
+                    flexShrink: 0,
+                  }}
+                >
+                  <span style={{
+                    position: "absolute", top: "2px", width: "16px", height: "16px",
+                    borderRadius: "50%", background: "white",
+                    left: saleData.is_active ? "18px" : "2px",
+                    transition: "left 200ms", display: "block",
+                  }} />
+                </button>
               </div>
 
               <button
                 type="submit"
                 disabled={savingSale}
-                className="w-full lux-btn-primary py-3 rounded-xl font-bold uppercase tracking-wider text-xs cursor-pointer shadow-md"
+                style={{
+                  width: "100%", padding: "10px", borderRadius: "6px", border: "none",
+                  background: savingSale ? "#1D4ED8" : "#3B82F6",
+                  color: "white", fontSize: "12px", fontWeight: 700,
+                  cursor: savingSale ? "not-allowed" : "pointer",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
+                  transition: "background 150ms", letterSpacing: "0.02em",
+                }}
               >
                 {savingSale ? "Publishing..." : "Publish Campaign Changes"}
               </button>
@@ -259,6 +344,22 @@ export default function AdminPromotionsPage() {
           </div>
         </div>
       )}
+
+      <style jsx global>{`
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        textarea::placeholder, input::placeholder { color: #475569; }
+      `}</style>
     </div>
   );
 }

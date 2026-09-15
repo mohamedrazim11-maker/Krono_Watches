@@ -8,7 +8,7 @@ export const CATEGORIES_DATA = [
     slug: "Dive Watches",
     title: "Deep Sea & Maritime Diver",
     badge: "300m Professional",
-    image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80",
+    image: "/images/watches/submariner_deep_black_ceramic.jpg",
     description: "Cerachrom ceramic bezels, Triplock helium crowns, and Lumibrite indices crafted for underwater resilience.",
   },
   {
@@ -55,8 +55,8 @@ interface CategoryPillarsProps {
 
 export default function CategoryPillars({ selectedCategory, onSelectCategory }: CategoryPillarsProps) {
   return (
-    <section className="space-y-4 sm:space-y-5">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] pb-3.5">
+    <section className="space-y-5">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[rgba(166,180,200,0.3)] dark:border-[rgba(255,255,255,0.06)] pb-4">
         <div>
           <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#006039] dark:text-[#4ADE80] font-bold">
             Curated Collections
@@ -74,20 +74,20 @@ export default function CategoryPillars({ selectedCategory, onSelectCategory }: 
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {CATEGORIES_DATA.map((cat) => {
           const isSelected = selectedCategory === cat.slug;
           return (
             <div
               key={cat.slug}
               onClick={() => onSelectCategory && onSelectCategory(cat.slug)}
-              className={`group relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 border bg-white dark:bg-[#0B1C15] ${
+              className={`group relative rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 p-2 ${
                 isSelected
-                  ? "border-[#006039] dark:border-[#00A362] ring-2 ring-[#006039]/30 shadow-xl shadow-[#006039]/20 scale-[1.02]"
-                  : "border-[#E2E8F0] dark:border-[rgba(0,96,57,0.25)] hover:border-[#006039] dark:hover:border-[rgba(0,163,98,0.5)] hover:-translate-y-1 shadow-sm hover:shadow-xl"
+                  ? "neu-inset scale-[1.02] border-2 border-[#006039] dark:border-[#00A362]"
+                  : "neu-card hover:-translate-y-1.5"
               }`}
             >
-              <div className="aspect-[4/3] w-full relative overflow-hidden bg-[#F1F5F3] dark:bg-[#06110D]">
+              <div className="aspect-[4/3] w-full relative overflow-hidden rounded-2xl neu-inset">
                 <SmoothImage
                   src={cat.image}
                   alt={cat.title}
@@ -97,14 +97,14 @@ export default function CategoryPillars({ selectedCategory, onSelectCategory }: 
                 {/* Gradient vignette */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#040C09]/95 via-[#06110D]/45 to-transparent pointer-events-none"></div>
 
-                <div className="absolute top-3 left-3 pointer-events-none">
-                  <span className="text-[8px] font-mono font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-[#006039] text-white shadow-md">
+                <div className="absolute top-3.5 left-3.5 pointer-events-none">
+                  <span className="text-[8px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full neu-raised-sm bg-[#006039] text-white">
                     {cat.badge}
                   </span>
                 </div>
 
                 <div className="absolute bottom-0 inset-x-0 p-4 space-y-1 text-white">
-                  <div className="text-[9px] text-[#C5A059] font-mono uppercase tracking-wider font-semibold">
+                  <div className="text-[9px] text-[#C5A059] dark:text-[#D4AF37] font-mono uppercase tracking-wider font-semibold">
                     {cat.slug}
                   </div>
                   <h3 className="text-base font-bold text-white font-display">

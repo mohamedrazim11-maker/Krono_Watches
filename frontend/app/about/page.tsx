@@ -8,13 +8,13 @@ import SmoothImage from "@/components/SmoothImage";
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAF9] dark:bg-[#06110D] text-[#0F172A] dark:text-[#F8FAFC] selection:bg-[#006039] selection:text-white transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-[#E8EEF3] dark:bg-[#0E1A16] text-[#0F172A] dark:text-[#F8FAFC] selection:bg-[#006039] selection:text-white transition-colors duration-300">
       <Navbar />
 
       <main className="flex-1 mx-auto max-w-5xl px-4 sm:px-6 py-10 sm:py-14 space-y-12 sm:space-y-16">
         {/* Hero */}
         <div className="space-y-4 text-center">
-          <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#006039] dark:text-[#4ADE80] font-bold bg-[#E8F5EE] dark:bg-[#11261D] px-4 py-1.5 rounded-full border border-[#006039]/30 shadow-sm">
+          <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#006039] dark:text-[#4ADE80] font-bold neu-raised-sm px-4 py-1.5 rounded-full inline-block">
             Atelier Pedigree • Genève
           </span>
           <h1 className="text-3xl sm:text-5xl font-black font-display text-[#0F172A] dark:text-[#F8FAFC] uppercase tracking-tight">
@@ -43,14 +43,14 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="relative rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] p-3 overflow-hidden bg-white dark:bg-[#0B1C15] shadow-xl">
+          <div className="relative rounded-[2rem] neu-card p-3.5 overflow-hidden">
             <SmoothImage
               src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80"
               alt="Horology Craftsmanship"
               className="rounded-2xl filter brightness-95"
-              containerClassName="rounded-2xl w-full h-72"
+              containerClassName="rounded-2xl w-full h-72 neu-inset"
             />
-            <div className="absolute bottom-6 left-6 right-6 p-3.5 rounded-xl bg-white/95 dark:bg-[#06110D]/95 backdrop-blur-md border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] shadow-lg pointer-events-none">
+            <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl neu-raised backdrop-blur-md pointer-events-none">
               <div className="text-[9px] text-[#006039] dark:text-[#4ADE80] font-mono uppercase font-bold">Geneva Standard</div>
               <div className="text-xs text-[#0F172A] dark:text-[#F8FAFC] font-bold font-display">Superlative Chronometer Calibre Regulation</div>
             </div>
@@ -61,7 +61,7 @@ export default function AboutPage() {
         <TrustPillars />
 
         {/* Action Banner */}
-        <div className="rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] p-8 sm:p-12 space-y-4 text-center max-w-3xl mx-auto bg-gradient-to-br from-white via-[#F8FAF9] to-[#F1F5F3] dark:from-[#0B1C15] dark:via-[#06110D] dark:to-[#030806] shadow-xl">
+        <div className="rounded-[2rem] neu-raised-lg p-8 sm:p-12 space-y-4 text-center max-w-3xl mx-auto shadow-xl">
           <div className="space-y-1.5">
             <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#006039] dark:text-[#4ADE80] font-bold">
               Private Vault Inspection
@@ -76,13 +76,13 @@ export default function AboutPage() {
           <div className="pt-3 flex flex-wrap justify-center gap-3.5">
             <Link
               href="/catalog"
-              className="lux-btn-primary px-7 py-3 rounded-xl text-xs uppercase tracking-[0.15em] font-black shadow-lg hover:shadow-xl transition"
+              className="neu-btn-primary px-7 py-3 rounded-2xl text-xs uppercase tracking-[0.15em] font-black shadow-lg transition"
             >
               Explore Timepiece Vault →
             </Link>
             <Link
               href="/"
-              className="lux-btn-secondary px-6 py-3 rounded-xl text-xs uppercase tracking-[0.15em] font-bold shadow-sm"
+              className="neu-btn px-6 py-3 rounded-2xl text-xs uppercase tracking-[0.15em] font-bold"
             >
               Back to Storefront
             </Link>

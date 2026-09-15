@@ -19,7 +19,7 @@ const DEFAULT_FALLBACK_PRODUCTS = [
     category: "Dive Watches",
     badge: "Iconic Diver",
     movement: "Rolex Perpetual Calibre 3235",
-    image_url: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1000&q=85",
+    image_url: "/images/watches/submariner_deep_black_ceramic.jpg",
   },
   {
     id: "prod-omega-speedmaster-moonwatch",
@@ -28,7 +28,7 @@ const DEFAULT_FALLBACK_PRODUCTS = [
     category: "Chronograph",
     badge: "Space Certified",
     movement: "Omega Co-Axial Master Chronometer 3861",
-    image_url: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=85",
+    image_url: "/images/watches/speedmaster_chrono_titanium.jpg",
   },
   {
     id: "prod-grand-seiko-spring-drive-snowflake",
@@ -96,18 +96,14 @@ export default function HeroBanner({
 
   return (
     <div
-      className="relative overflow-hidden rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] bg-gradient-to-br from-white via-[#F8FAF9] to-[#F1F5F3] dark:from-[#0B1C15] dark:via-[#06110D] dark:to-[#030806] p-6 sm:p-8 lg:p-10 shadow-xl transition-all duration-300"
+      className="relative overflow-hidden rounded-[2rem] neu-raised-lg p-6 sm:p-8 lg:p-10 transition-all duration-300"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Ambient background Rolex green glow effects */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#006039]/10 dark:bg-[#00824E]/15 rounded-full blur-3xl pointer-events-none -z-0"></div>
-      <div className="absolute bottom-0 left-10 w-72 h-72 bg-[#C5A059]/10 dark:bg-[#006039]/10 rounded-full blur-2xl pointer-events-none -z-0"></div>
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
         {/* Left Narrative Column */}
         <div className="lg:col-span-6 space-y-5 sm:space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#006039]/30 dark:border-[#00A362]/40 bg-[#E8F5EE] dark:bg-[#11261D] px-3.5 py-1 text-[10px] font-mono uppercase tracking-[0.25em] text-[#006039] dark:text-[#4ADE80] shadow-sm">
+          <div className="inline-flex items-center gap-2 rounded-full neu-raised-sm px-4 py-1.5 text-[10px] font-mono uppercase tracking-[0.25em] text-[#006039] dark:text-[#4ADE80]">
             <span className="h-2 w-2 rounded-full bg-[#006039] dark:bg-[#4ADE80] animate-ping"></span>
             <span className="font-bold">
               {currentProduct?.badge ||
@@ -129,12 +125,12 @@ export default function HeroBanner({
 
           {/* Special VIP Voucher Highlight if present */}
           {activePoster?.coupon_code && (
-            <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#F8FAF9] dark:bg-[#11261D] border border-[#006039]/30 max-w-md shadow-sm">
-              <div className="p-2 rounded-xl bg-[#006039]/15 text-[#006039] dark:text-[#4ADE80] text-lg font-bold">
+            <div className="flex items-center gap-3 p-3.5 rounded-2xl neu-inset max-w-md">
+              <div className="p-2.5 rounded-xl neu-raised-sm text-[#006039] dark:text-[#4ADE80] text-base font-bold">
                 ✦
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-[10px] font-mono text-[#5A6D64] dark:text-[#8EAA9C] uppercase">
+                <div className="text-[10px] font-mono text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-bold">
                   Collector Privilege Code
                 </div>
                 <div className="text-xs font-black text-[#0F172A] dark:text-[#F8FAFC] font-mono tracking-wider">
@@ -144,7 +140,7 @@ export default function HeroBanner({
               {onCopyCoupon && (
                 <button
                   onClick={() => onCopyCoupon(activePoster.coupon_code!)}
-                  className="px-3 py-1.5 rounded-lg bg-[#006039] hover:bg-[#00482B] text-white text-[10px] font-mono font-bold uppercase tracking-wider cursor-pointer shadow-sm transition"
+                  className="px-3.5 py-1.5 rounded-xl neu-btn-primary text-[10px] font-mono font-bold uppercase tracking-wider cursor-pointer transition"
                 >
                   Apply
                 </button>
@@ -156,7 +152,7 @@ export default function HeroBanner({
           <div className="flex flex-wrap items-center gap-3.5 pt-2">
             <Link
               href="/catalog"
-              className="lux-btn-primary px-7 py-3 rounded-xl text-xs uppercase tracking-[0.18em] font-extrabold flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
+              className="neu-btn-primary px-7 py-3 rounded-2xl text-xs uppercase tracking-[0.18em] font-extrabold flex items-center gap-2 transition-all"
             >
               <span>Explore Vault</span>
               <span className="text-sm">→</span>
@@ -164,7 +160,7 @@ export default function HeroBanner({
 
             <Link
               href="/about"
-              className="lux-btn-secondary px-6 py-3 rounded-xl text-xs uppercase tracking-[0.18em] font-bold shadow-sm"
+              className="neu-btn px-6 py-3 rounded-2xl text-xs uppercase tracking-[0.18em] font-bold"
             >
               <span>Atelier Pedigree</span>
             </Link>
@@ -173,11 +169,11 @@ export default function HeroBanner({
 
         {/* Right Timepiece Stage Showcase Column */}
         <div className="lg:col-span-6 w-full relative flex flex-col items-center justify-center">
-          <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] rounded-2xl sm:rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] bg-white dark:bg-[#06110D] overflow-hidden group shadow-2xl">
-            {/* Main Product Image with Smooth Transition */}
+          <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] rounded-3xl neu-inset p-2 sm:p-2.5 overflow-hidden group">
+            {/* Main Product Image */}
             <Link
               href={`/products/${currentProduct.id}`}
-              className="block w-full h-full relative"
+              className="block w-full h-full relative rounded-2xl overflow-hidden"
             >
               <SmoothImage
                 key={currentProduct.id}
@@ -195,14 +191,14 @@ export default function HeroBanner({
               <>
                 <button
                   onClick={handlePrev}
-                  className="absolute left-3.5 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-white/90 dark:bg-[#0B1C15]/90 border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.4)] text-[#0F172A] dark:text-[#F8FAFC] flex items-center justify-center text-base font-bold shadow-lg hover:border-[#006039] hover:text-[#006039] transition cursor-pointer z-30 opacity-90 group-hover:opacity-100"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 h-9 w-9 rounded-2xl neu-btn-icon text-[#0F172A] dark:text-[#F8FAFC] text-base font-bold transition cursor-pointer z-30 opacity-90 group-hover:opacity-100"
                   aria-label="Previous Timepiece"
                 >
                   ‹
                 </button>
                 <button
                   onClick={handleNext}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-white/90 dark:bg-[#0B1C15]/90 border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.4)] text-[#0F172A] dark:text-[#F8FAFC] flex items-center justify-center text-base font-bold shadow-lg hover:border-[#006039] hover:text-[#006039] transition cursor-pointer z-30 opacity-90 group-hover:opacity-100"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 h-9 w-9 rounded-2xl neu-btn-icon text-[#0F172A] dark:text-[#F8FAFC] text-base font-bold transition cursor-pointer z-30 opacity-90 group-hover:opacity-100"
                   aria-label="Next Timepiece"
                 >
                   ›
@@ -213,7 +209,7 @@ export default function HeroBanner({
             {/* Dynamic Card Overlay */}
             <Link
               href={`/products/${currentProduct.id}`}
-              className="absolute bottom-3 inset-x-3 sm:bottom-4 sm:inset-x-4 z-20 rounded-2xl bg-white/95 dark:bg-[#0B1C15]/95 p-3.5 sm:p-4 border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] backdrop-blur-xl flex items-center justify-between shadow-2xl hover:border-[#006039] transition-all"
+              className="absolute bottom-4 inset-x-4 z-20 rounded-2xl neu-raised p-3.5 sm:p-4 backdrop-blur-md flex items-center justify-between hover:neu-raised-lg transition-all"
             >
               <div className="min-w-0 pr-3">
                 <div className="text-[9px] text-[#5A6D64] dark:text-[#8EAA9C] font-mono uppercase tracking-wider font-bold flex items-center gap-1.5">
@@ -243,15 +239,15 @@ export default function HeroBanner({
 
           {/* Bullet Indicators */}
           {showcaseItems.length > 1 && (
-            <div className="flex items-center gap-2 mt-3.5">
+            <div className="flex items-center gap-2.5 mt-4 p-1 rounded-full neu-inset">
               {showcaseItems.map((item, idx) => (
                 <button
                   key={item.id || idx}
                   onClick={() => setActiveProductIndex(idx)}
-                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                  className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                     activeProductIndex === idx
                       ? "w-8 bg-[#006039] dark:bg-[#00A362] shadow-sm"
-                      : "w-2 bg-[#CBD5E1] dark:bg-[#1F4535] hover:bg-[#006039]"
+                      : "w-2 bg-[rgba(166,180,200,0.6)] dark:bg-[rgba(255,255,255,0.15)] hover:bg-[#006039]"
                   }`}
                   aria-label={`Go to slide ${idx + 1}`}
                 />

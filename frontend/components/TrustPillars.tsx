@@ -25,12 +25,9 @@ export const TRUST_PILLARS_DATA = [
 
 export default function TrustPillars() {
   return (
-    <section className="rounded-3xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] p-6 sm:p-8 lg:p-10 bg-gradient-to-br from-white via-[#F8FAF9] to-[#F1F5F3] dark:from-[#0B1C15] dark:via-[#06110D] dark:to-[#030806] shadow-xl transition-colors duration-300 relative overflow-hidden">
-      {/* Background Green Accent */}
-      <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-[#006039]/5 dark:bg-[#00824E]/10 rounded-full blur-3xl pointer-events-none"></div>
-
+    <section className="rounded-[2rem] neu-raised-lg p-6 sm:p-8 lg:p-10 transition-colors duration-300 relative overflow-hidden">
       <div className="text-center max-w-xl mx-auto space-y-2 mb-8 relative z-10">
-        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#006039] dark:text-[#4ADE80] font-bold">
+        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#006039] dark:text-[#4ADE80] font-bold neu-raised-sm px-3.5 py-1 rounded-full inline-block">
           The Atelier Standard
         </span>
         <h2 className="text-2xl sm:text-3xl font-black font-display text-[#0F172A] dark:text-[#F8FAFC] tracking-tight uppercase">
@@ -41,13 +38,13 @@ export default function TrustPillars() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 relative z-10">
         {TRUST_PILLARS_DATA.map((pillar, idx) => (
           <div
             key={idx}
-            className="rounded-2xl border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.25)] p-5 space-y-3 bg-white/90 dark:bg-[#11261D]/80 backdrop-blur-md hover:border-[#006039] dark:hover:border-[#00A362] hover:shadow-xl transition-all duration-300 group"
+            className="rounded-2xl neu-card p-5 space-y-3 hover:-translate-y-1 transition-all duration-300 group"
           >
-            <div className="text-xs font-mono font-black text-white w-8 h-8 rounded-xl flex items-center justify-center bg-[#006039] dark:bg-[#00824E] shadow-md group-hover:scale-110 transition-transform">
+            <div className="text-xs font-mono font-black text-white w-9 h-9 rounded-xl flex items-center justify-center neu-btn-primary group-hover:scale-105 transition-transform">
               {pillar.icon}
             </div>
             <h3 className="text-sm font-bold text-[#0F172A] dark:text-[#F8FAFC] font-display">

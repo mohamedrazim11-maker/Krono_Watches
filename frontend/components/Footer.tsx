@@ -9,150 +9,121 @@ export default function Footer() {
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      setSubscribed(true);
-      setEmail("");
-    }
+    if (email) { setSubscribed(true); setEmail(""); }
+  };
+
+  const S = {
+    heading: { fontSize: "10px", fontWeight: 700, color: "#888", letterSpacing: "0.15em", textTransform: "uppercase" as const, marginBottom: "14px", borderBottom: "1px solid #1a1a1a", paddingBottom: "8px" },
+    link: { display: "block", fontSize: "12px", color: "#666", textDecoration: "none", marginBottom: "8px", transition: "color 150ms", letterSpacing: "0.02em" },
   };
 
   return (
-    <footer className="border-t border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] bg-white dark:bg-[#040C09] text-[#475569] dark:text-[#CBD5E1] text-xs font-sans transition-colors duration-300">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 lg:py-16 space-y-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-8">
-          {/* Brand & VIP Gazette */}
-          <div className="lg:col-span-2 space-y-4">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="p-0.5 rounded-xl bg-gradient-to-br from-[#C5A059] via-[#006039] to-[#00482B] shadow-sm group-hover:scale-105 transition-transform duration-300">
-                <img
-                  src="/icon.jpg"
-                  alt="Krono Logo"
-                  className="h-9 w-9 rounded-[10px] object-contain bg-[#06110D] p-0.5"
-                />
-              </div>
-              <div className="text-base font-black tracking-[0.25em] text-[#0F172A] dark:text-[#F8FAFC] uppercase font-display">
-                K R O N O
+    <footer style={{ background: "#050505", borderTop: "1px solid #1a1a1a", color: "#666", fontFamily: "inherit" }}>
+      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "64px 24px 32px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "48px", marginBottom: "48px" }}>
+
+          {/* Brand */}
+          <div>
+            <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none", marginBottom: "16px" }}>
+              <img src="/icon.jpg" alt="Krono" style={{ height: "32px", width: "32px", borderRadius: "4px", objectFit: "cover" }} />
+              <div>
+                <div style={{ fontSize: "14px", fontWeight: 800, color: "#fff", letterSpacing: "0.18em", textTransform: "uppercase" }}>KRONO</div>
+                <div style={{ fontSize: "9px", color: "#555", letterSpacing: "0.1em" }}>Swiss Watches</div>
               </div>
             </Link>
-            <p className="text-[#5A6D64] dark:text-[#CBD5E1] text-xs leading-relaxed max-w-sm">
+            <p style={{ fontSize: "12px", lineHeight: 1.7, color: "#555", maxWidth: "300px", marginBottom: "20px" }}>
               Precision Swiss mechanical horology. Superlative chronometer escapements, serialized exhibition casebacks, and diamond-grade sapphire crystals.
             </p>
 
-            {/* Newsletter Gazette Form */}
-            <div className="pt-2">
-              <div className="text-[10px] uppercase tracking-[0.2em] text-[#006039] dark:text-[#4ADE80] font-mono font-bold mb-2">
-                Private Gazette Registry
-              </div>
-              {subscribed ? (
-                <div className="text-[#006039] dark:text-[#4ADE80] bg-[#E8F5EE] dark:bg-[#11261D] border border-[#006039]/40 px-3.5 py-2 rounded-xl text-xs font-semibold">
-                  ✓ Enrolled in the Krono Private Registry. Welcome.
-                </div>
-              ) : (
-                <form onSubmit={handleSubscribe} className="flex gap-2 max-w-md">
-                  <input
-                    type="email"
-                    required
-                    placeholder="Enter collector email..."
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="flex-1 bg-[#F8FAF9] dark:bg-[#0B1C15] border border-[#E2E8F0] dark:border-[rgba(0,96,57,0.35)] rounded-xl px-3.5 py-2 text-xs text-[#0F172A] dark:text-[#F8FAFC] placeholder-[#64748B] dark:placeholder-[#8EAA9C] focus:outline-none focus:border-[#006039]"
-                  />
-                  <button
-                    type="submit"
-                    className="lux-btn-primary px-4 py-2 rounded-xl text-xs cursor-pointer uppercase tracking-wider font-extrabold shadow-md"
-                  >
-                    Join
-                  </button>
-                </form>
-              )}
-            </div>
+            {/* Newsletter */}
+            {subscribed ? (
+              <div style={{ fontSize: "12px", color: "#C5A059" }}>✓ Enrolled in the Krono Private Registry.</div>
+            ) : (
+              <form onSubmit={handleSubscribe} style={{ display: "flex", gap: "0" }}>
+                <input
+                  type="email" required placeholder="Your email address"
+                  value={email} onChange={(e) => setEmail(e.target.value)}
+                  style={{
+                    flex: 1, background: "#111", border: "1px solid #222",
+                    borderRight: "none", color: "#ccc", padding: "9px 14px",
+                    fontSize: "11px", outline: "none", fontFamily: "inherit",
+                  }}
+                />
+                <button type="submit" style={{
+                  padding: "9px 18px", background: "#C5A059", color: "#000",
+                  border: "1px solid #C5A059", fontSize: "10px", fontWeight: 700,
+                  letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer",
+                  fontFamily: "inherit", whiteSpace: "nowrap",
+                }}>
+                  Subscribe
+                </button>
+              </form>
+            )}
           </div>
 
           {/* Salons */}
-          <div className="space-y-3">
-            <h4 className="text-[#0F172A] dark:text-[#F8FAFC] text-xs font-bold uppercase tracking-[0.2em] font-mono border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] pb-1.5">
-              Private Salons
-            </h4>
-            <ul className="space-y-2 text-xs text-[#475569] dark:text-[#CBD5E1]">
-              <li>
-                <span className="text-[#0F172A] dark:text-[#F8FAFC] font-semibold">Genève Atelier</span>
-                <div className="text-[11px] text-[#5A6D64] dark:text-[#8EAA9C]">Rue du Rhône 42, Switzerland</div>
-              </li>
-              <li>
-                <span className="text-[#0F172A] dark:text-[#F8FAFC] font-semibold">London Mayfair</span>
-                <div className="text-[11px] text-[#5A6D64] dark:text-[#8EAA9C]">14 New Bond Street, UK</div>
-              </li>
-              <li>
-                <span className="text-[#0F172A] dark:text-[#F8FAFC] font-semibold">New York 5th Ave</span>
-                <div className="text-[11px] text-[#5A6D64] dark:text-[#8EAA9C]">745 Fifth Avenue, NY</div>
-              </li>
-            </ul>
+          <div>
+            <div style={S.heading}>Salons</div>
+            <div style={{ fontSize: "12px", marginBottom: "12px" }}>
+              <div style={{ color: "#bbb", fontWeight: 600, marginBottom: "2px" }}>Genève Atelier</div>
+              <div style={{ color: "#555", fontSize: "11px" }}>Rue du Rhône 42, CH</div>
+            </div>
+            <div style={{ fontSize: "12px", marginBottom: "12px" }}>
+              <div style={{ color: "#bbb", fontWeight: 600, marginBottom: "2px" }}>London Mayfair</div>
+              <div style={{ color: "#555", fontSize: "11px" }}>14 New Bond Street, UK</div>
+            </div>
+            <div style={{ fontSize: "12px" }}>
+              <div style={{ color: "#bbb", fontWeight: 600, marginBottom: "2px" }}>New York 5th Ave</div>
+              <div style={{ color: "#555", fontSize: "11px" }}>745 Fifth Avenue, NY</div>
+            </div>
           </div>
 
           {/* Collections */}
-          <div className="space-y-3">
-            <h4 className="text-[#0F172A] dark:text-[#F8FAFC] text-xs font-bold uppercase tracking-[0.2em] font-mono border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] pb-1.5">
-              Curations
-            </h4>
-            <ul className="space-y-2 text-xs">
-              <li>
-                <Link href="/catalog" className="text-[#475569] dark:text-[#CBD5E1] hover:text-[#006039] dark:hover:text-[#4ADE80] transition">
-                  Grand Complications
-                </Link>
-              </li>
-              <li>
-                <Link href="/catalog" className="text-[#475569] dark:text-[#CBD5E1] hover:text-[#006039] dark:hover:text-[#4ADE80] transition">
-                  Automatic Mechanicals
-                </Link>
-              </li>
-              <li>
-                <Link href="/catalog" className="text-[#475569] dark:text-[#CBD5E1] hover:text-[#006039] dark:hover:text-[#4ADE80] transition">
-                  Titanium Chronographs
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="text-[#475569] dark:text-[#CBD5E1] hover:text-[#006039] dark:hover:text-[#4ADE80] transition">
-                  Atelier Heritage
-                </Link>
-              </li>
-            </ul>
+          <div>
+            <div style={S.heading}>Collections</div>
+            {[
+              { label: "All Watches", href: "/catalog" },
+              { label: "Dive Watches", href: "/catalog" },
+              { label: "Dress Watches", href: "/catalog" },
+              { label: "Chronograph", href: "/catalog" },
+              { label: "Atelier Heritage", href: "/about" },
+            ].map((l) => (
+              <Link key={l.label} href={l.href} style={S.link}
+                onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.color = "#C5A059"}
+                onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.color = "#666"}
+              >{l.label}</Link>
+            ))}
           </div>
 
           {/* Guarantees */}
-          <div className="space-y-3">
-            <h4 className="text-[#0F172A] dark:text-[#F8FAFC] text-xs font-bold uppercase tracking-[0.2em] font-mono border-b border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] pb-1.5">
-              Guarantees
-            </h4>
-            <ul className="space-y-2 text-xs text-[#475569] dark:text-[#CBD5E1]">
-              <li className="flex items-center gap-1.5">
-                <span className="text-[#006039] dark:text-[#4ADE80]">✦</span> 5-Year Certified Warranty
-              </li>
-              <li className="flex items-center gap-1.5">
-                <span className="text-[#006039] dark:text-[#4ADE80]">✦</span> Insured Global Air Courier
-              </li>
-              <li className="flex items-center gap-1.5">
-                <span className="text-[#006039] dark:text-[#4ADE80]">✦</span> Serialized Authenticity Card
-              </li>
-              <li className="pt-2">
-                <Link href="/admin" className="text-[#006039] dark:text-[#4ADE80] font-bold hover:underline text-[11px] flex items-center gap-1">
-                  <span>Management Console</span>
-                  <span>→</span>
-                </Link>
-              </li>
-            </ul>
+          <div>
+            <div style={S.heading}>Guarantees</div>
+            {["5-Year Certified Warranty", "Insured Global Air Courier", "Serialized Authenticity Card", "30-Day Return Policy"].map((g) => (
+              <div key={g} style={{ display: "flex", alignItems: "flex-start", gap: "8px", marginBottom: "8px" }}>
+                <span style={{ color: "#C5A059", fontSize: "10px", marginTop: "1px", flexShrink: 0 }}>✦</span>
+                <span style={{ fontSize: "11px", color: "#666" }}>{g}</span>
+              </div>
+            ))}
+            <Link href="/admin" style={{ ...S.link, color: "#C5A059", marginTop: "12px", fontSize: "11px" }}
+              onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.color = "#fff"}
+              onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.color = "#C5A059"}
+            >
+              Admin Console →
+            </Link>
           </div>
         </div>
 
-        {/* Bottom copyright & Swiss Badges */}
-        <div className="border-t border-[#E2E8F0] dark:border-[rgba(0,96,57,0.3)] pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#5A6D64] dark:text-[#CBD5E1]">
-          <div>
-            © {new Date().getFullYear()} KRONO ATELIER S.A. Registered Swiss Horologists.
+        {/* Bottom bar */}
+        <div style={{ borderTop: "1px solid #1a1a1a", paddingTop: "24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
+          <div style={{ fontSize: "11px", color: "#444" }}>
+            © {new Date().getFullYear()} KRONO ATELIER S.A. All rights reserved.
           </div>
-          <div className="flex items-center gap-4 text-[#5A6D64] dark:text-[#8EAA9C] font-mono text-[10px]">
-            <span className="text-[#006039] dark:text-[#4ADE80]">SUPERLATIVE CHRONOMETER</span>
+          <div style={{ display: "flex", gap: "20px", fontSize: "10px", color: "#444", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "monospace" }}>
+            <span style={{ color: "#C5A059" }}>Superlative Chronometer</span>
             <span>•</span>
-            <span>256-BIT SSL ENCRYPTION</span>
+            <span>SSL Encrypted</span>
             <span>•</span>
-            <span className="text-[#006039] dark:text-[#4ADE80]">GENÈVE REGISTRY</span>
+            <span style={{ color: "#C5A059" }}>Genève Registry</span>
           </div>
         </div>
       </div>

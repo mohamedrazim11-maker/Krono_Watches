@@ -1,36 +1,68 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F8FAF9;
+  /* Neumorphic Light Theme Base Palette */
+  --background: #E8EEF3;
   --foreground: #0F172A;
-  --card: #FFFFFF;
-  --card-elevated: #F1F5F3;
-  --card-border: #E2E8F0;
+  --card: #E8EEF3;
+  --card-elevated: #EFF4F8;
+  --card-border: rgba(255, 255, 255, 0.7);
+  
+  /* Neumorphic Dual Shadow Tokens (Light Mode) */
+  --neu-flat-bg: #E8EEF3;
+  --neu-shadow-dark: rgba(166, 180, 200, 0.55);
+  --neu-shadow-light: #FFFFFF;
+  --neu-bevel: rgba(255, 255, 255, 0.85);
+  --neu-bevel-dark: rgba(166, 180, 200, 0.35);
+
+  --neu-shadow-raised: 8px 8px 18px var(--neu-shadow-dark), -8px -8px 18px var(--neu-shadow-light);
+  --neu-shadow-raised-sm: 4px 4px 10px var(--neu-shadow-dark), -4px -4px 10px var(--neu-shadow-light);
+  --neu-shadow-raised-lg: 14px 14px 28px var(--neu-shadow-dark), -14px -14px 28px var(--neu-shadow-light);
+  --neu-shadow-inset: inset 3px 3px 6px var(--neu-shadow-dark), inset -3px -3px 6px var(--neu-shadow-light);
+  --neu-shadow-inset-deep: inset 5px 5px 10px var(--neu-shadow-dark), inset -5px -5px 10px var(--neu-shadow-light);
+  
+  /* Brand Luxury Accents */
   --accent: #006039;
-  --accent-light: #E8F5EE;
+  --accent-light: #DDF0E6;
   --accent-dark: #00482B;
   --accent-muted: #5A6D64;
   --rolex-green: #006039;
   --rolex-green-dark: #00482B;
-  --rolex-green-light: #E8F5EE;
+  --rolex-green-light: #E0EFE8;
   --rolex-gold: #C5A059;
   --rolex-gold-dark: #997524;
-  --rolex-gold-light: #FDF8ED;
-  --border-subtle: #E5ECE8;
-  --border-strong: #CBD5E1;
-  --gold-glow: rgba(197, 160, 89, 0.2);
+  --rolex-gold-light: #FBF4E4;
+  --border-subtle: rgba(166, 180, 200, 0.3);
+  --border-strong: rgba(166, 180, 200, 0.6);
+  --gold-glow: rgba(197, 160, 89, 0.28);
   --emerald: #006039;
   --rose: #E11D48;
 }
 
 .dark {
-  --background: #06110D;
+  /* Neumorphic Dark Theme Base Palette (Deep Obsidian Emerald) */
+  --background: #0E1A16;
   --foreground: #F8FAFC;
-  --card: #0B1C15;
-  --card-elevated: #11261D;
-  --card-border: rgba(0, 96, 57, 0.35);
-  --accent: #00824E;
-  --accent-light: rgba(0, 130, 78, 0.15);
+  --card: #12221D;
+  --card-elevated: #162923;
+  --card-border: rgba(255, 255, 255, 0.06);
+
+  /* Neumorphic Dual Shadow Tokens (Dark Mode) */
+  --neu-flat-bg: #12221D;
+  --neu-shadow-dark: rgba(0, 0, 0, 0.75);
+  --neu-shadow-light: rgba(255, 255, 255, 0.045);
+  --neu-bevel: rgba(255, 255, 255, 0.08);
+  --neu-bevel-dark: rgba(0, 0, 0, 0.5);
+
+  --neu-shadow-raised: 8px 8px 20px var(--neu-shadow-dark), -6px -6px 18px var(--neu-shadow-light);
+  --neu-shadow-raised-sm: 4px 4px 10px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light);
+  --neu-shadow-raised-lg: 16px 16px 32px var(--neu-shadow-dark), -10px -10px 24px var(--neu-shadow-light);
+  --neu-shadow-inset: inset 4px 4px 8px var(--neu-shadow-dark), inset -3px -3px 7px var(--neu-shadow-light);
+  --neu-shadow-inset-deep: inset 6px 6px 12px var(--neu-shadow-dark), inset -4px -4px 10px var(--neu-shadow-light);
+
+  /* Brand Luxury Accents (Dark) */
+  --accent: #00A362;
+  --accent-light: rgba(0, 163, 98, 0.15);
   --accent-dark: #004D2E;
   --accent-muted: #8EAA9C;
   --rolex-green: #00A362;
@@ -38,10 +70,10 @@
   --rolex-green-light: #0B241A;
   --rolex-gold: #D4AF37;
   --rolex-gold-dark: #B8860B;
-  --rolex-gold-light: #1A180E;
-  --border-subtle: #122B20;
-  --border-strong: #1F4535;
-  --gold-glow: rgba(212, 175, 55, 0.25);
+  --rolex-gold-light: #1E1B10;
+  --border-subtle: rgba(0, 96, 57, 0.25);
+  --border-strong: rgba(0, 163, 98, 0.35);
+  --gold-glow: rgba(212, 175, 55, 0.3);
   --emerald: #00A362;
   --rose: #F43F5E;
   color-scheme: dark;
@@ -74,28 +106,219 @@ body {
   color: var(--foreground);
   font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
-  background-image: 
-    radial-gradient(ellipse 90% 50% at 50% -10%, rgba(0, 96, 57, 0.04), transparent 70%),
-    radial-gradient(ellipse 70% 50% at 95% 40%, rgba(197, 160, 89, 0.04), transparent 60%),
-    radial-gradient(ellipse 60% 40% at 5% 85%, rgba(0, 96, 57, 0.03), transparent 50%);
-  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.dark body {
-  background-image: 
-    radial-gradient(ellipse 80% 50% at 50% -15%, rgba(0, 163, 98, 0.08), transparent 70%),
-    radial-gradient(ellipse 70% 50% at 90% 40%, rgba(212, 175, 55, 0.06), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 10% 80%, rgba(0, 96, 57, 0.05), transparent 50%);
 }
 
 * {
   box-sizing: border-box;
 }
 
-/* Modern Professional Typography */
+/* ==========================================================================
+   NEUMORPHISM (SOFT UI) MASTER UTILITY CLASSES
+   ========================================================================== */
+
+/* Raised Surface / Card (Extruded 3D) */
+.neu-raised {
+  background: var(--card);
+  box-shadow: var(--neu-shadow-raised);
+  border: 1px solid var(--card-border);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neu-raised-sm {
+  background: var(--card);
+  box-shadow: var(--neu-shadow-raised-sm);
+  border: 1px solid var(--card-border);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neu-raised-lg {
+  background: var(--card);
+  box-shadow: var(--neu-shadow-raised-lg);
+  border: 1px solid var(--card-border);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Neumorphic Interactive Card */
+.neu-card {
+  background: var(--card);
+  box-shadow: var(--neu-shadow-raised);
+  border: 1px solid var(--card-border);
+  border-radius: 1.25rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neu-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--neu-shadow-raised-lg), 0 0 20px rgba(0, 96, 57, 0.08);
+}
+
+.dark .neu-card:hover {
+  box-shadow: var(--neu-shadow-raised-lg), 0 0 24px rgba(0, 163, 98, 0.12);
+}
+
+/* Inset / Recessed Surface (Inputs, Trays, Well Containers) */
+.neu-inset {
+  background: var(--card);
+  box-shadow: var(--neu-shadow-inset);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.2s ease;
+}
+
+.neu-inset-deep {
+  background: var(--card);
+  box-shadow: var(--neu-shadow-inset-deep);
+  border: 1px solid var(--border-subtle);
+}
+
+/* Neumorphic Push Button */
+.neu-btn {
+  background: var(--card);
+  color: var(--foreground);
+  box-shadow: var(--neu-shadow-raised-sm);
+  border: 1px solid var(--card-border);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  user-select: none;
+}
+
+.neu-btn:hover {
+  box-shadow: var(--neu-shadow-raised);
+  transform: translateY(-1.5px);
+}
+
+.neu-btn:active, .neu-btn.active {
+  box-shadow: var(--neu-shadow-inset) !important;
+  transform: translateY(1px);
+}
+
+/* Neumorphic Luxury Primary Action (Emerald Convex) */
+.neu-btn-primary {
+  background: linear-gradient(145deg, #007345 0%, #004D2E 100%);
+  color: #FFFFFF;
+  box-shadow: 6px 6px 16px rgba(0, 96, 57, 0.35), -4px -4px 12px rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(197, 160, 89, 0.5);
+  font-weight: 700;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.neu-btn-primary:hover {
+  background: linear-gradient(145deg, #008752 0%, #005A36 100%);
+  box-shadow: 8px 8px 20px rgba(0, 96, 57, 0.45), -6px -6px 16px rgba(255, 255, 255, 0.5);
+  transform: translateY(-1.5px);
+  border-color: #C5A059;
+}
+
+.neu-btn-primary:active {
+  box-shadow: inset 4px 4px 8px rgba(0, 30, 18, 0.7), inset -3px -3px 6px rgba(255, 255, 255, 0.25);
+  transform: translateY(1px);
+}
+
+.dark .neu-btn-primary {
+  background: linear-gradient(145deg, #00B36B 0%, #006039 100%);
+  box-shadow: 6px 6px 18px rgba(0, 0, 0, 0.8), -3px -3px 10px rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+.dark .neu-btn-primary:hover {
+  background: linear-gradient(145deg, #00CC7A 0%, #007A48 100%);
+  box-shadow: 8px 8px 24px rgba(0, 0, 0, 0.9), -4px -4px 14px rgba(0, 163, 98, 0.3);
+}
+
+.dark .neu-btn-primary:active {
+  box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.9), inset -2px -2px 6px rgba(255, 255, 255, 0.15);
+}
+
+/* Neumorphic Gold Action Button */
+.neu-btn-gold {
+  background: linear-gradient(145deg, #E5C37A 0%, #A6802C 100%);
+  color: #08110D;
+  font-weight: 800;
+  box-shadow: 6px 6px 16px rgba(166, 128, 44, 0.35), -4px -4px 12px rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.neu-btn-gold:hover {
+  background: linear-gradient(145deg, #F0CF8B 0%, #B88E33 100%);
+  box-shadow: 8px 8px 22px rgba(166, 128, 44, 0.45), -6px -6px 16px rgba(255, 255, 255, 0.8);
+  transform: translateY(-1.5px);
+}
+
+.neu-btn-gold:active {
+  box-shadow: inset 4px 4px 8px rgba(100, 70, 10, 0.6), inset -3px -3px 6px rgba(255, 255, 255, 0.4);
+  transform: translateY(1px);
+}
+
+/* Neumorphic Icon Button */
+.neu-btn-icon {
+  background: var(--card);
+  color: var(--foreground);
+  box-shadow: var(--neu-shadow-raised-sm);
+  border: 1px solid var(--card-border);
+  border-radius: 0.875rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.neu-btn-icon:hover {
+  box-shadow: var(--neu-shadow-raised);
+  color: var(--accent);
+  transform: translateY(-1.5px);
+}
+
+.neu-btn-icon:active, .neu-btn-icon.active {
+  box-shadow: var(--neu-shadow-inset) !important;
+  transform: translateY(1px);
+  color: var(--accent);
+}
+
+/* Neumorphic Pill / Tab */
+.neu-pill {
+  background: var(--card);
+  box-shadow: var(--neu-shadow-raised-sm);
+  border: 1px solid var(--card-border);
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.neu-pill:hover {
+  box-shadow: var(--neu-shadow-raised);
+  transform: translateY(-1px);
+}
+
+.neu-pill.active {
+  box-shadow: var(--neu-shadow-inset) !important;
+  color: var(--accent);
+  font-weight: 700;
+  border-color: var(--accent);
+}
+
+/* Neumorphic Modal / Drawer */
+.neu-modal {
+  background: var(--card);
+  box-shadow: var(--neu-shadow-raised-lg), 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--card-border);
+}
+
+/* Neumorphic Groove Divider */
+.neu-divider {
+  border: none;
+  height: 2px;
+  background: transparent;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--neu-bevel);
+}
+
+/* Modern Typography */
 .font-display {
   font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   letter-spacing: -0.02em;
@@ -137,140 +360,53 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
-/* Luxury Glassmorphic Surfaces */
-.lux-glass {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border-subtle);
-  box-shadow: 0 4px 24px -2px rgba(0, 96, 57, 0.04);
-}
-
-.dark .lux-glass {
-  background: rgba(11, 28, 21, 0.90);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(0, 96, 57, 0.3);
-  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.7);
-}
-
+/* Legacy utility aliases for backward compatibility */
 .lux-card {
   background: var(--card);
+  box-shadow: var(--neu-shadow-raised);
   border: 1px solid var(--card-border);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.dark .lux-card {
-  background: #0B1C15;
-  border: 1px solid rgba(0, 96, 57, 0.25);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lux-card:hover {
-  border-color: rgba(0, 96, 57, 0.6);
-  transform: translateY(-4px);
-  box-shadow: 0 16px 36px -8px rgba(0, 96, 57, 0.15), 0 0 0 1px rgba(0, 96, 57, 0.1);
+  box-shadow: var(--neu-shadow-raised-lg);
+  transform: translateY(-3px);
 }
 
-.dark .lux-card:hover {
-  border-color: rgba(0, 163, 98, 0.5);
-  transform: translateY(-4px);
-  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.8), 0 0 24px rgba(0, 163, 98, 0.15);
-}
-
-/* Rolex Green & Gold Buttons */
 .lux-btn-primary {
-  background: linear-gradient(135deg, #006039 0%, #00482B 100%);
+  background: linear-gradient(145deg, #007345 0%, #004D2E 100%);
   color: #FFFFFF;
-  border: 1px solid rgba(197, 160, 89, 0.4);
+  box-shadow: 6px 6px 16px rgba(0, 96, 57, 0.35), -4px -4px 12px rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(197, 160, 89, 0.5);
   font-weight: 700;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  letter-spacing: 0.06em;
-  box-shadow: 0 4px 16px rgba(0, 96, 57, 0.25);
-  position: relative;
-  overflow: hidden;
 }
 
 .lux-btn-primary:hover {
-  background: linear-gradient(135deg, #007A48 0%, #006039 100%);
-  color: #FFFFFF;
-  border-color: #C5A059;
+  background: linear-gradient(145deg, #008752 0%, #005A36 100%);
+  box-shadow: 8px 8px 20px rgba(0, 96, 57, 0.45), -6px -6px 16px rgba(255, 255, 255, 0.5);
   transform: translateY(-1.5px);
-  box-shadow: 0 8px 24px rgba(0, 96, 57, 0.4);
-}
-
-.dark .lux-btn-primary {
-  background: linear-gradient(135deg, #00A362 0%, #006039 100%);
-  color: #FFFFFF;
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  box-shadow: 0 4px 20px rgba(0, 96, 57, 0.35);
-}
-
-.dark .lux-btn-primary:hover {
-  background: linear-gradient(135deg, #00C274 0%, #00824E 100%);
-  color: #FFFFFF;
-  box-shadow: 0 8px 30px rgba(0, 163, 98, 0.5);
-}
-
-.lux-btn-primary:active {
-  transform: translateY(0);
-}
-
-.lux-btn-gold {
-  background: linear-gradient(135deg, #DFBA73 0%, #C5A059 50%, #997524 100%);
-  color: #06110D;
-  font-weight: 800;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 4px 18px rgba(197, 160, 89, 0.35);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.lux-btn-gold:hover {
-  transform: translateY(-1.5px);
-  box-shadow: 0 8px 28px rgba(197, 160, 89, 0.55);
-  filter: brightness(1.06);
 }
 
 .lux-btn-secondary {
   background: var(--card);
   color: var(--foreground);
-  border: 1px solid var(--border-strong);
+  box-shadow: var(--neu-shadow-raised-sm);
+  border: 1px solid var(--card-border);
   font-weight: 600;
   transition: all 0.25s ease;
 }
 
-.dark .lux-btn-secondary {
-  background: #11261D;
-  color: #F8FAFC;
-  border-color: rgba(0, 96, 57, 0.35);
-}
-
 .lux-btn-secondary:hover {
-  background: #E8F5EE;
-  border-color: #006039;
-  color: #006039;
+  box-shadow: var(--neu-shadow-raised);
+  color: var(--accent);
+  transform: translateY(-1.5px);
 }
 
-.dark .lux-btn-secondary:hover {
-  background: #19362A;
-  border-color: #00A362;
-  color: #4ADE80;
-}
-
-/* Luxury Border Glow */
-.gold-glow {
-  box-shadow: 0 0 25px var(--gold-glow);
-}
-
-.rolex-glow {
-  box-shadow: 0 0 25px rgba(0, 96, 57, 0.25);
-}
-
-/* Luxury Scrollbar */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
@@ -278,31 +414,24 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
+  background: rgba(166, 180, 200, 0.7);
   border-radius: 9999px;
+  border: 2px solid var(--background);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(0, 163, 98, 0.3);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #006039;
+  background: var(--accent);
 }
 
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
-
-img {
-  max-width: 100%;
-  display: block;
-}
-
-/* Page Transition & Keyframes */
+/* Animations */
 @keyframes pageEnter {
   0% {
     opacity: 0;
-    transform: translateY(12px) scale(0.998);
+    transform: translateY(10px) scale(0.995);
   }
   100% {
     opacity: 1;
@@ -310,42 +439,9 @@ img {
   }
 }
 
-@keyframes goldPulse {
-  0%, 100% {
-    opacity: 0.8;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.03);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
 .animate-pageEnter {
-  animation: pageEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: pageEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   will-change: opacity, transform;
-}
-
-.animate-goldPulse {
-  animation: goldPulse 3s infinite ease-in-out;
-}
-
-.animate-shimmer {
-  animation: shimmer 2.5s infinite linear;
-}
-
-/* Global Smooth Transitions */
-a, button {
-  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .no-scrollbar::-webkit-scrollbar {

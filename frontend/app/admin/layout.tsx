@@ -2,136 +2,222 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 
-export default function AdminLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+const NAV_ITEMS = [
+  {
+    group: "Analytics",
+    items: [
+      {
+        label: "Overview",
+        href: "/admin",
+        icon: (
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.5V19a1 1 0 001 1h4v-6H3zm7-8V19h4V5.5a1 1 0 00-1-1h-2a1 1 0 00-1 1zm7 4V19h4v-5.5a1 1 0 00-1-1h-2a1 1 0 00-1 1z" />
+          </svg>
+        ),
+      },
+    ],
+  },
+  {
+    group: "Catalogue",
+    items: [
+      {
+        label: "All Products",
+        href: "/admin/products",
+        icon: (
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M20 7H4a1 1 0 00-1 1v10a1 1 0 001 1h16a1 1 0 001-1V8a1 1 0 00-1-1zM9 7V5a3 3 0 016 0v2" />
+          </svg>
+        ),
+      },
+      {
+        label: "Add Product",
+        href: "/admin/products/new",
+        icon: (
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+        ),
+      },
+    ],
+  },
+  {
+    group: "Marketing",
+    items: [
+      {
+        label: "Campaigns",
+        href: "/admin/promotions",
+        icon: (
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+          </svg>
+        ),
+      },
+    ],
+  },
+];
+
+export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  const navItems = [
-    { label: "Overview & Telemetry", href: "/admin", icon: "📊" },
-    { label: "Product Catalogue", href: "/admin/products", icon: "⌚" },
-    { label: "Register New Product", href: "/admin/products/new", icon: "➕" },
-    { label: "Campaigns & Banners", href: "/admin/promotions", icon: "🏷️" },
-  ];
-
-  const toggleTheme = () => {
-    const isDark = document.documentElement.classList.contains("dark");
-    if (isDark) {
-      document.documentElement.classList.remove("dark");
-      try {
-        localStorage.setItem("krono_theme", "light");
-      } catch {}
-    } else {
-      document.documentElement.classList.add("dark");
-      try {
-        localStorage.setItem("krono_theme", "dark");
-      } catch {}
-    }
-  };
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
+  const dateStr = now.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 
   return (
-    <div className="flex min-h-screen w-full bg-[#F8F9FB] dark:bg-[#0B0F17] text-slate-900 dark:text-slate-100 font-sans selection:bg-slate-900 selection:text-white dark:selection:bg-amber-400 dark:selection:text-slate-950">
+    <div className="flex h-screen w-full overflow-hidden" style={{ fontFamily: "'Inter', 'SF Pro Display', system-ui, sans-serif", background: "#0A0C10", color: "#E2E8F0" }}>
       {/* Sidebar */}
-      <aside className="w-64 flex-shrink-0 bg-white dark:bg-[#131B2A] text-slate-900 dark:text-white flex flex-col border-r border-slate-200 dark:border-slate-800 shadow-sm">
-        <div className="flex h-20 items-center px-6 border-b border-slate-200 dark:border-slate-800 gap-3.5 bg-slate-50/50 dark:bg-[#0B0F17]/50">
-          <img
-            src="/icon.jpg"
-            alt="Krono Admin Logo"
-            className="h-10 w-10 rounded-xl object-contain bg-white dark:bg-slate-800 p-0.5 border border-slate-200/90 dark:border-slate-700 shadow-sm"
-          />
-          <div>
-            <div className="text-sm font-black tracking-[0.2em] text-slate-900 dark:text-white uppercase font-display">
-              KRONO ADMIN
+      <aside
+        style={{
+          width: sidebarOpen ? "240px" : "64px",
+          background: "#0D1117",
+          borderRight: "1px solid #1E2530",
+          display: "flex",
+          flexDirection: "column",
+          flexShrink: 0,
+          transition: "width 200ms ease",
+          overflow: "hidden",
+        }}
+      >
+        {/* Logo */}
+        <div style={{ height: "56px", display: "flex", alignItems: "center", padding: "0 16px", borderBottom: "1px solid #1E2530", gap: "10px", flexShrink: 0 }}>
+          <div style={{
+            width: "28px", height: "28px", borderRadius: "6px",
+            background: "linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0, fontSize: "12px", fontWeight: 800, color: "white", letterSpacing: "-0.5px"
+          }}>K</div>
+          {sidebarOpen && (
+            <div style={{ overflow: "hidden", whiteSpace: "nowrap" }}>
+              <div style={{ fontSize: "13px", fontWeight: 700, color: "#F1F5F9", letterSpacing: "-0.3px" }}>Krono Admin</div>
+              <div style={{ fontSize: "10px", color: "#64748B", fontWeight: 500, marginTop: "1px" }}>Management Console</div>
             </div>
-            <div className="text-[9px] uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400 font-mono font-bold">
-              Executive Console
-            </div>
-          </div>
+          )}
         </div>
 
-        <div className="px-4 py-6 flex-1 space-y-6">
-          <div>
-            <div className="text-[9px] font-mono uppercase tracking-[0.25em] text-slate-400 dark:text-slate-500 px-3 mb-3 font-bold">
-              Management
-            </div>
-            <nav className="space-y-1.5 text-xs font-semibold">
-              {navItems.map((item) => {
+        {/* Nav */}
+        <nav style={{ flex: 1, padding: "12px 8px", overflowY: "auto", overflowX: "hidden" }}>
+          {NAV_ITEMS.map((group) => (
+            <div key={group.group} style={{ marginBottom: "20px" }}>
+              {sidebarOpen && (
+                <div style={{ fontSize: "10px", fontWeight: 600, color: "#475569", textTransform: "uppercase", letterSpacing: "0.08em", padding: "0 8px", marginBottom: "4px" }}>
+                  {group.group}
+                </div>
+              )}
+              {group.items.map((item) => {
                 const isActive = pathname === item.href;
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition ${
-                      isActive
-                        ? "bg-slate-900 dark:bg-amber-400 text-white dark:text-slate-950 font-bold shadow-sm"
-                        : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
-                    }`}
+                    title={!sidebarOpen ? item.label : undefined}
+                    style={{
+                      display: "flex", alignItems: "center", gap: "10px",
+                      padding: "8px", borderRadius: "6px", marginBottom: "2px",
+                      fontSize: "13px", fontWeight: isActive ? 600 : 400,
+                      color: isActive ? "#F1F5F9" : "#8B9CBB",
+                      background: isActive ? "#1A2235" : "transparent",
+                      borderLeft: isActive ? "2px solid #3B82F6" : "2px solid transparent",
+                      textDecoration: "none", transition: "all 120ms ease",
+                      whiteSpace: "nowrap", overflow: "hidden",
+                    }}
+                    onMouseEnter={(e) => { if (!isActive) (e.currentTarget as HTMLElement).style.background = "#131B2A"; }}
+                    onMouseLeave={(e) => { if (!isActive) (e.currentTarget as HTMLElement).style.background = "transparent"; }}
                   >
-                    <span className="text-base">{item.icon}</span>
-                    <span>{item.label}</span>
+                    <span style={{ flexShrink: 0, color: isActive ? "#3B82F6" : "#64748B" }}>{item.icon}</span>
+                    {sidebarOpen && <span>{item.label}</span>}
                   </Link>
                 );
               })}
-            </nav>
-          </div>
-        </div>
+            </div>
+          ))}
+        </nav>
 
-        <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-[#0B0F17]/60 space-y-3">
-          <button
-            onClick={toggleTheme}
-            className="w-full flex items-center justify-between px-4 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-[#131B2A] hover:bg-slate-100 dark:hover:bg-slate-800 transition border border-slate-200 dark:border-slate-700 shadow-sm cursor-pointer"
-          >
-            <span>🌓 Toggle Theme</span>
-          </button>
+        {/* Bottom */}
+        <div style={{ padding: "12px 8px", borderTop: "1px solid #1E2530", flexShrink: 0 }}>
           <Link
             href="/"
-            className="flex items-center justify-between px-4 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-[#131B2A] hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition border border-slate-200 dark:border-slate-700 shadow-sm"
             target="_blank"
+            style={{
+              display: "flex", alignItems: "center", gap: "10px",
+              padding: "8px", borderRadius: "6px",
+              fontSize: "12px", fontWeight: 500, color: "#64748B",
+              textDecoration: "none", transition: "color 120ms ease", whiteSpace: "nowrap", overflow: "hidden",
+            }}
+            onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.color = "#94A3B8"}
+            onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.color = "#64748B"}
           >
-            <span>Live Boutique</span>
-            <span className="text-slate-900 dark:text-amber-400">↗</span>
+            <svg className="w-4 h-4" style={{ flexShrink: 0 }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+            {sidebarOpen && <span>View Storefront</span>}
           </Link>
-          <div className="text-[9px] text-slate-400 dark:text-slate-500 text-center font-mono font-semibold">
-            Krono Atelier v2.0 • Active DB
-          </div>
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            style={{
+              display: "flex", alignItems: "center", gap: "10px",
+              padding: "8px", borderRadius: "6px", marginTop: "4px",
+              fontSize: "12px", fontWeight: 500, color: "#64748B",
+              background: "transparent", border: "none", cursor: "pointer",
+              width: "100%", whiteSpace: "nowrap", overflow: "hidden",
+              transition: "color 120ms ease",
+            }}
+            onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.color = "#94A3B8"}
+            onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.color = "#64748B"}
+          >
+            <svg className="w-4 h-4" style={{ flexShrink: 0, transform: sidebarOpen ? "none" : "rotate(180deg)", transition: "transform 200ms ease" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+            </svg>
+            {sidebarOpen && <span>Collapse</span>}
+          </button>
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-20 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 bg-white/90 dark:bg-[#131B2A]/90 backdrop-blur-xl shadow-xs">
-          <div className="flex items-center gap-3">
-            <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <h2 className="text-xs font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">
-              PostgreSQL / Express API Connected
-            </h2>
+      {/* Main Area */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, overflow: "hidden" }}>
+        {/* Top Bar */}
+        <header style={{
+          height: "56px", flexShrink: 0,
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "0 24px", borderBottom: "1px solid #1E2530",
+          background: "#0D1117",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{
+              display: "inline-block", width: "7px", height: "7px",
+              borderRadius: "50%", background: "#22C55E",
+              boxShadow: "0 0 6px #22C55E",
+            }} />
+            <span style={{ fontSize: "11px", color: "#64748B", fontWeight: 500, fontFamily: "monospace" }}>
+              API Connected · PostgreSQL
+            </span>
           </div>
 
-          <div className="flex items-center gap-4">
-            <Link
-              href="/"
-              target="_blank"
-              className="text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 px-3.5 py-1.5 rounded-xl transition shadow-xs"
-            >
-              Storefront View ↗
-            </Link>
-            <div className="flex items-center gap-2.5 border-l border-slate-200 dark:border-slate-800 pl-4">
-              <div className="h-8 w-8 rounded-xl bg-slate-900 dark:bg-amber-400 text-white dark:text-slate-950 flex items-center justify-center text-xs font-bold font-mono shadow-sm">
-                AD
-              </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: "12px", fontWeight: 600, color: "#94A3B8", fontFamily: "monospace" }}>{timeStr}</div>
+              <div style={{ fontSize: "10px", color: "#475569", fontWeight: 500 }}>{dateStr}</div>
+            </div>
+            <div style={{ width: "1px", height: "28px", background: "#1E2530" }} />
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <div style={{
+                width: "30px", height: "30px", borderRadius: "6px",
+                background: "linear-gradient(135deg, #3B82F6, #1D4ED8)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: "11px", fontWeight: 700, color: "white",
+              }}>AD</div>
               <div>
-                <span className="text-xs font-bold text-slate-900 dark:text-white block">Master Concierge</span>
-                <span className="text-[9px] text-slate-500 dark:text-slate-400 font-mono block font-semibold">Administrator</span>
+                <div style={{ fontSize: "12px", fontWeight: 600, color: "#E2E8F0" }}>Administrator</div>
+                <div style={{ fontSize: "10px", color: "#64748B", fontWeight: 500 }}>Full Access</div>
               </div>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 p-6 sm:p-8 overflow-y-auto bg-[#F8F9FB] dark:bg-[#0B0F17]">
+        {/* Content */}
+        <main style={{ flex: 1, overflowY: "auto", padding: "28px 32px", background: "#0A0C10" }}>
           {children}
         </main>
       </div>
