@@ -1013,6 +1013,9 @@ export interface AuthUser {
   email: string;
   phone?: string;
   address?: string;
+  secondary_address?: string;
+  avatar?: string;
+  role?: string;
   status?: string;
   created_at?: string;
 }
@@ -1051,12 +1054,24 @@ export async function apiLogin(data: { email: string; password: string }): Promi
   return res.json();
 }
 
+export async function apiLogout(): Promise<AuthResponse> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/auth/logout`, {
+      method: 'POST',
+      headers: authHeaders(),
+    });
+    return res.json();
+  } catch {
+    return { success: true, message: 'Logged out.' };
+  }
+}
+
 export async function apiGetProfile(): Promise<AuthResponse> {
   const res = await fetch(`${API_BASE_URL}/auth/profile`, { headers: authHeaders() });
   return res.json();
 }
 
-export async function apiUpdateProfile(data: { name?: string; phone?: string; address?: string }): Promise<AuthResponse> {
+export async function apiUpdateProfile(data: { name?: string; phone?: string; address?: string; secondary_address?: string }): Promise<AuthResponse> {
   const res = await fetch(`${API_BASE_URL}/auth/profile`, {
     method: 'PUT',
     headers: authHeaders(),

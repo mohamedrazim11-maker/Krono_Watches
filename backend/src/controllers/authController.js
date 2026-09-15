@@ -10,18 +10,33 @@ const SALT_ROUNDS = 10;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
-// ─── POST /api/auth/register ────────────────────────────────────────────────
+// Helper to generate compliant decoded JWT payload
+function generateToken(user) {
+  return jwt.sign(
+    {
+      sub: user.id,
+      name: user.name,
+      email: user.email,
+      avatar: user.avatar || '/assets/u1.svg',
+      role: user.role || 'authenticated',
+    },
+    JWT_SECRET,
+    { expiresIn: JWT_EXPIRES }
+  );
+}
+
+// ─── POST /api/register & /api/auth/register (Milestone 1) ───────────────────
 exports.register = async (req, res) => {
   try {
     const { name, email, password, confirmPassword } = req.body;
 
     // Validate required fields
     if (!name || !email || !password || !confirmPassword) {
-      return res.status(400).json({ success: false, message: 'All fields are required.' });
+      return res.status(400).json({ success: false, message: 'All fields (name, email, password, confirmPassword) are required.' });
     }
 
     // Validate email format with regex
-    if (!EMAIL_REGEX.test(email)) {
+    if (!EMAIL_REGEX.test(email.trim())) {
       return res.status(400).json({ success: false, message: 'Invalid email format.' });
     }
 
@@ -38,26 +53,45 @@ exports.register = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Passwords do not match.' });
     }
 
-    // Check if user already exists
-    const existing = await db.getUserByEmail(email);
+    // 1. checkUserExists()
+    const existing = await db.getUserByEmail(email.trim().toLowerCase());
     if (existing) {
       return res.status(409).json({ success: false, message: 'An account with this email already exists.' });
     }
 
-    // Hash password with bcrypt
+    // 2. hashedPw = bcrypt.hash()
     const hashedPw = await bcrypt.hash(password, SALT_ROUNDS);
 
-    // Insert user into DB
-    const user = await db.createUser({ name, email, hashedPw });
+    // 3. db.Users.insert() / createUser()
+    const user = await db.createUser({
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      hashedPw,
+    });
 
-    // Sign JWT
-    const token = jwt.sign({ sub: user.id, email: user.email, name: user.name }, JWT_SECRET, { expiresIn: JWT_EXPIRES });
+    // 4. State persistence: Sign JWT + set HTTP-only cookie
+    const token = generateToken(user);
+    res.cookie('krono_token', token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/',
+      sameSite: 'lax',
+    });
 
+    // 4. res.status(201).json()
     res.status(201).json({
       success: true,
-      message: 'Account created successfully.',
+      message: 'Client account created successfully.',
       token,
-      user: { id: user.id, name: user.name, email: user.email, created_at: user.created_at },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar || '/assets/u1.svg',
+        role: 'authenticated',
+        status: user.status || 'Active Member',
+        created_at: user.created_at,
+      },
     });
   } catch (err) {
     console.error('Register error:', err);
@@ -65,7 +99,7 @@ exports.register = async (req, res) => {
   }
 };
 
-// ─── POST /api/auth/login ────────────────────────────────────────────────────
+// ─── POST /api/login & /api/auth/login (Milestone 2) ─────────────────────────
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -74,26 +108,43 @@ exports.login = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Email and password are required.' });
     }
 
-    // Retrieve user by email
-    const user = await db.getUserByEmail(email);
+    // 1. Credential verification: retrieve user by email
+    const user = await db.getUserByEmail(email.trim().toLowerCase());
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid email or password.' });
     }
 
-    // Verify password hash
+    // 2. Verify password hash using bcrypt.compare
     const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
       return res.status(401).json({ success: false, message: 'Invalid email or password.' });
     }
 
-    // Sign JWT
-    const token = jwt.sign({ sub: user.id, email: user.email, name: user.name }, JWT_SECRET, { expiresIn: JWT_EXPIRES });
+    // 3. State persistence: Sign JWT with decoded payload structure (sub, name, avatar, role)
+    const token = generateToken(user);
+    res.cookie('krono_token', token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/',
+      sameSite: 'lax',
+    });
 
     res.status(200).json({
       success: true,
       message: 'Login successful.',
       token,
-      user: { id: user.id, name: user.name, email: user.email, phone: user.phone, address: user.address, created_at: user.created_at },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone || '',
+        address: user.address || '',
+        secondary_address: user.secondary_address || '',
+        avatar: user.avatar || '/assets/u1.svg',
+        role: user.role || 'authenticated',
+        status: user.status || 'Active Member',
+        created_at: user.created_at,
+      },
     });
   } catch (err) {
     console.error('Login error:', err);
@@ -101,7 +152,13 @@ exports.login = async (req, res) => {
   }
 };
 
-// ─── GET /api/auth/profile (protected) ──────────────────────────────────────
+// ─── POST /api/logout & /api/auth/logout (Milestone 3) ───────────────────────
+exports.logout = (req, res) => {
+  res.clearCookie('krono_token', { path: '/' });
+  res.status(200).json({ success: true, message: 'Signed out successfully. Tokens and cookies cleared.' });
+};
+
+// ─── GET /api/profile & /api/auth/profile (Milestone 4 - Protected) ──────────
 exports.getProfile = async (req, res) => {
   try {
     const user = await db.getUserById(req.user.sub);
@@ -109,39 +166,67 @@ exports.getProfile = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      user: { id: user.id, name: user.name, email: user.email, phone: user.phone, address: user.address, created_at: user.created_at, status: user.status || 'Active Member' },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone || '',
+        address: user.address || '',
+        secondary_address: user.secondary_address || '',
+        avatar: user.avatar || '/assets/u1.svg',
+        role: user.role || 'authenticated',
+        status: user.status || 'Active Member',
+        created_at: user.created_at,
+      },
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 };
 
-// ─── PUT /api/auth/profile (protected) ──────────────────────────────────────
+// ─── PUT /api/profile & /api/auth/profile (Milestone 4 - Protected) ──────────
 exports.updateProfile = async (req, res) => {
   try {
-    const { name, phone, address } = req.body;
-    const user = await db.updateUser(req.user.sub, { name, phone, address });
+    const { name, phone, address, secondary_address } = req.body;
+    const user = await db.updateUser(req.user.sub, {
+      name,
+      phone,
+      address,
+      secondary_address,
+    });
     res.status(200).json({
       success: true,
-      message: 'Profile updated successfully.',
-      user: { id: user.id, name: user.name, email: user.email, phone: user.phone, address: user.address },
+      message: 'Profile details updated successfully.',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone || '',
+        address: user.address || '',
+        secondary_address: user.secondary_address || '',
+        avatar: user.avatar || '/assets/u1.svg',
+        status: user.status || 'Active Member',
+      },
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 };
 
-// ─── PUT /api/auth/change-password (protected) ──────────────────────────────
+// ─── PUT /api/change-password & /api/auth/change-password (Milestone 4) ──────
 exports.changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword, confirmNewPassword } = req.body;
 
     if (!currentPassword || !newPassword || !confirmNewPassword) {
-      return res.status(400).json({ success: false, message: 'All password fields are required.' });
+      return res.status(400).json({ success: false, message: 'Current password, new password, and confirmation are required.' });
     }
 
     if (!PASSWORD_REGEX.test(newPassword)) {
-      return res.status(400).json({ success: false, message: 'New password must be at least 8 characters with uppercase, lowercase, number, and special character.' });
+      return res.status(400).json({
+        success: false,
+        message: 'New password must be at least 8 characters with uppercase, lowercase, number & symbol.',
+      });
     }
 
     if (newPassword !== confirmNewPassword) {
@@ -151,10 +236,10 @@ exports.changePassword = async (req, res) => {
     const user = await db.getUserById(req.user.sub);
     if (!user) return res.status(404).json({ success: false, message: 'User not found.' });
 
-    // Re-verify identity with current password
+    // Re-verify identity with current password hash
     const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Current password is incorrect.' });
+      return res.status(401).json({ success: false, message: 'Current password is incorrect. Identity verification failed.' });
     }
 
     const newHash = await bcrypt.hash(newPassword, SALT_ROUNDS);

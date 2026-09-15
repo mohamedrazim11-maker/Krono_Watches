@@ -7,6 +7,7 @@ import {
   AuthResponse,
   apiLogin,
   apiRegister,
+  apiLogout,
   apiGetProfile,
   apiUpdateProfile,
   apiChangePassword,
@@ -17,6 +18,7 @@ interface AuthContextType {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  mergedGuestCount: number;
   login: (email: string, password: string) => Promise<AuthResponse>;
   register: (data: {
     name: string;
@@ -25,7 +27,12 @@ interface AuthContextType {
     confirmPassword: string;
   }) => Promise<AuthResponse>;
   logout: () => void;
-  updateProfile: (data: { name?: string; phone?: string; address?: string }) => Promise<AuthResponse>;
+  updateProfile: (data: {
+    name?: string;
+    phone?: string;
+    address?: string;
+    secondary_address?: string;
+  }) => Promise<AuthResponse>;
   changePassword: (data: {
     currentPassword: string;
     newPassword: string;
@@ -38,14 +45,16 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const TOKEN_KEY = "krono_token";
 const USER_KEY = "krono_user";
+const MERGED_COUNT_KEY = "krono_merged_guest_count";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [mergedGuestCount, setMergedGuestCount] = useState<number>(0);
   const router = useRouter();
 
-  // Helper to set cookie for Next.js middleware support
+  // Helper to set cookie for Next.js middleware & server support
   const setAuthCookie = (tokenValue: string) => {
     try {
       document.cookie = `krono_token=${tokenValue}; path=/; max-age=604800; SameSite=Lax`;
@@ -58,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   };
 
-  // Merge guest cart with user cart on login (Milestone 4 - Cart Association)
+  // Milestone 4: Cart Association — Logic to merge and persist guest shopping items upon user authentication
   const mergeGuestCart = (userId: string) => {
     try {
       const guestCartRaw = localStorage.getItem("krono_cart");
@@ -69,9 +78,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const userCart = userCartRaw ? JSON.parse(userCartRaw) : [];
 
       if (guestCart.length > 0) {
-        // Merge guest items into user cart by product id
+        let totalMergedUnits = 0;
         const merged = [...userCart];
+
         for (const gItem of guestCart) {
+          totalMergedUnits += gItem.quantity || 1;
           const existing = merged.find((item: any) => item.product?.id === gItem.product?.id);
           if (existing) {
             existing.quantity = (existing.quantity || 1) + (gItem.quantity || 1);
@@ -79,11 +90,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             merged.push(gItem);
           }
         }
+
         localStorage.setItem(userCartKey, JSON.stringify(merged));
         localStorage.setItem("krono_cart", JSON.stringify(merged));
+        localStorage.setItem(MERGED_COUNT_KEY, totalMergedUnits.toString());
+        setMergedGuestCount(totalMergedUnits);
       }
     } catch (e) {
-      console.error("Cart merge error:", e);
+      console.error("Cart association error:", e);
     }
   };
 
@@ -92,6 +106,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const savedToken = localStorage.getItem(TOKEN_KEY);
       const savedUser = localStorage.getItem(USER_KEY);
+      const savedMerged = localStorage.getItem(MERGED_COUNT_KEY);
+
+      if (savedMerged) {
+        setMergedGuestCount(parseInt(savedMerged, 10) || 0);
+      }
 
       if (savedToken) {
         setToken(savedToken);
@@ -99,7 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (savedUser) {
           setUser(JSON.parse(savedUser));
         }
-        // Refresh profile from backend
+        // Refresh latest profile from backend
         apiGetProfile()
           .then((res) => {
             if (res.success && res.user) {
@@ -155,19 +174,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }): Promise<AuthResponse> => {
     setIsLoading(true);
     try {
-      return await apiRegister(data);
+      const res = await apiRegister(data);
+      if (res.success && res.token && res.user) {
+        setToken(res.token);
+        setUser(res.user);
+        localStorage.setItem(TOKEN_KEY, res.token);
+        localStorage.setItem(USER_KEY, JSON.stringify(res.user));
+        setAuthCookie(res.token);
+        mergeGuestCart(res.user.id);
+      }
+      return res;
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Milestone 3: Secure Logout Sequence
   const logout = useCallback(() => {
     setToken(null);
     setUser(null);
+    setMergedGuestCount(0);
     try {
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
+      localStorage.removeItem(MERGED_COUNT_KEY);
       clearAuthCookie();
+      apiLogout().catch(() => {});
     } catch {}
     router.push("/");
   }, [router]);
@@ -176,6 +208,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     name?: string;
     phone?: string;
     address?: string;
+    secondary_address?: string;
   }): Promise<AuthResponse> => {
     const res = await apiUpdateProfile(data);
     if (res.success && res.user) {
@@ -203,6 +236,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         token,
         isAuthenticated: !!token && !!user,
         isLoading,
+        mergedGuestCount,
         login,
         register,
         logout,
