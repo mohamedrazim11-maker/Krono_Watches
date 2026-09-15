@@ -14,6 +14,7 @@ function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -48,7 +49,7 @@ function LoginForm() {
 
     setLoading(true);
     try {
-      const res = await login(email.trim(), password);
+      const res = await login(email.trim(), password, rememberMe);
       if (res.success) {
         router.push(returnUrl);
       } else {
@@ -118,6 +119,21 @@ function LoginForm() {
             className="w-full px-4 py-2.5 bg-black/60 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors"
             required
           />
+        </div>
+
+        {/* Remember Me & Persistent Session Option */}
+        <div className="flex items-center justify-between pt-1">
+          <label className="flex items-center gap-2.5 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="w-4 h-4 rounded border-white/20 bg-black/80 text-[#C5A059] focus:ring-0 focus:ring-offset-0 accent-[#C5A059] cursor-pointer"
+            />
+            <span className="text-xs text-white/70">
+              Remember me (30-day encrypted session)
+            </span>
+          </label>
         </div>
 
         <button

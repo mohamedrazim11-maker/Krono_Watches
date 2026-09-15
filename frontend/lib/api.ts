@@ -1025,6 +1025,51 @@ export interface AuthResponse {
   message: string;
   token?: string;
   user?: AuthUser;
+  session?: {
+    id: string;
+    expiresAt: number | string;
+    deviceLabel?: string;
+    createdAt?: string;
+    rememberMe?: boolean;
+  };
+}
+
+export interface ActiveSession {
+  id: string;
+  deviceLabel: string;
+  ip: string;
+  lastActive: string;
+  createdAt: string;
+  expiresAt: string;
+  isCurrent: boolean;
+  rememberMe: boolean;
+}
+
+export interface SessionResponse {
+  success: boolean;
+  isAuthenticated: boolean;
+  message?: string;
+  session?: {
+    id: string;
+    deviceLabel: string;
+    createdAt: string;
+    expiresAt: string;
+    timeRemainingMs: number;
+    rememberMe: boolean;
+    cookieSecurity?: {
+      httpOnly: boolean;
+      sameSite: string;
+      secure: boolean;
+    };
+  };
+  user?: AuthUser;
+}
+
+export interface ActiveSessionsResponse {
+  success: boolean;
+  sessions: ActiveSession[];
+  totalActive: number;
+  message?: string;
 }
 
 function getToken(): string | null {
@@ -1040,15 +1085,17 @@ export async function apiRegister(data: { name: string; email: string; password:
   const res = await fetch(`${API_BASE_URL}/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify(data),
   });
   return res.json();
 }
 
-export async function apiLogin(data: { email: string; password: string }): Promise<AuthResponse> {
+export async function apiLogin(data: { email: string; password: string; rememberMe?: boolean }): Promise<AuthResponse> {
   const res = await fetch(`${API_BASE_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify(data),
   });
   return res.json();
@@ -1059,6 +1106,7 @@ export async function apiLogout(): Promise<AuthResponse> {
     const res = await fetch(`${API_BASE_URL}/auth/logout`, {
       method: 'POST',
       headers: authHeaders(),
+      credentials: 'include',
     });
     return res.json();
   } catch {
@@ -1067,7 +1115,10 @@ export async function apiLogout(): Promise<AuthResponse> {
 }
 
 export async function apiGetProfile(): Promise<AuthResponse> {
-  const res = await fetch(`${API_BASE_URL}/auth/profile`, { headers: authHeaders() });
+  const res = await fetch(`${API_BASE_URL}/auth/profile`, {
+    headers: authHeaders(),
+    credentials: 'include',
+  });
   return res.json();
 }
 
@@ -1075,6 +1126,7 @@ export async function apiUpdateProfile(data: { name?: string; phone?: string; ad
   const res = await fetch(`${API_BASE_URL}/auth/profile`, {
     method: 'PUT',
     headers: authHeaders(),
+    credentials: 'include',
     body: JSON.stringify(data),
   });
   return res.json();
@@ -1084,7 +1136,51 @@ export async function apiChangePassword(data: { currentPassword: string; newPass
   const res = await fetch(`${API_BASE_URL}/auth/change-password`, {
     method: 'PUT',
     headers: authHeaders(),
+    credentials: 'include',
     body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+export async function apiGetSession(): Promise<SessionResponse> {
+  const res = await fetch(`${API_BASE_URL}/auth/session`, {
+    headers: authHeaders(),
+    credentials: 'include',
+  });
+  return res.json();
+}
+
+export async function apiRefreshSession(): Promise<SessionResponse> {
+  const res = await fetch(`${API_BASE_URL}/auth/session/refresh`, {
+    method: 'POST',
+    headers: authHeaders(),
+    credentials: 'include',
+  });
+  return res.json();
+}
+
+export async function apiGetActiveSessions(): Promise<ActiveSessionsResponse> {
+  const res = await fetch(`${API_BASE_URL}/auth/sessions`, {
+    headers: authHeaders(),
+    credentials: 'include',
+  });
+  return res.json();
+}
+
+export async function apiRevokeSession(sessionId: string): Promise<{ success: boolean; message: string }> {
+  const res = await fetch(`${API_BASE_URL}/auth/sessions/${sessionId}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+    credentials: 'include',
+  });
+  return res.json();
+}
+
+export async function apiRevokeOtherSessions(): Promise<{ success: boolean; message: string; revokedCount?: number }> {
+  const res = await fetch(`${API_BASE_URL}/auth/sessions/revoke-others`, {
+    method: 'POST',
+    headers: authHeaders(),
+    credentials: 'include',
   });
   return res.json();
 }

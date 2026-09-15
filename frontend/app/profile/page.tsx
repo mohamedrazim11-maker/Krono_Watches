@@ -10,7 +10,23 @@ import Footer from "@/components/Footer";
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, isAuthenticated, isLoading, logout, updateProfile, changePassword, mergedGuestCount } = useAuth();
+  const {
+    user,
+    isAuthenticated,
+    isLoading,
+    logout,
+    updateProfile,
+    changePassword,
+    mergedGuestCount,
+    session,
+    activeSessions,
+    loadActiveSessions,
+    refreshSession,
+    revokeSession,
+    revokeOtherSessions,
+    expiryWarningMinutes,
+    dismissExpiryWarning,
+  } = useAuth();
   const { cart, grandTotal } = useCart();
 
   // Profile Edit Form state (Milestone 4 - contact info, phone, multiple addresses)
@@ -28,8 +44,19 @@ export default function ProfilePage() {
   const [securityMsg, setSecurityMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [securitySaving, setSecuritySaving] = useState(false);
 
+  // Session Action State
+  const [sessionMsg, setSessionMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [sessionActionLoading, setSessionActionLoading] = useState(false);
+
   // Active Tab
-  const [activeTab, setActiveTab] = useState<"details" | "security" | "cart">("details");
+  const [activeTab, setActiveTab] = useState<"details" | "security" | "sessions" | "cart">("details");
+
+  // Load active sessions when sessions tab is selected
+  useEffect(() => {
+    if (activeTab === "sessions") {
+      loadActiveSessions();
+    }
+  }, [activeTab, loadActiveSessions]);
 
   // Route Protection (Milestone 3)
   useEffect(() => {
@@ -176,8 +203,42 @@ export default function ProfilePage() {
           </div>
         </div>
 
+        {/* Session Expiration Warning Banner */}
+        {expiryWarningMinutes !== null && (
+          <div className="mb-6 p-4 bg-amber-950/40 border border-amber-500/40 rounded-xl flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="text-amber-400 font-mono text-base">⚠</span>
+              <div>
+                <div className="text-xs font-semibold text-amber-200 uppercase tracking-wider font-mono">
+                  Session Expiring in {expiryWarningMinutes} minutes
+                </div>
+                <div className="text-[11px] text-amber-300/80">
+                  Your encrypted Swiss vault session will expire soon. Extend now to maintain uninterrupted access.
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={async () => {
+                  const ok = await refreshSession();
+                  if (ok) setSessionMsg({ type: "success", text: "Session successfully extended." });
+                }}
+                className="px-4 py-2 bg-[#C5A059] hover:bg-[#b08d48] text-black font-semibold text-xs tracking-wider uppercase rounded-lg transition-all"
+              >
+                Extend Session
+              </button>
+              <button
+                onClick={dismissExpiryWarning}
+                className="px-3 py-2 text-white/50 hover:text-white text-xs font-mono"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Tab Navigation */}
-        <div className="flex items-center gap-2 mb-8 border-b border-white/10 pb-3">
+        <div className="flex flex-wrap items-center gap-2 mb-8 border-b border-white/10 pb-3">
           <button
             onClick={() => setActiveTab("details")}
             className={`px-4 py-2 text-xs font-mono uppercase tracking-wider rounded-lg transition-all ${
@@ -197,6 +258,16 @@ export default function ProfilePage() {
             }`}
           >
             Security & Credentials
+          </button>
+          <button
+            onClick={() => setActiveTab("sessions")}
+            className={`px-4 py-2 text-xs font-mono uppercase tracking-wider rounded-lg transition-all ${
+              activeTab === "sessions"
+                ? "bg-[#C5A059] text-black font-bold shadow-md shadow-[#C5A059]/20"
+                : "text-white/60 hover:text-white hover:bg-white/5"
+            }`}
+          >
+            Session & Cookie Management
           </button>
           <button
             onClick={() => setActiveTab("cart")}
@@ -468,7 +539,273 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* Tab 3: Cart Association */}
+        {/* Tab 3: Session & Cookie Management */}
+        {activeTab === "sessions" && (
+          <div className="space-y-8 max-w-5xl">
+            {/* Session Action Notification */}
+            {sessionMsg && (
+              <div
+                className={`p-3.5 rounded-lg text-xs border ${
+                  sessionMsg.type === "success"
+                    ? "bg-emerald-950/40 border-emerald-500/40 text-emerald-300"
+                    : "bg-red-950/40 border-red-500/40 text-red-300"
+                }`}
+              >
+                {sessionMsg.text}
+              </div>
+            )}
+
+            {/* Current Verified Session */}
+            <div className="bg-[#0D0D0D] border border-white/10 rounded-xl p-6 sm:p-8">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-xs font-mono tracking-widest text-[#C5A059] uppercase">
+                      Current Verified Vault Session
+                    </span>
+                  </div>
+                  <h2 className="text-xl font-serif text-white font-medium">
+                    Encrypted Session Dossier
+                  </h2>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={async () => {
+                      setSessionActionLoading(true);
+                      setSessionMsg(null);
+                      const ok = await refreshSession();
+                      setSessionActionLoading(false);
+                      if (ok) {
+                        setSessionMsg({ type: "success", text: "Session successfully extended and re-verified." });
+                        loadActiveSessions();
+                      } else {
+                        setSessionMsg({ type: "error", text: "Failed to extend session." });
+                      }
+                    }}
+                    disabled={sessionActionLoading}
+                    className="px-4 py-2 bg-[#C5A059] hover:bg-[#b08d48] text-black font-semibold text-xs tracking-wider uppercase rounded-lg transition-all disabled:opacity-50"
+                  >
+                    {sessionActionLoading ? "Synchronizing..." : "Refresh / Extend Session"}
+                  </button>
+                  <button
+                    onClick={logout}
+                    className="px-4 py-2 border border-red-500/30 bg-red-950/30 hover:bg-red-950/60 text-red-300 text-xs font-mono tracking-wider uppercase rounded-lg transition-all"
+                  >
+                    Terminate Session
+                  </button>
+                </div>
+              </div>
+
+              {/* Grid of Session Metrics */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                <div className="bg-black/40 border border-white/5 rounded-lg p-4">
+                  <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider block mb-1">
+                    Session Reference
+                  </span>
+                  <span className="text-xs font-mono text-white truncate block" title={session?.id}>
+                    {session?.id || "ses_live_authenticated"}
+                  </span>
+                </div>
+
+                <div className="bg-black/40 border border-white/5 rounded-lg p-4">
+                  <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider block mb-1">
+                    Device & Environment
+                  </span>
+                  <span className="text-xs font-mono text-white block">
+                    {session?.deviceLabel || "Chrome / Web Browser"}
+                  </span>
+                </div>
+
+                <div className="bg-black/40 border border-white/5 rounded-lg p-4">
+                  <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider block mb-1">
+                    Persistence Policy
+                  </span>
+                  <span className="text-xs font-mono text-[#C5A059] block font-semibold">
+                    {session?.rememberMe ? "30 Days (Remember Me)" : "7 Days Standard"}
+                  </span>
+                </div>
+
+                <div className="bg-black/40 border border-white/5 rounded-lg p-4">
+                  <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider block mb-1">
+                    Scheduled Expiration
+                  </span>
+                  <span className="text-xs font-mono text-white/80 block">
+                    {session?.expiresAt ? new Date(session.expiresAt).toLocaleDateString() : "Valid"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Cookie Management & Protection Shield */}
+            <div className="bg-[#0D0D0D] border border-white/10 rounded-xl p-6 sm:p-8">
+              <h3 className="text-base font-serif text-white font-medium mb-1">
+                Cookie Architecture & Defense Matrix
+              </h3>
+              <p className="text-xs text-white/50 mb-6">
+                All client credentials and session states are managed using strict HTTP-only and SameSite flags to repel XSS and CSRF attacks.
+              </p>
+
+              <div className="space-y-3 font-mono text-xs">
+                <div className="p-4 bg-black/60 border border-white/10 rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[#C5A059] font-bold">krono_token</span>
+                      <span className="px-2 py-0.5 bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-[10px] rounded uppercase">
+                        HTTP-Only Shield
+                      </span>
+                      <span className="px-2 py-0.5 bg-white/5 text-white/60 text-[10px] rounded">
+                        SameSite: Lax
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-white/50 mt-1 font-sans">
+                      Cryptographically signed JWT bearer token. Inaccessible to JavaScript to neutralize cross-site scripting (XSS) attacks.
+                    </p>
+                  </div>
+                  <div className="text-[10px] text-emerald-400 uppercase tracking-widest font-mono">
+                    Protected by Server
+                  </div>
+                </div>
+
+                <div className="p-4 bg-black/60 border border-white/10 rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[#C5A059] font-bold">krono_session</span>
+                      <span className="px-2 py-0.5 bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-[10px] rounded uppercase">
+                        HTTP-Only Shield
+                      </span>
+                      <span className="px-2 py-0.5 bg-white/5 text-white/60 text-[10px] rounded">
+                        SameSite: Lax
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-white/50 mt-1 font-sans">
+                      Opaque session UUID tracked in the backend session registry for immediate multi-device revocation capability.
+                    </p>
+                  </div>
+                  <div className="text-[10px] text-emerald-400 uppercase tracking-widest font-mono">
+                    Protected by Server
+                  </div>
+                </div>
+
+                <div className="p-4 bg-black/60 border border-white/10 rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-white/80 font-bold">krono_client_session</span>
+                      <span className="px-2 py-0.5 bg-blue-950/60 border border-blue-500/40 text-blue-300 text-[10px] rounded uppercase">
+                        Client Synced
+                      </span>
+                      <span className="px-2 py-0.5 bg-white/5 text-white/60 text-[10px] rounded">
+                        SameSite: Lax
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-white/50 mt-1 font-sans">
+                      Non-sensitive user metadata cookie enabling instant Next.js SSR hydration and zero-flicker client rendering.
+                    </p>
+                  </div>
+                  <div className="text-[10px] text-blue-400 uppercase tracking-widest font-mono">
+                    Client Readable
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Active Sessions & Concurrent Devices */}
+            <div className="bg-[#0D0D0D] border border-white/10 rounded-xl p-6 sm:p-8">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                  <h3 className="text-base font-serif text-white font-medium mb-1">
+                    Concurrent Devices & Active Vault Sessions
+                  </h3>
+                  <p className="text-xs text-white/50">
+                    Real-time monitoring of all authenticated terminals authorized for this client account.
+                  </p>
+                </div>
+                {activeSessions.length > 1 && (
+                  <button
+                    onClick={async () => {
+                      setSessionActionLoading(true);
+                      const ok = await revokeOtherSessions();
+                      setSessionActionLoading(false);
+                      if (ok) {
+                        setSessionMsg({ type: "success", text: "Terminated all other active sessions." });
+                      }
+                    }}
+                    disabled={sessionActionLoading}
+                    className="px-3.5 py-1.5 border border-red-500/40 bg-red-950/30 hover:bg-red-950/60 text-red-300 text-xs font-mono tracking-wider uppercase rounded-lg transition-all disabled:opacity-50"
+                  >
+                    Terminate Other Sessions
+                  </button>
+                )}
+              </div>
+
+              {activeSessions.length === 0 ? (
+                <div className="p-4 bg-black/40 border border-white/5 rounded-lg flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                    <div>
+                      <div className="text-xs font-mono text-white">Current Browser Terminal</div>
+                      <div className="text-[10px] font-mono text-white/40">Active Session • IP: Verified</div>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">
+                    Current Device
+                  </span>
+                </div>
+              ) : (
+                <div className="divide-y divide-white/10">
+                  {activeSessions.map((s) => (
+                    <div
+                      key={s.id}
+                      className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span
+                          className={`w-2 h-2 rounded-full ${
+                            s.isCurrent ? "bg-emerald-400 animate-pulse" : "bg-white/30"
+                          }`}
+                        />
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-white font-medium">{s.deviceLabel}</span>
+                            {s.isCurrent && (
+                              <span className="px-1.5 py-0.5 bg-[#C5A059]/20 text-[#C5A059] text-[9px] rounded uppercase font-bold">
+                                Current
+                              </span>
+                            )}
+                            {s.rememberMe && (
+                              <span className="px-1.5 py-0.5 bg-white/10 text-white/60 text-[9px] rounded uppercase">
+                                30D
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[10px] text-white/40 mt-0.5">
+                            IP: {s.ip} • Last Active: {new Date(s.lastActive).toLocaleTimeString()}
+                          </div>
+                        </div>
+                      </div>
+
+                      {!s.isCurrent && (
+                        <button
+                          onClick={async () => {
+                            const ok = await revokeSession(s.id);
+                            if (ok) {
+                              setSessionMsg({ type: "success", text: "Device session revoked." });
+                            }
+                          }}
+                          className="text-[10px] text-red-400 hover:text-red-300 uppercase tracking-wider hover:underline"
+                        >
+                          Revoke Access
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Tab 4: Cart Association */}
         {activeTab === "cart" && (
           <div className="bg-[#0D0D0D] border border-white/10 rounded-xl p-6 sm:p-8">
             <h2 className="text-lg font-serif text-white font-medium mb-1">
