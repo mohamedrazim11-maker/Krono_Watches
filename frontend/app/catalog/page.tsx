@@ -287,9 +287,9 @@ export default function CatalogPage() {
           </div>
 
           {/* Collection Pills Bar */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1">
-            <span className="text-[10px] font-mono uppercase font-bold text-[#5A6D64] dark:text-[#8EAA9C] pr-1 flex-shrink-0">
-              Collection:
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-1">
+            <span className="text-[10px] font-mono uppercase font-bold text-[#5A6D64] dark:text-[#8EAA9C] pr-1 flex-shrink-0 tracking-wider">
+              COLLECTION:
             </span>
             {COLLECTIONS.map((cat) => {
               const isSelected = selectedCategory === cat;
@@ -297,10 +297,10 @@ export default function CatalogPage() {
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1 rounded-lg text-xs font-mono font-bold whitespace-nowrap transition cursor-pointer ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition cursor-pointer border ${
                     isSelected
-                      ? "bg-[#006039] text-white shadow-sm"
-                      : "bg-[#F8FAF9] dark:bg-[#11261D] text-[#5A6D64] dark:text-[#CBD5E1] hover:text-[#006039] border border-[#E2E8F0] dark:border-[#1F4535]"
+                      ? "bg-[#006039] dark:bg-[#00824E] text-white border-[#006039] dark:border-[#00824E] shadow-md shadow-[#006039]/20"
+                      : "bg-[#F8FAF9] dark:bg-[#11261D] text-[#5A6D64] dark:text-[#CBD5E1] hover:text-[#006039] dark:hover:text-[#4ADE80] border-[#E2E8F0] dark:border-[#1F4535]"
                   }`}
                 >
                   {cat === "All" ? "All Series" : cat}

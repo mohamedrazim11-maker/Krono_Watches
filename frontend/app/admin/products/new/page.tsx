@@ -8,7 +8,7 @@ import Link from "next/link";
 const PRESET_GALLERY_SETS = [
   {
     name: "Classic Obsidian",
-    category: "Luxury",
+    category: "Dress Watches",
     images: [
       "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80",
       "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80",
@@ -17,7 +17,7 @@ const PRESET_GALLERY_SETS = [
   },
   {
     name: "Automatic Chrono Steel",
-    category: "Automatic",
+    category: "Chronograph",
     images: [
       "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=80",
       "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=900&q=80",
@@ -26,7 +26,7 @@ const PRESET_GALLERY_SETS = [
   },
   {
     name: "Titanium Diver 300M",
-    category: "Sport",
+    category: "Dive Watches",
     images: [
       "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=900&q=80",
       "https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=900&q=80",
@@ -42,8 +42,8 @@ export default function UploadProductPage() {
 
   const [formData, setFormData] = useState({
     name: "",
-    brand: "Krono Atelier",
-    category: "Luxury",
+    brand: "Rolex",
+    category: "Dive Watches",
     gender: "Men",
     case_size: "41mm",
     price: "",
@@ -218,10 +218,12 @@ export default function UploadProductPage() {
                 onChange={handleChange}
                 className="mt-1 w-full rounded-xl bg-slate-50 dark:bg-[#0B0F17] px-4 py-2.5 text-xs text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 focus:border-slate-800 dark:focus:border-amber-400 focus:outline-none font-mono"
               >
-                <option value="Luxury">Luxury</option>
+                <option value="Dive Watches">Dive Watches</option>
+                <option value="Dress Watches">Dress Watches</option>
+                <option value="Chronograph">Chronograph</option>
                 <option value="Automatic">Automatic</option>
-                <option value="Sport">Sport</option>
-                <option value="Smart">Smart</option>
+                <option value="Digital">Digital</option>
+                <option value="Sports Watches">Sports Watches</option>
               </select>
             </div>
 

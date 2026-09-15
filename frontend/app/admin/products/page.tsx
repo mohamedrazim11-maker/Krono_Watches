@@ -116,10 +116,12 @@ export default function AdminProductsPage() {
             className="rounded-xl bg-slate-50 dark:bg-[#0B0F17] px-3 py-2 text-xs text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 focus:border-slate-800 dark:focus:border-amber-400 focus:outline-none font-mono"
           >
             <option value="All">All Categories</option>
-            <option value="Luxury">Luxury</option>
+            <option value="Dive Watches">Dive Watches</option>
+            <option value="Dress Watches">Dress Watches</option>
+            <option value="Chronograph">Chronograph</option>
             <option value="Automatic">Automatic</option>
-            <option value="Sport">Sport</option>
-            <option value="Smart">Smart</option>
+            <option value="Digital">Digital</option>
+            <option value="Sports Watches">Sports Watches</option>
           </select>
 
           <span className="text-xs text-slate-500 dark:text-slate-400 font-mono font-semibold">
