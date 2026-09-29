@@ -44,11 +44,6 @@ function DarkNavbar({
 
   return (
     <>
-      {/* Announcement bar */}
-      <div style={{ background: "#111", borderBottom: "1px solid #222", textAlign: "center", padding: "7px 16px", fontSize: "11px", color: "#999", letterSpacing: "0.06em", fontFamily: "inherit" }}>
-        Custom Logo Watches &amp; More, Free Shipping &amp; Returns
-      </div>
-
       {/* Main Navbar */}
       <header style={{
         position: "sticky", top: 0, zIndex: 999,
@@ -144,34 +139,116 @@ function HeroSection({ products }: { products: Product[] }) {
     return () => clearInterval(t);
   }, [heroProducts.length]);
 
-  const current = heroProducts[slide];
+  const current = heroProducts[slide] || heroProducts[0];
 
   return (
     <section style={{ position: "relative", background: "#000", minHeight: "calc(100vh - 100px)", display: "flex", alignItems: "center", overflow: "hidden" }}>
-      {/* Background watch image — right half */}
-      {current && (
-        <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "60%", zIndex: 1 }}>
-          <img
-            key={current.id}
-            src={getProductImage(current.id, current.image_url)}
-            alt={current.name}
-            style={{
-              width: "100%", height: "100%", objectFit: "cover", objectPosition: "center",
-              opacity: 0.85,
-              animation: "heroFadeIn 0.8s ease",
-            }}
-          />
-          {/* Gradient overlay left edge */}
-          <div style={{
-            position: "absolute", inset: 0,
-            background: "linear-gradient(to right, #000 0%, #000 15%, rgba(0,0,0,0.5) 45%, transparent 100%)",
-          }} />
-        </div>
-      )}
+      {/* Background watch images — seamless persistent stack with smooth crossfade */}
+      <div
+        style={{
+          position: "absolute",
+          right: 0,
+          top: 0,
+          bottom: 0,
+          width: "60%",
+          zIndex: 1,
+          overflow: "hidden",
+          pointerEvents: "none",
+        }}
+      >
+        {heroProducts.map((item, idx) => {
+          const isActive = idx === slide;
+          return (
+            <div
+              key={item.id}
+              style={{
+                position: "absolute",
+                inset: "-6px", // Slight expansion so scale/subpixel rendering never leaves a visible edge line
+                opacity: isActive ? 0.88 : 0,
+                transform: isActive ? "scale(1)" : "scale(1.04)",
+                transition: "opacity 1000ms cubic-bezier(0.4, 0, 0.2, 1), transform 1400ms cubic-bezier(0.25, 1, 0.5, 1)",
+                willChange: "opacity, transform",
+                pointerEvents: "none",
+              }}
+            >
+              <img
+                src={getProductImage(item.id, item.image_url)}
+                alt={item.name}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  objectPosition: "center",
+                  border: "none",
+                  outline: "none",
+                  boxShadow: "none",
+                  display: "block",
+                  WebkitBackfaceVisibility: "hidden",
+                  backfaceVisibility: "hidden",
+                }}
+              />
+            </div>
+          );
+        })}
+
+        {/* Multi-angle seamless feathering & vignette overlays — eliminating all visible image borders */}
+        {/* Left blend into pure black */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 4,
+            background: "linear-gradient(to right, #000000 0%, #000000 16%, rgba(0,0,0,0.85) 36%, rgba(0,0,0,0.3) 65%, transparent 100%)",
+            pointerEvents: "none",
+          }}
+        />
+
+        {/* Top blend into header */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "140px",
+            zIndex: 5,
+            background: "linear-gradient(to bottom, #000000 0%, rgba(0,0,0,0.7) 40%, transparent 100%)",
+            pointerEvents: "none",
+          }}
+        />
+
+        {/* Bottom blend into stats section */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "160px",
+            zIndex: 5,
+            background: "linear-gradient(to top, #000000 0%, rgba(0,0,0,0.8) 40%, transparent 100%)",
+            pointerEvents: "none",
+          }}
+        />
+
+        {/* Right border blend */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            right: 0,
+            width: "60px",
+            zIndex: 5,
+            background: "linear-gradient(to left, rgba(0,0,0,0.6) 0%, transparent 100%)",
+            pointerEvents: "none",
+          }}
+        />
+      </div>
 
       {/* Left Text Content */}
       <div style={{ position: "relative", zIndex: 2, maxWidth: "1280px", margin: "0 auto", padding: "0 48px", width: "100%", paddingTop: "80px", paddingBottom: "80px" }}>
-        <div style={{ maxWidth: "520px" }}>
+        <div key={slide} className="hero-text-fade" style={{ maxWidth: "520px" }}>
           {/* Brand label */}
           <div style={{ fontSize: "11px", fontWeight: 700, color: "#C5A059", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "20px", fontFamily: "inherit" }}>
             {current?.brand || "Swiss Horology"}
@@ -248,9 +325,12 @@ function HeroSection({ products }: { products: Product[] }) {
       </div>
 
       <style jsx global>{`
-        @keyframes heroFadeIn {
-          from { opacity: 0; transform: scale(1.03); }
-          to { opacity: 0.85; transform: scale(1); }
+        @keyframes heroTextFade {
+          from { opacity: 0; transform: translateY(6px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .hero-text-fade {
+          animation: heroTextFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(24px); }

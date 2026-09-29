@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Product } from "@/lib/api";
 import SmoothImage from "@/components/SmoothImage";
 import { useCart } from "@/lib/CartContext";
+import { useAuth } from "@/lib/AuthContext";
 import { getProductImage } from "@/lib/productImages";
 
 export interface CartItem {
@@ -39,6 +41,8 @@ export default function CartDrawer({
   couponDiscountPercent: propCouponDiscountPercent,
 }: CartDrawerProps) {
   const cartContext = useCart();
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
 
   const cart = propCart ?? cartContext.cart;
   const onUpdateQuantity = propUpdateQuantity ?? cartContext.updateQuantity;
@@ -46,7 +50,17 @@ export default function CartDrawer({
   const appliedCoupon = propAppliedCoupon ?? cartContext.appliedCoupon;
   const onApplyCoupon = propApplyCoupon ?? cartContext.applyCoupon;
   const couponDiscountPercent = propCouponDiscountPercent ?? cartContext.couponDiscountPercent;
-  const handleProceed = propOpenCheckout ?? propProceedToCheckout ?? (() => cartContext.setIsCheckoutOpen(true));
+
+  const handleProceed = () => {
+    onClose();
+    if (!isAuthenticated) {
+      router.push("/login?returnUrl=/checkout&unauthorized=true");
+    } else {
+      if (propOpenCheckout) propOpenCheckout();
+      else if (propProceedToCheckout) propProceedToCheckout();
+      else router.push("/checkout");
+    }
+  };
 
   const [couponInput, setCouponInput] = useState("");
   const [couponError, setCouponError] = useState("");
@@ -237,10 +251,7 @@ export default function CartDrawer({
             </div>
 
             <button
-              onClick={() => {
-                onClose();
-                handleProceed();
-              }}
+              onClick={handleProceed}
               className="w-full py-3.5 bg-[#C5A059] hover:bg-[#b08d48] text-black font-bold text-xs tracking-widest uppercase transition-all shadow-lg hover:shadow-[#C5A059]/20"
             >
               Proceed to Protected Checkout →

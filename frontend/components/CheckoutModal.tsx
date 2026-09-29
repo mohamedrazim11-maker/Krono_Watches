@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { createOrder, Product } from "@/lib/api";
+import { useAuth } from "@/lib/AuthContext";
 
 export interface CartItem {
   product: Product;
@@ -28,6 +30,9 @@ export default function CheckoutModal({
   appliedCoupon = "MONO20",
   couponDiscountPercent = 20,
 }: CheckoutModalProps) {
+  const { user, isAuthenticated } = useAuth();
+  const router = useRouter();
+
   const [submitting, setSubmitting] = useState(false);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [confirmedOrderNumber, setConfirmedOrderNumber] = useState("");
@@ -46,7 +51,72 @@ export default function CheckoutModal({
     special_instructions: "",
   });
 
+  // Pre-fill authenticated client credentials
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: user.name || prev.name,
+        email: user.email || prev.email,
+        phone: user.phone || prev.phone,
+        address: user.address || prev.address,
+      }));
+    }
+  }, [user]);
+
   if (!isOpen) return null;
+
+  // Strict Authentication Gate: User MUST be logged in to checkout
+  if (!isAuthenticated) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-md" onClick={onClose} />
+        <div className="relative z-10 w-full max-w-md bg-[#0D0D0D] border border-[#C5A059]/40 p-8 text-center space-y-6 shadow-2xl rounded-xl">
+          <div className="w-14 h-14 mx-auto rounded-full bg-black border border-[#C5A059] flex items-center justify-center text-[#C5A059] text-2xl shadow-lg shadow-[#C5A059]/10">
+            🔒
+          </div>
+          <div className="space-y-2">
+            <span className="text-[10px] font-mono text-[#C5A059] uppercase tracking-widest block font-bold">
+              Identity Verification Required
+            </span>
+            <h2 className="text-xl font-serif font-bold text-white uppercase">
+              Client Authentication Gate
+            </h2>
+            <p className="text-xs text-white/60 font-mono leading-relaxed">
+              To secure your timepiece allocation, generate your certified Swiss warranty, and activate armored courier transit, you must sign in to your Krono account.
+            </p>
+          </div>
+
+          <div className="space-y-3 pt-2 font-mono">
+            <button
+              onClick={() => {
+                onClose();
+                router.push("/login?returnUrl=/checkout&unauthorized=true");
+              }}
+              className="w-full py-3.5 bg-[#C5A059] hover:bg-[#b08d48] text-black font-bold text-xs uppercase tracking-widest transition-all shadow-lg hover:shadow-[#C5A059]/20 rounded-lg"
+            >
+              Sign In to Complete Acquisition →
+            </button>
+            <button
+              onClick={() => {
+                onClose();
+                router.push("/register?returnUrl=/checkout");
+              }}
+              className="w-full py-3 border border-white/20 hover:border-white text-white text-xs uppercase tracking-wider transition-all rounded-lg"
+            >
+              Register New Client Account
+            </button>
+            <button
+              onClick={onClose}
+              className="text-xs text-white/40 hover:text-white pt-2 block mx-auto transition-colors"
+            >
+              ← Return to Portfolio
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const formatCurrency = (amount: number) => {
     return `LKR ${Number(amount || 0).toLocaleString("en-US")}`;
