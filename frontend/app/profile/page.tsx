@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/AuthContext";
 import { useCart } from "@/lib/CartContext";
+import { fetchOrders, Order } from "@/lib/api";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -29,6 +30,10 @@ export default function ProfilePage() {
   } = useAuth();
   const { cart, grandTotal } = useCart();
 
+  // User persistent orders state (Milestone 1, 3, Slide 12)
+  const [userOrders, setUserOrders] = useState<Order[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+
   // Profile Edit Form state (Milestone 4 - contact info, phone, multiple addresses)
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -49,7 +54,7 @@ export default function ProfilePage() {
   const [sessionActionLoading, setSessionActionLoading] = useState(false);
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<"details" | "security" | "sessions" | "cart">("details");
+  const [activeTab, setActiveTab] = useState<"details" | "orders" | "security" | "sessions" | "cart">("details");
 
   // Load active sessions when sessions tab is selected
   useEffect(() => {
@@ -72,6 +77,20 @@ export default function ProfilePage() {
       setPhone(user.phone || "");
       setAddress(user.address || "");
       setSecondaryAddress(user.secondary_address || "");
+
+      // Fetch user's persistent orders (Milestone 1, 3, Slide 12)
+      setOrdersLoading(true);
+      fetchOrders()
+        .then((all) => {
+          const matched = all.filter(
+            (o) =>
+              (o.user_id && o.user_id === user.id) ||
+              (o.customer_email && o.customer_email.toLowerCase() === user.email.toLowerCase())
+          );
+          setUserOrders(matched);
+        })
+        .catch(() => {})
+        .finally(() => setOrdersLoading(false));
     }
   }, [user]);
 
@@ -177,11 +196,11 @@ export default function ProfilePage() {
                         day: "numeric",
                         year: "numeric",
                       })
-                    : "Geneva Vault Member"}
+                    : "Krono Member"}
                 </span>
                 <span>•</span>
                 <span className="text-[#00e5ff] font-semibold">
-                  cart_state: {mergedGuestCount > 0 ? `${mergedGuestCount} guest items merged` : `${cart.length} active vault items`}
+                  cart_state: {mergedGuestCount > 0 ? `${mergedGuestCount} guest items merged` : `${cart.length} active cart items`}
                 </span>
               </div>
             </div>
@@ -213,7 +232,7 @@ export default function ProfilePage() {
                   Session Expiring in {expiryWarningMinutes} minutes
                 </div>
                 <div className="text-[11px] text-amber-300/80">
-                  Your encrypted Swiss vault session will expire soon. Extend now to maintain uninterrupted access.
+                  Your login session will expire soon. Extend now to maintain uninterrupted access.
                 </div>
               </div>
             </div>
@@ -250,6 +269,16 @@ export default function ProfilePage() {
             Client Details & Addresses
           </button>
           <button
+            onClick={() => setActiveTab("orders")}
+            className={`px-4 py-2 text-xs font-mono uppercase tracking-wider rounded-lg transition-all ${
+              activeTab === "orders"
+                ? "bg-[#C5A059] text-black font-bold shadow-md shadow-[#C5A059]/20"
+                : "text-white/60 hover:text-white hover:bg-white/5"
+            }`}
+          >
+            My Orders ({userOrders.length})
+          </button>
+          <button
             onClick={() => setActiveTab("security")}
             className={`px-4 py-2 text-xs font-mono uppercase tracking-wider rounded-lg transition-all ${
               activeTab === "security"
@@ -277,7 +306,7 @@ export default function ProfilePage() {
                 : "text-white/60 hover:text-white hover:bg-white/5"
             }`}
           >
-            Associated Vault Cart ({cart.length})
+            Your Shopping Cart ({cart.length})
           </button>
         </div>
 
@@ -308,7 +337,7 @@ export default function ProfilePage() {
               <form onSubmit={handleUpdateProfile} className="space-y-4">
                 <div>
                   <label className="block text-xs uppercase tracking-wider text-white/70 mb-1.5 font-mono">
-                    Client Full Name
+                    Full Name
                   </label>
                   <input
                     type="text"
@@ -363,13 +392,13 @@ export default function ProfilePage() {
 
                 <div>
                   <label className="block text-xs uppercase tracking-wider text-white/70 mb-1.5 font-mono">
-                    Secondary Address (Office / Alternate Vault Destination)
+                    Secondary Address (Office / Alternate Address)
                   </label>
                   <textarea
                     rows={2}
                     value={secondaryAddress}
                     onChange={(e) => setSecondaryAddress(e.target.value)}
-                    placeholder="Krono Private Vault, Quai du Mont-Blanc 19, 1201 Genève, Switzerland"
+                    placeholder="Level 4, World Trade Center, Echelon Square, Colombo 01"
                     className="w-full px-4 py-2.5 bg-black/60 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors resize-none"
                   />
                 </div>
@@ -457,6 +486,125 @@ export default function ProfilePage() {
                 </div>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Tab: Client Order History (Week 8 Milestone 1 & 3 & Slide 12) */}
+        {activeTab === "orders" && (
+          <div className="bg-[#0D0D0D] border border-white/10 rounded-xl p-6 sm:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <div>
+                <h2 className="text-lg font-serif text-white font-medium">
+                  Your Timepiece Acquisitions
+                </h2>
+                <p className="text-xs text-white/50 mt-1 font-mono">
+                  Orders associated with your member profile and persisted in the database.
+                </p>
+              </div>
+              <Link
+                href="/catalog"
+                className="px-4 py-2 bg-[#C5A059] text-black font-semibold text-xs tracking-wider uppercase rounded-lg self-start sm:self-auto"
+              >
+                Acquire New Timepiece ↗
+              </Link>
+            </div>
+
+            {ordersLoading ? (
+              <div className="py-12 text-center text-xs font-mono text-[#C5A059] animate-pulse">
+                Retrieving your order records from the boutique registry...
+              </div>
+            ) : userOrders.length === 0 ? (
+              <div className="text-center py-12 border border-dashed border-white/10 rounded-xl">
+                <div className="text-2xl text-[#C5A059] mb-2 font-serif">♔</div>
+                <p className="text-xs text-white/50 font-mono">
+                  No timepiece acquisitions recorded yet under this account.
+                </p>
+                <Link
+                  href="/catalog"
+                  className="inline-block mt-4 px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-xs font-mono rounded-lg transition-colors"
+                >
+                  Explore Horological Collection
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {userOrders.map((ord) => (
+                  <div
+                    key={ord.id || ord.order_number}
+                    className="border border-white/10 rounded-xl p-5 bg-[#12221D]/40 space-y-4"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
+                      <div>
+                        <div className="flex items-center gap-3">
+                          <span className="font-mono text-xs font-bold text-[#C5A059]">
+                            {ord.order_number || ord.id}
+                          </span>
+                          <span
+                            className="px-2 py-0.5 rounded text-[10px] font-mono uppercase font-bold tracking-wider"
+                            style={{
+                              background:
+                                ord.status === "Completed" || ord.status === "delivered"
+                                  ? "rgba(0, 163, 98, 0.2)"
+                                  : ord.status === "Paid" || ord.payment_status === "completed"
+                                  ? "rgba(0, 163, 98, 0.15)"
+                                  : "rgba(234, 179, 8, 0.15)",
+                              color:
+                                ord.status === "Completed" || ord.status === "delivered"
+                                  ? "var(--accent, #00A362)"
+                                  : ord.status === "Paid" || ord.payment_status === "completed"
+                                  ? "var(--accent, #00A362)"
+                                  : "#EAB308",
+                              border: "1px solid currentColor",
+                            }}
+                          >
+                            Status: {ord.status || "Pending"}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-white/40 font-mono mt-1">
+                          Placed: {new Date(ord.created_at || Date.now()).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </div>
+                      </div>
+
+                      <div className="text-right">
+                        <div className="text-sm font-mono font-bold text-[#C5A059]">
+                          LKR {Number(ord.total_amount || 0).toLocaleString()}
+                        </div>
+                        <div className="text-[10px] font-mono text-white/50 uppercase">
+                          Payment: {ord.payment_method} · {ord.payment_status === "completed" ? "Paid" : "Pending"}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Order Line Items */}
+                    <div className="divide-y divide-white/5">
+                      {(ord.items || []).map((it, idx) => (
+                        <div key={idx} className="py-2 flex items-center justify-between text-xs font-mono">
+                          <div className="flex items-center gap-3">
+                            <span className="text-[#C5A059] font-bold">x{it.quantity}</span>
+                            <span className="text-white">{it.product_name}</span>
+                          </div>
+                          <span className="text-white/60">
+                            LKR {Number(it.subtotal || it.unit_price * it.quantity || 0).toLocaleString()}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {ord.delivery_address && (
+                      <div className="text-[11px] font-mono text-white/40 pt-1">
+                        Delivery Destination: {ord.delivery_address}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -562,11 +710,11 @@ export default function ProfilePage() {
                   <div className="flex items-center gap-2 mb-1">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                     <span className="text-xs font-mono tracking-widest text-[#C5A059] uppercase">
-                      Current Verified Vault Session
+                      Current Active Session
                     </span>
                   </div>
                   <h2 className="text-xl font-serif text-white font-medium">
-                    Encrypted Session Dossier
+                    Active Session Details
                   </h2>
                 </div>
                 <div className="flex items-center gap-2">
@@ -714,7 +862,7 @@ export default function ProfilePage() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
                   <h3 className="text-base font-serif text-white font-medium mb-1">
-                    Concurrent Devices & Active Vault Sessions
+                    Connected Devices & Active Sessions
                   </h3>
                   <p className="text-xs text-white/50">
                     Real-time monitoring of all authenticated terminals authorized for this client account.
@@ -818,13 +966,13 @@ export default function ProfilePage() {
             {cart.length === 0 ? (
               <div className="text-center py-12 border border-dashed border-white/10 rounded-xl">
                 <p className="text-xs text-white/40 font-mono">
-                  Your vault cart is currently empty.
+                  Your shopping cart is currently empty.
                 </p>
                 <Link
                   href="/catalog"
                   className="inline-block mt-4 px-4 py-2 bg-[#C5A059] text-black text-xs font-semibold rounded-lg tracking-wider uppercase"
                 >
-                  Explore Timepieces
+                  Shop Watches
                 </Link>
               </div>
             ) : (

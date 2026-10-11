@@ -23,3 +23,7 @@ yarn-debug.log*
 # System
 .DS_Store
 Thumbs.db
+
+# Generated reports & temp
+tmp/
+output/

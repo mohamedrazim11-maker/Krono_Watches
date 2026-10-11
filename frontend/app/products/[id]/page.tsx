@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { fetchProductById, fetchProducts, Product } from "@/lib/api";
 import Navbar from "@/components/Navbar";
@@ -15,6 +15,7 @@ import { useCart } from "@/lib/CartContext";
 import { getProductImage, getProductImages } from "@/lib/productImages";
 
 export default function ProductDetailPage() {
+  const router = useRouter();
   const params = useParams();
   const productId = params?.id as string;
 
@@ -104,7 +105,7 @@ export default function ProductDetailPage() {
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center space-y-3 font-mono text-xs text-[#C5A059] animate-pulse">
             <div>✦</div>
-            <div>Calibrating Horological Dossier...</div>
+            <div>Loading Watch Details...</div>
           </div>
         </div>
         <Footer />
@@ -225,7 +226,7 @@ export default function ProductDetailPage() {
             )}
           </div>
 
-          {/* Product Dossier & Buying Controls */}
+          {/* Product Details & Buying Controls */}
           <div className="lg:col-span-5 space-y-6">
             <div className="space-y-2 border-b border-[#1a1a1a] pb-6">
               <div className="flex items-center justify-between text-xs font-mono uppercase text-[#C5A059] font-bold tracking-widest">
@@ -248,7 +249,7 @@ export default function ProductDetailPage() {
               <div className="flex items-center gap-2 pt-1 text-xs font-mono">
                 <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
                 <span className="text-emerald-400 font-bold uppercase tracking-wider">
-                  Vault Ready • Complimentary Armored Transit
+                  In Stock • Free Insured Delivery
                 </span>
               </div>
             </div>
@@ -261,7 +262,7 @@ export default function ProductDetailPage() {
             {/* Specifications Summary Grid */}
             <div className="grid grid-cols-2 gap-3 py-4 border-y border-[#1a1a1a] text-xs font-mono">
               <div className="bg-[#0D0D0D] p-3 border border-[#1a1a1a]">
-                <span className="text-white/40 uppercase block text-[10px]">Calibre Movement</span>
+                <span className="text-white/40 uppercase block text-[10px]">Movement</span>
                 <span className="text-white font-semibold">{product.movement || "In-House Swiss Automatic"}</span>
               </div>
               <div className="bg-[#0D0D0D] p-3 border border-[#1a1a1a]">
@@ -300,11 +301,11 @@ export default function ProductDetailPage() {
                 <button
                   onClick={() => {
                     addToCart(product, quantity);
-                    showToast(`Added ${quantity} × ${product.name} to portfolio.`);
+                    setIsCartOpen(true);
                   }}
                   className="flex-1 py-3 bg-white hover:bg-[#C5A059] hover:text-black text-black font-semibold text-xs tracking-widest uppercase transition-colors"
                 >
-                  Add to Vault Cart
+                  Add to Cart
                 </button>
 
                 <button
@@ -322,14 +323,14 @@ export default function ProductDetailPage() {
                 onClick={handleBuyNow}
                 className="w-full py-3.5 bg-[#C5A059] hover:bg-[#b08d48] text-black font-bold text-xs tracking-widest uppercase transition-all shadow-lg hover:shadow-[#C5A059]/20"
               >
-                Instant Acquisition • Protected Checkout
+                Buy Now • Proceed to Checkout
               </button>
 
               <button
                 onClick={() => setIsConciergeOpen(true)}
                 className="w-full py-2.5 border border-white/20 hover:border-white text-white/80 hover:text-white text-xs font-mono uppercase tracking-wider transition-colors"
               >
-                Private Concierge Consultation
+                Contact Concierge
               </button>
             </div>
           </div>
@@ -428,7 +429,7 @@ export default function ProductDetailPage() {
       )}
 
       {/* Cart & Wishlist Drawers */}
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} onOpenCheckout={() => { setIsCartOpen(false); setIsCheckoutOpen(true); }} />
+      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} onOpenCheckout={() => { setIsCartOpen(false); router.push("/checkout"); }} />
       <WishlistDrawer isOpen={isWishlistOpen} onClose={() => setIsWishlistOpen(false)} />
 
       <Footer />

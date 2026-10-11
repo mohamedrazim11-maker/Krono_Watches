@@ -1,0 +1,443 @@
+================================================================================
+                    ICT2142 E-BUSINESS SYSTEMS
+WEEK 08 PRACTICAL: DATABASE INTEGRATION & ADMIN DASHBOARD (PHASE 3 TESTING)
+        MANDATORY PROJECT DIARY & TECHNICAL DOCUMENTATION REPORT
+================================================================================
+
+PROJECT & METADATA OVERVIEW
+--------------------------------------------------------------------------------
+Module & Code:        ICT2142 - E-Business Systems (Phase 3 Testing & Deployment)
+Practical Session:    Week 08 - Database Integration & Protected Admin Dashboard
+Project Name:         KRONO Watches (Haute Horlogerie E-Commerce Platform)
+Currencies Supported: Sri Lankan Rupee (LKR)
+Technology Stack:     Next.js 16.3 (Turbopack, App Router), TypeScript 5, React 19,
+                      Supabase (PostgreSQL 15), Local Persistent JSON Database Engine,
+                      TailwindCSS 4, JWT (JSON Web Tokens), Bcrypt.js
+GitHub Repository:    https://github.com/mohamedrazim11-maker/Krono_Watches.git
+Target Deliverable:   Week 08 Practical Checklist & Academic Lab Diary
+
+
+================================================================================
+EXECUTIVE SUMMARY OF COMPLETED DELIVERABLES (WEEK 08 CHECKLIST)
+================================================================================
+[✓] Milestone 1 - Database Schema Finalized:
+    Enforced strict entity-relationship design for USERS, PRODUCTS, ORDERS, and
+    ORDER_ITEMS. Implemented foreign keys, unique primary keys, cascading integrity,
+    and row-level security (RLS) policies.
+
+[✓] Milestone 2 - Dynamic Catalog & Product Data Integration:
+    Replaced hardcoded frontend arrays with database-driven operations. GET /api/products
+    and GET /api/products/[id] retrieve live product specs, stock levels, and pricing.
+    Data persists upon page refresh.
+
+[✓] Milestone 3 - Persistent Checkout & Order Fulfillment:
+    Engineered server-side order total recalculation (protecting against client-side
+    price tampering), persistent ORDER and ORDER_ITEMS creation, and automatic
+    inventory stock deduction upon order confirmation.
+
+[✓] Milestone 4 - Protected Admin Area & Role-Based Access Control (RBAC):
+    Secured /admin routes using Next.js server-side middleware and layout guards.
+    Evaluated JWT roles (admin vs. customer). Non-admin users are immediately denied
+    and redirected.
+
+[✓] Milestone 5 - High-Performance Admin Dashboard:
+    Constructed summary metrics (Products, Orders, Low Stock alert, Database status),
+    full Product CRUD (Create, Search/Read, Update Modal, Safe Deactivation/Soft-Delete),
+    and Order Lifecycle management (Pending -> Paid -> Processing -> Shipped -> Completed).
+
+[✓] Week 08 Technical Documentation & Project Diary Completed:
+    Exhaustive documentation of schema, code architecture, security layers, API routes,
+    and two real-world debugging case studies.
+
+
+================================================================================
+1. DATABASE SCHEMA ARCHITECTURE & ERD SPECIFICATIONS (MILESTONE 1)
+================================================================================
+
+1.1 Relational Architecture & Cardinality:
+--------------------------------------------------------------------------------
+The Week 08 target architecture establishes the persistent database as the single
+source of truth. Frontend state may cache or display data, but all mutations are
+validated and persisted through backend services.
+
+Required Relationships:
+1. One User can place Many Orders (1 : M).
+   Foreign key: orders.user_id -> users.id (ON DELETE SET NULL).
+2. One Order contains Many Order Items (1 : M).
+   Foreign key: order_items.order_id -> orders.id (ON DELETE CASCADE).
+3. Each Order Item references One Product (M : 1).
+   Foreign key: order_items.product_id -> products.id (ON DELETE RESTRICT).
+4. Stock reduction occurs strictly upon confirmed order submission / payment workflow.
+
+Entity-Relationship Diagram (Mermaid Representation):
++---------------------+              +-----------------------+
+|        USERS        | 1          M |        ORDERS         |
++---------------------+--------------+-----------------------+
+| PK user_id (id)     |              | PK order_id (id)      |
+|    full_name        |              | FK user_id            |
+|    email (UNIQUE)   |              |    customer_name      |
+|    password_hash    |              |    customer_email     |
+|    role             |              |    total_amount (LKR) |
+|    created_at       |              |    status             |
++---------------------+              |    created_at         |
+                                     +-----------------------+
+                                                 | 1
+                                                 |
+                                                 | M
++---------------------+              +-----------------------+
+|      PRODUCTS       | 1          M |      ORDER_ITEMS      |
++---------------------+--------------+-----------------------+
+| PK product_id (id)  |              | PK order_item_id (id) |
+|    name             |              | FK order_id           |
+|    price (LKR)      |--------------| FK product_id         |
+|    stock_qty        |              |    quantity           |
+|    image_url        |              |    unit_price (LKR)   |
+|    is_active        |              |    created_at         |
++---------------------+              +-----------------------+
+
+1.2 Table Specifications (PostgreSQL DDL / supabase_schema.sql):
+--------------------------------------------------------------------------------
+1. USERS Table:
+   - id (TEXT, PK): Primary key identifier (e.g. 'usr-admin-01', 'usr-1789451291557').
+   - user_id (TEXT): Virtual alias matching id for legacy compatibility.
+   - full_name (TEXT NOT NULL): Client or administrator full name.
+   - email (TEXT NOT NULL UNIQUE): Case-insensitive unique login identifier.
+   - password_hash (TEXT NOT NULL): Salted Bcrypt (cost factor 10) password hash.
+   - role (TEXT NOT NULL DEFAULT 'customer'): Access tier ('customer' | 'admin').
+   - phone (TEXT): Primary contact telephone.
+   - address (TEXT): Residential delivery destination.
+   - status (TEXT DEFAULT 'Active Member'): Account validity state.
+   - created_at (TIMESTAMPTZ DEFAULT NOW()): Registration timestamp.
+
+2. PRODUCTS Table:
+   - id (TEXT, PK): Unique product identifier (e.g. 'prod-1', 'prod-rolex-submariner').
+   - product_id (TEXT): Virtual alias matching id.
+   - name (TEXT NOT NULL): Commercial watch model name.
+   - brand (TEXT NOT NULL): Manufacture (Rolex, Omega, Patek Philippe, Krono Swiss).
+   - category (TEXT NOT NULL): Horological segment (Luxury, Automatic, Sport, Smart).
+   - price (NUMERIC NOT NULL): Authoritative boutique retail price in LKR.
+   - old_price (NUMERIC): Pre-discount retail price for promotion calculations.
+   - stock_qty (INTEGER DEFAULT 12): Active vault inventory units available.
+   - stock_count (INTEGER DEFAULT 12): Backward-compatible inventory column.
+   - is_active (BOOLEAN DEFAULT true): Safe-deactivation flag (soft-delete).
+   - is_featured (BOOLEAN DEFAULT false): Homepage showcase flag.
+   - image_url (TEXT NOT NULL): Primary high-resolution watch asset URI.
+   - images (TEXT[]): Array of secondary showcase image URIs.
+   - movement (TEXT): Movement calibre specification (e.g., 'Swiss ETA 2824-2').
+   - case_material (TEXT): Horological alloy (e.g., '316L Stainless Steel').
+   - water_resistance (TEXT): Certified depth rating (e.g., '100m (10 ATM)').
+
+3. ORDERS Table:
+   - id (TEXT, PK): Unique order reference (e.g. 'KR-1031', 'KR-799175').
+   - order_id (TEXT): Virtual alias matching id.
+   - user_id (TEXT FK): References users(id) ON DELETE SET NULL.
+   - customer_name (TEXT NOT NULL): Recipient client name.
+   - customer_email (TEXT NOT NULL): Delivery notification email.
+   - customer_phone (TEXT): Insured courier contact number.
+   - delivery_address (TEXT NOT NULL): Physical destination in Sri Lanka.
+   - total_amount (NUMERIC NOT NULL): Server-recalculated gross total in LKR.
+   - subtotal (NUMERIC NOT NULL): Recalculated item subtotal in LKR.
+   - discount_amount (NUMERIC DEFAULT 0): Verified promotional deduction.
+   - status (TEXT DEFAULT 'Pending'): Order lifecycle state ('Pending' | 'Paid' |
+     'Processing' | 'Shipped' | 'Completed' | 'Cancelled').
+   - payment_method (TEXT DEFAULT 'payhere'): Gateway method ('payhere' | 'wire' | 'cod').
+   - payment_status (TEXT DEFAULT 'pending'): Settlement state ('pending' | 'completed').
+   - created_at (TIMESTAMPTZ DEFAULT NOW()): Order placement timestamp.
+
+4. ORDER_ITEMS Table:
+   - id (TEXT, PK): Item row identifier (e.g. 'item-1031-1').
+   - order_item_id (TEXT): Virtual alias matching id.
+   - order_id (TEXT NOT NULL FK): References orders(id) ON DELETE CASCADE.
+   - product_id (TEXT NOT NULL FK): References products(id) ON DELETE RESTRICT.
+   - quantity (INTEGER NOT NULL DEFAULT 1): Number of units purchased.
+   - unit_price (NUMERIC NOT NULL): Verified unit price captured at checkout time.
+   - created_at (TIMESTAMPTZ DEFAULT NOW()): Record creation timestamp.
+
+
+================================================================================
+2. INTEGRATION EVIDENCE & DATA PERSISTENCE (MILESTONES 2 & 3)
+================================================================================
+
+2.1 Dynamic Product Catalog Integration (Milestone 2):
+--------------------------------------------------------------------------------
+- Hardcoded JavaScript product arrays were replaced by dynamic database queries.
+- Endpoints:
+  * GET /api/products: Reads active products from database, supporting query filters
+    (?category=Luxury, ?featured=true, ?search=chronograph).
+  * GET /api/products/[id]: Reads full technical specifications for a single timepiece.
+- Validation Checkpoint:
+  Refreshing any catalog page (/catalog) or product detail view (/products/[id])
+  consistently pulls verified records directly from the database without losing state.
+
+2.2 Cart-to-Order Persistence & Anti-Tamper Security (Milestone 3):
+--------------------------------------------------------------------------------
+The checkout workflow enforces server-side validation to guarantee financial and
+inventory data integrity:
+
+Step 1 - Cart Validation:
+Each item submitted from the frontend is cross-referenced with the database:
+- Confirms product existence in active inventory.
+- Validates that requested quantity does not exceed available 'stock_qty'.
+- Rejects invalid IDs or oversold units with HTTP 400.
+
+Step 2 - Server-Side Order Recalculation:
+The server DOES NOT trust the client-provided 'total_amount' or 'subtotal':
+```typescript
+let calculatedSubtotal = 0;
+for (const item of rawItems) {
+  const dbProduct = db.products.find(p => p.id === item.product_id);
+  const authoritativeUnitPrice = Number(dbProduct.price);
+  calculatedSubtotal += authoritativeUnitPrice * item.quantity;
+}
+const calculatedGrandTotal = Math.max(0, calculatedSubtotal - discountAmount);
+```
+
+Step 3 - Multi-Entity Atomic Persistence:
+1. An entry is created in the ORDERS table saving user_id, verified total, and status.
+2. Individual cart lines are normalized and inserted into the ORDER_ITEMS table
+   referencing both the parent order_id and product_id.
+
+Step 4 - Vault Inventory Deduction:
+Upon confirmed order placement, product stock is decremented immediately:
+```typescript
+dbProduct.stock_qty = Math.max(0, dbProduct.stock_qty - item.quantity);
+dbProduct.stock_count = dbProduct.stock_qty;
+dbProduct.in_stock = dbProduct.stock_qty > 0;
+```
+
+Step 5 - Customer Confirmation & Profile Association:
+The customer receives an authoritative order confirmation showing their order ID
+(e.g., KR-1031). The order is permanently linked to their user account and remains
+accessible in /profile across sessions and re-logins.
+
+
+================================================================================
+3. ADMIN DASHBOARD & MANAGEMENT SUITE (MILESTONE 4 & 5)
+================================================================================
+
+3.1 Overview Dashboard & Summary Metrics (Milestone 5 - Slide 9):
+--------------------------------------------------------------------------------
+Located at route `/admin`, the management dashboard displays:
+1. Products Metric Card: Displays total certified timepieces in catalog.
+2. Orders Metric Card: Displays total client orders with aggregate revenue in LKR.
+3. Low Stock Alert Card: Real-time counter of timepieces where stock_qty <= 5.
+4. Database Connected Status: Visual confirmation pill showing persistent database
+   synchronization (PostgreSQL / Local JSON engine).
+5. Recent Orders Feed: Instant overview of latest transactions with quick status actions.
+
+3.2 Product CRUD & Inventory Controls (Admin Task A - Slide 10):
+--------------------------------------------------------------------------------
+1. CREATE:
+   Accessible via `/admin/products/new`. Validates name, manufacture brand, horological
+   category, retail price in LKR, initial stock quantity, and image URLs.
+2. READ:
+   Located at `/admin/products`. Provides real-time search across timepiece name,
+   movement calibre, reference ID, and brand. Displays Reference ID, price, stock,
+   and Active/Deactivated status.
+3. UPDATE:
+   - Interactive Quick-Stepper: Direct '+' and '-' stepper buttons on the table allow
+     instant inventory updates with real-time database persistence.
+   - Comprehensive Edit Modal: Clicking "Edit" opens a modal to adjust timepiece name,
+     retail price, stock quantity, brand, category, and image URL.
+4. DELETE & SAFE DEACTIVATION (Soft-Delete):
+   When an administrator requests deletion of a timepiece:
+   - If the timepiece is referenced by existing client orders in ORDER_ITEMS, the system
+     safely soft-deletes the record (sets `is_active = false`, `in_stock = false`).
+     This preserves foreign-key referential integrity and historical order archives.
+   - If unreferenced, full purge is permitted.
+
+3.3 Order Table & Status Lifecycle Workflow (Admin Task B - Slide 11):
+--------------------------------------------------------------------------------
+Located at `/admin/orders`, presenting the complete order registry:
+Columns: Order ID | Customer | Items & Sizing | Total (LKR) | Payment | Status | Actions
+
+Standard Status Lifecycle:
+   Pending  ──►  Paid  ──►  Processing  ──►  Shipped  ──►  Completed
+      │
+      └──► Cancelled / Void
+
+Admins can update fulfillment status directly via an inline selector or order detail drawer.
+The database updates immediately (PATCH /api/orders/[id]/status), and updates reflect
+instantly on both the admin interface and the customer's profile order history.
+
+
+================================================================================
+4. API ENDPOINTS, QUERIES & DATABASE OPERATIONS
+================================================================================
+
+Endpoint Registry Table:
++--------+----------------------------+---------------------------------------------+
+| Method | Endpoint                   | Purpose & Implementation Notes              |
++--------+----------------------------+---------------------------------------------+
+| GET    | /api/products              | Returns active catalog products from DB     |
+| POST   | /api/products              | Admin: Inserts new timepiece into DB        |
+| GET    | /api/products/[id]         | Retrieves single product specs by ID        |
+| PUT    | /api/products/[id]         | Admin: Updates product price, name, stock   |
+| DELETE | /api/products/[id]         | Admin: Deactivates (soft-delete) or purges  |
+| GET    | /api/products/stats        | Calculates aggregate metrics (low stock,etc)|
+| GET    | /api/orders                | Returns orders list for admin & reporting   |
+| POST   | /api/orders                | Validates cart, recalculates, saves order   |
+| GET    | /api/orders/[id]           | Fetches specific order record by ID         |
+| PATCH  | /api/orders/[id]/status    | Updates fulfillment & payment status in DB  |
+| POST   | /api/auth/login            | Authenticates user & issues JWT with role   |
+| POST   | /api/auth/register         | Creates new customer account in DB          |
+| GET    | /api/auth/profile          | Retrieves authenticated client details      |
++--------+----------------------------+---------------------------------------------+
+
+
+================================================================================
+5. SECURITY ARCHITECTURE & ROLE-BASED ACCESS CONTROL (RBAC) (MILESTONE 4)
+================================================================================
+
+5.1 Multi-Layer Defense-in-Depth Architecture:
+--------------------------------------------------------------------------------
+Securing administrative operations is not restricted to merely hiding buttons on the
+frontend. A three-tier access control flow is strictly enforced:
+
+Layer 1 - Server-Side Edge Proxy / Middleware (`frontend/middleware.ts`):
+- Intercepts all requests matching `/admin/:path*`.
+- Checks for presence of JWT cookie (`krono_token`) or Authorization Bearer header.
+- Decodes and inspects the token payload.
+- Verifies that token has not expired (`exp * 1000 > Date.now()`).
+- Checks user role:
+  * If role === 'admin': grants pass-through (`NextResponse.next()`).
+  * If role !== 'admin' (customer account): immediately redirects to home page with
+    `?error=admin_forbidden` and access denied message.
+  * If unauthenticated: redirects to `/login?returnUrl=/admin&unauthorized=true`.
+
+Layer 2 - Administrative Client Layout Guard (`frontend/app/admin/layout.tsx`):
+- React hook `useAuth()` monitors client authentication state.
+- If an unauthorized user bypasses client caching, useEffect forces immediate navigation:
+  `router.push("/?error=admin_forbidden")`.
+
+Layer 3 - Server Route Guard Helper (`frontend/lib/server/auth.ts`):
+- The `requireAdmin(req)` helper verifies JWT signature on privileged mutating API routes
+  (e.g., DELETE /api/products/[id], PATCH /api/orders/[id]/status).
+- Returns HTTP 401 Unauthorized or HTTP 403 Forbidden with structured error payloads.
+
+5.2 Test Credentials:
+--------------------------------------------------------------------------------
+1. Boutique Administrator Account:
+   - Email:    admin@krono.luxury
+   - Password: Admin@1234
+   - Role:     admin
+   - Scope:    Full access to /admin, inventory controls, order updates, promotions.
+
+2. Registered VIP Customer Account:
+   - Email:    customer@krono.luxury
+   - Password: Customer@1234
+   - Role:     customer
+   - Scope:    Customer storefront, checkout, personal profile & order history.
+               Denied access to /admin routes by middleware.
+
+
+================================================================================
+6. COMPREHENSIVE DEBUGGING LOG (TWO SCENARIOS ENCOUNTERED & RESOLVED)
+================================================================================
+
+6.1 Debugging Case 1: Next.js Edge Runtime Cryptography Incompatibility
+--------------------------------------------------------------------------------
+- Symptom / Issue:
+  When configuring server-side route protection in `frontend/middleware.ts` for Next.js,
+  importing Node.js `jsonwebtoken` or `crypto` threw runtime exceptions:
+  `Dynamic Code Evaluation / Node.js crypto module is not supported in Edge Runtime`.
+  This prevented the middleware from executing and caused 500 errors on protected routes.
+
+- Root Cause Analysis:
+  Next.js middleware runs on the V8 Edge Runtime environment by default, which lacks
+  access to Node.js core libraries (like `crypto.createHmac`) bundled inside the legacy
+  `jsonwebtoken` package.
+
+- Implementation & Resolution:
+  Implemented a lightweight, Edge-compatible base64url JWT decoder function directly
+  within `middleware.ts`. This extracts `sub`, `role`, and `exp` without external binary
+  dependencies:
+  ```typescript
+  function decodeJwtPayload(token: string): { role?: string; exp?: number } | null {
+    try {
+      const parts = token.split(".");
+      if (parts.length !== 3) return null;
+      const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join("")
+      );
+      return JSON.parse(jsonPayload);
+    } catch {
+      return null;
+    }
+  }
+  ```
+  Full HMAC signature validation is maintained on Node.js API routes via `requireAdmin()`,
+  achieving both sub-millisecond Edge middleware route filtering and robust cryptographic
+  integrity.
+
+
+6.2 Debugging Case 2: Client Price Tampering & Cart Validation Desynchronization
+--------------------------------------------------------------------------------
+- Symptom / Issue:
+  During simulated integration testing of Milestone 3, a malicious client payload could
+  theoretically send altered `unit_price` or `total_amount` values in the checkout POST
+  request (e.g., setting a 385,000 LKR luxury watch to 100 LKR). The initial backend
+  handler trusted `orderData.total_amount` without verifying item prices against the
+  database.
+
+- Root Cause Analysis:
+  The initial `createOrder` method accepted the client's payload directly to calculate
+  subtotals, violating the fundamental architectural rule of Week 08 (Slide 7: "Important:
+  do not trust totals sent by the browser. Recalculate order totals on the server using
+  product data from the database.").
+
+- Implementation & Resolution:
+  Refactored `createOrder` in `frontend/lib/server/db.ts` to implement a strict 5-step
+  server-side verification protocol:
+  1. Iterate through `orderData.items` and query each product by ID from the database.
+  2. Overwrite any incoming price with `Number(dbProduct.price)` from the persistent store.
+  3. Validate `stock_qty >= requestedQty` before processing.
+  4. Sum the verified prices on the server to compute the true subtotal and total.
+  5. Atomically decrement `stock_qty` in the database and write normalized records to
+     both ORDERS and ORDER_ITEMS tables.
+  Any price mismatch or tampering attempt is neutralized, guaranteeing 100% financial
+  and inventory data consistency.
+
+
+================================================================================
+7. INTEGRATION TESTING CHECKLIST & SIGN-OFF (SLIDE 12)
+================================================================================
+
+[✓] 1. Customer Catalog:
+       Products load directly from persistent database. Correct details, prices, and
+       specifications open on detail pages (/products/[id]).
+
+[✓] 2. Authentication:
+       Logged-in users remain associated with their profile and their specific order history.
+       Token includes role information.
+
+[✓] 3. Cart -> Checkout:
+       Accurate product references, quantities, and attributes transition from cart
+       state to the checkout submission process.
+
+[✓] 4. Order Persistence:
+       Orders and normalized order items persist in the database and remain visible in
+       both customer profile and admin orders table after page refreshes and re-login.
+
+[✓] 5. Inventory & Stock:
+       Product stock decrements accurately upon confirmed checkout workflow. Low-stock
+       thresholds (<= 5) trigger dynamic warnings in the admin suite.
+
+[✓] 6. Admin Security (RBAC):
+       Customer accounts attempting to navigate to `/admin` are intercepted by server
+       middleware and redirected. Only accounts with `role === 'admin'` are granted access.
+
+[✓] 7. Admin CRUD & Consistency:
+       Product modifications (price changes, stock adjustments, deactivations) persist
+       to the database and appear immediately in customer-facing views.
+
+
+================================================================================
+WEEK 08 PRACTICAL SESSION COMPLETE
+Platform Status: Persistent Database Connected & Operational
+Prepared for Week 09: Testing & Bug Fixing (QA)
+================================================================================

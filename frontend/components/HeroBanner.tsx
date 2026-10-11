@@ -119,7 +119,7 @@ export default function HeroBanner({
               Crafted for Eternity.
             </h1>
             <p className="text-xs sm:text-sm text-[#475569] dark:text-[#CBD5E1] max-w-lg font-normal leading-relaxed">
-              Discover certified luxury horology. Curated references from Rolex, Omega, Casio, Seiko, and Tissot engineered to supreme mechanical and electronic precision.
+              Discover certified luxury watches from Rolex, Omega, Casio, Seiko, and Tissot engineered with precision.
             </p>
           </div>
 
@@ -131,7 +131,7 @@ export default function HeroBanner({
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-[10px] font-mono text-[#5A6D64] dark:text-[#8EAA9C] uppercase font-bold">
-                  Collector Privilege Code
+                  Special Discount Code
                 </div>
                 <div className="text-xs font-black text-[#0F172A] dark:text-[#F8FAFC] font-mono tracking-wider">
                   {activePoster.coupon_code} ({activePoster.discount_text || "20% OFF"})
@@ -154,7 +154,7 @@ export default function HeroBanner({
               href="/catalog"
               className="neu-btn-primary px-7 py-3 rounded-2xl text-xs uppercase tracking-[0.18em] font-extrabold flex items-center gap-2 transition-all"
             >
-              <span>Explore Vault</span>
+              <span>Explore Watches</span>
               <span className="text-sm">→</span>
             </Link>
 
@@ -162,7 +162,7 @@ export default function HeroBanner({
               href="/about"
               className="neu-btn px-6 py-3 rounded-2xl text-xs uppercase tracking-[0.18em] font-bold"
             >
-              <span>Atelier Pedigree</span>
+              <span>About Krono</span>
             </Link>
           </div>
         </div>

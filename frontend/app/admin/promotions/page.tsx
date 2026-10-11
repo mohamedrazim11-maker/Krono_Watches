@@ -1,29 +1,47 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { fetchPosters, updatePoster, Poster } from "@/lib/api";
 
 const inputStyle: React.CSSProperties = {
-  width: "100%", background: "#141820", border: "1px solid #1E2530",
-  borderRadius: "6px", padding: "8px 12px",
-  fontSize: "12px", color: "#E2E8F0", outline: "none",
-  boxSizing: "border-box", transition: "border-color 150ms",
+  width: "100%",
+  background: "#080E0B",
+  border: "1px solid rgba(197, 160, 89, 0.25)",
+  borderRadius: "6px",
+  padding: "9px 12px",
+  fontSize: "12px",
+  color: "#F8FAFC",
+  outline: "none",
+  boxSizing: "border-box",
+  transition: "border-color 150ms",
   fontFamily: "inherit",
 };
 
 const labelStyle: React.CSSProperties = {
-  display: "block", fontSize: "10px", fontWeight: 700,
-  color: "#475569", textTransform: "uppercase", letterSpacing: "0.07em",
+  display: "block",
+  fontSize: "10px",
+  fontWeight: 700,
+  color: "#6B8577",
+  textTransform: "uppercase",
+  letterSpacing: "0.08em",
   marginBottom: "5px",
 };
 
 const cardStyle: React.CSSProperties = {
-  background: "#0D1117", border: "1px solid #1E2530",
-  borderRadius: "8px", overflow: "hidden",
+  background: "#0A130F",
+  border: "1px solid rgba(197, 160, 89, 0.2)",
+  borderRadius: "10px",
+  overflow: "hidden",
+  boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
 };
 
 function Field({
-  label, value, onChange, type = "text", rows,
+  label,
+  value,
+  onChange,
+  type = "text",
+  rows,
 }: {
   label: string;
   value: string;
@@ -32,7 +50,7 @@ function Field({
   rows?: number;
 }) {
   const [focused, setFocused] = useState(false);
-  const focusStyle = focused ? { borderColor: "#3B82F6", boxShadow: "0 0 0 2px rgba(59,130,246,0.15)" } : {};
+  const focusStyle = focused ? { borderColor: "#C5A059", boxShadow: "0 0 0 2px rgba(197, 160, 89, 0.2)" } : {};
 
   return (
     <div>
@@ -98,8 +116,11 @@ export default function AdminPromotionsPage() {
         if (hero) setHeroData(hero);
         const sale = posters.find((p) => p.section_id === "weekend_sale" || p.section_id === "flash_deals");
         if (sale) setSaleData(sale);
-      } catch (e) { console.error(e); }
-      finally { setLoading(false); }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, []);
@@ -114,10 +135,12 @@ export default function AdminPromotionsPage() {
     setSavingHero(true);
     try {
       await updatePoster(heroData);
-      showToast("Hero banner published successfully.");
+      showToast("Storefront hero banner published successfully.");
     } catch (err: any) {
       showToast(err.message || "Failed to publish hero banner.", "error");
-    } finally { setSavingHero(false); }
+    } finally {
+      setSavingHero(false);
+    }
   };
 
   const handleSaveSale = async (e: React.FormEvent) => {
@@ -125,241 +148,371 @@ export default function AdminPromotionsPage() {
     setSavingSale(true);
     try {
       await updatePoster(saleData);
-      showToast("Campaign published successfully.");
+      showToast("Storefront flash sale published successfully.");
     } catch (err: any) {
-      showToast(err.message || "Failed to publish campaign.", "error");
-    } finally { setSavingSale(false); }
+      showToast(err.message || "Failed to publish flash sale.", "error");
+    } finally {
+      setSavingSale(false);
+    }
   };
 
   return (
-    <div style={{ maxWidth: "1100px", margin: "0 auto", fontFamily: "inherit" }}>
-
+    <div style={{ maxWidth: "1280px", margin: "0 auto", fontFamily: "inherit" }}>
       {/* Toast */}
       {toast && (
-        <div style={{
-          position: "fixed", bottom: "24px", right: "28px", zIndex: 9999,
-          background: "#0D1117",
-          border: `1px solid ${toast.type === "success" ? "#22C55E" : "#F87171"}`,
-          borderLeft: `3px solid ${toast.type === "success" ? "#22C55E" : "#F87171"}`,
-          borderRadius: "6px", padding: "12px 18px",
-          fontSize: "12px", fontWeight: 600,
-          color: toast.type === "success" ? "#22C55E" : "#F87171",
-          boxShadow: "0 4px 24px rgba(0,0,0,0.5)", animation: "slideUp 0.2s ease",
-        }}>
+        <div
+          style={{
+            position: "fixed",
+            bottom: "28px",
+            right: "32px",
+            zIndex: 9999,
+            background: "#0A130F",
+            border: `1px solid ${toast.type === "success" ? "#00A362" : "#F87171"}`,
+            borderLeft: `4px solid ${toast.type === "success" ? "#00A362" : "#F87171"}`,
+            borderRadius: "8px",
+            padding: "14px 20px",
+            fontSize: "12.5px",
+            fontWeight: 600,
+            color: toast.type === "success" ? "#F1F5F9" : "#F87171",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.6)",
+          }}
+        >
           {toast.type === "success" ? "✓" : "✕"} {toast.msg}
         </div>
       )}
 
-      {/* Page Header */}
-      <div style={{ marginBottom: "28px" }}>
-        <div style={{ fontSize: "11px", fontWeight: 600, color: "#3B82F6", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "5px" }}>
-          Marketing
+      {/* Header */}
+      <div style={{ marginBottom: "28px", display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
+        <div>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "#C5A059", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "5px" }}>
+            Storefront Marketing & Drops
+          </div>
+          <h1
+            style={{
+              fontSize: "26px",
+              fontWeight: 800,
+              color: "#F8FAFC",
+              margin: 0,
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              letterSpacing: "0.02em",
+            }}
+          >
+            Storefront Promotional Campaigns
+          </h1>
+          <p style={{ fontSize: "12.5px", color: "#6B8577", marginTop: "4px" }}>
+            Control hero drops, promotional banners, checkout coupon vouchers, and flash discounts in real-time.
+          </p>
         </div>
-        <h1 style={{ fontSize: "22px", fontWeight: 700, color: "#F1F5F9", margin: 0, letterSpacing: "-0.4px" }}>
-          Campaigns & Banners
-        </h1>
-        <p style={{ fontSize: "12px", color: "#64748B", marginTop: "4px" }}>
-          Control hero showcase, promotional banners, voucher codes, and discount events.
-        </p>
+
+        <Link
+          href="/"
+          target="_blank"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
+            padding: "8px 16px",
+            borderRadius: "6px",
+            background: "#C5A059",
+            color: "#000",
+            fontSize: "12px",
+            fontWeight: 700,
+            textDecoration: "none",
+          }}
+        >
+          <span>Inspect Live Storefront ↗</span>
+        </Link>
       </div>
 
       {loading ? (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
           {[0, 1].map((i) => (
-            <div key={i} style={{ ...cardStyle, height: "420px", animation: "pulse 1.5s ease-in-out infinite" }} />
+            <div key={i} style={{ ...cardStyle, height: "460px", opacity: 0.5 }} />
           ))}
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
           {/* Hero Banner Card */}
           <div style={cardStyle}>
-            <div style={{
-              padding: "16px 20px", borderBottom: "1px solid #1E2530",
-              display: "flex", alignItems: "center", justifyContent: "space-between",
-            }}>
+            <div
+              style={{
+                padding: "16px 20px",
+                borderBottom: "1px solid rgba(197, 160, 89, 0.15)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                background: "#080E0B",
+              }}
+            >
               <div>
-                <div style={{ fontSize: "13px", fontWeight: 700, color: "#E2E8F0" }}>Hero Banner</div>
-                <div style={{ fontSize: "11px", color: "#64748B", marginTop: "2px" }}>Main storefront showcase section</div>
+                <div style={{ fontSize: "13.5px", fontWeight: 700, color: "#F8FAFC" }}>
+                  1 · Primary Storefront Hero Drop
+                </div>
+                <div style={{ fontSize: "11px", color: "#6B8577" }}>
+                  Controls the main hero banner atop the Krono homepage
+                </div>
               </div>
-              <span style={{
-                padding: "2px 8px", borderRadius: "4px", fontSize: "10px", fontWeight: 700,
-                background: "rgba(59,130,246,0.12)", color: "#60A5FA",
-                border: "1px solid rgba(59,130,246,0.25)", fontFamily: "monospace",
-              }}>
-                hero_drop
+              <span
+                style={{
+                  fontSize: "9.5px",
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  padding: "3px 8px",
+                  borderRadius: "4px",
+                  background: heroData.is_active ? "rgba(0, 163, 98, 0.2)" : "rgba(239, 68, 68, 0.15)",
+                  color: heroData.is_active ? "#00A362" : "#F87171",
+                  border: `1px solid ${heroData.is_active ? "rgba(0, 163, 98, 0.3)" : "rgba(239, 68, 68, 0.3)"}`,
+                }}
+              >
+                {heroData.is_active ? "Live on Store" : "Paused"}
               </span>
+            </div>
+
+            {/* Live Storefront Preview Box */}
+            <div
+              style={{
+                margin: "16px 20px 0 20px",
+                padding: "16px",
+                borderRadius: "8px",
+                background: "linear-gradient(135deg, rgba(0, 96, 57, 0.3) 0%, rgba(10, 19, 15, 0.95) 100%)",
+                border: "1px solid rgba(197, 160, 89, 0.3)",
+              }}
+            >
+              <div style={{ fontSize: "9px", color: "#C5A059", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                LIVE STOREFRONT PREVIEW
+              </div>
+              <div style={{ fontSize: "11px", color: "#C5A059", fontWeight: 600, marginTop: "6px" }}>
+                {heroData.badge || "2026 Collection"}
+              </div>
+              <div style={{ fontSize: "16px", fontWeight: 700, color: "#FFF", fontFamily: "'Cormorant Garamond', Georgia, serif", marginTop: "2px" }}>
+                {heroData.title || "Mastery in horology."}
+              </div>
+              <div style={{ fontSize: "11px", color: "#8EAA9C", marginTop: "4px" }}>
+                {heroData.subtitle}
+              </div>
+              <div style={{ marginTop: "10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <span style={{ fontSize: "11px", fontWeight: 700, color: "#C5A059" }}>
+                  {heroData.featured_product_name}: {heroData.featured_product_price}
+                </span>
+                <span style={{ fontSize: "10px", padding: "2px 6px", borderRadius: "4px", background: "#006039", color: "#FFF" }}>
+                  {heroData.discount_text}
+                </span>
+              </div>
             </div>
 
             <form onSubmit={handleSaveHero} style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "14px" }}>
-              <Field label="Badge Text" value={heroData.badge || ""} onChange={(v) => setHeroData({ ...heroData, badge: v })} />
-              <Field label="Headline" value={heroData.title || ""} onChange={(v) => setHeroData({ ...heroData, title: v })} />
-              <Field label="Subtitle" value={heroData.subtitle || ""} onChange={(v) => setHeroData({ ...heroData, subtitle: v })} rows={2} />
+              <Field
+                label="Campaign Eyebrow Badge"
+                value={heroData.badge || ""}
+                onChange={(v) => setHeroData({ ...heroData, badge: v })}
+              />
+              <Field
+                label="Headline Title"
+                value={heroData.title || ""}
+                onChange={(v) => setHeroData({ ...heroData, title: v })}
+              />
+              <Field
+                label="Subtitle Description"
+                value={heroData.subtitle || ""}
+                onChange={(v) => setHeroData({ ...heroData, subtitle: v })}
+                rows={2}
+              />
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                <Field label="Featured Product" value={heroData.featured_product_name || ""} onChange={(v) => setHeroData({ ...heroData, featured_product_name: v })} />
-                <Field label="Price Display" value={heroData.featured_product_price || ""} onChange={(v) => setHeroData({ ...heroData, featured_product_price: v })} />
+                <Field
+                  label="Featured Watch Name"
+                  value={heroData.featured_product_name || ""}
+                  onChange={(v) => setHeroData({ ...heroData, featured_product_name: v })}
+                />
+                <Field
+                  label="Display Price"
+                  value={heroData.featured_product_price || ""}
+                  onChange={(v) => setHeroData({ ...heroData, featured_product_price: v })}
+                />
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                <Field label="Discount Tag" value={heroData.discount_text || ""} onChange={(v) => setHeroData({ ...heroData, discount_text: v })} />
-                <Field label="Coupon Code" value={heroData.coupon_code || ""} onChange={(v) => setHeroData({ ...heroData, coupon_code: v })} />
+                <Field
+                  label="Incentive Tag"
+                  value={heroData.discount_text || ""}
+                  onChange={(v) => setHeroData({ ...heroData, discount_text: v })}
+                />
+                <Field
+                  label="Hero Image URL (Optional)"
+                  value={heroData.image_url || ""}
+                  onChange={(v) => setHeroData({ ...heroData, image_url: v })}
+                />
               </div>
 
-              <Field label="Background Image URL" type="url" value={heroData.image_url || ""} onChange={(v) => setHeroData({ ...heroData, image_url: v })} />
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: "8px" }}>
+                <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
+                  <input
+                    type="checkbox"
+                    checked={heroData.is_active !== false}
+                    onChange={(e) => setHeroData({ ...heroData, is_active: e.target.checked })}
+                    style={{ width: "16px", height: "16px", accentColor: "#C5A059" }}
+                  />
+                  <span style={{ fontSize: "12px", color: "#F8FAFC", fontWeight: 600 }}>Active on Storefront</span>
+                </label>
 
-              {/* Active toggle */}
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", background: "#141820", borderRadius: "6px", border: "1px solid #1E2530" }}>
-                <div>
-                  <div style={{ fontSize: "12px", fontWeight: 600, color: "#E2E8F0" }}>Active</div>
-                  <div style={{ fontSize: "11px", color: "#64748B", marginTop: "1px" }}>Show this banner on storefront</div>
-                </div>
                 <button
-                  type="button"
-                  onClick={() => setHeroData({ ...heroData, is_active: !heroData.is_active })}
+                  type="submit"
+                  disabled={savingHero}
                   style={{
-                    width: "36px", height: "20px", borderRadius: "10px", border: "none", cursor: "pointer",
-                    background: heroData.is_active ? "#3B82F6" : "#1E2530",
-                    position: "relative", transition: "background 200ms",
-                    flexShrink: 0,
+                    padding: "8px 20px",
+                    borderRadius: "6px",
+                    background: "linear-gradient(135deg, #C5A059 0%, #B8860B 100%)",
+                    color: "#000",
+                    fontSize: "12px",
+                    fontWeight: 800,
+                    cursor: "pointer",
+                    border: "none",
                   }}
                 >
-                  <span style={{
-                    position: "absolute", top: "2px", width: "16px", height: "16px",
-                    borderRadius: "50%", background: "white",
-                    left: heroData.is_active ? "18px" : "2px",
-                    transition: "left 200ms", display: "block",
-                  }} />
+                  {savingHero ? "Publishing..." : "Publish Hero Changes ↗"}
                 </button>
               </div>
-
-              <button
-                type="submit"
-                disabled={savingHero}
-                style={{
-                  width: "100%", padding: "10px", borderRadius: "6px", border: "none",
-                  background: savingHero ? "#1D4ED8" : "#3B82F6",
-                  color: "white", fontSize: "12px", fontWeight: 700,
-                  cursor: savingHero ? "not-allowed" : "pointer",
-                  display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
-                  transition: "background 150ms",
-                  letterSpacing: "0.02em",
-                }}
-              >
-                {savingHero ? (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}
-                      style={{ animation: "spin 1s linear infinite" }}>
-                      <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48 2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48 2.83-2.83" />
-                    </svg>
-                    Publishing...
-                  </>
-                ) : "Publish Hero Changes"}
-              </button>
             </form>
           </div>
 
-          {/* Flash Sale / Campaign Card */}
+          {/* Flash Sale / Coupon Voucher Card */}
           <div style={cardStyle}>
-            <div style={{
-              padding: "16px 20px", borderBottom: "1px solid #1E2530",
-              display: "flex", alignItems: "center", justifyContent: "space-between",
-            }}>
+            <div
+              style={{
+                padding: "16px 20px",
+                borderBottom: "1px solid rgba(197, 160, 89, 0.15)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                background: "#080E0B",
+              }}
+            >
               <div>
-                <div style={{ fontSize: "13px", fontWeight: 700, color: "#E2E8F0" }}>Flash Campaign</div>
-                <div style={{ fontSize: "11px", color: "#64748B", marginTop: "2px" }}>Promotional banner with voucher code</div>
+                <div style={{ fontSize: "13.5px", fontWeight: 700, color: "#F8FAFC" }}>
+                  2 · Flash Promotion & Checkout Coupon
+                </div>
+                <div style={{ fontSize: "11px", color: "#6B8577" }}>
+                  Controls promotional ticker and discount code recognized at checkout
+                </div>
               </div>
-              <span style={{
-                padding: "2px 8px", borderRadius: "4px", fontSize: "10px", fontWeight: 700,
-                background: "rgba(249,115,22,0.12)", color: "#FB923C",
-                border: "1px solid rgba(249,115,22,0.25)", fontFamily: "monospace",
-              }}>
-                weekend_sale
+              <span
+                style={{
+                  fontSize: "9.5px",
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  padding: "3px 8px",
+                  borderRadius: "4px",
+                  background: saleData.is_active ? "rgba(0, 163, 98, 0.2)" : "rgba(239, 68, 68, 0.15)",
+                  color: saleData.is_active ? "#00A362" : "#F87171",
+                  border: `1px solid ${saleData.is_active ? "rgba(0, 163, 98, 0.3)" : "rgba(239, 68, 68, 0.3)"}`,
+                }}
+              >
+                {saleData.is_active ? "Live on Store" : "Paused"}
               </span>
             </div>
 
+            {/* Live Storefront Preview Box */}
+            <div
+              style={{
+                margin: "16px 20px 0 20px",
+                padding: "16px",
+                borderRadius: "8px",
+                background: "linear-gradient(135deg, rgba(197, 160, 89, 0.2) 0%, rgba(10, 19, 15, 0.95) 100%)",
+                border: "1px solid rgba(197, 160, 89, 0.3)",
+              }}
+            >
+              <div style={{ fontSize: "9px", color: "#C5A059", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                STOREFRONT CHECKOUT VOUCHER PREVIEW
+              </div>
+              <div style={{ fontSize: "11px", color: "#00A362", fontWeight: 700, marginTop: "6px" }}>
+                {saleData.badge || "Flash Promotion"}
+              </div>
+              <div style={{ fontSize: "16px", fontWeight: 700, color: "#FFF", fontFamily: "'Cormorant Garamond', Georgia, serif", marginTop: "2px" }}>
+                {saleData.title || "Limited Edition Flash Sale"}
+              </div>
+              <div style={{ fontSize: "11px", color: "#8EAA9C", marginTop: "4px" }}>
+                {saleData.subtitle}
+              </div>
+              <div style={{ marginTop: "10px", display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ fontSize: "11px", color: "#64748B" }}>COUPON CODE:</span>
+                <span style={{ fontSize: "12px", fontWeight: 800, color: "#C5A059", fontFamily: "monospace", padding: "2px 8px", background: "rgba(0,0,0,0.4)", borderRadius: "4px", border: "1px dashed #C5A059" }}>
+                  {saleData.coupon_code || "KRONO2026"}
+                </span>
+                <span style={{ fontSize: "11px", color: "#00A362", fontWeight: 600 }}>
+                  ({saleData.discount_text || "Special Privilege"})
+                </span>
+              </div>
+            </div>
+
             <form onSubmit={handleSaveSale} style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "14px" }}>
-              <Field label="Badge Text" value={saleData.badge || ""} onChange={(v) => setSaleData({ ...saleData, badge: v })} />
-              <Field label="Headline" value={saleData.title || ""} onChange={(v) => setSaleData({ ...saleData, title: v })} />
-              <Field label="Subtitle" value={saleData.subtitle || ""} onChange={(v) => setSaleData({ ...saleData, subtitle: v })} rows={2} />
+              <Field
+                label="Promotion Eyebrow Badge"
+                value={saleData.badge || ""}
+                onChange={(v) => setSaleData({ ...saleData, badge: v })}
+              />
+              <Field
+                label="Headline Title"
+                value={saleData.title || ""}
+                onChange={(v) => setSaleData({ ...saleData, title: v })}
+              />
+              <Field
+                label="Subtitle Description"
+                value={saleData.subtitle || ""}
+                onChange={(v) => setSaleData({ ...saleData, subtitle: v })}
+                rows={2}
+              />
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                <div>
-                  <label style={labelStyle}>Voucher Code</label>
-                  <input
-                    type="text"
-                    value={saleData.coupon_code || ""}
-                    onChange={(e) => setSaleData({ ...saleData, coupon_code: e.target.value })}
-                    style={{ ...inputStyle, fontFamily: "monospace", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em" }}
-                    onFocus={(e) => { (e.target as HTMLElement).style.borderColor = "#3B82F6"; }}
-                    onBlur={(e) => { (e.target as HTMLElement).style.borderColor = "#1E2530"; }}
-                  />
-                </div>
-                <Field label="Discount Tag" value={saleData.discount_text || ""} onChange={(v) => setSaleData({ ...saleData, discount_text: v })} />
+                <Field
+                  label="Checkout Coupon Code"
+                  value={saleData.coupon_code || ""}
+                  onChange={(v) => setSaleData({ ...saleData, coupon_code: v.toUpperCase() })}
+                />
+                <Field
+                  label="Discount Value Text"
+                  value={saleData.discount_text || ""}
+                  onChange={(v) => setSaleData({ ...saleData, discount_text: v })}
+                />
               </div>
 
-              <Field label="Promotion Period" value={saleData.promotion_period || ""} onChange={(v) => setSaleData({ ...saleData, promotion_period: v })} />
-              <Field label="Background Image URL" type="url" value={saleData.image_url || ""} onChange={(v) => setSaleData({ ...saleData, image_url: v })} />
+              <Field
+                label="Promotion Banner Image URL (Optional)"
+                value={saleData.image_url || ""}
+                onChange={(v) => setSaleData({ ...saleData, image_url: v })}
+              />
 
-              {/* Active toggle */}
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", background: "#141820", borderRadius: "6px", border: "1px solid #1E2530" }}>
-                <div>
-                  <div style={{ fontSize: "12px", fontWeight: 600, color: "#E2E8F0" }}>Active</div>
-                  <div style={{ fontSize: "11px", color: "#64748B", marginTop: "1px" }}>Show this campaign on storefront</div>
-                </div>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: "8px" }}>
+                <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
+                  <input
+                    type="checkbox"
+                    checked={saleData.is_active !== false}
+                    onChange={(e) => setSaleData({ ...saleData, is_active: e.target.checked })}
+                    style={{ width: "16px", height: "16px", accentColor: "#C5A059" }}
+                  />
+                  <span style={{ fontSize: "12px", color: "#F8FAFC", fontWeight: 600 }}>Active on Storefront</span>
+                </label>
+
                 <button
-                  type="button"
-                  onClick={() => setSaleData({ ...saleData, is_active: !saleData.is_active })}
+                  type="submit"
+                  disabled={savingSale}
                   style={{
-                    width: "36px", height: "20px", borderRadius: "10px", border: "none", cursor: "pointer",
-                    background: saleData.is_active ? "#3B82F6" : "#1E2530",
-                    position: "relative", transition: "background 200ms",
-                    flexShrink: 0,
+                    padding: "8px 20px",
+                    borderRadius: "6px",
+                    background: "linear-gradient(135deg, #006039 0%, #004D2E 100%)",
+                    border: "1px solid #00A362",
+                    color: "#FFF",
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    cursor: "pointer",
                   }}
                 >
-                  <span style={{
-                    position: "absolute", top: "2px", width: "16px", height: "16px",
-                    borderRadius: "50%", background: "white",
-                    left: saleData.is_active ? "18px" : "2px",
-                    transition: "left 200ms", display: "block",
-                  }} />
+                  {savingSale ? "Publishing..." : "Publish Campaign Changes ↗"}
                 </button>
               </div>
-
-              <button
-                type="submit"
-                disabled={savingSale}
-                style={{
-                  width: "100%", padding: "10px", borderRadius: "6px", border: "none",
-                  background: savingSale ? "#1D4ED8" : "#3B82F6",
-                  color: "white", fontSize: "12px", fontWeight: 700,
-                  cursor: savingSale ? "not-allowed" : "pointer",
-                  display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
-                  transition: "background 150ms", letterSpacing: "0.02em",
-                }}
-              >
-                {savingSale ? "Publishing..." : "Publish Campaign Changes"}
-              </button>
             </form>
           </div>
         </div>
       )}
-
-      <style jsx global>{`
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(8px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        textarea::placeholder, input::placeholder { color: #475569; }
-      `}</style>
     </div>
   );
 }

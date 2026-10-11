@@ -119,7 +119,7 @@ export default function QuickViewModal({
 
             <div className="grid grid-cols-2 gap-2 text-[11px] font-mono border-y border-[#1a1a1a] py-3">
               <div>
-                <span className="text-white/40 block">Calibre:</span>
+                <span className="text-white/40 block">Movement:</span>
                 <span className="text-white font-medium">{product.movement || "Swiss Automatic"}</span>
               </div>
               <div>
@@ -152,7 +152,7 @@ export default function QuickViewModal({
                 }}
                 className="flex-1 py-2.5 bg-white hover:bg-[#C5A059] hover:text-black text-black font-semibold text-xs tracking-wider uppercase transition-colors"
               >
-                Acquire Piece
+                Add to Cart
               </button>
 
               {onToggleWishlist && (
@@ -173,7 +173,7 @@ export default function QuickViewModal({
                 onClick={onClose}
                 className="text-xs font-mono text-[#C5A059] hover:underline uppercase tracking-wider"
               >
-                View Full Dossier &amp; Specifications →
+                View Watch Details &amp; Specifications →
               </Link>
             </div>
           </div>

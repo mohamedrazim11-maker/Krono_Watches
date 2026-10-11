@@ -32,12 +32,12 @@ export default function Footer() {
               </div>
             </Link>
             <p style={{ fontSize: "12px", lineHeight: 1.7, color: "#555", maxWidth: "300px", marginBottom: "20px" }}>
-              Precision Swiss mechanical horology. Superlative chronometer escapements, serialized exhibition casebacks, and diamond-grade sapphire crystals.
+              Certified luxury Swiss and international watches. Precision chronometers, authentic movements, and scratch-resistant sapphire crystals.
             </p>
 
             {/* Newsletter */}
             {subscribed ? (
-              <div style={{ fontSize: "12px", color: "#C5A059" }}>✓ Enrolled in the Krono Private Registry.</div>
+              <div style={{ fontSize: "12px", color: "#C5A059" }}>✓ Subscribed to the Krono newsletter.</div>
             ) : (
               <form onSubmit={handleSubscribe} style={{ display: "flex", gap: "0" }}>
                 <input
@@ -104,12 +104,6 @@ export default function Footer() {
                 <span style={{ fontSize: "11px", color: "#666" }}>{g}</span>
               </div>
             ))}
-            <Link href="/admin" style={{ ...S.link, color: "#C5A059", marginTop: "12px", fontSize: "11px" }}
-              onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.color = "#fff"}
-              onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.color = "#C5A059"}
-            >
-              Admin Console →
-            </Link>
           </div>
         </div>
 

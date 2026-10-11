@@ -48,7 +48,6 @@ export default function Navbar({
     { label: "Watches", href: "/" },
     { label: "Catalogue", href: "/catalog" },
     { label: "About", href: "/about" },
-    { label: "Admin", href: "/admin" },
   ];
 
   useEffect(() => {
@@ -153,7 +152,7 @@ export default function Navbar({
                 KRONO
               </div>
               <div className="text-[9px] text-[#888] tracking-[0.15em] -mt-0.5 font-mono">
-                HAUTE HORLOGERIE
+                LUXURY WATCHES
               </div>
             </div>
           </Link>
@@ -187,7 +186,7 @@ export default function Navbar({
               <div className="relative w-full">
                 <input
                   type="text"
-                  placeholder="Search calibre, reference..."
+                  placeholder="Search brand, model, watch..."
                   value={searchQuery}
                   onFocus={() => {
                     if (searchQuery.trim()) setIsDropdownOpen(true);
@@ -219,7 +218,7 @@ export default function Navbar({
               {isDropdownOpen && searchQuery.trim() && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-[#0D0D0D] border border-white/15 rounded-xl overflow-hidden shadow-2xl z-50">
                   <div className="p-3 bg-[#141414] border-b border-white/10 flex items-center justify-between text-[10px] font-mono text-white/60 uppercase tracking-wider">
-                    <span>Vault References</span>
+                    <span>Matching Watches</span>
                     <span className="text-[#C5A059] font-bold">
                       {searchResults.length} matches
                     </span>
@@ -327,6 +326,19 @@ export default function Navbar({
               )}
             </button>
 
+            {/* Standalone Checkout Link */}
+            <Link
+              href="/checkout"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#C5A059]/70 bg-[#C5A059]/10 text-[#C5A059] hover:bg-[#C5A059] hover:text-black text-[11px] font-bold uppercase tracking-wider transition-all"
+              aria-label="Go to checkout"
+              title="Checkout"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M5 12h14m-6-6 6 6-6 6" />
+              </svg>
+              <span className="hidden md:inline">Checkout</span>
+            </Link>
+
             {/* Auth Controls */}
             {isAuthenticated && user ? (
               <div className="flex items-center gap-2">
@@ -411,6 +423,19 @@ export default function Navbar({
                 </Link>
               ))}
 
+              <Link
+                href="/checkout"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`px-3 py-2 rounded-lg text-xs font-bold tracking-wider uppercase flex items-center justify-between ${
+                  pathname === "/checkout"
+                    ? "bg-[#C5A059] text-black"
+                    : "border border-[#C5A059]/50 text-[#C5A059] hover:bg-[#C5A059]/10"
+                }`}
+              >
+                <span>Checkout{effectiveCartCount > 0 ? ` (${effectiveCartCount})` : ""}</span>
+                <span>→</span>
+              </Link>
+
               <div className="pt-2 border-t border-white/10 space-y-1">
                 {isAuthenticated && user ? (
                   <>
@@ -419,7 +444,7 @@ export default function Navbar({
                       onClick={() => setMobileMenuOpen(false)}
                       className="px-3 py-2 rounded-lg text-xs font-bold text-[#C5A059] hover:bg-white/5 flex items-center justify-between"
                     >
-                      <span>My Vault Profile ({user.name})</span>
+                      <span>My Profile ({user.name})</span>
                       <span>→</span>
                     </Link>
                     <button

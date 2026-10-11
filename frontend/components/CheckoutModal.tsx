@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createOrder, Product } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
+import { useCart } from "@/lib/CartContext";
+import PayHereForm from "@/components/PayHereForm";
 
 export interface CartItem {
   product: Product;
@@ -27,12 +29,15 @@ export default function CheckoutModal({
   cart,
   onOrderSuccess,
   onClearCart,
-  appliedCoupon = "MONO20",
-  couponDiscountPercent = 20,
+  appliedCoupon = "",
+  couponDiscountPercent = 0,
 }: CheckoutModalProps) {
   const { user, isAuthenticated } = useAuth();
+  const { isCartReady } = useCart();
   const router = useRouter();
 
+  const [paymentMethod, setPaymentMethod] = useState<"payhere" | "direct">("payhere");
+  const [modalStep, setModalStep] = useState<"form" | "payhere">("form");
   const [submitting, setSubmitting] = useState(false);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [confirmedOrderNumber, setConfirmedOrderNumber] = useState("");
@@ -66,6 +71,14 @@ export default function CheckoutModal({
 
   if (!isOpen) return null;
 
+  if (!isCartReady) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 text-xs font-mono text-[#C5A059]">
+        Restoring your cart...
+      </div>
+    );
+  }
+
   // Strict Authentication Gate: User MUST be logged in to checkout
   if (!isAuthenticated) {
     return (
@@ -77,13 +90,13 @@ export default function CheckoutModal({
           </div>
           <div className="space-y-2">
             <span className="text-[10px] font-mono text-[#C5A059] uppercase tracking-widest block font-bold">
-              Identity Verification Required
+              Account Sign In Required
             </span>
             <h2 className="text-xl font-serif font-bold text-white uppercase">
-              Client Authentication Gate
+              Please Sign In to Checkout
             </h2>
             <p className="text-xs text-white/60 font-mono leading-relaxed">
-              To secure your timepiece allocation, generate your certified Swiss warranty, and activate armored courier transit, you must sign in to your Krono account.
+              To complete your order, register your manufacturer warranty, and schedule delivery, please sign in to your Krono account.
             </p>
           </div>
 
@@ -95,7 +108,7 @@ export default function CheckoutModal({
               }}
               className="w-full py-3.5 bg-[#C5A059] hover:bg-[#b08d48] text-black font-bold text-xs uppercase tracking-widest transition-all shadow-lg hover:shadow-[#C5A059]/20 rounded-lg"
             >
-              Sign In to Complete Acquisition →
+              Sign In to Complete Order →
             </button>
             <button
               onClick={() => {
@@ -104,13 +117,13 @@ export default function CheckoutModal({
               }}
               className="w-full py-3 border border-white/20 hover:border-white text-white text-xs uppercase tracking-wider transition-all rounded-lg"
             >
-              Register New Client Account
+              Create an Account
             </button>
             <button
               onClick={onClose}
               className="text-xs text-white/40 hover:text-white pt-2 block mx-auto transition-colors"
             >
-              ← Return to Portfolio
+              ← Return to Cart
             </button>
           </div>
         </div>
@@ -145,10 +158,17 @@ export default function CheckoutModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
+    if (cart.length === 0) {
+      setErrorMessage("Your cart is empty.");
+      return;
+    }
     setSubmitting(true);
 
     try {
+      const generatedOrderId = `KRN-${Math.floor(100000 + Math.random() * 900000)}`;
       const payload = {
+        id: generatedOrderId,
+        order_number: generatedOrderId,
         customer_name: formData.name,
         customer_email: formData.email,
         customer_phone: formData.phone,
@@ -159,6 +179,8 @@ export default function CheckoutModal({
         coupon_code: appliedCoupon || undefined,
         discount_amount: discountAmount,
         total_amount: grandTotal,
+        payment_method: paymentMethod,
+        payment_status: paymentMethod === "payhere" ? "pending" : "completed",
         items: cart.map((item) => ({
           product_id: item.product.id,
           product_name: item.product.name,
@@ -169,18 +191,20 @@ export default function CheckoutModal({
       };
 
       const res = await createOrder(payload);
-      const orderRef = res?.order_number || res?.order?.order_number || `KRN-${Math.floor(100000 + Math.random() * 900000)}`;
+      const orderRef = res?.order_number || res?.id || generatedOrderId;
       setConfirmedOrderNumber(orderRef);
-      setOrderConfirmed(true);
-      if (onOrderSuccess) onOrderSuccess();
-      if (onClearCart) onClearCart();
-    } catch (err: any) {
-      console.error("Order error:", err);
-      const fallbackRef = `KRN-${Math.floor(100000 + Math.random() * 900000)}`;
-      setConfirmedOrderNumber(fallbackRef);
-      setOrderConfirmed(true);
-      if (onOrderSuccess) onOrderSuccess();
-      if (onClearCart) onClearCart();
+
+      if (paymentMethod === "payhere") {
+        setModalStep("payhere");
+      } else {
+        setOrderConfirmed(true);
+        if (onOrderSuccess) onOrderSuccess();
+        if (onClearCart) onClearCart();
+      }
+    } catch (err: unknown) {
+      setErrorMessage(
+        err instanceof Error ? err.message : "Unable to place your order. Please try again."
+      );
     } finally {
       setSubmitting(false);
     }
@@ -198,11 +222,11 @@ export default function CheckoutModal({
         <div className="p-5 border-b border-[#1a1a1a] flex items-center justify-between">
           <div>
             <h2 className="text-sm font-bold uppercase tracking-widest text-white flex items-center gap-2">
-              <span>Insured Vault Acquisition</span>
+              <span>Secure Checkout</span>
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             </h2>
             <div className="text-[10px] text-white/50 uppercase tracking-wider font-mono">
-              Direct Calibration &amp; Armored Transit Dispatch
+              Fast Dispatch &amp; Insured Express Delivery
             </div>
           </div>
 
@@ -223,28 +247,28 @@ export default function CheckoutModal({
               </div>
               <div className="space-y-2">
                 <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 font-bold px-3 py-1 bg-emerald-950/60 border border-emerald-500/30">
-                  Acquisition Authenticated
+                  Order Confirmed
                 </span>
                 <h3 className="text-xl font-serif font-bold text-white uppercase">
-                  Order Successfully Registered
+                  Order Successfully Placed
                 </h3>
                 <p className="text-xs text-white/60 max-w-md mx-auto leading-relaxed font-mono">
-                  Your reference has been secured under dossier reference{" "}
-                  <strong className="text-[#C5A059]">{confirmedOrderNumber}</strong>. Serialized certificate of authenticity and armored dispatch tracking have been issued.
+                  Your watch order has been secured under reference ID{" "}
+                  <strong className="text-[#C5A059]">{confirmedOrderNumber}</strong>. Certified manufacturer warranty and delivery tracking have been registered.
                 </p>
               </div>
 
               <div className="bg-[#111] border border-[#222] p-4 max-w-md mx-auto text-left space-y-2 text-xs font-mono">
                 <div className="flex justify-between text-white/60">
-                  <span>Dossier Reference</span>
+                  <span>Order Reference</span>
                   <span className="text-white font-bold">{confirmedOrderNumber}</span>
                 </div>
                 <div className="flex justify-between text-white/60">
-                  <span>Client Name</span>
-                  <span className="text-white font-bold">{formData.name || "Valued Collector"}</span>
+                  <span>Customer Name</span>
+                  <span className="text-white font-bold">{formData.name || "Customer"}</span>
                 </div>
                 <div className="flex justify-between text-white/60">
-                  <span>Investment Total</span>
+                  <span>Total Paid</span>
                   <span className="text-[#C5A059] font-bold">{formatCurrency(grandTotal)}</span>
                 </div>
               </div>
@@ -256,7 +280,7 @@ export default function CheckoutModal({
                 Complete Transaction
               </button>
             </div>
-          ) : (
+          ) : modalStep === "form" ? (
             <form onSubmit={handleSubmit} className="space-y-4">
               {errorMessage && (
                 <div className="p-3 bg-red-950/50 border border-red-500/50 text-red-300 text-xs font-mono">
@@ -390,6 +414,49 @@ export default function CheckoutModal({
                 </div>
               </div>
 
+              {/* Payment Architecture Choice */}
+              <div className="space-y-2 pt-2 border-t border-[#222]">
+                <label className="block text-[10px] uppercase font-mono tracking-wider text-[#C5A059] font-bold">
+                  Select Settlement Gateway
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <div
+                    onClick={() => setPaymentMethod("payhere")}
+                    className={`p-3 rounded-lg border cursor-pointer text-xs font-mono transition-all ${
+                      paymentMethod === "payhere"
+                        ? "bg-[#C5A059]/15 border-[#C5A059] text-white"
+                        : "bg-[#111] border-[#2a2a2a] text-white/60 hover:text-white"
+                    }`}
+                  >
+                    <div className="font-bold flex items-center justify-between mb-1">
+                      <span>💳 PayHere Gateway</span>
+                      <span className="text-[9px] px-1 py-0.2 bg-emerald-500/20 text-emerald-400 rounded">
+                        Active
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-white/50 leading-tight">
+                      LKR Cards, Genie, eZ Cash &amp; MD5 Hash
+                    </p>
+                  </div>
+
+                  <div
+                    onClick={() => setPaymentMethod("direct")}
+                    className={`p-3 rounded-lg border cursor-pointer text-xs font-mono transition-all ${
+                      paymentMethod === "direct"
+                        ? "bg-[#C5A059]/15 border-[#C5A059] text-white"
+                        : "bg-[#111] border-[#2a2a2a] text-white/60 hover:text-white"
+                    }`}
+                  >
+                    <div className="font-bold mb-1">
+                      <span>🏛️ Instant Vault Order</span>
+                    </div>
+                    <p className="text-[10px] text-white/50 leading-tight">
+                      Direct courier verification &amp; certified docket
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               {/* Order total strip */}
               <div className="bg-[#111] border border-[#222] p-4 space-y-2 text-xs font-mono">
                 <div className="flex justify-between text-white/60">
@@ -398,16 +465,16 @@ export default function CheckoutModal({
                 </div>
                 {discountAmount > 0 && (
                   <div className="flex justify-between text-emerald-400">
-                    <span>Privilege Voucher:</span>
+                    <span>Discount Voucher:</span>
                     <span>- {formatCurrency(discountAmount)}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-white/60">
-                  <span>Armored Courier Transit:</span>
-                  <span className="text-emerald-400 uppercase">Complimentary</span>
+                  <span>Insured Delivery:</span>
+                  <span className="text-emerald-400 uppercase">Free</span>
                 </div>
                 <div className="pt-2 border-t border-[#222] flex justify-between text-sm font-bold text-[#C5A059]">
-                  <span>Total Acquisition:</span>
+                  <span>Total Amount:</span>
                   <span>{formatCurrency(grandTotal)}</span>
                 </div>
               </div>
@@ -417,9 +484,47 @@ export default function CheckoutModal({
                 disabled={submitting || cart.length === 0}
                 className="w-full py-3.5 bg-[#C5A059] hover:bg-[#b08d48] text-black font-bold text-xs tracking-widest uppercase transition-all shadow-lg hover:shadow-[#C5A059]/20 disabled:opacity-50"
               >
-                {submitting ? "Authenticating Acquisition..." : `Confirm Acquisition • ${formatCurrency(grandTotal)}`}
+                {submitting
+                  ? "Processing Order..."
+                  : paymentMethod === "payhere"
+                  ? `Proceed to PayHere Gateway • ${formatCurrency(grandTotal)}`
+                  : `Confirm Order • ${formatCurrency(grandTotal)}`}
               </button>
             </form>
+          ) : (
+            <div className="space-y-4">
+              {errorMessage && (
+                <div className="p-3 bg-red-950/50 border border-red-500/50 text-red-300 text-xs font-mono">
+                  {errorMessage}
+                </div>
+              )}
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setModalStep("form")}
+                  className="text-xs font-mono text-[#C5A059] hover:underline"
+                >
+                  ← Edit Client &amp; Delivery Details
+                </button>
+                <span className="text-[10px] font-mono text-white/40">Step 2 of 2</span>
+              </div>
+
+              <PayHereForm
+                orderId={confirmedOrderNumber}
+                amount={grandTotal}
+                currency="LKR"
+                itemsDescription={cart.map((i) => `${i.product.name} (x${i.quantity})`).join(", ")}
+                customer={{
+                  fullName: formData.name,
+                  email: formData.email,
+                  phone: formData.phone,
+                  address: formData.address,
+                  city: formData.city,
+                  country: formData.country,
+                }}
+                isSubmitting={submitting}
+              />
+            </div>
           )}
         </div>
       </div>

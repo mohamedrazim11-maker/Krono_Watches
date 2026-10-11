@@ -21,7 +21,7 @@ export default function ProductCard({
   onQuickView,
 }: ProductCardProps) {
   const [hovered, setHovered] = useState(false);
-  const [imgLoaded, setImgLoaded] = useState(false);
+  const [added, setAdded] = useState(false);
 
   const fmt = (n: number) => `LKR ${Number(n || 0).toLocaleString("en-US")}`;
   const hasDiscount = product.old_price && product.old_price > product.price;
@@ -31,6 +31,15 @@ export default function ProductCard({
 
   const imgSrc = getProductImage(product.id, product.image_url);
 
+  const handleAddToCartClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (product.in_stock === false) return;
+    onAddToCart(product);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1800);
+  };
+
   return (
     <div
       onMouseEnter={() => setHovered(true)}
@@ -38,11 +47,11 @@ export default function ProductCard({
       style={{
         position: "relative",
         background: "#0a0a0a",
-        border: `1px solid ${hovered ? "#2a2a2a" : "#1a1a1a"}`,
+        border: `1px solid ${hovered ? "#333" : "#1a1a1a"}`,
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
-        transition: "border-color 200ms",
+        transition: "border-color 200ms, transform 200ms",
         cursor: "default",
       }}
     >
@@ -69,10 +78,14 @@ export default function ProductCard({
 
       {/* Wishlist button */}
       <button
-        onClick={() => onToggleWishlist(product)}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onToggleWishlist(product);
+        }}
         style={{
           position: "absolute", top: "10px", right: "10px", zIndex: 3,
-          background: isWishlisted ? "rgba(197,160,89,0.15)" : "rgba(0,0,0,0.6)",
+          background: isWishlisted ? "rgba(197,160,89,0.2)" : "rgba(0,0,0,0.6)",
           border: `1px solid ${isWishlisted ? "#C5A059" : "#333"}`,
           color: isWishlisted ? "#C5A059" : "#888",
           width: "30px", height: "30px", display: "flex", alignItems: "center", justifyContent: "center",
@@ -87,31 +100,21 @@ export default function ProductCard({
 
       {/* Image */}
       <Link href={`/products/${product.id}`} style={{ display: "block", position: "relative", aspectRatio: "1/1", overflow: "hidden", background: "#111", textDecoration: "none" }}>
-        {/* Shimmer */}
-        {!imgLoaded && (
-          <div style={{
-            position: "absolute", inset: 0,
-            background: "linear-gradient(90deg, #111 0%, #1a1a1a 50%, #111 100%)",
-            backgroundSize: "200% 100%",
-            animation: "shimmer 1.5s infinite",
-          }} />
-        )}
         <img
           src={imgSrc}
           alt={product.name}
-          onLoad={() => setImgLoaded(true)}
           loading="eager"
+          decoding="async"
           style={{
             width: "100%", height: "100%", objectFit: "cover",
             display: "block",
-            transform: hovered ? "scale(1.06)" : "scale(1)",
-            transition: "transform 600ms ease",
-            opacity: imgLoaded ? 1 : 0,
+            transform: hovered ? "scale(1.05)" : "scale(1)",
+            transition: "transform 400ms ease",
           }}
         />
         {/* Quick view overlay */}
         <div
-          onClick={(e) => { e.preventDefault(); onQuickView(product); }}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onQuickView(product); }}
           style={{
             position: "absolute", inset: 0, background: "rgba(0,0,0,0.4)",
             display: "flex", alignItems: "center", justifyContent: "center",
@@ -136,7 +139,7 @@ export default function ProductCard({
             {product.brand || product.category || "Swiss"}
           </span>
           {product.case_size && (
-            <span style={{ fontSize: "9px", color: "#555", fontFamily: "monospace" }}>{product.case_size}</span>
+            <span style={{ fontSize: "9px", color: "#666", fontFamily: "monospace" }}>{product.case_size}</span>
           )}
         </div>
 
@@ -155,12 +158,12 @@ export default function ProductCard({
         {/* Specs chips */}
         <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
           {product.water_resistance && (
-            <span style={{ fontSize: "9px", color: "#555", border: "1px solid #222", padding: "2px 6px", fontFamily: "monospace" }}>
+            <span style={{ fontSize: "9px", color: "#777", border: "1px solid #222", padding: "2px 6px", fontFamily: "monospace" }}>
               {product.water_resistance}
             </span>
           )}
           {product.movement && (
-            <span style={{ fontSize: "9px", color: "#555", border: "1px solid #222", padding: "2px 6px", fontFamily: "monospace", maxWidth: "120px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            <span style={{ fontSize: "9px", color: "#777", border: "1px solid #222", padding: "2px 6px", fontFamily: "monospace", maxWidth: "140px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {product.movement}
             </span>
           )}
@@ -172,13 +175,13 @@ export default function ProductCard({
         {/* Price + stock */}
         <div style={{ borderTop: "1px solid #1a1a1a", paddingTop: "12px", display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
           <div>
-            <div style={{ fontSize: "9px", color: "#555", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "2px" }}>Price</div>
+            <div style={{ fontSize: "9px", color: "#666", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "2px" }}>Price</div>
             <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
               <span style={{ fontSize: "14px", fontWeight: 800, color: "#C5A059", fontFamily: "monospace", letterSpacing: "-0.02em" }}>
                 {fmt(product.price)}
               </span>
               {hasDiscount && (
-                <span style={{ fontSize: "11px", color: "#444", textDecoration: "line-through", fontFamily: "monospace" }}>
+                <span style={{ fontSize: "11px", color: "#555", textDecoration: "line-through", fontFamily: "monospace" }}>
                   {fmt(product.old_price!)}
                 </span>
               )}
@@ -186,37 +189,30 @@ export default function ProductCard({
           </div>
           <span style={{
             fontSize: "9px", fontWeight: 700, letterSpacing: "0.1em",
-            color: product.in_stock === false ? "#555" : "#22C55E",
+            color: product.in_stock === false ? "#666" : "#22C55E",
             textTransform: "uppercase",
           }}>
             {product.in_stock === false ? "Sold Out" : "In Stock"}
           </span>
         </div>
 
-        {/* Add to Cart */}
+        {/* Add to Cart Button with Instant Feedback */}
         <button
-          onClick={() => onAddToCart(product)}
+          onClick={handleAddToCartClick}
           disabled={product.in_stock === false}
           style={{
             width: "100%", padding: "10px",
-            background: "transparent",
-            border: `1px solid ${product.in_stock === false ? "#333" : hovered ? "#C5A059" : "#444"}`,
-            color: product.in_stock === false ? "#444" : hovered ? "#C5A059" : "#ccc",
-            fontSize: "10px", fontWeight: 700, letterSpacing: "0.12em",
+            background: added ? "#C5A059" : "transparent",
+            border: `1px solid ${product.in_stock === false ? "#333" : added ? "#C5A059" : hovered ? "#C5A059" : "#444"}`,
+            color: product.in_stock === false ? "#444" : added ? "#000" : hovered ? "#C5A059" : "#ccc",
+            fontSize: "10px", fontWeight: 800, letterSpacing: "0.12em",
             textTransform: "uppercase", cursor: product.in_stock === false ? "not-allowed" : "pointer",
-            transition: "all 200ms", fontFamily: "inherit",
+            transition: "all 150ms", fontFamily: "inherit",
           }}
         >
-          {product.in_stock === false ? "Out of Stock" : "Add to Cart"}
+          {product.in_stock === false ? "Out of Stock" : added ? "✓ Added to Cart" : "Add to Cart"}
         </button>
       </div>
-
-      <style jsx global>{`
-        @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
-        }
-      `}</style>
     </div>
   );
 }

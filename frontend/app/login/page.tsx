@@ -67,13 +67,13 @@ function LoginForm() {
       {/* Header */}
       <div className="text-center mb-8">
         <span className="text-xs font-mono tracking-widest text-[#C5A059] uppercase">
-          Client Authentication
+          Account Login
         </span>
         <h1 className="text-2xl font-serif tracking-tight mt-2 text-white">
           Sign In to Krono
         </h1>
         <p className="text-xs text-white/50 mt-1">
-          Access your private vault, orders, and saved horology.
+          Access your account, orders, and saved watches.
         </p>
       </div>
 
@@ -99,7 +99,7 @@ function LoginForm() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="sterling@geneva-vault.ch"
+            placeholder="user@example.com"
             className="w-full px-4 py-2.5 bg-black/60 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors"
             required
           />

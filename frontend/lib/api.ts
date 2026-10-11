@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
 export interface Product {
   id: string;
@@ -22,6 +22,8 @@ export interface Product {
   water_resistance?: string;
   in_stock?: boolean;
   stock_count?: number;
+  stock_qty?: number;
+  is_active?: boolean;
   is_featured?: boolean;
   created_at?: string;
 }
@@ -58,6 +60,45 @@ export interface Category {
   is_active?: boolean;
 }
 
+export interface OrderItem {
+  product_id: string;
+  product_name: string;
+  unit_price: number;
+  quantity: number;
+  subtotal: number;
+  image_url?: string;
+}
+
+export interface Order {
+  id: string;
+  order_id?: string;
+  order_number: string;
+  user_id?: string | null;
+  customer_name: string;
+  customer_email: string;
+  customer_phone?: string;
+  delivery_address?: string;
+  shipping_address?: string;
+  city?: string;
+  postal_code?: string;
+  country?: string;
+  payment_method: string;
+  payment_status: "pending" | "completed" | "failed" | string;
+  payment_id?: string | null;
+  subtotal: number;
+  discount_amount?: number;
+  total_amount: number;
+  coupon_code?: string | null;
+  wrist_size?: string;
+  gift_packaging?: boolean;
+  special_instructions?: string;
+  items: OrderItem[];
+  status: "pending_payment" | "processing" | "authenticated" | "dispatched" | "delivered" | "cancelled" | string;
+  notes?: string;
+  created_at: string;
+  updated_at?: string;
+}
+
 export interface Stats {
   totalProducts: number;
   activePosters: number;
@@ -67,6 +108,11 @@ export interface Stats {
   featuredCount: number;
   promoCount: number;
   totalStockUnits: number;
+  totalOrders?: number;
+  totalRevenue?: number;
+  pendingOrders?: number;
+  lowStockCount?: number;
+  dbConnected?: boolean;
 }
 
 export const FALLBACK_PRODUCTS: Product[] = [
@@ -923,7 +969,7 @@ export async function updateProduct(id: string, productData: Partial<Product>): 
   return json.data;
 }
 
-export async function deleteProduct(id: string): Promise<boolean> {
+export async function deleteProduct(id: string): Promise<{ success: boolean; softDeleted?: boolean; hardDeleted?: boolean; message?: string }> {
   const res = await fetch(`${API_BASE_URL}/products/${id}`, {
     method: 'DELETE',
   });
@@ -931,7 +977,7 @@ export async function deleteProduct(id: string): Promise<boolean> {
   if (!res.ok || !json.success) {
     throw new Error(json.message || 'Failed to delete product');
   }
-  return true;
+  return json;
 }
 
 export async function fetchPosters(): Promise<Poster[]> {
@@ -971,6 +1017,43 @@ export async function createOrder(orderData: any): Promise<any> {
   const json = await res.json();
   if (!res.ok || !json.success) {
     throw new Error(json.message || 'Failed to place order');
+  }
+  return json.data || json.order || json;
+}
+
+export async function fetchOrderById(orderId: string): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/orders/${orderId}`);
+  const json = await res.json();
+  if (!res.ok || !json.success) {
+    throw new Error(json.message || 'Failed to fetch order');
+  }
+  return json.data;
+}
+
+export async function fetchOrders(): Promise<Order[]> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/orders`, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`Failed to fetch orders: ${res.statusText}`);
+    const json = await res.json();
+    return json.data || [];
+  } catch (error) {
+    console.error('API fetchOrders error:', error);
+    return [];
+  }
+}
+
+export async function updateOrderStatus(
+  orderId: string,
+  updates: { status?: string; payment_status?: string; notes?: string }
+): Promise<Order> {
+  const res = await fetch(`${API_BASE_URL}/orders/${orderId}/status`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updates),
+  });
+  const json = await res.json();
+  if (!res.ok || !json.success) {
+    throw new Error(json.message || 'Failed to update order status');
   }
   return json.data;
 }
@@ -1184,4 +1267,3 @@ export async function apiRevokeOtherSessions(): Promise<{ success: boolean; mess
   });
   return res.json();
 }
-

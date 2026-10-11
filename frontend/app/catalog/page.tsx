@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { fetchProducts, fetchCategories, Product, Category } from "@/lib/api";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -66,6 +67,7 @@ const COLLECTIONS = [
 ];
 
 export default function CatalogPage() {
+  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -242,10 +244,10 @@ export default function CatalogPage() {
               The Archive • Genève
             </span>
             <h1 className="text-3xl sm:text-5xl font-extrabold uppercase tracking-tight text-white font-sans">
-              Curated Timepieces Catalogue
+              Luxury Watch Catalogue
             </h1>
             <p className="text-xs sm:text-sm text-white/60 font-mono leading-relaxed">
-              Explore {products.length} registered horological creations. Each reference certified with complete provenance, serialized authenticity, and insured armored delivery worldwide.
+              Explore {products.length} authentic luxury watches. Each watch certified with manufacturer provenance, serialized warranty, and insured delivery worldwide.
             </p>
           </div>
 
@@ -367,7 +369,7 @@ export default function CatalogPage() {
           <aside className="hidden lg:block lg:col-span-3 bg-[#0A0A0A] border border-[#1a1a1a] p-5 space-y-6 sticky top-24">
             <div className="flex items-center justify-between border-b border-[#222] pb-3">
               <span className="text-xs font-mono uppercase font-bold text-white tracking-widest">
-                Dossier Filters
+                Filters
               </span>
               {activeFiltersCount > 0 && (
                 <button
@@ -382,7 +384,7 @@ export default function CatalogPage() {
             {/* Price Valuation Slider */}
             <div className="space-y-2">
               <div className="flex justify-between text-[11px] font-mono">
-                <span className="text-white/50 uppercase">Max Valuation:</span>
+                <span className="text-white/50 uppercase">Max Price:</span>
                 <span className="text-[#C5A059] font-bold">{formatCurrency(maxPriceRange)}</span>
               </div>
               <input
@@ -405,14 +407,14 @@ export default function CatalogPage() {
                   onChange={(e) => setOnlyInStock(e.target.checked)}
                   className="accent-[#C5A059] w-4 h-4 rounded-none"
                 />
-                <span>In Stock Vault Allocations Only</span>
+                <span>In Stock Only</span>
               </label>
             </div>
 
             {/* Calibre Movement */}
             <div className="pt-2 border-t border-[#1a1a1a] space-y-2">
               <span className="block text-[10px] font-mono uppercase tracking-wider text-[#C5A059] font-bold">
-                Movement Architecture
+                Watch Movement
               </span>
               <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
                 {MOVEMENTS.map((mov) => (
@@ -459,16 +461,16 @@ export default function CatalogPage() {
             {loading ? (
               <div className="py-24 text-center space-y-3 font-mono text-xs text-[#C5A059] animate-pulse">
                 <div>✦</div>
-                <div>Accessing Haute Horlogerie Archives...</div>
+                <div>Loading Watch Collection...</div>
               </div>
             ) : filteredProducts.length === 0 ? (
               <div className="bg-[#0D0D0D] border border-[#1a1a1a] p-12 text-center space-y-4">
                 <div className="text-3xl text-[#C5A059]">✦</div>
                 <h3 className="text-lg font-serif font-bold text-white uppercase">
-                  No References Located
+                  No Watches Found
                 </h3>
                 <p className="text-xs text-white/50 max-w-sm mx-auto font-mono">
-                  No registered timepieces meet your current filter configuration. Try broadening your valuation or selecting all manufactures.
+                  No watches meet your current filter criteria. Try adjusting your price range or selecting all brands.
                 </p>
                 <button
                   onClick={resetFilters}
@@ -534,7 +536,10 @@ export default function CatalogPage() {
                           </div>
                           <div className="flex items-center gap-2">
                             <button
-                              onClick={() => addToCart(p, 1)}
+                              onClick={() => {
+                                addToCart(p, 1);
+                                setIsCartOpen(true);
+                              }}
                               className="px-4 py-2 bg-white hover:bg-[#C5A059] hover:text-black text-black font-semibold text-xs tracking-wider uppercase transition-colors"
                             >
                               Acquire
@@ -624,7 +629,7 @@ export default function CatalogPage() {
                         <div className="pt-3 border-t border-[#1a1a1a] flex items-center justify-between">
                           <div>
                             <div className="text-[10px] font-mono text-white/40 uppercase">
-                              Valuation
+                              Price
                             </div>
                             <div className="text-sm font-mono font-bold text-[#C5A059]">
                               {formatCurrency(p.price)}
@@ -634,11 +639,11 @@ export default function CatalogPage() {
                           <button
                             onClick={() => {
                               addToCart(p, 1);
-                              showToast(`Added ${p.name} to portfolio.`);
+                              setIsCartOpen(true);
                             }}
                             className="px-3.5 py-1.5 bg-white hover:bg-[#C5A059] hover:text-black text-black text-xs font-semibold uppercase tracking-wider transition-colors"
                           >
-                            Acquire
+                            Add to Cart
                           </button>
                         </div>
                       </div>
@@ -659,7 +664,7 @@ export default function CatalogPage() {
           product={quickViewProduct}
           onAddToCart={(p, qty) => {
             addToCart(p, qty);
-            showToast(`Added ${p.name} to cart.`);
+            setIsCartOpen(true);
           }}
           onToggleWishlist={toggleWishlist}
           isInWishlist={isInWishlist(quickViewProduct.id)}
@@ -672,7 +677,7 @@ export default function CatalogPage() {
         onClose={() => setIsCartOpen(false)}
         onOpenCheckout={() => {
           setIsCartOpen(false);
-          setIsCheckoutOpen(true);
+          router.push("/checkout");
         }}
       />
       <WishlistDrawer

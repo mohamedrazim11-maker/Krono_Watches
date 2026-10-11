@@ -11,6 +11,7 @@ export interface CartItem {
 interface CartContextType {
   cart: CartItem[];
   wishlist: Product[];
+  isCartReady: boolean;
   totalItems: number;
   subtotal: number;
   grandTotal: number;
@@ -43,8 +44,8 @@ const COUPON_STORAGE_KEY = "krono_coupon";
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<Product[]>([]);
-  const [appliedCoupon, setAppliedCoupon] = useState<string>("MONO20");
-  const [couponDiscountPercent, setCouponDiscountPercent] = useState<number>(20);
+  const [appliedCoupon, setAppliedCoupon] = useState<string>("");
+  const [couponDiscountPercent, setCouponDiscountPercent] = useState<number>(0);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState<boolean>(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState<boolean>(false);
@@ -58,34 +59,55 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }, 3000);
   }, []);
 
-  // Step 3 - Load initial state from sessionStorage / localStorage
+  // Load saved state before enabling persistence so hydration cannot overwrite it.
   useEffect(() => {
     try {
-      // Prioritize sessionStorage, fallback to localStorage for resilience
-      const rawSessionCart = sessionStorage.getItem(CART_STORAGE_KEY);
-      const rawLocalCart = localStorage.getItem(CART_STORAGE_KEY);
-      const rawCart = rawSessionCart || rawLocalCart;
-
+      const rawCart =
+        sessionStorage.getItem(CART_STORAGE_KEY) ||
+        localStorage.getItem(CART_STORAGE_KEY);
       if (rawCart) {
-        const parsed = JSON.parse(rawCart);
+        const parsed: unknown = JSON.parse(rawCart);
         if (Array.isArray(parsed)) {
-          setCart(parsed);
+          const restoredCart = parsed.filter(
+            (item): item is CartItem =>
+              Boolean(
+                item &&
+                  typeof item === "object" &&
+                  item.product &&
+                  typeof item.product.id === "string" &&
+                  Number.isFinite(item.product.price) &&
+                  Number.isInteger(item.quantity) &&
+                  item.quantity > 0
+              )
+          );
+          setCart(restoredCart);
         }
       }
 
-      const rawWishlist = sessionStorage.getItem(WISHLIST_STORAGE_KEY) || localStorage.getItem(WISHLIST_STORAGE_KEY);
-      if (rawWishlist) {
-        const parsedWish = JSON.parse(rawWishlist);
-        if (Array.isArray(parsedWish)) {
-          setWishlist(parsedWish);
-        }
-      }
-
-      const rawCoupon = sessionStorage.getItem(COUPON_STORAGE_KEY) || localStorage.getItem(COUPON_STORAGE_KEY);
-      if (rawCoupon) {
+      const rawCoupon =
+        sessionStorage.getItem(COUPON_STORAGE_KEY) ||
+        localStorage.getItem(COUPON_STORAGE_KEY);
+      if (rawCoupon === "MONO20" || rawCoupon === "ROYAL20" || rawCoupon === "KRONO20") {
         setAppliedCoupon(rawCoupon);
-        if (rawCoupon === "MONO20" || rawCoupon === "ROYAL20") {
-          setCouponDiscountPercent(20);
+        setCouponDiscountPercent(20);
+      }
+
+      const rawWishlist =
+        sessionStorage.getItem(WISHLIST_STORAGE_KEY) ||
+        localStorage.getItem(WISHLIST_STORAGE_KEY);
+      if (rawWishlist) {
+        const parsedWish: unknown = JSON.parse(rawWishlist);
+        if (Array.isArray(parsedWish)) {
+          setWishlist(
+            parsedWish.filter(
+              (product): product is Product =>
+                Boolean(
+                  product &&
+                    typeof product === "object" &&
+                    typeof product.id === "string"
+                )
+            )
+          );
         }
       }
     } catch (e) {
@@ -125,22 +147,48 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // 4. Update Badge Counter dynamically
   const addToCart = useCallback(
     (product: Product, quantity = 1) => {
-      if (!product || !product.id) return;
+      if (
+        !product ||
+        !product.id ||
+        product.in_stock === false ||
+        (typeof product.stock_count === "number" && product.stock_count <= 0)
+      ) {
+        showToast("This item is currently out of stock.");
+        return;
+      }
 
-      const safeQuantity = Math.max(1, quantity);
+      const requestedQuantity = Number.isFinite(quantity)
+        ? Math.max(1, Math.floor(quantity))
+        : 1;
+      const existingQuantity =
+        cart.find((item) => item.product.id === product.id)?.quantity || 0;
+      const availableQuantity =
+        typeof product.stock_count === "number"
+          ? Math.max(0, product.stock_count - existingQuantity)
+          : requestedQuantity;
+      const safeQuantity = Math.min(requestedQuantity, availableQuantity);
+      if (safeQuantity === 0) {
+        showToast("The maximum available quantity is already in your cart.");
+        return;
+      }
 
       setCart((prevCart) => {
         const existingIndex = prevCart.findIndex((item) => item.product.id === product.id);
 
         if (existingIndex > -1) {
-          // If already in cart, increase quantity instead of adding duplicate row
           return prevCart.map((item, index) =>
             index === existingIndex
-              ? { ...item, quantity: item.quantity + safeQuantity }
+              ? {
+                  ...item,
+                  product,
+                  quantity:
+                    typeof product.stock_count === "number"
+                      ? Math.min(item.quantity + safeQuantity, product.stock_count)
+                      : item.quantity + safeQuantity,
+                }
               : item
           );
         } else {
-          // If no, add it to the cart array with the given quantity
           return [
             ...prevCart,
             {
@@ -153,7 +201,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
       showToast(`Added ${safeQuantity > 1 ? `${safeQuantity} × ` : ""}"${product.name}" to Cart`);
     },
-    [showToast]
+    [cart, showToast]
   );
 
   // Step 2 - "Remove Item" Feature using Array filter()
@@ -168,20 +216,31 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Step 2 - Quantity Up/Down Controls & Edge Case Rule (< 1 removes item)
   const updateQuantity = useCallback(
     (productId: string, delta: number) => {
+      if (!Number.isFinite(delta) || delta === 0) return;
       setCart((prevCart) =>
         prevCart
           .map((item) => {
             if (item.product.id === productId) {
-              const newQuantity = item.quantity + delta;
-              // Edge case: if quantity drops below 1, automatically remove
-              if (newQuantity <= 0) {
+              const newQuantity = item.quantity + Math.trunc(delta);
+              if (
+                newQuantity <= 0 ||
+                (typeof item.product.stock_count === "number" &&
+                  item.product.stock_count <= 0)
+              ) {
                 return null;
               }
-              return { ...item, quantity: newQuantity };
+              const maxQuantity =
+                typeof item.product.stock_count === "number"
+                  ? item.product.stock_count
+                  : Number.POSITIVE_INFINITY;
+              return {
+                ...item,
+                quantity: Math.min(newQuantity, maxQuantity),
+              };
             }
             return item;
           })
-          .filter(Boolean) as CartItem[]
+          .filter((item): item is CartItem => item !== null)
       );
     },
     []
@@ -189,8 +248,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const clearCart = useCallback(() => {
     setCart([]);
-    sessionStorage.removeItem(CART_STORAGE_KEY);
-    localStorage.removeItem(CART_STORAGE_KEY);
+    setAppliedCoupon("");
+    setCouponDiscountPercent(0);
+    try {
+      sessionStorage.removeItem(CART_STORAGE_KEY);
+      localStorage.removeItem(CART_STORAGE_KEY);
+      sessionStorage.removeItem(COUPON_STORAGE_KEY);
+      localStorage.removeItem(COUPON_STORAGE_KEY);
+    } catch (e) {
+      console.error("Failed to clear cart storage:", e);
+    }
   }, []);
 
   const toggleWishlist = useCallback(
@@ -223,8 +290,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (clean === "MONO20" || clean === "ROYAL20" || clean === "KRONO20") {
         setAppliedCoupon(clean);
         setCouponDiscountPercent(20);
-        sessionStorage.setItem(COUPON_STORAGE_KEY, clean);
-        localStorage.setItem(COUPON_STORAGE_KEY, clean);
+        try {
+          sessionStorage.setItem(COUPON_STORAGE_KEY, clean);
+          localStorage.setItem(COUPON_STORAGE_KEY, clean);
+        } catch (e) {
+          console.error("Failed to save coupon:", e);
+        }
         showToast(`Promo code applied: 20% discount`);
         return true;
       }
@@ -257,6 +328,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const value = {
     cart,
     wishlist,
+    isCartReady: hydrated,
     totalItems,
     subtotal,
     grandTotal,

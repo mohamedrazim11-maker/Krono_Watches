@@ -4,7 +4,7 @@ export const TRUST_PILLARS_DATA = [
   {
     icon: "01",
     title: "5-Year Certified Warranty",
-    desc: "Every mechanical calibre is serialized, COSC/Superlative tested, and backed by international concierge coverage.",
+    desc: "Every mechanical watch is serialized, chronometer tested, and backed by an international warranty.",
   },
   {
     icon: "02",
@@ -19,7 +19,7 @@ export const TRUST_PILLARS_DATA = [
   {
     icon: "04",
     title: "Private Concierge Care",
-    desc: "Complimentary custom bracelet sizing, private Geneva salon consultations, and 30-day return privileges.",
+    desc: "Free custom bracelet sizing, customer support consultations, and 30-day hassle-free returns.",
   },
 ];
 
@@ -28,13 +28,13 @@ export default function TrustPillars() {
     <section className="rounded-[2rem] neu-raised-lg p-6 sm:p-8 lg:p-10 transition-colors duration-300 relative overflow-hidden">
       <div className="text-center max-w-xl mx-auto space-y-2 mb-8 relative z-10">
         <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#006039] dark:text-[#4ADE80] font-bold neu-raised-sm px-3.5 py-1 rounded-full inline-block">
-          The Atelier Standard
+          The Krono Standard
         </span>
         <h2 className="text-2xl sm:text-3xl font-black font-display text-[#0F172A] dark:text-[#F8FAFC] tracking-tight uppercase">
           Guarantees of <span className="rolex-gradient-text">Excellence</span>
         </h2>
         <p className="text-xs text-[#5A6D64] dark:text-[#CBD5E1]">
-          Uncompromising pedigree backed by Swiss certified horological mastery
+          High quality watches backed by certified Swiss watchmaking standards
         </p>
       </div>
 

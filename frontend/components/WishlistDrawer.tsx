@@ -46,7 +46,7 @@ export default function WishlistDrawer({
       propMoveToCart(product);
     } else {
       addToCart(product, 1);
-      showToast(`Added ${product.name} to portfolio.`);
+      showToast(`Added ${product.name} to cart.`);
     }
   };
 
@@ -65,7 +65,7 @@ export default function WishlistDrawer({
           <div className="flex items-center gap-3">
             <span className="text-[#C5A059] text-lg">♥</span>
             <h2 className="text-sm font-bold uppercase tracking-widest text-white">
-              Curated Wishlist ({wishlist.length})
+              Your Wishlist ({wishlist.length})
             </h2>
           </div>
 
@@ -84,10 +84,10 @@ export default function WishlistDrawer({
               <div className="text-4xl text-[#C5A059]">♡</div>
               <div className="space-y-1">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-white">
-                  No Saved Timepieces
+                  No Saved Watches
                 </h3>
                 <p className="text-xs text-white/50 max-w-xs font-mono">
-                  Bookmark your desired Swiss calibres to build your personal horology registry.
+                  Save your favorite watches here to view or buy later.
                 </p>
               </div>
               <Link
@@ -95,7 +95,7 @@ export default function WishlistDrawer({
                 onClick={onClose}
                 className="px-6 py-2.5 bg-[#C5A059] text-black text-xs font-mono font-bold uppercase tracking-wider hover:bg-[#b08d48]"
               >
-                Browse Catalogue
+                Browse Watches
               </Link>
             </div>
           ) : (
@@ -131,7 +131,7 @@ export default function WishlistDrawer({
                       onClick={() => handleAcquire(product)}
                       className="px-3 py-1 bg-white hover:bg-[#C5A059] text-black text-[11px] font-mono font-bold uppercase"
                     >
-                      Acquire
+                      Add to Cart
                     </button>
                     <button
                       onClick={() => handleRemove(product)}

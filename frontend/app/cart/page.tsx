@@ -12,6 +12,7 @@ import { getProductImage } from "@/lib/productImages";
 export default function CartPage() {
   const {
     cart,
+    isCartReady,
     totalItems,
     subtotal,
     grandTotal,
@@ -43,10 +44,10 @@ export default function CartPage() {
     if (!couponInput.trim()) return;
     const success = applyCoupon(couponInput.trim());
     if (!success) {
-      setCouponError("Invalid privilege voucher code. Try MONO20 or ROYAL20");
+      setCouponError("Invalid coupon code. Try MONO20 or ROYAL20");
     } else {
       setCouponInput("");
-      showToast(`Privilege code applied! 20% discount granted.`);
+      showToast(`Coupon applied! 20% discount granted.`);
     }
   };
 
@@ -67,40 +68,44 @@ export default function CartPage() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#1a1a1a] pb-6">
           <div className="space-y-1">
             <div className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#C5A059] font-bold">
-              Haute Horlogerie Portfolio
+              Shopping Cart
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-tight text-white font-sans">
-              Vault Portfolio
+              Your Cart
             </h1>
           </div>
 
           {cart.length > 0 && (
             <div className="flex items-center gap-4">
               <span className="text-xs font-mono text-white/60">
-                {totalItems} {totalItems === 1 ? "Piece" : "Pieces"} Allocated
+                {totalItems} {totalItems === 1 ? "Item" : "Items"} in Cart
               </span>
               <button
                 onClick={clearCart}
                 className="text-xs text-red-400 hover:text-red-300 font-mono underline uppercase tracking-wider"
               >
-                Clear Portfolio
+                Clear Cart
               </button>
             </div>
           )}
         </div>
 
-        {cart.length === 0 ? (
+        {!isCartReady ? (
+          <div className="bg-[#0D0D0D] border border-[#1a1a1a] p-12 text-center text-xs font-mono text-white/50">
+            Restoring your cart…
+          </div>
+        ) : cart.length === 0 ? (
           /* Empty Cart State */
           <div className="bg-[#0D0D0D] border border-[#1a1a1a] p-12 sm:p-20 text-center space-y-6">
             <div className="w-16 h-16 mx-auto rounded-full bg-[#141414] border border-[#2a2a2a] flex items-center justify-center text-2xl text-[#C5A059]">
-              ⏳
+              🛒
             </div>
             <div className="space-y-2 max-w-md mx-auto">
               <h2 className="text-xl font-bold uppercase tracking-tight text-white">
-                Your Vault Portfolio is Empty
+                Your Cart is Empty
               </h2>
               <p className="text-xs text-white/50 font-mono leading-relaxed">
-                You have not allocated any certified mechanical timepieces to your active dossier yet. Explore the collection to reserve a reference.
+                You have not added any watches to your shopping cart yet. Explore our collection to find your watch.
               </p>
             </div>
             <div className="pt-2">
@@ -108,7 +113,7 @@ export default function CartPage() {
                 href="/catalog"
                 className="inline-block px-8 py-3.5 bg-[#C5A059] text-black text-xs font-mono font-bold tracking-widest uppercase hover:bg-[#b08d48] transition-colors"
               >
-                Explore Catalogue
+                Shop Watches
               </Link>
             </div>
           </div>
@@ -118,7 +123,7 @@ export default function CartPage() {
             {/* Items Table */}
             <div className="lg:col-span-8 bg-[#0D0D0D] border border-[#1a1a1a]">
               <div className="p-4 border-b border-[#1a1a1a] flex justify-between items-center text-xs font-mono uppercase text-white/50">
-                <span>Allocated Reference</span>
+                <span>Product</span>
                 <span>Subtotal</span>
               </div>
 
@@ -153,7 +158,7 @@ export default function CartPage() {
                             {item.product.name}
                           </Link>
                           <div className="text-xs font-mono text-white/50">
-                            Unit Valuation: {formatCurrency(item.product.price)}
+                            Unit Price: {formatCurrency(item.product.price)}
                           </div>
                           <div className="flex items-center gap-3 pt-1 text-[11px] font-mono">
                             <button
@@ -204,38 +209,38 @@ export default function CartPage() {
               </div>
             </div>
 
-            {/* Acquisition Summary Sidebar */}
+            {/* Order Summary Sidebar */}
             <div className="lg:col-span-4 space-y-6">
               <div className="bg-[#0D0D0D] border border-[#1a1a1a] p-6 space-y-5">
                 <h3 className="text-sm font-mono uppercase font-bold text-white tracking-widest border-b border-[#1a1a1a] pb-3">
-                  Acquisition Summary
+                  Order Summary
                 </h3>
 
                 <div className="space-y-2.5 text-xs font-mono">
                   <div className="flex justify-between text-white/60">
-                    <span>Portfolio Subtotal:</span>
+                    <span>Subtotal:</span>
                     <span>{formatCurrency(subtotal)}</span>
                   </div>
                   {discountAmount > 0 && (
                     <div className="flex justify-between text-emerald-400">
-                      <span>Privilege Discount ({appliedCoupon}):</span>
+                      <span>Discount ({appliedCoupon}):</span>
                       <span>- {formatCurrency(discountAmount)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-white/60">
-                    <span>Insured Armored Transit:</span>
-                    <span className="text-emerald-400 uppercase">Complimentary</span>
+                    <span>Insured Delivery:</span>
+                    <span className="text-emerald-400 uppercase">Free</span>
                   </div>
                   <div className="pt-3 border-t border-[#1a1a1a] flex justify-between text-base font-bold text-[#C5A059]">
-                    <span>Total Acquisition:</span>
+                    <span>Total:</span>
                     <span>{formatCurrency(grandTotal)}</span>
                   </div>
                 </div>
 
-                {/* Voucher Code Form */}
+                {/* Coupon Code Form */}
                 <form onSubmit={handleCouponSubmit} className="pt-2 border-t border-[#1a1a1a] space-y-2">
                   <span className="block text-[10px] font-mono uppercase text-white/50">
-                    Privilege Voucher Code
+                    Coupon Code
                   </span>
                   <div className="flex gap-2">
                     <input
@@ -257,13 +262,18 @@ export default function CartPage() {
                   )}
                 </form>
 
-                <div className="pt-2">
+                <div className="pt-2 space-y-2">
                   <Link
                     href="/checkout"
                     className="block w-full py-3.5 bg-[#C5A059] hover:bg-[#b08d48] text-black text-center font-bold text-xs font-mono tracking-widest uppercase transition-all shadow-lg hover:shadow-[#C5A059]/20"
                   >
-                    Proceed to Protected Checkout →
+                    Proceed to Checkout →
                   </Link>
+                  <div className="flex items-center justify-center gap-1.5 text-[10px] font-mono text-white/50 pt-1">
+                    <span>💳 PayHere Gateway</span>
+                    <span>•</span>
+                    <span>LKR Cards &amp; Wallets</span>
+                  </div>
                 </div>
               </div>
 
@@ -271,9 +281,9 @@ export default function CartPage() {
               <div className="bg-[#0D0D0D] border border-[#1a1a1a] p-4 text-[11px] font-mono text-white/50 space-y-1.5">
                 <div className="flex items-center gap-2 text-[#C5A059] font-bold">
                   <span>✦</span>
-                  <span className="uppercase tracking-wider">Krono Geneva Guarantee</span>
+                  <span className="uppercase tracking-wider">Krono Guarantee</span>
                 </div>
-                <p>Every piece includes serialized Swiss international warranty, tamper-evident security seal, and full transit insurance.</p>
+                <p>Every watch includes manufacturer international warranty, certified serial authenticity, and full transit insurance.</p>
               </div>
             </div>
           </div>

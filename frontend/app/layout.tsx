@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "KRONO • Haute Horlogerie Genève",
+  title: "KRONO • Luxury Watches & Chronometers",
   description:
-    "Curators and creators of extraordinary mechanical horology. Certified Swiss calibres, serialized authenticity, and insured worldwide delivery.",
+    "Discover certified luxury Swiss and international watches. Authenticated movements, secure checkout, and insured worldwide delivery.",
 };
 
 import { CartProvider } from "@/lib/CartContext";
@@ -20,6 +20,7 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       className="dark h-full antialiased"
+      data-scroll-behavior="smooth"
     >
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />

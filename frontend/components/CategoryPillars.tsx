@@ -13,7 +13,7 @@ export const CATEGORIES_DATA = [
   },
   {
     slug: "Dress Watches",
-    title: "Classic & Haute Horlogerie",
+    title: "Classic & Luxury Dress",
     badge: "Precious Metals",
     image: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80",
     description: "Solid 18k Everose, President bracelets, Zaratsu polish, and guilloché dials tailored for formal prestige.",
@@ -21,7 +21,7 @@ export const CATEGORIES_DATA = [
   {
     slug: "Chronograph",
     title: "Motorsport & Space Telemetry",
-    badge: "Column-Wheel Calibre",
+    badge: "Precision Movement",
     image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=900&q=80",
     description: "Tachymeter scales, sub-second chronograph registers, and flight-qualified NASA timing heritage.",
   },

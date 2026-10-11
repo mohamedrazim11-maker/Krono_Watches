@@ -81,13 +81,13 @@ export default function RegisterPage() {
           {/* Header */}
           <div className="text-center mb-8">
             <span className="text-xs font-mono tracking-widest text-[#C5A059] uppercase">
-              Member Privileges
+              New Customer
             </span>
             <h1 className="text-2xl font-serif tracking-tight mt-2 text-white">
               Create Your Account
             </h1>
             <p className="text-xs text-white/50 mt-1">
-              Join the exclusive world of Swiss haute horlogerie.
+              Create an account to track orders and save your favorite watches.
             </p>
           </div>
 
@@ -113,7 +113,7 @@ export default function RegisterPage() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Lord Alexander Sterling"
+                placeholder="John Doe"
                 className="w-full px-4 py-2.5 bg-black/60 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors"
                 required
               />
@@ -127,7 +127,7 @@ export default function RegisterPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="sterling@geneva-vault.ch"
+                placeholder="user@example.com"
                 className="w-full px-4 py-2.5 bg-black/60 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors"
                 required
               />
