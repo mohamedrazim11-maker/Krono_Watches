@@ -117,14 +117,18 @@ export default function QuickViewModal({
               {product.description}
             </p>
 
-            <div className="grid grid-cols-2 gap-2 text-[11px] font-mono border-y border-[#1a1a1a] py-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-2.5 bg-[#080808] border border-[#1F1F1F] text-[10px] font-mono">
               <div>
-                <span className="text-white/40 block">Movement:</span>
-                <span className="text-white font-medium">{product.movement || "Swiss Automatic"}</span>
+                <span className="text-white/40 uppercase block text-[8.5px]">Case</span>
+                <span className="text-white font-medium block truncate">{product.case_material || "Oystersteel"} · {product.case_size || "41mm"}</span>
               </div>
               <div>
-                <span className="text-white/40 block">Diameter:</span>
-                <span className="text-white font-medium">{product.case_size || "41mm"}</span>
+                <span className="text-white/40 uppercase block text-[8.5px]">Calibre</span>
+                <span className="text-white font-medium block truncate">{product.movement || "Swiss Automatic"}</span>
+              </div>
+              <div className="col-span-2 sm:col-span-1">
+                <span className="text-white/40 uppercase block text-[8.5px]">Waterproof</span>
+                <span className="text-white font-medium block truncate">{product.water_resistance || "100m"}</span>
               </div>
             </div>
 
