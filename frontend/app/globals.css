@@ -40,41 +40,41 @@
 }
 
 .dark {
-  /* Neumorphic Dark Theme Base Palette (Deep Obsidian Emerald) */
-  --background: #0E1A16;
+  /* Storefront Luxury Dark Theme Palette (Obsidian & Platinum) */
+  --background: #050505;
   --foreground: #F8FAFC;
-  --card: #12221D;
-  --card-elevated: #162923;
-  --card-border: rgba(255, 255, 255, 0.06);
+  --card: #0D0D0D;
+  --card-elevated: #141414;
+  --card-border: rgba(255, 255, 255, 0.08);
 
-  /* Neumorphic Dual Shadow Tokens (Dark Mode) */
-  --neu-flat-bg: #12221D;
-  --neu-shadow-dark: rgba(0, 0, 0, 0.75);
-  --neu-shadow-light: rgba(255, 255, 255, 0.045);
-  --neu-bevel: rgba(255, 255, 255, 0.08);
-  --neu-bevel-dark: rgba(0, 0, 0, 0.5);
+  /* Dual Shadow Tokens (Dark Mode) */
+  --neu-flat-bg: #0D0D0D;
+  --neu-shadow-dark: rgba(0, 0, 0, 0.9);
+  --neu-shadow-light: rgba(255, 255, 255, 0.03);
+  --neu-bevel: rgba(255, 255, 255, 0.06);
+  --neu-bevel-dark: rgba(0, 0, 0, 0.6);
 
-  --neu-shadow-raised: 8px 8px 20px var(--neu-shadow-dark), -6px -6px 18px var(--neu-shadow-light);
-  --neu-shadow-raised-sm: 4px 4px 10px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light);
-  --neu-shadow-raised-lg: 16px 16px 32px var(--neu-shadow-dark), -10px -10px 24px var(--neu-shadow-light);
-  --neu-shadow-inset: inset 4px 4px 8px var(--neu-shadow-dark), inset -3px -3px 7px var(--neu-shadow-light);
-  --neu-shadow-inset-deep: inset 6px 6px 12px var(--neu-shadow-dark), inset -4px -4px 10px var(--neu-shadow-light);
+  --neu-shadow-raised: 0 8px 24px rgba(0, 0, 0, 0.8);
+  --neu-shadow-raised-sm: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --neu-shadow-raised-lg: 0 16px 36px rgba(0, 0, 0, 0.9);
+  --neu-shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+  --neu-shadow-inset-deep: inset 0 4px 8px rgba(0, 0, 0, 0.8);
 
-  /* Brand Luxury Accents (Dark) */
-  --accent: #00A362;
-  --accent-light: rgba(0, 163, 98, 0.15);
-  --accent-dark: #004D2E;
-  --accent-muted: #8EAA9C;
-  --rolex-green: #00A362;
-  --rolex-green-dark: #006039;
-  --rolex-green-light: #0B241A;
-  --rolex-gold: #D4AF37;
-  --rolex-gold-dark: #B8860B;
-  --rolex-gold-light: #1E1B10;
-  --border-subtle: rgba(0, 96, 57, 0.25);
-  --border-strong: rgba(0, 163, 98, 0.35);
-  --gold-glow: rgba(212, 175, 55, 0.3);
-  --emerald: #00A362;
+  /* Modern Storefront Accents */
+  --accent: #FFFFFF;
+  --accent-light: rgba(255, 255, 255, 0.08);
+  --accent-dark: #1F1F1F;
+  --accent-muted: #A1A1AA;
+  --rolex-green: #22C55E;
+  --rolex-green-dark: #16A34A;
+  --rolex-green-light: rgba(34, 197, 94, 0.12);
+  --rolex-gold: #FFFFFF;
+  --rolex-gold-dark: #D4D4D8;
+  --rolex-gold-light: rgba(255, 255, 255, 0.06);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --gold-glow: rgba(255, 255, 255, 0.08);
+  --emerald: #10B981;
   --rose: #F43F5E;
   color-scheme: dark;
 }

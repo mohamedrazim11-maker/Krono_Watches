@@ -31,12 +31,12 @@ const PRESET_GALLERY_SETS = [
 
 const inputSt: React.CSSProperties = {
   width: "100%",
-  background: "var(--card-elevated, #162923)",
-  border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+  background: "#141414",
+  border: "1px solid #222222",
   borderRadius: "8px",
   padding: "9px 12px",
   fontSize: "12px",
-  color: "var(--foreground, #F8FAFC)",
+  color: "#F8FAFC",
   outline: "none",
   boxSizing: "border-box",
   fontFamily: "inherit",
@@ -47,18 +47,18 @@ const labelSt: React.CSSProperties = {
   display: "block",
   fontSize: "10px",
   fontWeight: 700,
-  color: "var(--accent-muted, #8EAA9C)",
+  color: "#71717A",
   textTransform: "uppercase",
   letterSpacing: "0.08em",
   marginBottom: "5px",
 };
 
 const sectionSt: React.CSSProperties = {
-  background: "var(--card, #12221D)",
-  border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+  background: "#0D0D0D",
+  border: "1px solid #1E1E1E",
   borderRadius: "14px",
   padding: "24px",
-  boxShadow: "var(--neu-shadow-raised-sm, 4px 4px 10px rgba(0,0,0,0.7))",
+  boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
 };
 
 function LabeledField({
@@ -182,21 +182,21 @@ export default function UploadProductPage() {
     }
   };
 
-  const focusStyle = { borderColor: "var(--rolex-gold, #C5A059)", boxShadow: "0 0 0 2px var(--gold-glow, rgba(197, 160, 89, 0.28))" };
+  const focusStyle = { borderColor: "#52525B", boxShadow: "0 0 0 2px rgba(255, 255, 255, 0.08)" };
 
   return (
     <div style={{ maxWidth: "960px", margin: "0 auto", fontFamily: "inherit" }}>
       {/* Header */}
       <div style={{ marginBottom: "24px", display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <div style={{ fontSize: "11px", fontWeight: 800, color: "var(--rolex-gold, #C5A059)", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "5px" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "#A1A1AA", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "5px" }}>
             Catalogue / Acquisition
           </div>
           <h1
             style={{
               fontSize: "28px",
               fontWeight: 800,
-              color: "var(--foreground, #F8FAFC)",
+              color: "#F8FAFC",
               margin: 0,
               fontFamily: "var(--font-serif, 'Cormorant Garamond', Georgia, serif)",
               letterSpacing: "0.02em",
@@ -204,8 +204,8 @@ export default function UploadProductPage() {
           >
             Register Certified Timepiece
           </h1>
-          <p style={{ fontSize: "12.5px", color: "var(--accent-muted, #8EAA9C)", marginTop: "4px" }}>
-            Add an authentic Swiss or international luxury horological model to the storefront inventory.
+          <p style={{ fontSize: "12.5px", color: "#71717A", marginTop: "4px" }}>
+            Add an authentic luxury horological model to the storefront inventory.
           </p>
         </div>
         <Link
@@ -216,9 +216,9 @@ export default function UploadProductPage() {
             gap: "6px",
             padding: "9px 16px",
             borderRadius: "8px",
-            background: "var(--card-elevated, #162923)",
-            border: "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))",
-            color: "var(--rolex-gold, #C5A059)",
+            background: "#141414",
+            border: "1px solid #27272A",
+            color: "#FFFFFF",
             fontSize: "12px",
             fontWeight: 700,
             textDecoration: "none",
@@ -237,10 +237,10 @@ export default function UploadProductPage() {
             marginBottom: "20px",
             fontSize: "12.5px",
             fontWeight: 600,
-            background: message.type === "success" ? "rgba(0, 163, 98, 0.15)" : "rgba(239, 68, 68, 0.12)",
-            border: `1px solid ${message.type === "success" ? "var(--accent, #00A362)" : "rgba(239, 68, 68, 0.4)"}`,
-            borderLeft: `4px solid ${message.type === "success" ? "var(--accent, #00A362)" : "#F87171"}`,
-            color: message.type === "success" ? "var(--accent, #00A362)" : "#F87171",
+            background: message.type === "success" ? "rgba(16, 185, 129, 0.15)" : "rgba(239, 68, 68, 0.12)",
+            border: `1px solid ${message.type === "success" ? "rgba(16, 185, 129, 0.3)" : "rgba(239, 68, 68, 0.4)"}`,
+            borderLeft: `4px solid ${message.type === "success" ? "#34D399" : "#F87171"}`,
+            color: message.type === "success" ? "#34D399" : "#F87171",
           }}
         >
           {message.type === "success" ? "✓" : "✕"} {message.text}
@@ -254,10 +254,10 @@ export default function UploadProductPage() {
             style={{
               fontSize: "11px",
               fontWeight: 800,
-              color: "var(--rolex-gold, #C5A059)",
+              color: "#FFFFFF",
               marginBottom: "16px",
               paddingBottom: "10px",
-              borderBottom: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+              borderBottom: "1px solid #1E1E1E",
               textTransform: "uppercase",
               letterSpacing: "0.08em",
             }}
@@ -277,7 +277,7 @@ export default function UploadProductPage() {
                   style={inputSt}
                   onFocus={(e) => Object.assign((e.target as HTMLElement).style, focusStyle)}
                   onBlur={(e) => {
-                    (e.target as HTMLElement).style.borderColor = "var(--border-subtle, rgba(0, 96, 57, 0.25))";
+                    (e.target as HTMLElement).style.borderColor = "#222222";
                     (e.target as HTMLElement).style.boxShadow = "none";
                   }}
                 />
@@ -292,7 +292,7 @@ export default function UploadProductPage() {
                 style={inputSt}
               >
                 {["Rolex", "Omega", "Patek Philippe", "Audemars Piguet", "Cartier", "Krono Swiss", "Tissot", "Breitling"].map((b) => (
-                  <option key={b} value={b} style={{ background: "var(--card-elevated, #162923)", color: "#FFF" }}>
+                  <option key={b} value={b} style={{ background: "#141414", color: "#FFF" }}>
                     {b}
                   </option>
                 ))}
@@ -307,7 +307,7 @@ export default function UploadProductPage() {
                 style={inputSt}
               >
                 {["Luxury", "Dive Watches", "Chronograph", "Automatic", "Sports Watches", "Dress Watches"].map((c) => (
-                  <option key={c} value={c} style={{ background: "var(--card-elevated, #162923)", color: "#FFF" }}>
+                  <option key={c} value={c} style={{ background: "#141414", color: "#FFF" }}>
                     {c}
                   </option>
                 ))}
@@ -316,9 +316,9 @@ export default function UploadProductPage() {
 
             <LabeledField label="Gender / Allocation">
               <select name="gender" value={formData.gender} onChange={handleChange} style={inputSt}>
-                <option value="Men" style={{ background: "var(--card-elevated, #162923)", color: "#FFF" }}>Men's Horology</option>
-                <option value="Women" style={{ background: "var(--card-elevated, #162923)", color: "#FFF" }}>Women's Horology</option>
-                <option value="Unisex" style={{ background: "var(--card-elevated, #162923)", color: "#FFF" }}>Unisex</option>
+                <option value="Men" style={{ background: "#141414", color: "#FFF" }}>Men's Horology</option>
+                <option value="Women" style={{ background: "#141414", color: "#FFF" }}>Women's Horology</option>
+                <option value="Unisex" style={{ background: "#141414", color: "#FFF" }}>Unisex</option>
               </select>
             </LabeledField>
 
@@ -341,10 +341,10 @@ export default function UploadProductPage() {
             style={{
               fontSize: "11px",
               fontWeight: 800,
-              color: "var(--rolex-gold, #C5A059)",
+              color: "#FFFFFF",
               marginBottom: "16px",
               paddingBottom: "10px",
-              borderBottom: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+              borderBottom: "1px solid #1E1E1E",
               textTransform: "uppercase",
               letterSpacing: "0.08em",
             }}
@@ -430,10 +430,10 @@ export default function UploadProductPage() {
             style={{
               fontSize: "11px",
               fontWeight: 800,
-              color: "var(--rolex-gold, #C5A059)",
+              color: "#FFFFFF",
               marginBottom: "16px",
               paddingBottom: "10px",
-              borderBottom: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+              borderBottom: "1px solid #1E1E1E",
               textTransform: "uppercase",
               letterSpacing: "0.08em",
             }}
@@ -482,9 +482,9 @@ export default function UploadProductPage() {
                   name="is_featured"
                   checked={formData.is_featured}
                   onChange={handleChange}
-                  style={{ width: "18px", height: "18px", accentColor: "var(--rolex-gold, #C5A059)" }}
+                  style={{ width: "18px", height: "18px", accentColor: "#FFFFFF" }}
                 />
-                <span style={{ fontSize: "13px", fontWeight: 700, color: "var(--foreground, #F8FAFC)" }}>
+                <span style={{ fontSize: "13px", fontWeight: 700, color: "#F8FAFC" }}>
                   Feature prominently on Storefront Homepage ("Curated Masterpieces" Hero Carousel)
                 </span>
               </label>
@@ -498,10 +498,10 @@ export default function UploadProductPage() {
             style={{
               fontSize: "11px",
               fontWeight: 800,
-              color: "var(--rolex-gold, #C5A059)",
+              color: "#FFFFFF",
               marginBottom: "16px",
               paddingBottom: "10px",
-              borderBottom: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+              borderBottom: "1px solid #1E1E1E",
               textTransform: "uppercase",
               letterSpacing: "0.08em",
             }}
@@ -511,7 +511,7 @@ export default function UploadProductPage() {
 
           {/* Quick Presets */}
           <div style={{ marginBottom: "14px", display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-            <span style={{ fontSize: "11px", color: "var(--accent-muted, #8EAA9C)" }}>Use Horological Presets:</span>
+            <span style={{ fontSize: "11px", color: "#71717A" }}>Use Horological Presets:</span>
             {PRESET_GALLERY_SETS.map((preset) => (
               <button
                 key={preset.name}
@@ -520,9 +520,9 @@ export default function UploadProductPage() {
                 style={{
                   padding: "5px 12px",
                   borderRadius: "6px",
-                  background: "rgba(197, 160, 89, 0.15)",
-                  border: "1px solid var(--rolex-gold, #C5A059)",
-                  color: "var(--rolex-gold, #C5A059)",
+                  background: "#141414",
+                  border: "1px solid #222222",
+                  color: "#FFFFFF",
                   fontSize: "11px",
                   fontWeight: 700,
                   cursor: "pointer",
@@ -548,12 +548,13 @@ export default function UploadProductPage() {
               style={{
                 padding: "9px 18px",
                 borderRadius: "8px",
-                background: "linear-gradient(145deg, #007345 0%, #004D2E 100%)",
-                border: "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))",
-                color: "white",
+                background: "#FFFFFF",
+                border: "none",
+                color: "#050505",
                 fontSize: "12px",
-                fontWeight: 700,
+                fontWeight: 800,
                 cursor: "pointer",
+                boxShadow: "0 2px 10px rgba(255, 255, 255, 0.15)",
               }}
             >
               Add Photo
@@ -571,8 +572,8 @@ export default function UploadProductPage() {
                   height: "92px",
                   borderRadius: "10px",
                   overflow: "hidden",
-                  border: i === 0 ? "2px solid var(--rolex-gold, #C5A059)" : "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
-                  boxShadow: i === 0 ? "0 0 12px var(--gold-glow, rgba(197, 160, 89, 0.28))" : "none",
+                  border: i === 0 ? "2px solid #FFFFFF" : "1px solid #222222",
+                  boxShadow: i === 0 ? "0 0 12px rgba(255, 255, 255, 0.15)" : "none",
                 }}
               >
                 <img src={img} alt={`Preview ${i}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -585,7 +586,7 @@ export default function UploadProductPage() {
                       right: "2px",
                       textAlign: "center",
                       background: "rgba(0,0,0,0.85)",
-                      color: "var(--rolex-gold, #C5A059)",
+                      color: "#FFFFFF",
                       fontSize: "9px",
                       fontWeight: 800,
                       borderRadius: "3px",
@@ -628,9 +629,9 @@ export default function UploadProductPage() {
             style={{
               padding: "10px 22px",
               borderRadius: "8px",
-              background: "var(--card-elevated, #162923)",
-              border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
-              color: "var(--accent-muted, #8EAA9C)",
+              background: "#141414",
+              border: "1px solid #27272A",
+              color: "#A1A1AA",
               fontSize: "12.5px",
               fontWeight: 700,
               textDecoration: "none",
@@ -644,13 +645,13 @@ export default function UploadProductPage() {
             style={{
               padding: "11px 32px",
               borderRadius: "8px",
-              background: "linear-gradient(145deg, #F0CF8B 0%, #B88E33 100%)",
-              color: "#08110D",
+              background: "#FFFFFF",
+              color: "#050505",
               fontSize: "13px",
               fontWeight: 800,
               cursor: "pointer",
               border: "none",
-              boxShadow: "0 4px 18px rgba(197, 160, 89, 0.35)",
+              boxShadow: "0 2px 10px rgba(255, 255, 255, 0.15)",
             }}
           >
             {isSubmitting ? "Registering in Vault..." : "Publish Timepiece to Storefront ↗"}

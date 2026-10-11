@@ -7,44 +7,44 @@ import { getProductImage } from "@/lib/productImages";
 
 const S = {
   card: {
-    background: "var(--card, #12221D)",
-    border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+    background: "var(--card, #0D0D0D)",
+    border: "1px solid var(--border-subtle, #1E1E1E)",
     borderRadius: "14px",
     padding: "22px",
-    boxShadow: "var(--neu-shadow-raised-sm, 4px 4px 10px rgba(0,0,0,0.7))",
+    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
   } as React.CSSProperties,
   th: {
     padding: "13px 16px",
-    fontSize: "10.5px",
+    fontSize: "11px",
     fontWeight: 700,
-    color: "var(--accent-muted, #8EAA9C)",
+    color: "#71717A",
     textTransform: "uppercase" as const,
     letterSpacing: "0.08em",
-    borderBottom: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
-    background: "var(--card-elevated, #162923)",
+    borderBottom: "1px solid #1E1E1E",
+    background: "#121212",
     whiteSpace: "nowrap" as const,
   } as React.CSSProperties,
   td: {
     padding: "14px 16px",
     fontSize: "12px",
     color: "var(--foreground, #F8FAFC)",
-    borderBottom: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.15))",
+    borderBottom: "1px solid #171717",
     verticalAlign: "middle" as const,
   } as React.CSSProperties,
 };
 
 const STATUS_OPTIONS = [
-  { value: "Pending", label: "Pending", bg: "rgba(234, 179, 8, 0.15)", text: "#EAB308", border: "rgba(234, 179, 8, 0.3)" },
-  { value: "Paid", label: "Paid", bg: "rgba(0, 163, 98, 0.18)", text: "var(--accent, #00A362)", border: "var(--accent, #00A362)" },
-  { value: "Processing", label: "Processing", bg: "rgba(59, 130, 246, 0.15)", text: "#60A5FA", border: "rgba(59, 130, 246, 0.3)" },
-  { value: "Shipped", label: "Shipped", bg: "rgba(168, 85, 247, 0.15)", text: "#C084FC", border: "rgba(168, 85, 247, 0.3)" },
-  { value: "Completed", label: "Completed", bg: "rgba(0, 163, 98, 0.25)", text: "var(--accent, #00A362)", border: "#00A362" },
-  { value: "pending_payment", label: "Pending Payment", bg: "rgba(234, 179, 8, 0.15)", text: "#EAB308", border: "rgba(234, 179, 8, 0.3)" },
-  { value: "processing", label: "Processing & Verifying", bg: "rgba(59, 130, 246, 0.15)", text: "#60A5FA", border: "rgba(59, 130, 246, 0.3)" },
-  { value: "authenticated", label: "Horology Authenticated", bg: "rgba(197, 160, 89, 0.2)", text: "#C5A059", border: "#C5A059" },
-  { value: "dispatched", label: "Insured Courier Dispatched", bg: "rgba(168, 85, 247, 0.15)", text: "#C084FC", border: "rgba(168, 85, 247, 0.3)" },
-  { value: "delivered", label: "Delivered to Client", bg: "rgba(0, 163, 98, 0.2)", text: "#00A362", border: "#00A362" },
-  { value: "cancelled", label: "Cancelled / Void", bg: "rgba(239, 68, 68, 0.15)", text: "#F87171", border: "rgba(239, 68, 68, 0.3)" },
+  { value: "Pending", label: "Pending", bg: "rgba(245, 158, 11, 0.12)", text: "#FBBF24", border: "rgba(245, 158, 11, 0.25)" },
+  { value: "Paid", label: "Paid", bg: "rgba(16, 185, 129, 0.12)", text: "#34D399", border: "rgba(16, 185, 129, 0.25)" },
+  { value: "Processing", label: "Processing", bg: "rgba(96, 165, 250, 0.12)", text: "#60A5FA", border: "rgba(96, 165, 250, 0.25)" },
+  { value: "Shipped", label: "Shipped", bg: "rgba(168, 85, 247, 0.12)", text: "#C084FC", border: "rgba(168, 85, 247, 0.25)" },
+  { value: "Completed", label: "Completed", bg: "rgba(16, 185, 129, 0.15)", text: "#10B981", border: "rgba(16, 185, 129, 0.3)" },
+  { value: "pending_payment", label: "Pending Payment", bg: "rgba(245, 158, 11, 0.12)", text: "#FBBF24", border: "rgba(245, 158, 11, 0.25)" },
+  { value: "processing", label: "Processing & Verifying", bg: "rgba(96, 165, 250, 0.12)", text: "#60A5FA", border: "rgba(96, 165, 250, 0.25)" },
+  { value: "authenticated", label: "Horology Authenticated", bg: "rgba(255, 255, 255, 0.08)", text: "#E4E4E7", border: "rgba(255, 255, 255, 0.2)" },
+  { value: "dispatched", label: "Insured Courier Dispatched", bg: "rgba(168, 85, 247, 0.12)", text: "#C084FC", border: "rgba(168, 85, 247, 0.25)" },
+  { value: "delivered", label: "Delivered to Client", bg: "rgba(16, 185, 129, 0.15)", text: "#10B981", border: "rgba(16, 185, 129, 0.3)" },
+  { value: "cancelled", label: "Cancelled / Void", bg: "rgba(239, 68, 68, 0.12)", text: "#F87171", border: "rgba(239, 68, 68, 0.25)" },
 ];
 
 export default function AdminOrdersPage() {
@@ -145,14 +145,14 @@ export default function AdminOrdersPage() {
             bottom: "28px",
             right: "32px",
             zIndex: 9999,
-            background: "var(--card-elevated, #162923)",
-            border: "1px solid var(--accent, #00A362)",
-            borderLeft: "4px solid var(--accent, #00A362)",
+            background: "#141414",
+            border: "1px solid #27272A",
+            borderLeft: "4px solid #FFFFFF",
             borderRadius: "8px",
             padding: "14px 20px",
             fontSize: "12.5px",
             fontWeight: 600,
-            color: "var(--foreground, #F8FAFC)",
+            color: "#F8FAFC",
             boxShadow: "0 10px 30px rgba(0,0,0,0.6)",
           }}
         >
@@ -163,22 +163,22 @@ export default function AdminOrdersPage() {
       {/* Header */}
       <div style={{ marginBottom: "28px", display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <div style={{ fontSize: "11px", fontWeight: 800, color: "var(--rolex-gold, #C5A059)", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "6px" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "#A1A1AA", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "6px" }}>
             Storefront Allocations & Sales
           </div>
           <h1
             style={{
               fontSize: "28px",
               fontWeight: 800,
-              color: "var(--foreground, #F8FAFC)",
+              color: "#F8FAFC",
               margin: 0,
               fontFamily: "var(--font-serif, 'Cormorant Garamond', Georgia, serif)",
               letterSpacing: "0.02em",
             }}
           >
-            VIP Watch Client Orders
+            Client Orders & Fulfilment
           </h1>
-          <p style={{ fontSize: "12.5px", color: "var(--accent-muted, #8EAA9C)", marginTop: "4px" }}>
+          <p style={{ fontSize: "12.5px", color: "#71717A", marginTop: "4px" }}>
             Manage client checkouts, authenticated deliveries, wrist sizing requests, and PayHere transactions.
           </p>
         </div>
@@ -192,9 +192,9 @@ export default function AdminOrdersPage() {
               gap: "6px",
               padding: "9px 18px",
               borderRadius: "8px",
-              background: "var(--card-elevated, #162923)",
-              border: "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))",
-              color: "var(--accent, #00A362)",
+              background: "#141414",
+              border: "1px solid #27272A",
+              color: "#FFFFFF",
               fontSize: "12px",
               fontWeight: 700,
               cursor: "pointer",
@@ -214,12 +214,12 @@ export default function AdminOrdersPage() {
               gap: "6px",
               padding: "9px 18px",
               borderRadius: "8px",
-              background: "linear-gradient(145deg, #F0CF8B 0%, #B88E33 100%)",
-              color: "#08110D",
+              background: "#FFFFFF",
+              color: "#050505",
               fontSize: "12px",
               fontWeight: 800,
               textDecoration: "none",
-              boxShadow: "0 2px 10px rgba(197, 160, 89, 0.3)",
+              boxShadow: "0 2px 10px rgba(255, 255, 255, 0.15)",
             }}
           >
             <span>Simulate Store Checkout ↗</span>
@@ -230,49 +230,49 @@ export default function AdminOrdersPage() {
       {/* KPI Cards */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px", marginBottom: "28px" }}>
         <div style={S.card}>
-          <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--accent-muted, #8EAA9C)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "#71717A", textTransform: "uppercase", letterSpacing: "0.08em" }}>
             Total Orders
           </div>
-          <div style={{ fontSize: "28px", fontWeight: 800, color: "var(--foreground, #F8FAFC)", marginTop: "6px", fontFamily: "var(--font-mono, monospace)" }}>
+          <div style={{ fontSize: "28px", fontWeight: 800, color: "#F8FAFC", marginTop: "6px", fontFamily: "var(--font-mono, monospace)" }}>
             {orders.length}
           </div>
-          <div style={{ fontSize: "11.5px", color: "var(--rolex-gold, #C5A059)", marginTop: "4px" }}>
+          <div style={{ fontSize: "11.5px", color: "#A1A1AA", marginTop: "4px" }}>
             Storefront client checkouts
           </div>
         </div>
 
         <div style={S.card}>
-          <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--accent-muted, #8EAA9C)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "#71717A", textTransform: "uppercase", letterSpacing: "0.08em" }}>
             Gross Order Value
           </div>
-          <div style={{ fontSize: "26px", fontWeight: 800, color: "var(--rolex-gold, #C5A059)", marginTop: "6px", fontFamily: "var(--font-mono, monospace)" }}>
+          <div style={{ fontSize: "26px", fontWeight: 800, color: "#FFFFFF", marginTop: "6px", fontFamily: "var(--font-mono, monospace)" }}>
             {fmt(totalRevenue)}
           </div>
-          <div style={{ fontSize: "11.5px", color: "var(--accent-muted, #8EAA9C)", marginTop: "4px" }}>
+          <div style={{ fontSize: "11.5px", color: "#A1A1AA", marginTop: "4px" }}>
             Cumulated sales across all timepieces
           </div>
         </div>
 
         <div style={S.card}>
-          <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--accent-muted, #8EAA9C)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "#71717A", textTransform: "uppercase", letterSpacing: "0.08em" }}>
             Pending Action
           </div>
-          <div style={{ fontSize: "28px", fontWeight: 800, color: "#EAB308", marginTop: "6px", fontFamily: "var(--font-mono, monospace)" }}>
+          <div style={{ fontSize: "28px", fontWeight: 800, color: "#FBBF24", marginTop: "6px", fontFamily: "var(--font-mono, monospace)" }}>
             {pendingOrdersCount}
           </div>
-          <div style={{ fontSize: "11.5px", color: "#EAB308", marginTop: "4px" }}>
+          <div style={{ fontSize: "11.5px", color: "#FBBF24", marginTop: "4px" }}>
             Awaiting payment verification / courier
           </div>
         </div>
 
         <div style={S.card}>
-          <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--accent-muted, #8EAA9C)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "#71717A", textTransform: "uppercase", letterSpacing: "0.08em" }}>
             Delivery Mode
           </div>
-          <div style={{ fontSize: "17px", fontWeight: 800, color: "var(--accent, #00A362)", marginTop: "10px" }}>
+          <div style={{ fontSize: "17px", fontWeight: 800, color: "#34D399", marginTop: "10px" }}>
             Insured Armored Courier
           </div>
-          <div style={{ fontSize: "11.5px", color: "var(--accent-muted, #8EAA9C)", marginTop: "4px" }}>
+          <div style={{ fontSize: "11.5px", color: "#71717A", marginTop: "4px" }}>
             Worldwide & Colombo Direct Delivery
           </div>
         </div>
@@ -300,17 +300,17 @@ export default function AdminOrdersPage() {
             onChange={(e) => setSearch(e.target.value)}
             style={{
               width: "100%",
-              background: "var(--background, #0E1A16)",
-              border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+              background: "#0A0A0A",
+              border: "1px solid #222222",
               borderRadius: "8px",
               padding: "9px 12px 9px 36px",
               fontSize: "12px",
-              color: "var(--foreground, #F8FAFC)",
+              color: "#F8FAFC",
               outline: "none",
             }}
           />
           <svg
-            style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "15px", height: "15px", color: "var(--accent-muted, #8EAA9C)" }}
+            style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "15px", height: "15px", color: "#71717A" }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -340,9 +340,9 @@ export default function AdminOrdersPage() {
                   fontSize: "11.5px",
                   fontWeight: 700,
                   cursor: "pointer",
-                  background: active ? "rgba(197, 160, 89, 0.2)" : "var(--card-elevated, #162923)",
-                  color: active ? "var(--rolex-gold, #C5A059)" : "var(--accent-muted, #8EAA9C)",
-                  border: active ? "1px solid var(--rolex-gold, #C5A059)" : "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+                  background: active ? "#FFFFFF" : "#141414",
+                  color: active ? "#050505" : "#A1A1AA",
+                  border: active ? "1px solid #FFFFFF" : "1px solid #222222",
                   transition: "all 120ms ease",
                 }}
               >
@@ -381,9 +381,9 @@ export default function AdminOrdersPage() {
               ) : filteredOrders.length === 0 ? (
                 <tr>
                   <td colSpan={8} style={{ padding: "48px 20px", textAlign: "center" }}>
-                    <div style={{ fontSize: "28px", color: "var(--rolex-gold, #C5A059)", marginBottom: "8px" }}>♔</div>
-                    <div style={{ fontSize: "15px", fontWeight: 700, color: "var(--foreground, #F8FAFC)" }}>No watch orders found</div>
-                    <div style={{ fontSize: "12px", color: "var(--accent-muted, #8EAA9C)", marginTop: "4px" }}>
+                    <div style={{ fontSize: "28px", color: "#A1A1AA", marginBottom: "8px" }}>⌚</div>
+                    <div style={{ fontSize: "15px", fontWeight: 700, color: "#F8FAFC" }}>No watch orders found</div>
+                    <div style={{ fontSize: "12px", color: "#71717A", marginTop: "4px" }}>
                       Checkouts made from the storefront will appear here in real-time.
                     </div>
                   </td>
@@ -395,15 +395,15 @@ export default function AdminOrdersPage() {
                     <tr
                       key={o.id || o.order_number}
                       style={{ transition: "background 100ms ease" }}
-                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--accent-light, rgba(0, 163, 98, 0.15))")}
+                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(255, 255, 255, 0.03)")}
                       onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "transparent")}
                     >
                       {/* Order Reference */}
                       <td style={S.td}>
-                        <div style={{ fontWeight: 800, color: "var(--rolex-gold, #C5A059)", fontFamily: "var(--font-mono, monospace)" }}>
+                        <div style={{ fontWeight: 800, color: "#FFFFFF", fontFamily: "var(--font-mono, monospace)" }}>
                           {o.order_number || o.id}
                         </div>
-                        <div style={{ fontSize: "10.5px", color: "var(--accent-muted, #8EAA9C)", marginTop: "2px" }}>
+                        <div style={{ fontSize: "10.5px", color: "#71717A", marginTop: "2px" }}>
                           {new Date(o.created_at || Date.now()).toLocaleDateString("en-US", {
                             month: "short",
                             day: "numeric",
@@ -415,10 +415,10 @@ export default function AdminOrdersPage() {
 
                       {/* Client */}
                       <td style={S.td}>
-                        <div style={{ fontWeight: 700, color: "var(--foreground, #F8FAFC)" }}>{o.customer_name}</div>
-                        <div style={{ fontSize: "11px", color: "var(--accent-muted, #8EAA9C)" }}>{o.customer_email}</div>
+                        <div style={{ fontWeight: 700, color: "#F8FAFC" }}>{o.customer_name}</div>
+                        <div style={{ fontSize: "11px", color: "#A1A1AA" }}>{o.customer_email}</div>
                         {o.customer_phone && (
-                          <div style={{ fontSize: "10.5px", color: "var(--rolex-gold, #C5A059)", fontFamily: "var(--font-mono, monospace)" }}>
+                          <div style={{ fontSize: "10.5px", color: "#71717A", fontFamily: "var(--font-mono, monospace)" }}>
                             {o.customer_phone}
                           </div>
                         )}
@@ -435,8 +435,8 @@ export default function AdminOrdersPage() {
                                   height: "32px",
                                   borderRadius: "6px",
                                   overflow: "hidden",
-                                  background: "var(--card-elevated, #162923)",
-                                  border: "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))",
+                                  background: "#141414",
+                                  border: "1px solid #222222",
                                   flexShrink: 0,
                                 }}
                               >
@@ -447,8 +447,8 @@ export default function AdminOrdersPage() {
                                 />
                               </div>
                               <div style={{ maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                                <span style={{ fontSize: "11.5px", color: "var(--foreground, #F8FAFC)", fontWeight: 600 }}>{it.product_name}</span>
-                                <span style={{ fontSize: "10px", color: "var(--rolex-gold, #C5A059)", marginLeft: "4px" }}>x{it.quantity}</span>
+                                <span style={{ fontSize: "11.5px", color: "#F8FAFC", fontWeight: 600 }}>{it.product_name}</span>
+                                <span style={{ fontSize: "10px", color: "#A1A1AA", marginLeft: "4px" }}>x{it.quantity}</span>
                               </div>
                             </div>
                           ))}
@@ -457,7 +457,7 @@ export default function AdminOrdersPage() {
 
                       {/* Sizing & Packaging */}
                       <td style={S.td}>
-                        <div style={{ fontSize: "11.5px", color: "var(--foreground, #F8FAFC)" }}>
+                        <div style={{ fontSize: "11.5px", color: "#F8FAFC" }}>
                           {o.wrist_size || "Standard (19cm)"}
                         </div>
                         {o.gift_packaging && (
@@ -469,9 +469,9 @@ export default function AdminOrdersPage() {
                               fontWeight: 700,
                               padding: "2px 6px",
                               borderRadius: "4px",
-                              background: "rgba(197, 160, 89, 0.15)",
-                              color: "var(--rolex-gold, #C5A059)",
-                              border: "1px solid var(--rolex-gold, #C5A059)",
+                              background: "rgba(255, 255, 255, 0.06)",
+                              color: "#E4E4E7",
+                              border: "1px solid #333333",
                             }}
                           >
                             🎁 Luxury Box Included
@@ -481,11 +481,11 @@ export default function AdminOrdersPage() {
 
                       {/* Amount */}
                       <td style={S.td}>
-                        <div style={{ fontWeight: 800, color: "var(--foreground, #F8FAFC)", fontFamily: "var(--font-mono, monospace)" }}>
+                        <div style={{ fontWeight: 800, color: "#F8FAFC", fontFamily: "var(--font-mono, monospace)" }}>
                           {fmt(o.total_amount)}
                         </div>
                         {o.discount_amount ? (
-                          <div style={{ fontSize: "10px", color: "var(--accent, #00A362)" }}>
+                          <div style={{ fontSize: "10px", color: "#34D399" }}>
                             Disc: -{fmt(o.discount_amount)}
                           </div>
                         ) : null}
@@ -493,7 +493,7 @@ export default function AdminOrdersPage() {
 
                       {/* Payment */}
                       <td style={S.td}>
-                        <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", color: "var(--accent-muted, #8EAA9C)" }}>
+                        <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", color: "#71717A" }}>
                           {o.payment_method || "PayHere"}
                         </div>
                         <div style={{ marginTop: "4px" }}>
@@ -503,9 +503,9 @@ export default function AdminOrdersPage() {
                               fontWeight: 700,
                               padding: "2px 6px",
                               borderRadius: "4px",
-                              background: o.payment_status === "completed" ? "rgba(0, 163, 98, 0.2)" : "rgba(234, 179, 8, 0.15)",
-                              color: o.payment_status === "completed" ? "var(--accent, #00A362)" : "#EAB308",
-                              border: o.payment_status === "completed" ? "1px solid var(--accent, #00A362)" : "1px solid rgba(234, 179, 8, 0.3)",
+                              background: o.payment_status === "completed" ? "rgba(16, 185, 129, 0.15)" : "rgba(245, 158, 11, 0.12)",
+                              color: o.payment_status === "completed" ? "#34D399" : "#FBBF24",
+                              border: o.payment_status === "completed" ? "1px solid rgba(16, 185, 129, 0.3)" : "1px solid rgba(245, 158, 11, 0.3)",
                               cursor: "pointer",
                             }}
                             onClick={() => handlePaymentStatusChange(o.id || o.order_number, o.payment_status === "completed" ? "pending" : "completed")}
@@ -535,7 +535,7 @@ export default function AdminOrdersPage() {
                           }}
                         >
                           {STATUS_OPTIONS.map((opt) => (
-                            <option key={opt.value} value={opt.value} style={{ background: "var(--card-elevated, #162923)", color: "#FFF" }}>
+                            <option key={opt.value} value={opt.value} style={{ background: "#141414", color: "#FFF" }}>
                               {opt.label}
                             </option>
                           ))}
@@ -549,9 +549,9 @@ export default function AdminOrdersPage() {
                           style={{
                             padding: "6px 12px",
                             borderRadius: "6px",
-                            background: "rgba(197, 160, 89, 0.15)",
-                            border: "1px solid var(--rolex-gold, #C5A059)",
-                            color: "var(--rolex-gold, #C5A059)",
+                            background: "#181818",
+                            border: "1px solid #2E2E2E",
+                            color: "#FFFFFF",
                             fontSize: "11px",
                             fontWeight: 700,
                             cursor: "pointer",
@@ -587,8 +587,8 @@ export default function AdminOrdersPage() {
         >
           <div
             style={{
-              background: "var(--card, #12221D)",
-              border: "1px solid var(--rolex-gold, #C5A059)",
+              background: "#0D0D0D",
+              border: "1px solid #27272A",
               borderRadius: "16px",
               padding: "28px",
               maxWidth: "600px",
@@ -601,10 +601,10 @@ export default function AdminOrdersPage() {
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
               <div>
-                <div style={{ fontSize: "11px", color: "var(--rolex-gold, #C5A059)", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                <div style={{ fontSize: "11px", color: "#A1A1AA", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em" }}>
                   Client Allocation Dossier
                 </div>
-                <h2 style={{ fontSize: "22px", fontWeight: 800, color: "var(--foreground, #F8FAFC)", margin: "4px 0 0 0", fontFamily: "var(--font-mono, monospace)" }}>
+                <h2 style={{ fontSize: "22px", fontWeight: 800, color: "#F8FAFC", margin: "4px 0 0 0", fontFamily: "var(--font-mono, monospace)" }}>
                   {selectedOrder.order_number || selectedOrder.id}
                 </h2>
               </div>
@@ -613,7 +613,7 @@ export default function AdminOrdersPage() {
                 style={{
                   background: "transparent",
                   border: "none",
-                  color: "var(--accent-muted, #8EAA9C)",
+                  color: "#71717A",
                   fontSize: "22px",
                   cursor: "pointer",
                 }}
@@ -623,39 +623,39 @@ export default function AdminOrdersPage() {
             </div>
 
             {/* Client Info */}
-            <div style={{ background: "var(--card-elevated, #162923)", border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))", borderRadius: "10px", padding: "18px", marginBottom: "16px" }}>
-              <div style={{ fontSize: "11px", fontWeight: 800, color: "var(--rolex-gold, #C5A059)", textTransform: "uppercase", marginBottom: "10px" }}>
+            <div style={{ background: "#141414", border: "1px solid #222222", borderRadius: "10px", padding: "18px", marginBottom: "16px" }}>
+              <div style={{ fontSize: "11px", fontWeight: 800, color: "#FFFFFF", textTransform: "uppercase", marginBottom: "10px" }}>
                 Client Details
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", fontSize: "12px" }}>
                 <div>
-                  <div style={{ color: "var(--accent-muted, #8EAA9C)", fontSize: "10px" }}>NAME</div>
-                  <div style={{ fontWeight: 700, color: "var(--foreground, #F8FAFC)" }}>{selectedOrder.customer_name}</div>
+                  <div style={{ color: "#71717A", fontSize: "10px" }}>NAME</div>
+                  <div style={{ fontWeight: 700, color: "#F8FAFC" }}>{selectedOrder.customer_name}</div>
                 </div>
                 <div>
-                  <div style={{ color: "var(--accent-muted, #8EAA9C)", fontSize: "10px" }}>EMAIL</div>
-                  <div style={{ color: "var(--foreground, #F8FAFC)" }}>{selectedOrder.customer_email}</div>
+                  <div style={{ color: "#71717A", fontSize: "10px" }}>EMAIL</div>
+                  <div style={{ color: "#F8FAFC" }}>{selectedOrder.customer_email}</div>
                 </div>
                 <div>
-                  <div style={{ color: "var(--accent-muted, #8EAA9C)", fontSize: "10px" }}>PHONE</div>
-                  <div style={{ color: "var(--rolex-gold, #C5A059)" }}>{selectedOrder.customer_phone || "Not specified"}</div>
+                  <div style={{ color: "#71717A", fontSize: "10px" }}>PHONE</div>
+                  <div style={{ color: "#F8FAFC" }}>{selectedOrder.customer_phone || "Not specified"}</div>
                 </div>
                 <div>
-                  <div style={{ color: "var(--accent-muted, #8EAA9C)", fontSize: "10px" }}>WRIST SIZE</div>
-                  <div style={{ color: "var(--rolex-gold, #C5A059)", fontWeight: 700 }}>{selectedOrder.wrist_size || "Standard (19cm)"}</div>
+                  <div style={{ color: "#71717A", fontSize: "10px" }}>WRIST SIZE</div>
+                  <div style={{ color: "#F8FAFC", fontWeight: 700 }}>{selectedOrder.wrist_size || "Standard (19cm)"}</div>
                 </div>
               </div>
-              <div style={{ marginTop: "12px", borderTop: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.2))", paddingTop: "10px" }}>
-                <div style={{ color: "var(--accent-muted, #8EAA9C)", fontSize: "10px" }}>DELIVERY ADDRESS</div>
-                <div style={{ color: "var(--foreground, #F8FAFC)", fontSize: "12px", marginTop: "2px" }}>
+              <div style={{ marginTop: "12px", borderTop: "1px solid #222222", paddingTop: "10px" }}>
+                <div style={{ color: "#71717A", fontSize: "10px" }}>DELIVERY ADDRESS</div>
+                <div style={{ color: "#F8FAFC", fontSize: "12px", marginTop: "2px" }}>
                   {selectedOrder.delivery_address || selectedOrder.shipping_address || "Boutique Pickup / Colombo"}
                 </div>
               </div>
             </div>
 
             {/* Items */}
-            <div style={{ background: "var(--card-elevated, #162923)", border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))", borderRadius: "10px", padding: "18px", marginBottom: "16px" }}>
-              <div style={{ fontSize: "11px", fontWeight: 800, color: "var(--rolex-gold, #C5A059)", textTransform: "uppercase", marginBottom: "10px" }}>
+            <div style={{ background: "#141414", border: "1px solid #222222", borderRadius: "10px", padding: "18px", marginBottom: "16px" }}>
+              <div style={{ fontSize: "11px", fontWeight: 800, color: "#FFFFFF", textTransform: "uppercase", marginBottom: "10px" }}>
                 Acquired Timepiece(s)
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -668,11 +668,11 @@ export default function AdminOrdersPage() {
                         style={{ width: "38px", height: "38px", borderRadius: "6px", objectFit: "cover" }}
                       />
                       <div>
-                        <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--foreground, #F8FAFC)" }}>{it.product_name}</div>
-                        <div style={{ fontSize: "11px", color: "var(--accent-muted, #8EAA9C)" }}>Qty: {it.quantity}</div>
+                        <div style={{ fontSize: "13px", fontWeight: 700, color: "#F8FAFC" }}>{it.product_name}</div>
+                        <div style={{ fontSize: "11px", color: "#71717A" }}>Qty: {it.quantity}</div>
                       </div>
                     </div>
-                    <div style={{ fontWeight: 800, color: "var(--rolex-gold, #C5A059)", fontFamily: "var(--font-mono, monospace)", fontSize: "13px" }}>
+                    <div style={{ fontWeight: 800, color: "#FFFFFF", fontFamily: "var(--font-mono, monospace)", fontSize: "13px" }}>
                       {fmt(it.subtotal || it.unit_price * it.quantity)}
                     </div>
                   </div>
@@ -682,21 +682,21 @@ export default function AdminOrdersPage() {
 
             {/* Instructions */}
             {selectedOrder.special_instructions && (
-              <div style={{ background: "var(--card-elevated, #162923)", border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))", borderRadius: "10px", padding: "14px 18px", marginBottom: "16px" }}>
-                <div style={{ fontSize: "10px", color: "var(--rolex-gold, #C5A059)", fontWeight: 800, textTransform: "uppercase" }}>
+              <div style={{ background: "#141414", border: "1px solid #222222", borderRadius: "10px", padding: "14px 18px", marginBottom: "16px" }}>
+                <div style={{ fontSize: "10px", color: "#A1A1AA", fontWeight: 800, textTransform: "uppercase" }}>
                   Engraving / Horological Note
                 </div>
-                <div style={{ fontSize: "12px", color: "var(--foreground, #F8FAFC)", marginTop: "4px", fontStyle: "italic" }}>
+                <div style={{ fontSize: "12px", color: "#F8FAFC", marginTop: "4px", fontStyle: "italic" }}>
                   "{selectedOrder.special_instructions}"
                 </div>
               </div>
             )}
 
             {/* Total and Close */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: "14px", borderTop: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.3))" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: "14px", borderTop: "1px solid #222222" }}>
               <div>
-                <div style={{ fontSize: "11px", color: "var(--accent-muted, #8EAA9C)" }}>TOTAL INVOICE (LKR)</div>
-                <div style={{ fontSize: "22px", fontWeight: 800, color: "var(--foreground, #F8FAFC)", fontFamily: "var(--font-mono, monospace)" }}>
+                <div style={{ fontSize: "11px", color: "#71717A" }}>TOTAL INVOICE (LKR)</div>
+                <div style={{ fontSize: "22px", fontWeight: 800, color: "#F8FAFC", fontFamily: "var(--font-mono, monospace)" }}>
                   {fmt(selectedOrder.total_amount)}
                 </div>
               </div>
@@ -705,13 +705,13 @@ export default function AdminOrdersPage() {
                 style={{
                   padding: "9px 22px",
                   borderRadius: "8px",
-                  background: "linear-gradient(145deg, #F0CF8B 0%, #B88E33 100%)",
-                  color: "#08110D",
+                  background: "#FFFFFF",
+                  color: "#050505",
                   fontSize: "12px",
                   fontWeight: 800,
                   cursor: "pointer",
                   border: "none",
-                  boxShadow: "0 2px 10px rgba(197, 160, 89, 0.3)",
+                  boxShadow: "0 2px 10px rgba(255, 255, 255, 0.15)",
                 }}
               >
                 Close Dossier

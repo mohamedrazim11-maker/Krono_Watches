@@ -10,27 +10,27 @@ const CATEGORIES = ["All Categories", "Luxury", "Dive Watches", "Chronograph", "
 
 const S = {
   card: {
-    background: "var(--card, #12221D)",
-    border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+    background: "var(--card, #0D0D0D)",
+    border: "1px solid var(--border-subtle, #1E1E1E)",
     borderRadius: "14px",
-    boxShadow: "var(--neu-shadow-raised-sm, 4px 4px 10px rgba(0,0,0,0.7))",
+    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
   } as React.CSSProperties,
   th: {
     padding: "13px 16px",
-    fontSize: "10.5px",
+    fontSize: "11px",
     fontWeight: 700,
-    color: "var(--accent-muted, #8EAA9C)",
+    color: "#71717A",
     textTransform: "uppercase" as const,
     letterSpacing: "0.08em",
-    borderBottom: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
-    background: "var(--card-elevated, #162923)",
+    borderBottom: "1px solid #1E1E1E",
+    background: "#121212",
     whiteSpace: "nowrap" as const,
   } as React.CSSProperties,
   td: {
     padding: "14px 16px",
     fontSize: "12px",
     color: "var(--foreground, #F8FAFC)",
-    borderBottom: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.15))",
+    borderBottom: "1px solid #171717",
     verticalAlign: "middle" as const,
   } as React.CSSProperties,
 };
@@ -220,14 +220,14 @@ export default function AdminProductsPage() {
             bottom: "28px",
             right: "32px",
             zIndex: 9999,
-            background: "var(--card-elevated, #162923)",
-            border: "1px solid var(--accent, #00A362)",
-            borderLeft: "4px solid var(--accent, #00A362)",
+            background: "#141414",
+            border: "1px solid #27272A",
+            borderLeft: "4px solid #FFFFFF",
             borderRadius: "8px",
             padding: "14px 20px",
             fontSize: "12.5px",
             fontWeight: 600,
-            color: "var(--foreground, #F8FAFC)",
+            color: "#F8FAFC",
             boxShadow: "0 10px 30px rgba(0,0,0,0.6)",
           }}
         >
@@ -238,22 +238,22 @@ export default function AdminProductsPage() {
       {/* Header */}
       <div style={{ marginBottom: "24px", display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <div style={{ fontSize: "11px", fontWeight: 800, color: "var(--rolex-gold, #C5A059)", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "5px" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "#A1A1AA", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "5px" }}>
             Vault Inventory
           </div>
           <h1
             style={{
               fontSize: "28px",
               fontWeight: 800,
-              color: "var(--foreground, #F8FAFC)",
+              color: "#F8FAFC",
               margin: 0,
               fontFamily: "var(--font-serif, 'Cormorant Garamond', Georgia, serif)",
               letterSpacing: "0.02em",
             }}
           >
-            Horological Timepiece Catalogue
+            Vault Timepiece Catalogue
           </h1>
-          <p style={{ fontSize: "12.5px", color: "var(--accent-muted, #8EAA9C)", marginTop: "4px" }}>
+          <p style={{ fontSize: "12.5px", color: "#71717A", marginTop: "4px" }}>
             {products.length} certified timepieces in vault · {filtered.length} currently filtered
           </p>
         </div>
@@ -268,9 +268,9 @@ export default function AdminProductsPage() {
               gap: "6px",
               padding: "9px 18px",
               borderRadius: "8px",
-              background: "var(--card-elevated, #162923)",
-              border: "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))",
-              color: "var(--rolex-gold, #C5A059)",
+              background: "#141414",
+              border: "1px solid #27272A",
+              color: "#FFFFFF",
               fontSize: "12px",
               fontWeight: 700,
               textDecoration: "none",
@@ -286,13 +286,12 @@ export default function AdminProductsPage() {
               gap: "6px",
               padding: "9px 18px",
               borderRadius: "8px",
-              background: "linear-gradient(145deg, #007345 0%, #004D2E 100%)",
-              border: "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))",
-              color: "#FFFFFF",
+              background: "#FFFFFF",
+              color: "#050505",
               fontSize: "12px",
-              fontWeight: 700,
+              fontWeight: 800,
               textDecoration: "none",
-              boxShadow: "0 2px 10px rgba(0, 96, 57, 0.4)",
+              boxShadow: "0 2px 10px rgba(255, 255, 255, 0.15)",
             }}
           >
             <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -324,17 +323,17 @@ export default function AdminProductsPage() {
             onChange={(e) => setSearch(e.target.value)}
             style={{
               width: "100%",
-              background: "var(--background, #0E1A16)",
-              border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+              background: "#0A0A0A",
+              border: "1px solid #222222",
               borderRadius: "8px",
               padding: "9px 12px 9px 36px",
               fontSize: "12px",
-              color: "var(--foreground, #F8FAFC)",
+              color: "#F8FAFC",
               outline: "none",
             }}
           />
           <svg
-            style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "15px", height: "15px", color: "var(--accent-muted, #8EAA9C)" }}
+            style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "15px", height: "15px", color: "#71717A" }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -349,19 +348,19 @@ export default function AdminProductsPage() {
           value={brandFilter}
           onChange={(e) => setBrandFilter(e.target.value)}
           style={{
-            background: "var(--background, #0E1A16)",
-            border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+            background: "#0A0A0A",
+            border: "1px solid #222222",
             borderRadius: "8px",
             padding: "9px 14px",
             fontSize: "12px",
-            color: "var(--rolex-gold, #C5A059)",
+            color: "#FFFFFF",
             fontWeight: 600,
             outline: "none",
             cursor: "pointer",
           }}
         >
           {BRANDS.map((b) => (
-            <option key={b} value={b} style={{ background: "var(--card-elevated, #162923)", color: "#FFF" }}>
+            <option key={b} value={b} style={{ background: "#141414", color: "#FFF" }}>
               {b}
             </option>
           ))}
@@ -372,19 +371,19 @@ export default function AdminProductsPage() {
           value={catFilter}
           onChange={(e) => setCatFilter(e.target.value)}
           style={{
-            background: "var(--background, #0E1A16)",
-            border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+            background: "#0A0A0A",
+            border: "1px solid #222222",
             borderRadius: "8px",
             padding: "9px 14px",
             fontSize: "12px",
-            color: "var(--accent-muted, #8EAA9C)",
+            color: "#A1A1AA",
             fontWeight: 600,
             outline: "none",
             cursor: "pointer",
           }}
         >
           {CATEGORIES.map((c) => (
-            <option key={c} value={c} style={{ background: "var(--card-elevated, #162923)", color: "#FFF" }}>
+            <option key={c} value={c} style={{ background: "#141414", color: "#FFF" }}>
               {c}
             </option>
           ))}
@@ -410,14 +409,14 @@ export default function AdminProductsPage() {
               {loading ? (
                 [...Array(6)].map((_, i) => (
                   <tr key={i}>
-                    <td colSpan={7} style={{ padding: "16px", textAlign: "center", color: "var(--accent-muted, #8EAA9C)" }}>
+                    <td colSpan={7} style={{ padding: "16px", textAlign: "center", color: "#71717A" }}>
                       Loading timepieces...
                     </td>
                   </tr>
                 ))
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} style={{ padding: "40px 16px", textAlign: "center", color: "var(--accent-muted, #8EAA9C)" }}>
+                  <td colSpan={7} style={{ padding: "40px 16px", textAlign: "center", color: "#71717A" }}>
                     No timepieces matched your filters.
                   </td>
                 </tr>
@@ -433,7 +432,7 @@ export default function AdminProductsPage() {
                         transition: "background 100ms",
                         opacity: isActive ? 1 : 0.65,
                       }}
-                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--accent-light, rgba(0, 163, 98, 0.15))")}
+                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(255, 255, 255, 0.03)")}
                       onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "transparent")}
                     >
                       {/* Timepiece Image & Name */}
@@ -445,8 +444,8 @@ export default function AdminProductsPage() {
                               height: "44px",
                               borderRadius: "8px",
                               overflow: "hidden",
-                              background: "var(--card-elevated, #162923)",
-                              border: "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))",
+                              background: "#141414",
+                              border: "1px solid #222222",
                               flexShrink: 0,
                             }}
                           >
@@ -458,10 +457,10 @@ export default function AdminProductsPage() {
                             />
                           </div>
                           <div>
-                            <div style={{ fontSize: "12.5px", fontWeight: 700, color: "var(--foreground, #F8FAFC)", whiteSpace: "nowrap" }}>
+                            <div style={{ fontSize: "12.5px", fontWeight: 700, color: "#F8FAFC", whiteSpace: "nowrap" }}>
                               {p.name}
                             </div>
-                            <div style={{ fontSize: "10.5px", color: "var(--accent-muted, #8EAA9C)", fontFamily: "var(--font-mono, monospace)", marginTop: "1px" }}>
+                            <div style={{ fontSize: "10.5px", color: "#71717A", fontFamily: "var(--font-mono, monospace)", marginTop: "1px" }}>
                               Ref: {p.id} · {p.category}
                             </div>
                           </div>
@@ -473,8 +472,8 @@ export default function AdminProductsPage() {
                         <span
                           style={{
                             fontSize: "11px",
-                            fontWeight: 800,
-                            color: "var(--rolex-gold, #C5A059)",
+                            fontWeight: 700,
+                            color: "#FFFFFF",
                             textTransform: "uppercase",
                           }}
                         >
@@ -484,17 +483,17 @@ export default function AdminProductsPage() {
 
                       {/* Price */}
                       <td style={S.td}>
-                        <div style={{ fontWeight: 800, color: "var(--foreground, #F8FAFC)", fontFamily: "var(--font-mono, monospace)" }}>
+                        <div style={{ fontWeight: 800, color: "#F8FAFC", fontFamily: "var(--font-mono, monospace)" }}>
                           {fmt(p.price)}
                         </div>
                         {p.old_price && p.old_price > p.price ? (
-                          <div style={{ fontSize: "10px", color: "var(--accent-muted, #8EAA9C)", textDecoration: "line-through" }}>
+                          <div style={{ fontSize: "10px", color: "#71717A", textDecoration: "line-through" }}>
                             {fmt(p.old_price)}
                           </div>
                         ) : null}
                       </td>
 
-                      {/* Stock Stepper Controls (Slide 9 & 10) */}
+                      {/* Stock Stepper Controls */}
                       <td style={S.td}>
                         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                           <button
@@ -504,9 +503,9 @@ export default function AdminProductsPage() {
                               width: "24px",
                               height: "24px",
                               borderRadius: "4px",
-                              background: "var(--card-elevated, #162923)",
-                              border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
-                              color: "var(--foreground, #F8FAFC)",
+                              background: "#141414",
+                              border: "1px solid #222222",
+                              color: "#F8FAFC",
                               fontSize: "12px",
                               cursor: currentStock <= 0 ? "not-allowed" : "pointer",
                               display: "flex",
@@ -524,7 +523,7 @@ export default function AdminProductsPage() {
                               minWidth: "32px",
                               textAlign: "center",
                               fontFamily: "var(--font-mono, monospace)",
-                              color: currentStock <= 5 ? "#EAB308" : "var(--accent, #00A362)",
+                              color: currentStock <= 5 ? "#FBBF24" : "#34D399",
                             }}
                           >
                             {currentStock}
@@ -535,9 +534,9 @@ export default function AdminProductsPage() {
                               width: "24px",
                               height: "24px",
                               borderRadius: "4px",
-                              background: "var(--card-elevated, #162923)",
-                              border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
-                              color: "var(--foreground, #F8FAFC)",
+                              background: "#141414",
+                              border: "1px solid #222222",
+                              color: "#F8FAFC",
                               fontSize: "12px",
                               cursor: "pointer",
                               display: "flex",
@@ -549,14 +548,14 @@ export default function AdminProductsPage() {
                             +
                           </button>
                           {currentStock <= 5 && (
-                            <span style={{ fontSize: "9.5px", color: "#EAB308", fontWeight: 700, marginLeft: "4px" }}>
+                            <span style={{ fontSize: "9.5px", color: "#FBBF24", fontWeight: 700, marginLeft: "4px" }}>
                               (Low Stock)
                             </span>
                           )}
                         </div>
                       </td>
 
-                      {/* Status Column (Slide 10: Show ID, price, stock and status) */}
+                      {/* Status Column */}
                       <td style={S.td}>
                         <span
                           style={{
@@ -564,9 +563,9 @@ export default function AdminProductsPage() {
                             fontWeight: 800,
                             padding: "3px 8px",
                             borderRadius: "4px",
-                            background: isActive ? "rgba(0, 163, 98, 0.2)" : "rgba(239, 68, 68, 0.15)",
-                            color: isActive ? "var(--accent, #00A362)" : "#F87171",
-                            border: isActive ? "1px solid var(--accent, #00A362)" : "1px solid rgba(239, 68, 68, 0.3)",
+                            background: isActive ? "rgba(16, 185, 129, 0.15)" : "rgba(239, 68, 68, 0.12)",
+                            color: isActive ? "#34D399" : "#F87171",
+                            border: isActive ? "1px solid rgba(16, 185, 129, 0.3)" : "1px solid rgba(239, 68, 68, 0.25)",
                             textTransform: "uppercase",
                           }}
                         >
@@ -583,9 +582,9 @@ export default function AdminProductsPage() {
                             fontWeight: 800,
                             padding: "4px 10px",
                             borderRadius: "6px",
-                            background: p.is_featured ? "rgba(197, 160, 89, 0.22)" : "var(--card-elevated, #162923)",
-                            color: p.is_featured ? "var(--rolex-gold, #C5A059)" : "var(--accent-muted, #8EAA9C)",
-                            border: p.is_featured ? "1px solid var(--rolex-gold, #C5A059)" : "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+                            background: p.is_featured ? "#FFFFFF" : "#141414",
+                            color: p.is_featured ? "#000000" : "#71717A",
+                            border: p.is_featured ? "1px solid #FFFFFF" : "1px solid #222222",
                             cursor: "pointer",
                           }}
                         >
@@ -593,7 +592,7 @@ export default function AdminProductsPage() {
                         </button>
                       </td>
 
-                      {/* Actions (Slide 10: Edit, Deactivate safely, View) */}
+                      {/* Actions */}
                       <td style={{ ...S.td, textAlign: "right" }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "6px" }}>
                           <button
@@ -601,9 +600,9 @@ export default function AdminProductsPage() {
                             style={{
                               padding: "5px 10px",
                               borderRadius: "6px",
-                              background: "rgba(197, 160, 89, 0.15)",
-                              border: "1px solid var(--rolex-gold, #C5A059)",
-                              color: "var(--rolex-gold, #C5A059)",
+                              background: "#181818",
+                              border: "1px solid #2E2E2E",
+                              color: "#FFFFFF",
                               fontSize: "11px",
                               fontWeight: 700,
                               cursor: "pointer",
@@ -617,9 +616,9 @@ export default function AdminProductsPage() {
                             style={{
                               padding: "5px 9px",
                               borderRadius: "6px",
-                              background: isActive ? "rgba(234, 179, 8, 0.12)" : "rgba(0, 163, 98, 0.12)",
-                              border: isActive ? "1px solid #EAB308" : "1px solid var(--accent, #00A362)",
-                              color: isActive ? "#EAB308" : "var(--accent, #00A362)",
+                              background: isActive ? "rgba(245, 158, 11, 0.12)" : "rgba(16, 185, 129, 0.12)",
+                              border: isActive ? "1px solid rgba(245, 158, 11, 0.3)" : "1px solid rgba(16, 185, 129, 0.3)",
+                              color: isActive ? "#FBBF24" : "#34D399",
                               fontSize: "11px",
                               fontWeight: 700,
                               cursor: "pointer",
@@ -634,9 +633,9 @@ export default function AdminProductsPage() {
                             style={{
                               padding: "5px 9px",
                               borderRadius: "6px",
-                              background: "var(--card-elevated, #162923)",
-                              border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
-                              color: "var(--accent-muted, #8EAA9C)",
+                              background: "#141414",
+                              border: "1px solid #222222",
+                              color: "#A1A1AA",
                               fontSize: "11px",
                               textDecoration: "none",
                             }}
@@ -671,7 +670,7 @@ export default function AdminProductsPage() {
         </div>
       </div>
 
-      {/* Edit Product Modal (Slide 10: UPDATE Edit product/stock, Save changes to DB) */}
+      {/* Edit Product Modal */}
       {editingProduct && (
         <div
           style={{
@@ -687,8 +686,8 @@ export default function AdminProductsPage() {
         >
           <div
             style={{
-              background: "var(--card, #12221D)",
-              border: "1px solid var(--rolex-gold, #C5A059)",
+              background: "#0D0D0D",
+              border: "1px solid #27272A",
               borderRadius: "14px",
               padding: "26px",
               width: "100%",
@@ -698,10 +697,10 @@ export default function AdminProductsPage() {
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
               <div>
-                <span style={{ fontSize: "10px", color: "var(--rolex-gold, #C5A059)", fontWeight: 800, textTransform: "uppercase" }}>
+                <span style={{ fontSize: "10px", color: "#A1A1AA", fontWeight: 700, textTransform: "uppercase" }}>
                   Database Update · Ref: {editingProduct.id}
                 </span>
-                <h2 style={{ margin: "2px 0 0 0", fontSize: "18px", color: "var(--foreground, #F8FAFC)" }}>
+                <h2 style={{ margin: "2px 0 0 0", fontSize: "18px", color: "#F8FAFC" }}>
                   Edit Timepiece Specification
                 </h2>
               </div>
@@ -710,7 +709,7 @@ export default function AdminProductsPage() {
                 style={{
                   background: "transparent",
                   border: "none",
-                  color: "var(--accent-muted, #8EAA9C)",
+                  color: "#71717A",
                   fontSize: "18px",
                   cursor: "pointer",
                 }}
@@ -721,7 +720,7 @@ export default function AdminProductsPage() {
 
             <form onSubmit={handleSaveEdit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               <div>
-                <label style={{ display: "block", fontSize: "11px", color: "var(--accent-muted, #8EAA9C)", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "11px", color: "#71717A", marginBottom: "4px" }}>
                   Timepiece Title / Name
                 </label>
                 <input
@@ -733,8 +732,8 @@ export default function AdminProductsPage() {
                     width: "100%",
                     padding: "9px 12px",
                     borderRadius: "6px",
-                    background: "var(--card-elevated, #162923)",
-                    border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+                    background: "#141414",
+                    border: "1px solid #222222",
                     color: "#FFF",
                     fontSize: "13px",
                     boxSizing: "border-box",
@@ -744,7 +743,7 @@ export default function AdminProductsPage() {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "11px", color: "var(--accent-muted, #8EAA9C)", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "11px", color: "#71717A", marginBottom: "4px" }}>
                     Price (LKR)
                   </label>
                   <input
@@ -757,8 +756,8 @@ export default function AdminProductsPage() {
                       width: "100%",
                       padding: "9px 12px",
                       borderRadius: "6px",
-                      background: "var(--card-elevated, #162923)",
-                      border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+                      background: "#141414",
+                      border: "1px solid #222222",
                       color: "#FFF",
                       fontSize: "13px",
                       boxSizing: "border-box",
@@ -766,7 +765,7 @@ export default function AdminProductsPage() {
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "11px", color: "var(--accent-muted, #8EAA9C)", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "11px", color: "#71717A", marginBottom: "4px" }}>
                     Stock Units (stock_qty)
                   </label>
                   <input
@@ -779,8 +778,8 @@ export default function AdminProductsPage() {
                       width: "100%",
                       padding: "9px 12px",
                       borderRadius: "6px",
-                      background: "var(--card-elevated, #162923)",
-                      border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+                      background: "#141414",
+                      border: "1px solid #222222",
                       color: "#FFF",
                       fontSize: "13px",
                       boxSizing: "border-box",
@@ -791,7 +790,7 @@ export default function AdminProductsPage() {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "11px", color: "var(--accent-muted, #8EAA9C)", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "11px", color: "#71717A", marginBottom: "4px" }}>
                     Category
                   </label>
                   <input
@@ -802,8 +801,8 @@ export default function AdminProductsPage() {
                       width: "100%",
                       padding: "9px 12px",
                       borderRadius: "6px",
-                      background: "var(--card-elevated, #162923)",
-                      border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+                      background: "#141414",
+                      border: "1px solid #222222",
                       color: "#FFF",
                       fontSize: "13px",
                       boxSizing: "border-box",
@@ -811,7 +810,7 @@ export default function AdminProductsPage() {
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "11px", color: "var(--accent-muted, #8EAA9C)", marginBottom: "4px" }}>
+                  <label style={{ display: "block", fontSize: "11px", color: "#71717A", marginBottom: "4px" }}>
                     Brand
                   </label>
                   <input
@@ -822,8 +821,8 @@ export default function AdminProductsPage() {
                       width: "100%",
                       padding: "9px 12px",
                       borderRadius: "6px",
-                      background: "var(--card-elevated, #162923)",
-                      border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+                      background: "#141414",
+                      border: "1px solid #222222",
                       color: "#FFF",
                       fontSize: "13px",
                       boxSizing: "border-box",
@@ -833,7 +832,7 @@ export default function AdminProductsPage() {
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "11px", color: "var(--accent-muted, #8EAA9C)", marginBottom: "4px" }}>
+                <label style={{ display: "block", fontSize: "11px", color: "#71717A", marginBottom: "4px" }}>
                   Image URL
                 </label>
                 <input
@@ -844,8 +843,8 @@ export default function AdminProductsPage() {
                     width: "100%",
                     padding: "9px 12px",
                     borderRadius: "6px",
-                    background: "var(--card-elevated, #162923)",
-                    border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+                    background: "#141414",
+                    border: "1px solid #222222",
                     color: "#FFF",
                     fontSize: "13px",
                     boxSizing: "border-box",
@@ -861,7 +860,7 @@ export default function AdminProductsPage() {
                   onChange={(e) => setEditFormData({ ...editFormData, is_active: e.target.checked })}
                   style={{ cursor: "pointer" }}
                 />
-                <label htmlFor="editIsActive" style={{ fontSize: "12px", color: "var(--foreground, #F8FAFC)", cursor: "pointer" }}>
+                <label htmlFor="editIsActive" style={{ fontSize: "12px", color: "#F8FAFC", cursor: "pointer" }}>
                   Active in Storefront Catalog (uncheck to safely deactivate / soft-delete)
                 </label>
               </div>
@@ -874,8 +873,8 @@ export default function AdminProductsPage() {
                     padding: "8px 16px",
                     borderRadius: "6px",
                     background: "transparent",
-                    border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
-                    color: "var(--accent-muted, #8EAA9C)",
+                    border: "1px solid #27272A",
+                    color: "#A1A1AA",
                     fontSize: "12px",
                     cursor: "pointer",
                   }}
@@ -888,12 +887,13 @@ export default function AdminProductsPage() {
                   style={{
                     padding: "8px 20px",
                     borderRadius: "6px",
-                    background: "linear-gradient(135deg, var(--rolex-green, #006039), var(--rolex-green-dark, #00482B))",
-                    border: "1px solid var(--rolex-gold, #C5A059)",
-                    color: "var(--rolex-gold, #C5A059)",
+                    background: "#FFFFFF",
+                    border: "none",
+                    color: "#050505",
                     fontSize: "12px",
                     fontWeight: 800,
                     cursor: "pointer",
+                    boxShadow: "0 2px 10px rgba(255, 255, 255, 0.15)",
                   }}
                 >
                   {savingEdit ? "Saving..." : "Save to Database"}

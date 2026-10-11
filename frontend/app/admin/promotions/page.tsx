@@ -6,8 +6,8 @@ import { fetchPosters, updatePoster, Poster } from "@/lib/api";
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
-  background: "#080E0B",
-  border: "1px solid rgba(197, 160, 89, 0.25)",
+  background: "#141414",
+  border: "1px solid #222222",
   borderRadius: "6px",
   padding: "9px 12px",
   fontSize: "12px",
@@ -22,18 +22,18 @@ const labelStyle: React.CSSProperties = {
   display: "block",
   fontSize: "10px",
   fontWeight: 700,
-  color: "#6B8577",
+  color: "#71717A",
   textTransform: "uppercase",
   letterSpacing: "0.08em",
   marginBottom: "5px",
 };
 
 const cardStyle: React.CSSProperties = {
-  background: "#0A130F",
-  border: "1px solid rgba(197, 160, 89, 0.2)",
-  borderRadius: "10px",
+  background: "#0D0D0D",
+  border: "1px solid #1E1E1E",
+  borderRadius: "14px",
   overflow: "hidden",
-  boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+  boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
 };
 
 function Field({
@@ -50,7 +50,7 @@ function Field({
   rows?: number;
 }) {
   const [focused, setFocused] = useState(false);
-  const focusStyle = focused ? { borderColor: "#C5A059", boxShadow: "0 0 0 2px rgba(197, 160, 89, 0.2)" } : {};
+  const focusStyle = focused ? { borderColor: "#52525B", boxShadow: "0 0 0 2px rgba(255, 255, 255, 0.08)" } : {};
 
   return (
     <div>
@@ -166,14 +166,14 @@ export default function AdminPromotionsPage() {
             bottom: "28px",
             right: "32px",
             zIndex: 9999,
-            background: "#0A130F",
-            border: `1px solid ${toast.type === "success" ? "#00A362" : "#F87171"}`,
-            borderLeft: `4px solid ${toast.type === "success" ? "#00A362" : "#F87171"}`,
+            background: "#141414",
+            border: "1px solid #27272A",
+            borderLeft: `4px solid ${toast.type === "success" ? "#34D399" : "#F87171"}`,
             borderRadius: "8px",
             padding: "14px 20px",
             fontSize: "12.5px",
             fontWeight: 600,
-            color: toast.type === "success" ? "#F1F5F9" : "#F87171",
+            color: toast.type === "success" ? "#F8FAFC" : "#F87171",
             boxShadow: "0 10px 30px rgba(0,0,0,0.6)",
           }}
         >
@@ -184,7 +184,7 @@ export default function AdminPromotionsPage() {
       {/* Header */}
       <div style={{ marginBottom: "28px", display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <div style={{ fontSize: "11px", fontWeight: 700, color: "#C5A059", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "5px" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "#A1A1AA", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "5px" }}>
             Storefront Marketing & Drops
           </div>
           <h1
@@ -199,7 +199,7 @@ export default function AdminPromotionsPage() {
           >
             Storefront Promotional Campaigns
           </h1>
-          <p style={{ fontSize: "12.5px", color: "#6B8577", marginTop: "4px" }}>
+          <p style={{ fontSize: "12.5px", color: "#71717A", marginTop: "4px" }}>
             Control hero drops, promotional banners, checkout coupon vouchers, and flash discounts in real-time.
           </p>
         </div>
@@ -213,8 +213,9 @@ export default function AdminPromotionsPage() {
             gap: "6px",
             padding: "8px 16px",
             borderRadius: "6px",
-            background: "#C5A059",
-            color: "#000",
+            background: "#141414",
+            border: "1px solid #27272A",
+            color: "#FFFFFF",
             fontSize: "12px",
             fontWeight: 700,
             textDecoration: "none",
@@ -237,18 +238,18 @@ export default function AdminPromotionsPage() {
             <div
               style={{
                 padding: "16px 20px",
-                borderBottom: "1px solid rgba(197, 160, 89, 0.15)",
+                borderBottom: "1px solid #1E1E1E",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                background: "#080E0B",
+                background: "#121212",
               }}
             >
               <div>
                 <div style={{ fontSize: "13.5px", fontWeight: 700, color: "#F8FAFC" }}>
                   1 · Primary Storefront Hero Drop
                 </div>
-                <div style={{ fontSize: "11px", color: "#6B8577" }}>
+                <div style={{ fontSize: "11px", color: "#71717A" }}>
                   Controls the main hero banner atop the Krono homepage
                 </div>
               </div>
@@ -259,9 +260,9 @@ export default function AdminPromotionsPage() {
                   textTransform: "uppercase",
                   padding: "3px 8px",
                   borderRadius: "4px",
-                  background: heroData.is_active ? "rgba(0, 163, 98, 0.2)" : "rgba(239, 68, 68, 0.15)",
-                  color: heroData.is_active ? "#00A362" : "#F87171",
-                  border: `1px solid ${heroData.is_active ? "rgba(0, 163, 98, 0.3)" : "rgba(239, 68, 68, 0.3)"}`,
+                  background: heroData.is_active ? "rgba(16, 185, 129, 0.15)" : "rgba(239, 68, 68, 0.12)",
+                  color: heroData.is_active ? "#34D399" : "#F87171",
+                  border: `1px solid ${heroData.is_active ? "rgba(16, 185, 129, 0.3)" : "rgba(239, 68, 68, 0.25)"}`,
                 }}
               >
                 {heroData.is_active ? "Live on Store" : "Paused"}
@@ -274,27 +275,27 @@ export default function AdminPromotionsPage() {
                 margin: "16px 20px 0 20px",
                 padding: "16px",
                 borderRadius: "8px",
-                background: "linear-gradient(135deg, rgba(0, 96, 57, 0.3) 0%, rgba(10, 19, 15, 0.95) 100%)",
-                border: "1px solid rgba(197, 160, 89, 0.3)",
+                background: "linear-gradient(135deg, #141414 0%, #0A0A0A 100%)",
+                border: "1px solid #222222",
               }}
             >
-              <div style={{ fontSize: "9px", color: "#C5A059", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+              <div style={{ fontSize: "9px", color: "#71717A", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em" }}>
                 LIVE STOREFRONT PREVIEW
               </div>
-              <div style={{ fontSize: "11px", color: "#C5A059", fontWeight: 600, marginTop: "6px" }}>
+              <div style={{ fontSize: "11px", color: "#A1A1AA", fontWeight: 600, marginTop: "6px" }}>
                 {heroData.badge || "2026 Collection"}
               </div>
               <div style={{ fontSize: "16px", fontWeight: 700, color: "#FFF", fontFamily: "'Cormorant Garamond', Georgia, serif", marginTop: "2px" }}>
                 {heroData.title || "Mastery in horology."}
               </div>
-              <div style={{ fontSize: "11px", color: "#8EAA9C", marginTop: "4px" }}>
+              <div style={{ fontSize: "11px", color: "#71717A", marginTop: "4px" }}>
                 {heroData.subtitle}
               </div>
               <div style={{ marginTop: "10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontSize: "11px", fontWeight: 700, color: "#C5A059" }}>
+                <span style={{ fontSize: "11px", fontWeight: 700, color: "#FFFFFF" }}>
                   {heroData.featured_product_name}: {heroData.featured_product_price}
                 </span>
-                <span style={{ fontSize: "10px", padding: "2px 6px", borderRadius: "4px", background: "#006039", color: "#FFF" }}>
+                <span style={{ fontSize: "10px", padding: "2px 8px", borderRadius: "4px", background: "#FFFFFF", color: "#000000", fontWeight: 700 }}>
                   {heroData.discount_text}
                 </span>
               </div>
@@ -350,7 +351,7 @@ export default function AdminPromotionsPage() {
                     type="checkbox"
                     checked={heroData.is_active !== false}
                     onChange={(e) => setHeroData({ ...heroData, is_active: e.target.checked })}
-                    style={{ width: "16px", height: "16px", accentColor: "#C5A059" }}
+                    style={{ width: "16px", height: "16px", accentColor: "#FFFFFF" }}
                   />
                   <span style={{ fontSize: "12px", color: "#F8FAFC", fontWeight: 600 }}>Active on Storefront</span>
                 </label>
@@ -361,12 +362,13 @@ export default function AdminPromotionsPage() {
                   style={{
                     padding: "8px 20px",
                     borderRadius: "6px",
-                    background: "linear-gradient(135deg, #C5A059 0%, #B8860B 100%)",
-                    color: "#000",
+                    background: "#FFFFFF",
+                    color: "#050505",
                     fontSize: "12px",
                     fontWeight: 800,
                     cursor: "pointer",
                     border: "none",
+                    boxShadow: "0 2px 10px rgba(255, 255, 255, 0.15)",
                   }}
                 >
                   {savingHero ? "Publishing..." : "Publish Hero Changes ↗"}
@@ -380,18 +382,18 @@ export default function AdminPromotionsPage() {
             <div
               style={{
                 padding: "16px 20px",
-                borderBottom: "1px solid rgba(197, 160, 89, 0.15)",
+                borderBottom: "1px solid #1E1E1E",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                background: "#080E0B",
+                background: "#121212",
               }}
             >
               <div>
                 <div style={{ fontSize: "13.5px", fontWeight: 700, color: "#F8FAFC" }}>
                   2 · Flash Promotion & Checkout Coupon
                 </div>
-                <div style={{ fontSize: "11px", color: "#6B8577" }}>
+                <div style={{ fontSize: "11px", color: "#71717A" }}>
                   Controls promotional ticker and discount code recognized at checkout
                 </div>
               </div>
@@ -402,9 +404,9 @@ export default function AdminPromotionsPage() {
                   textTransform: "uppercase",
                   padding: "3px 8px",
                   borderRadius: "4px",
-                  background: saleData.is_active ? "rgba(0, 163, 98, 0.2)" : "rgba(239, 68, 68, 0.15)",
-                  color: saleData.is_active ? "#00A362" : "#F87171",
-                  border: `1px solid ${saleData.is_active ? "rgba(0, 163, 98, 0.3)" : "rgba(239, 68, 68, 0.3)"}`,
+                  background: saleData.is_active ? "rgba(16, 185, 129, 0.15)" : "rgba(239, 68, 68, 0.12)",
+                  color: saleData.is_active ? "#34D399" : "#F87171",
+                  border: `1px solid ${saleData.is_active ? "rgba(16, 185, 129, 0.3)" : "rgba(239, 68, 68, 0.25)"}`,
                 }}
               >
                 {saleData.is_active ? "Live on Store" : "Paused"}
@@ -417,28 +419,28 @@ export default function AdminPromotionsPage() {
                 margin: "16px 20px 0 20px",
                 padding: "16px",
                 borderRadius: "8px",
-                background: "linear-gradient(135deg, rgba(197, 160, 89, 0.2) 0%, rgba(10, 19, 15, 0.95) 100%)",
-                border: "1px solid rgba(197, 160, 89, 0.3)",
+                background: "linear-gradient(135deg, #141414 0%, #0A0A0A 100%)",
+                border: "1px solid #222222",
               }}
             >
-              <div style={{ fontSize: "9px", color: "#C5A059", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+              <div style={{ fontSize: "9px", color: "#71717A", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em" }}>
                 STOREFRONT CHECKOUT VOUCHER PREVIEW
               </div>
-              <div style={{ fontSize: "11px", color: "#00A362", fontWeight: 700, marginTop: "6px" }}>
+              <div style={{ fontSize: "11px", color: "#34D399", fontWeight: 700, marginTop: "6px" }}>
                 {saleData.badge || "Flash Promotion"}
               </div>
               <div style={{ fontSize: "16px", fontWeight: 700, color: "#FFF", fontFamily: "'Cormorant Garamond', Georgia, serif", marginTop: "2px" }}>
                 {saleData.title || "Limited Edition Flash Sale"}
               </div>
-              <div style={{ fontSize: "11px", color: "#8EAA9C", marginTop: "4px" }}>
+              <div style={{ fontSize: "11px", color: "#71717A", marginTop: "4px" }}>
                 {saleData.subtitle}
               </div>
               <div style={{ marginTop: "10px", display: "flex", alignItems: "center", gap: "10px" }}>
-                <span style={{ fontSize: "11px", color: "#64748B" }}>COUPON CODE:</span>
-                <span style={{ fontSize: "12px", fontWeight: 800, color: "#C5A059", fontFamily: "monospace", padding: "2px 8px", background: "rgba(0,0,0,0.4)", borderRadius: "4px", border: "1px dashed #C5A059" }}>
+                <span style={{ fontSize: "11px", color: "#71717A" }}>COUPON CODE:</span>
+                <span style={{ fontSize: "12px", fontWeight: 800, color: "#FFFFFF", fontFamily: "monospace", padding: "2px 8px", background: "#181818", borderRadius: "4px", border: "1px dashed #52525B" }}>
                   {saleData.coupon_code || "KRONO2026"}
                 </span>
-                <span style={{ fontSize: "11px", color: "#00A362", fontWeight: 600 }}>
+                <span style={{ fontSize: "11px", color: "#34D399", fontWeight: 600 }}>
                   ({saleData.discount_text || "Special Privilege"})
                 </span>
               </div>
@@ -487,7 +489,7 @@ export default function AdminPromotionsPage() {
                     type="checkbox"
                     checked={saleData.is_active !== false}
                     onChange={(e) => setSaleData({ ...saleData, is_active: e.target.checked })}
-                    style={{ width: "16px", height: "16px", accentColor: "#C5A059" }}
+                    style={{ width: "16px", height: "16px", accentColor: "#FFFFFF" }}
                   />
                   <span style={{ fontSize: "12px", color: "#F8FAFC", fontWeight: 600 }}>Active on Storefront</span>
                 </label>
@@ -498,12 +500,13 @@ export default function AdminPromotionsPage() {
                   style={{
                     padding: "8px 20px",
                     borderRadius: "6px",
-                    background: "linear-gradient(135deg, #006039 0%, #004D2E 100%)",
-                    border: "1px solid #00A362",
-                    color: "#FFF",
+                    background: "#FFFFFF",
+                    border: "none",
+                    color: "#050505",
                     fontSize: "12px",
-                    fontWeight: 700,
+                    fontWeight: 800,
                     cursor: "pointer",
+                    boxShadow: "0 2px 10px rgba(255, 255, 255, 0.15)",
                   }}
                 >
                   {savingSale ? "Publishing..." : "Publish Campaign Changes ↗"}

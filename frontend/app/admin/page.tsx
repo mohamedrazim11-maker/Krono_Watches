@@ -7,16 +7,16 @@ import { getProductImage } from "@/lib/productImages";
 
 const S = {
   card: {
-    background: "var(--card, #12221D)",
-    border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+    background: "#0D0D0D",
+    border: "1px solid #1E1E1E",
     borderRadius: "14px",
     padding: "22px",
-    boxShadow: "var(--neu-shadow-raised-sm, 4px 4px 10px rgba(0,0,0,0.7))",
+    boxShadow: "0 8px 30px rgba(0,0,0,0.7)",
   } as React.CSSProperties,
   label: {
     fontSize: "10.5px",
     fontWeight: 700,
-    color: "var(--accent-muted, #8EAA9C)",
+    color: "#71717A",
     textTransform: "uppercase" as const,
     letterSpacing: "0.08em",
     marginBottom: "8px",
@@ -24,14 +24,14 @@ const S = {
   value: {
     fontSize: "28px",
     fontWeight: 800,
-    color: "var(--foreground, #F8FAFC)",
+    color: "#F8FAFC",
     letterSpacing: "-0.5px",
     lineHeight: 1,
     fontFamily: "var(--font-mono, monospace)",
   } as React.CSSProperties,
   sub: {
     fontSize: "11.5px",
-    color: "var(--accent-muted, #8EAA9C)",
+    color: "#A1A1AA",
     marginTop: "6px",
     fontWeight: 500,
   } as React.CSSProperties,
@@ -39,18 +39,18 @@ const S = {
     padding: "13px 16px",
     fontSize: "10.5px",
     fontWeight: 700,
-    color: "var(--accent-muted, #8EAA9C)",
+    color: "#71717A",
     textTransform: "uppercase" as const,
     letterSpacing: "0.08em",
-    borderBottom: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
-    background: "var(--card-elevated, #162923)",
+    borderBottom: "1px solid #1A1A1A",
+    background: "#121212",
     whiteSpace: "nowrap" as const,
   } as React.CSSProperties,
   td: {
     padding: "14px 16px",
     fontSize: "12px",
-    color: "var(--foreground, #F8FAFC)",
-    borderBottom: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.15))",
+    color: "#F8FAFC",
+    borderBottom: "1px solid #1A1A1A",
     verticalAlign: "middle" as const,
   } as React.CSSProperties,
 };
@@ -59,7 +59,7 @@ function StatCard({ label, value, sub, accent }: { label: string; value: string 
   return (
     <div style={S.card}>
       <div style={S.label}>{label}</div>
-      <div style={{ ...S.value, color: accent || "var(--foreground, #F8FAFC)" }}>{value}</div>
+      <div style={{ ...S.value, color: accent || "#F8FAFC" }}>{value}</div>
       <div style={S.sub}>{sub}</div>
     </div>
   );
@@ -157,15 +157,15 @@ export default function AdminDashboard() {
             bottom: "28px",
             right: "32px",
             zIndex: 9999,
-            background: "var(--card-elevated, #162923)",
-            border: "1px solid var(--accent, #00A362)",
-            borderLeft: "4px solid var(--accent, #00A362)",
+            background: "#141414",
+            border: "1px solid #2E2E2E",
+            borderLeft: "4px solid #FFFFFF",
             borderRadius: "8px",
             padding: "14px 20px",
             fontSize: "12.5px",
             fontWeight: 600,
-            color: "var(--foreground, #F8FAFC)",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.6)",
+            color: "#FFFFFF",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.8)",
           }}
         >
           ✓ {feedback}
@@ -175,8 +175,8 @@ export default function AdminDashboard() {
       {/* Top Banner / Storefront Sync Bar */}
       <div
         style={{
-          background: "linear-gradient(90deg, rgba(0, 96, 57, 0.35) 0%, rgba(197, 160, 89, 0.18) 100%)",
-          border: "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))",
+          background: "linear-gradient(135deg, #141414 0%, #0A0A0A 100%)",
+          border: "1px solid #222222",
           borderRadius: "14px",
           padding: "16px 22px",
           marginBottom: "24px",
@@ -185,7 +185,7 @@ export default function AdminDashboard() {
           justifyContent: "space-between",
           flexWrap: "wrap",
           gap: "14px",
-          boxShadow: "var(--neu-shadow-raised-sm, 4px 4px 10px rgba(0,0,0,0.7))",
+          boxShadow: "0 8px 30px rgba(0,0,0,0.7)",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
@@ -193,24 +193,24 @@ export default function AdminDashboard() {
             style={{
               width: "36px",
               height: "36px",
-              borderRadius: "50%",
-              background: "var(--rolex-green, #006039)",
-              border: "1px solid var(--rolex-gold, #C5A059)",
+              borderRadius: "8px",
+              background: "linear-gradient(135deg, #222222 0%, #111111 100%)",
+              border: "1px solid rgba(255, 255, 255, 0.18)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "var(--rolex-gold, #C5A059)",
-              fontSize: "18px",
-              boxShadow: "0 0 12px var(--gold-glow, rgba(197, 160, 89, 0.28))",
+              color: "#FFFFFF",
+              fontSize: "16px",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.5)",
             }}
           >
-            ♔
+            ✦
           </div>
           <div>
-            <div style={{ fontSize: "13.5px", fontWeight: 800, color: "var(--foreground, #F8FAFC)", letterSpacing: "0.02em" }}>
-              Krono Haute Horlogerie · Storefront Synchronization Active
+            <div style={{ fontSize: "13.5px", fontWeight: 800, color: "#F8FAFC", letterSpacing: "0.02em" }}>
+              Krono Atelier · Storefront Synchronization Active
             </div>
-            <div style={{ fontSize: "11px", color: "var(--accent-muted, #8EAA9C)", marginTop: "1px" }}>
+            <div style={{ fontSize: "11px", color: "#A1A1AA", marginTop: "1px" }}>
               Live inventory vault, homepage showcases, checkout orders, and flash campaign banners are unified.
             </div>
           </div>
@@ -226,13 +226,16 @@ export default function AdminDashboard() {
               gap: "6px",
               padding: "8px 16px",
               borderRadius: "8px",
-              background: "linear-gradient(145deg, #F0CF8B 0%, #B88E33 100%)",
-              color: "#08110D",
+              background: "#FFFFFF",
+              color: "#000000",
               fontSize: "12px",
               fontWeight: 800,
               textDecoration: "none",
-              boxShadow: "0 2px 10px rgba(197, 160, 89, 0.3)",
+              boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+              transition: "background 140ms ease",
             }}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "#E4E4E7")}
+            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "#FFFFFF")}
           >
             <span>Live Storefront ↗</span>
           </Link>
@@ -245,13 +248,16 @@ export default function AdminDashboard() {
               gap: "6px",
               padding: "8px 16px",
               borderRadius: "8px",
-              background: "var(--card-elevated, #162923)",
-              border: "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))",
-              color: "var(--rolex-gold, #C5A059)",
+              background: "#141414",
+              border: "1px solid #262626",
+              color: "#FFFFFF",
               fontSize: "12px",
               fontWeight: 700,
               textDecoration: "none",
+              transition: "border-color 140ms ease",
             }}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "#3F3F46")}
+            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "#262626")}
           >
             <span>Catalogue View ↗</span>
           </Link>
@@ -261,22 +267,22 @@ export default function AdminDashboard() {
       {/* Page Header */}
       <div style={{ marginBottom: "28px", display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <div style={{ fontSize: "11px", fontWeight: 800, color: "var(--rolex-gold, #C5A059)", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "6px" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "#71717A", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "6px" }}>
             Atelier Management Suite
           </div>
           <h1
             style={{
-              fontSize: "28px",
+              fontSize: "26px",
               fontWeight: 800,
-              color: "var(--foreground, #F8FAFC)",
+              color: "#FFFFFF",
               margin: 0,
-              fontFamily: "var(--font-serif, 'Cormorant Garamond', Georgia, serif)",
-              letterSpacing: "0.02em",
+              fontFamily: "var(--font-sans, system-ui, sans-serif)",
+              letterSpacing: "-0.02em",
             }}
           >
             Horological Operations & Overview
           </h1>
-          <p style={{ fontSize: "12.5px", color: "var(--accent-muted, #8EAA9C)", marginTop: "4px" }}>
+          <p style={{ fontSize: "12.5px", color: "#A1A1AA", marginTop: "4px" }}>
             Real-time certified Swiss inventory, VIP client acquisitions, and storefront curation.
           </p>
         </div>
@@ -290,14 +296,17 @@ export default function AdminDashboard() {
               gap: "6px",
               padding: "9px 18px",
               borderRadius: "8px",
-              background: "linear-gradient(145deg, #007345 0%, #004D2E 100%)",
-              border: "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))",
-              color: "#FFFFFF",
+              background: "#FFFFFF",
+              border: "1px solid #FFFFFF",
+              color: "#000000",
               fontSize: "12px",
-              fontWeight: 700,
+              fontWeight: 800,
               textDecoration: "none",
-              boxShadow: "0 2px 10px rgba(0, 96, 57, 0.4)",
+              boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+              transition: "background 140ms ease",
             }}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "#E4E4E7")}
+            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "#FFFFFF")}
           >
             <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -312,13 +321,16 @@ export default function AdminDashboard() {
               gap: "6px",
               padding: "9px 18px",
               borderRadius: "8px",
-              background: "rgba(197, 160, 89, 0.15)",
-              border: "1px solid var(--rolex-gold, #C5A059)",
-              color: "var(--rolex-gold, #C5A059)",
+              background: "#141414",
+              border: "1px solid #282828",
+              color: "#FFFFFF",
               fontSize: "12px",
-              fontWeight: 800,
+              fontWeight: 700,
               textDecoration: "none",
+              transition: "border-color 140ms ease",
             }}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "#3F3F46")}
+            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "#282828")}
           >
             View VIP Orders ({orders.length})
           </Link>
@@ -330,13 +342,16 @@ export default function AdminDashboard() {
               gap: "6px",
               padding: "9px 18px",
               borderRadius: "8px",
-              background: "var(--card, #12221D)",
-              border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
-              color: "var(--accent-muted, #8EAA9C)",
+              background: "#141414",
+              border: "1px solid #222222",
+              color: "#A1A1AA",
               fontSize: "12px",
               fontWeight: 600,
               textDecoration: "none",
+              transition: "color 140ms ease",
             }}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#FFFFFF")}
+            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#A1A1AA")}
           >
             Campaigns
           </Link>
@@ -356,25 +371,25 @@ export default function AdminDashboard() {
             label="Products"
             value={stats?.totalProducts || products.length}
             sub={`${stats?.featuredCount || 0} featured on storefront`}
-            accent="var(--foreground, #F8FAFC)"
+            accent="#FFFFFF"
           />
           <StatCard
             label="Orders"
             value={stats?.totalOrders || orders.length}
             sub={`${fmt(totalOrderRevenue)} total revenue`}
-            accent="var(--rolex-gold, #C5A059)"
+            accent="#FFFFFF"
           />
           <StatCard
             label="Low Stock"
             value={stats?.lowStockCount ?? products.filter((p) => (p.stock_qty ?? p.stock_count ?? 0) <= 5).length}
             sub="Timepieces with ≤ 5 units in vault"
-            accent="#EAB308"
+            accent="#F59E0B"
           />
           <StatCard
             label="Database Status"
             value="Connected ✓"
             sub="Source of truth persistent DB"
-            accent="var(--accent, #00A362)"
+            accent="#22C55E"
           />
         </div>
       )}
@@ -385,8 +400,8 @@ export default function AdminDashboard() {
           style={{
             ...S.card,
             marginBottom: "28px",
-            background: "linear-gradient(135deg, var(--card, #12221D) 0%, var(--card-elevated, #162923) 100%)",
-            border: "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))",
+            background: "linear-gradient(135deg, #141414 0%, #0A0A0A 100%)",
+            border: "1px solid #222222",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -403,21 +418,22 @@ export default function AdminDashboard() {
                   textTransform: "uppercase",
                   padding: "3px 8px",
                   borderRadius: "4px",
-                  background: "var(--rolex-green, #006039)",
+                  background: "#222222",
                   color: "#FFFFFF",
-                  border: "1px solid var(--accent, #00A362)",
+                  border: "1px solid #333333",
+                  fontFamily: "var(--font-mono, monospace)",
                 }}
               >
                 LIVE STOREFRONT HERO DROP
               </span>
-              <span style={{ fontSize: "11px", color: "var(--rolex-gold, #C5A059)", fontWeight: 700 }}>
+              <span style={{ fontSize: "11px", color: "#A1A1AA", fontWeight: 700 }}>
                 {heroPoster.badge || "2026 Season Collection"}
               </span>
             </div>
-            <h3 style={{ margin: 0, fontSize: "17px", fontWeight: 800, color: "var(--foreground, #F8FAFC)", fontFamily: "var(--font-serif, 'Cormorant Garamond', Georgia, serif)" }}>
+            <h3 style={{ margin: 0, fontSize: "17px", fontWeight: 800, color: "#FFFFFF", fontFamily: "var(--font-sans, system-ui, sans-serif)" }}>
               "{heroPoster.title}"
             </h3>
-            <p style={{ margin: "4px 0 0 0", fontSize: "12px", color: "var(--accent-muted, #8EAA9C)" }}>
+            <p style={{ margin: "4px 0 0 0", fontSize: "12px", color: "#71717A" }}>
               Featured Showcase: {heroPoster.featured_product_name || "Aurelia Master Classic"} · {heroPoster.featured_product_price || "LKR 385,000"} · {heroPoster.discount_text || "Save 30% Today"}
             </p>
           </div>
@@ -427,13 +443,16 @@ export default function AdminDashboard() {
             style={{
               padding: "9px 18px",
               borderRadius: "8px",
-              background: "rgba(197, 160, 89, 0.15)",
-              border: "1px solid var(--rolex-gold, #C5A059)",
-              color: "var(--rolex-gold, #C5A059)",
+              background: "#181818",
+              border: "1px solid #2E2E2E",
+              color: "#FFFFFF",
               fontSize: "12px",
-              fontWeight: 800,
+              fontWeight: 700,
               textDecoration: "none",
+              transition: "border-color 140ms ease",
             }}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "#555555")}
+            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "#2E2E2E")}
           >
             Edit Storefront Hero Campaign →
           </Link>
@@ -445,15 +464,15 @@ export default function AdminDashboard() {
         <div
           style={{
             padding: "16px 20px",
-            borderBottom: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+            borderBottom: "1px solid #1A1A1A",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            background: "var(--card-elevated, #162923)",
+            background: "#121212",
           }}
         >
           <div>
-            <div style={{ fontSize: "14px", fontWeight: 800, color: "var(--foreground, #F8FAFC)", display: "flex", alignItems: "center", gap: "8px" }}>
+            <div style={{ fontSize: "14px", fontWeight: 800, color: "#F8FAFC", display: "flex", alignItems: "center", gap: "8px" }}>
               <span>Recent Client Watch Orders</span>
               <span
                 style={{
@@ -461,19 +480,19 @@ export default function AdminDashboard() {
                   fontWeight: 700,
                   padding: "2px 6px",
                   borderRadius: "4px",
-                  background: "var(--accent-light, rgba(0, 163, 98, 0.15))",
-                  color: "var(--accent, #00A362)",
-                  border: "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))",
+                  background: "#1A1A1A",
+                  color: "#E4E4E7",
+                  border: "1px solid #2E2E2E",
                 }}
               >
                 Storefront Live
               </span>
             </div>
-            <div style={{ fontSize: "11px", color: "var(--accent-muted, #8EAA9C)", marginTop: "2px" }}>
+            <div style={{ fontSize: "11px", color: "#71717A", marginTop: "2px" }}>
               Orders placed by clients via online checkout & PayHere
             </div>
           </div>
-          <Link href="/admin/orders" style={{ fontSize: "11.5px", fontWeight: 700, color: "var(--rolex-gold, #C5A059)", textDecoration: "none" }}>
+          <Link href="/admin/orders" style={{ fontSize: "11.5px", fontWeight: 700, color: "#FFFFFF", textDecoration: "none" }}>
             View all orders ({orders.length}) →
           </Link>
         </div>
@@ -493,14 +512,14 @@ export default function AdminDashboard() {
               {loading ? (
                 [...Array(2)].map((_, i) => (
                   <tr key={i}>
-                    <td colSpan={7} style={{ padding: "16px", textAlign: "center", color: "var(--accent-muted, #8EAA9C)" }}>
+                    <td colSpan={7} style={{ padding: "16px", textAlign: "center", color: "#71717A" }}>
                       Loading client orders...
                     </td>
                   </tr>
                 ))
               ) : orders.length === 0 ? (
                 <tr>
-                  <td colSpan={7} style={{ padding: "32px 16px", textAlign: "center", color: "var(--accent-muted, #8EAA9C)" }}>
+                  <td colSpan={7} style={{ padding: "32px 16px", textAlign: "center", color: "#71717A" }}>
                     No orders placed yet. Simulate a checkout on the storefront to test live tracking!
                   </td>
                 </tr>
@@ -509,30 +528,30 @@ export default function AdminDashboard() {
                   <tr
                     key={o.id || o.order_number}
                     style={{ transition: "background 100ms" }}
-                    onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--accent-light, rgba(0, 163, 98, 0.15))")}
+                    onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(255, 255, 255, 0.03)")}
                     onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "transparent")}
                   >
                     <td style={S.td}>
-                      <span style={{ fontWeight: 800, color: "var(--rolex-gold, #C5A059)", fontFamily: "var(--font-mono, monospace)" }}>
+                      <span style={{ fontWeight: 800, color: "#FFFFFF", fontFamily: "var(--font-mono, monospace)" }}>
                         {o.order_number || o.id}
                       </span>
                     </td>
                     <td style={S.td}>
-                      <div style={{ fontWeight: 700, color: "var(--foreground, #F8FAFC)" }}>{o.customer_name}</div>
-                      <div style={{ fontSize: "10.5px", color: "var(--accent-muted, #8EAA9C)" }}>{o.customer_email}</div>
+                      <div style={{ fontWeight: 700, color: "#F8FAFC" }}>{o.customer_name}</div>
+                      <div style={{ fontSize: "10.5px", color: "#71717A" }}>{o.customer_email}</div>
                     </td>
                     <td style={S.td}>
                       <div style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {(o.items || []).map((it) => `${it.product_name} (x${it.quantity})`).join(", ") || "Timepiece"}
                       </div>
                       {o.wrist_size && (
-                        <div style={{ fontSize: "10px", color: "var(--rolex-gold, #C5A059)", marginTop: "2px" }}>
+                        <div style={{ fontSize: "10px", color: "#A1A1AA", marginTop: "2px" }}>
                           Sizing: {o.wrist_size}
                         </div>
                       )}
                     </td>
                     <td style={S.td}>
-                      <span style={{ fontWeight: 800, color: "var(--foreground, #F8FAFC)", fontFamily: "var(--font-mono, monospace)" }}>
+                      <span style={{ fontWeight: 800, color: "#F8FAFC", fontFamily: "var(--font-mono, monospace)" }}>
                         {fmt(o.total_amount)}
                       </span>
                     </td>
@@ -543,9 +562,9 @@ export default function AdminDashboard() {
                           fontWeight: 700,
                           padding: "2px 6px",
                           borderRadius: "4px",
-                          background: o.payment_status === "completed" ? "rgba(0, 163, 98, 0.2)" : "rgba(234, 179, 8, 0.15)",
-                          color: o.payment_status === "completed" ? "var(--accent, #00A362)" : "#EAB308",
-                          border: o.payment_status === "completed" ? "1px solid var(--accent, #00A362)" : "1px solid rgba(234, 179, 8, 0.3)",
+                          background: o.payment_status === "completed" ? "rgba(16, 185, 129, 0.15)" : "rgba(245, 158, 11, 0.15)",
+                          color: o.payment_status === "completed" ? "#34D399" : "#FBBF24",
+                          border: o.payment_status === "completed" ? "1px solid rgba(16, 185, 129, 0.3)" : "1px solid rgba(245, 158, 11, 0.3)",
                         }}
                       >
                         {o.payment_status === "completed" ? "Paid" : "Pending"}
@@ -558,12 +577,12 @@ export default function AdminDashboard() {
                           fontWeight: 700,
                           color:
                             o.status === "delivered"
-                              ? "var(--accent, #00A362)"
+                              ? "#34D399"
                               : o.status === "authenticated"
-                              ? "var(--rolex-gold, #C5A059)"
+                              ? "#FFFFFF"
                               : o.status === "dispatched"
                               ? "#C084FC"
-                              : "var(--foreground, #F8FAFC)",
+                              : "#F8FAFC",
                           textTransform: "capitalize",
                         }}
                       >
@@ -578,9 +597,9 @@ export default function AdminDashboard() {
                             style={{
                               padding: "4px 8px",
                               borderRadius: "4px",
-                              background: "rgba(197, 160, 89, 0.15)",
-                              border: "1px solid var(--rolex-gold, #C5A059)",
-                              color: "var(--rolex-gold, #C5A059)",
+                              background: "#181818",
+                              border: "1px solid #333333",
+                              color: "#FFFFFF",
                               fontSize: "10.5px",
                               fontWeight: 700,
                               cursor: "pointer",
@@ -594,9 +613,9 @@ export default function AdminDashboard() {
                           style={{
                             padding: "4px 8px",
                             borderRadius: "4px",
-                            background: "var(--card-elevated, #162923)",
-                            border: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
-                            color: "var(--accent-muted, #8EAA9C)",
+                            background: "#141414",
+                            border: "1px solid #262626",
+                            color: "#A1A1AA",
                             fontSize: "10.5px",
                             textDecoration: "none",
                           }}
@@ -619,22 +638,22 @@ export default function AdminDashboard() {
         <div
           style={{
             padding: "16px 20px",
-            borderBottom: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+            borderBottom: "1px solid #1A1A1A",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            background: "var(--card-elevated, #162923)",
+            background: "#121212",
           }}
         >
           <div>
-            <div style={{ fontSize: "14px", fontWeight: 800, color: "var(--foreground, #F8FAFC)" }}>
+            <div style={{ fontSize: "14px", fontWeight: 800, color: "#F8FAFC" }}>
               Timepiece Catalogue & Storefront Curation
             </div>
-            <div style={{ fontSize: "11px", color: "var(--accent-muted, #8EAA9C)", marginTop: "2px" }}>
+            <div style={{ fontSize: "11px", color: "#71717A", marginTop: "2px" }}>
               Manage certified movements, retail pricing, and storefront homepage showcases.
             </div>
           </div>
-          <Link href="/admin/products" style={{ fontSize: "11.5px", fontWeight: 700, color: "var(--rolex-gold, #C5A059)", textDecoration: "none" }}>
+          <Link href="/admin/products" style={{ fontSize: "11.5px", fontWeight: 700, color: "#FFFFFF", textDecoration: "none" }}>
             View all timepieces ({stats?.totalProducts || 0}) →
           </Link>
         </div>
@@ -654,7 +673,7 @@ export default function AdminDashboard() {
               {loading
                 ? [...Array(5)].map((_, i) => (
                     <tr key={i}>
-                      <td colSpan={8} style={{ padding: "16px", textAlign: "center", color: "var(--accent-muted, #8EAA9C)" }}>
+                      <td colSpan={8} style={{ padding: "16px", textAlign: "center", color: "#71717A" }}>
                         Loading catalogue...
                       </td>
                     </tr>
@@ -664,7 +683,7 @@ export default function AdminDashboard() {
                       <tr
                         key={p.id}
                         style={{ transition: "background 100ms" }}
-                        onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--accent-light, rgba(0, 163, 98, 0.15))")}
+                        onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "rgba(255, 255, 255, 0.03)")}
                         onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "transparent")}
                       >
                         {/* Product Image and Name */}
@@ -676,8 +695,8 @@ export default function AdminDashboard() {
                                 height: "42px",
                                 borderRadius: "8px",
                                 overflow: "hidden",
-                                background: "var(--card-elevated, #162923)",
-                                border: "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))",
+                                background: "#141414",
+                                border: "1px solid #262626",
                                 flexShrink: 0,
                               }}
                             >
@@ -689,10 +708,10 @@ export default function AdminDashboard() {
                               />
                             </div>
                             <div>
-                              <div style={{ fontSize: "12.5px", fontWeight: 700, color: "var(--foreground, #F8FAFC)", whiteSpace: "nowrap" }}>
+                              <div style={{ fontSize: "12.5px", fontWeight: 700, color: "#F8FAFC", whiteSpace: "nowrap" }}>
                                 {p.name}
                               </div>
-                              <div style={{ fontSize: "10.5px", color: "var(--accent-muted, #8EAA9C)", fontFamily: "var(--font-mono, monospace)", marginTop: "1px" }}>
+                              <div style={{ fontSize: "10.5px", color: "#71717A", fontFamily: "var(--font-mono, monospace)", marginTop: "1px" }}>
                                 Ref: {p.id.slice(0, 14)}
                               </div>
                             </div>
@@ -705,7 +724,7 @@ export default function AdminDashboard() {
                             style={{
                               fontSize: "11px",
                               fontWeight: 800,
-                              color: "var(--rolex-gold, #C5A059)",
+                              color: "#FFFFFF",
                               textTransform: "uppercase",
                               letterSpacing: "0.04em",
                             }}
@@ -716,31 +735,31 @@ export default function AdminDashboard() {
 
                         {/* Movement */}
                         <td style={S.td}>
-                          <div style={{ fontSize: "11.5px", color: "var(--foreground, #F8FAFC)" }}>
+                          <div style={{ fontSize: "11.5px", color: "#F8FAFC" }}>
                             {p.movement || "Swiss Calibre"}
                           </div>
-                          <div style={{ fontSize: "10px", color: "var(--accent-muted, #8EAA9C)" }}>
+                          <div style={{ fontSize: "10px", color: "#71717A" }}>
                             {p.category}
                           </div>
                         </td>
 
                         {/* Case & Size */}
                         <td style={S.td}>
-                          <div style={{ fontSize: "11.5px", color: "var(--foreground, #F8FAFC)" }}>
+                          <div style={{ fontSize: "11.5px", color: "#F8FAFC" }}>
                             {p.case_size || "40mm"}
                           </div>
-                          <div style={{ fontSize: "10px", color: "var(--accent-muted, #8EAA9C)" }}>
+                          <div style={{ fontSize: "10px", color: "#71717A" }}>
                             {p.case_material || "316L Steel"}
                           </div>
                         </td>
 
                         {/* Price */}
                         <td style={S.td}>
-                          <div style={{ fontWeight: 800, color: "var(--foreground, #F8FAFC)", fontFamily: "var(--font-mono, monospace)" }}>
+                          <div style={{ fontWeight: 800, color: "#F8FAFC", fontFamily: "var(--font-mono, monospace)" }}>
                             {fmt(p.price)}
                           </div>
                           {p.old_price && p.old_price > p.price ? (
-                            <div style={{ fontSize: "10px", color: "var(--accent-muted, #8EAA9C)", textDecoration: "line-through" }}>
+                            <div style={{ fontSize: "10px", color: "#71717A", textDecoration: "line-through" }}>
                               {fmt(p.old_price)}
                             </div>
                           ) : null}
@@ -754,9 +773,9 @@ export default function AdminDashboard() {
                               fontWeight: 700,
                               padding: "3px 8px",
                               borderRadius: "6px",
-                              background: p.in_stock !== false ? "rgba(0, 163, 98, 0.18)" : "rgba(239, 68, 68, 0.15)",
-                              color: p.in_stock !== false ? "var(--accent, #00A362)" : "#F87171",
-                              border: p.in_stock !== false ? "1px solid var(--accent, #00A362)" : "1px solid rgba(239, 68, 68, 0.3)",
+                              background: p.in_stock !== false ? "rgba(16, 185, 129, 0.15)" : "rgba(239, 68, 68, 0.15)",
+                              color: p.in_stock !== false ? "#34D399" : "#F87171",
+                              border: p.in_stock !== false ? "1px solid rgba(16, 185, 129, 0.3)" : "1px solid rgba(239, 68, 68, 0.3)",
                             }}
                           >
                             {p.in_stock !== false ? `${p.stock_count ?? 5} in vault` : "Sold Out"}
@@ -769,12 +788,12 @@ export default function AdminDashboard() {
                             onClick={() => handleToggleFeatured(p)}
                             style={{
                               fontSize: "11px",
-                              fontWeight: 800,
+                              fontWeight: 700,
                               padding: "5px 12px",
                               borderRadius: "6px",
-                              background: p.is_featured ? "rgba(197, 160, 89, 0.22)" : "var(--card-elevated, #162923)",
-                              color: p.is_featured ? "var(--rolex-gold, #C5A059)" : "var(--accent-muted, #8EAA9C)",
-                              border: p.is_featured ? "1px solid var(--rolex-gold, #C5A059)" : "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+                              background: p.is_featured ? "rgba(255, 255, 255, 0.15)" : "#141414",
+                              color: p.is_featured ? "#FFFFFF" : "#71717A",
+                              border: p.is_featured ? "1px solid rgba(255, 255, 255, 0.3)" : "1px solid #262626",
                               cursor: "pointer",
                               transition: "all 120ms ease",
                             }}
@@ -793,11 +812,11 @@ export default function AdminDashboard() {
                               style={{
                                 padding: "5px 10px",
                                 borderRadius: "6px",
-                                background: "rgba(197, 160, 89, 0.12)",
-                                border: "1px solid var(--rolex-gold, #C5A059)",
-                                color: "var(--rolex-gold, #C5A059)",
+                                background: "#141414",
+                                border: "1px solid #282828",
+                                color: "#FFFFFF",
                                 fontSize: "11px",
-                                fontWeight: 700,
+                                fontWeight: 600,
                                 textDecoration: "none",
                               }}
                               title="Inspect this timepiece on the live storefront"

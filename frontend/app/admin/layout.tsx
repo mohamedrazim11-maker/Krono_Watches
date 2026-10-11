@@ -96,22 +96,22 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       className="flex h-screen w-full overflow-hidden"
       style={{
         fontFamily: "var(--font-sans, 'Inter', system-ui, sans-serif)",
-        background: "var(--background, #0E1A16)",
-        color: "var(--foreground, #F8FAFC)",
+        background: "#050505",
+        color: "#F8FAFC",
       }}
     >
       {/* Sidebar */}
       <aside
         style={{
           width: sidebarOpen ? "256px" : "68px",
-          background: "var(--card, #12221D)",
-          borderRight: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+          background: "#0A0A0A",
+          borderRight: "1px solid #1A1A1A",
           display: "flex",
           flexDirection: "column",
           flexShrink: 0,
           transition: "width 220ms cubic-bezier(0.4, 0, 0.2, 1)",
           overflow: "hidden",
-          boxShadow: "var(--neu-shadow-raised, 8px 8px 20px rgba(0, 0, 0, 0.75))",
+          boxShadow: "0 8px 30px rgba(0, 0, 0, 0.8)",
           zIndex: 20,
         }}
       >
@@ -122,29 +122,28 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             display: "flex",
             alignItems: "center",
             padding: "0 16px",
-            borderBottom: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+            borderBottom: "1px solid #1A1A1A",
             gap: "12px",
             flexShrink: 0,
-            background: "linear-gradient(180deg, var(--accent-light, rgba(0, 163, 98, 0.15)) 0%, transparent 100%)",
+            background: "linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%)",
           }}
         >
           <div
             style={{
               width: "36px",
               height: "36px",
-              borderRadius: "10px",
-              background: "linear-gradient(135deg, var(--rolex-green, #006039) 0%, var(--rolex-green-dark, #00482B) 60%, var(--rolex-gold, #C5A059) 100%)",
-              border: "1px solid var(--rolex-gold, #C5A059)",
+              borderRadius: "8px",
+              background: "linear-gradient(135deg, #222222 0%, #111111 100%)",
+              border: "1px solid rgba(255, 255, 255, 0.18)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
-              boxShadow: "0 2px 12px var(--gold-glow, rgba(197, 160, 89, 0.28))",
+              boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
             }}
           >
-            {/* Crown / K Icon */}
-            <span style={{ fontSize: "16px", fontWeight: 800, color: "var(--rolex-gold, #C5A059)" }}>
-              ♔
+            <span style={{ fontSize: "14px", fontWeight: 800, color: "#FFFFFF" }}>
+              ✦
             </span>
           </div>
 
@@ -152,12 +151,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <div style={{ overflow: "hidden", whiteSpace: "nowrap" }}>
               <div
                 style={{
-                  fontSize: "14px",
+                  fontSize: "13px",
                   fontWeight: 800,
-                  color: "var(--foreground, #F8FAFC)",
+                  color: "#FFFFFF",
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  fontFamily: "var(--font-serif, 'Cormorant Garamond', Georgia, serif)",
+                  fontFamily: "var(--font-sans, system-ui, sans-serif)",
                 }}
               >
                 KRONO ATELIER
@@ -165,14 +164,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               <div
                 style={{
                   fontSize: "9.5px",
-                  color: "var(--rolex-gold, #C5A059)",
-                  fontWeight: 700,
+                  color: "#A1A1AA",
+                  fontWeight: 600,
                   letterSpacing: "0.08em",
                   marginTop: "1px",
                   textTransform: "uppercase",
                 }}
               >
-                Haute Horlogerie Console
+                Administrative Console
               </div>
             </div>
           )}
@@ -185,8 +184,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               margin: "12px 12px 6px 12px",
               padding: "8px 12px",
               borderRadius: "8px",
-              background: "var(--card-elevated, #162923)",
-              border: "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))",
+              background: "#111111",
+              border: "1px solid #222222",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
@@ -198,17 +197,18 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                   width: "7px",
                   height: "7px",
                   borderRadius: "50%",
-                  background: "var(--accent, #00A362)",
-                  boxShadow: "0 0 10px var(--accent, #00A362)",
+                  background: "#22C55E",
+                  boxShadow: "0 0 8px rgba(34, 197, 94, 0.6)",
                 }}
               />
               <span
                 style={{
                   fontSize: "10px",
                   fontWeight: 700,
-                  color: "var(--accent, #00A362)",
+                  color: "#E4E4E7",
                   letterSpacing: "0.06em",
                   textTransform: "uppercase",
+                  fontFamily: "var(--font-mono, monospace)",
                 }}
               >
                 Storefront Synced
@@ -219,13 +219,16 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               target="_blank"
               style={{
                 fontSize: "10px",
-                color: "var(--rolex-gold, #C5A059)",
-                fontWeight: 700,
+                color: "#A1A1AA",
+                fontWeight: 600,
                 textDecoration: "none",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "3px",
+                transition: "color 140ms ease",
               }}
+              onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#FFFFFF")}
+              onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#A1A1AA")}
             >
               Live ↗
             </Link>
@@ -241,7 +244,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                   style={{
                     fontSize: "9.5px",
                     fontWeight: 700,
-                    color: "var(--accent-muted, #8EAA9C)",
+                    color: "#71717A",
                     textTransform: "uppercase",
                     letterSpacing: "0.12em",
                     padding: "0 10px",
@@ -267,27 +270,33 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                       marginBottom: "3px",
                       fontSize: "12.5px",
                       fontWeight: isActive ? 700 : 500,
-                      color: isActive ? "var(--foreground, #F8FAFC)" : "var(--accent-muted, #8EAA9C)",
+                      color: isActive ? "#FFFFFF" : "#A1A1AA",
                       background: isActive
-                        ? "linear-gradient(90deg, rgba(0, 96, 57, 0.45) 0%, rgba(197, 160, 89, 0.14) 100%)"
+                        ? "linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)"
                         : "transparent",
-                      borderLeft: isActive ? "3px solid var(--rolex-gold, #C5A059)" : "3px solid transparent",
+                      borderLeft: isActive ? "3px solid #FFFFFF" : "3px solid transparent",
                       border: isActive
-                        ? "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))"
+                        ? "1px solid rgba(255, 255, 255, 0.12)"
                         : "1px solid transparent",
                       textDecoration: "none",
                       transition: "all 140ms ease",
                       whiteSpace: "nowrap",
                     }}
                     onMouseEnter={(e) => {
-                      if (!isActive) (e.currentTarget as HTMLElement).style.background = "var(--accent-light, rgba(0, 163, 98, 0.15))";
+                      if (!isActive) {
+                        (e.currentTarget as HTMLElement).style.background = "rgba(255, 255, 255, 0.04)";
+                        (e.currentTarget as HTMLElement).style.color = "#FFFFFF";
+                      }
                     }}
                     onMouseLeave={(e) => {
-                      if (!isActive) (e.currentTarget as HTMLElement).style.background = "transparent";
+                      if (!isActive) {
+                        (e.currentTarget as HTMLElement).style.background = "transparent";
+                        (e.currentTarget as HTMLElement).style.color = "#A1A1AA";
+                      }
                     }}
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <span style={{ flexShrink: 0, color: isActive ? "var(--rolex-gold, #C5A059)" : "var(--accent-muted, #8EAA9C)" }}>
+                      <span style={{ flexShrink: 0, color: isActive ? "#FFFFFF" : "#71717A" }}>
                         {item.icon}
                       </span>
                       {sidebarOpen && <span>{item.label}</span>}
@@ -299,8 +308,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                           fontWeight: 700,
                           padding: "2px 6px",
                           borderRadius: "4px",
-                          background: isActive ? "rgba(197, 160, 89, 0.2)" : "rgba(255, 255, 255, 0.05)",
-                          color: isActive ? "var(--rolex-gold, #C5A059)" : "var(--accent-muted, #8EAA9C)",
+                          background: isActive ? "rgba(255, 255, 255, 0.15)" : "rgba(255, 255, 255, 0.05)",
+                          color: isActive ? "#FFFFFF" : "#A1A1AA",
                           letterSpacing: "0.04em",
                           textTransform: "uppercase",
                         }}
@@ -319,9 +328,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <div
           style={{
             padding: "12px 10px",
-            borderTop: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
+            borderTop: "1px solid #1A1A1A",
             flexShrink: 0,
-            background: "var(--card-elevated, #162923)",
+            background: "#0A0A0A",
           }}
         >
           <Link
@@ -335,21 +344,21 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               borderRadius: "8px",
               fontSize: "12px",
               fontWeight: 700,
-              color: "var(--rolex-gold, #C5A059)",
-              background: "rgba(197, 160, 89, 0.1)",
-              border: "1px solid var(--rolex-gold, #C5A059)",
+              color: "#FFFFFF",
+              background: "#141414",
+              border: "1px solid #262626",
               textDecoration: "none",
               transition: "all 140ms ease",
               whiteSpace: "nowrap",
               overflow: "hidden",
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "var(--rolex-gold, #C5A059)";
-              (e.currentTarget as HTMLElement).style.color = "#000";
+              (e.currentTarget as HTMLElement).style.background = "#202020";
+              (e.currentTarget as HTMLElement).style.borderColor = "#3F3F46";
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "rgba(197, 160, 89, 0.1)";
-              (e.currentTarget as HTMLElement).style.color = "var(--rolex-gold, #C5A059)";
+              (e.currentTarget as HTMLElement).style.background = "#141414";
+              (e.currentTarget as HTMLElement).style.borderColor = "#262626";
             }}
           >
             <svg
@@ -377,7 +386,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               marginTop: "4px",
               fontSize: "11px",
               fontWeight: 500,
-              color: "var(--accent-muted, #8EAA9C)",
+              color: "#71717A",
               background: "transparent",
               border: "none",
               cursor: "pointer",
@@ -386,8 +395,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               overflow: "hidden",
               transition: "color 120ms ease",
             }}
-            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--rolex-gold, #C5A059)")}
-            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--accent-muted, #8EAA9C)")}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#FFFFFF")}
+            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#71717A")}
           >
             <svg
               className="w-4 h-4"
@@ -415,8 +424,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             alignItems: "center",
             justifyContent: "space-between",
             padding: "0 28px",
-            borderBottom: "1px solid var(--border-subtle, rgba(0, 96, 57, 0.25))",
-            background: "var(--card, #12221D)",
+            borderBottom: "1px solid #1A1A1A",
+            background: "#0A0A0A",
           }}
         >
           {/* Left indicator */}
@@ -428,8 +437,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 gap: "8px",
                 padding: "5px 12px",
                 borderRadius: "20px",
-                background: "var(--accent-light, rgba(0, 163, 98, 0.15))",
-                border: "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))",
+                background: "#141414",
+                border: "1px solid #262626",
               }}
             >
               <span
@@ -438,18 +447,18 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                   width: "6px",
                   height: "6px",
                   borderRadius: "50%",
-                  background: "var(--accent, #00A362)",
-                  boxShadow: "0 0 8px var(--accent, #00A362)",
+                  background: "#22C55E",
+                  boxShadow: "0 0 8px rgba(34, 197, 94, 0.6)",
                 }}
               />
-              <span style={{ fontSize: "11px", color: "var(--accent, #00A362)", fontWeight: 700, fontFamily: "var(--font-mono, monospace)", letterSpacing: "0.06em" }}>
+              <span style={{ fontSize: "11px", color: "#F8FAFC", fontWeight: 700, fontFamily: "var(--font-mono, monospace)", letterSpacing: "0.06em" }}>
                 HAUTE HORLOGERIE ATELIER · ONLINE
               </span>
             </div>
 
             <div style={{ display: "none", alignItems: "center", gap: "6px" }} className="md:flex">
-              <span style={{ fontSize: "11px", color: "var(--accent-muted, #8EAA9C)" }}>Storefront Engine:</span>
-              <span style={{ fontSize: "11px", color: "var(--foreground, #F8FAFC)", fontFamily: "var(--font-mono, monospace)" }}>Rolex Green & Gold Edition</span>
+              <span style={{ fontSize: "11px", color: "#71717A" }}>Storefront Engine:</span>
+              <span style={{ fontSize: "11px", color: "#E4E4E7", fontFamily: "var(--font-mono, monospace)" }}>Obsidian Luxury Edition</span>
             </div>
           </div>
 
@@ -464,20 +473,20 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 gap: "6px",
                 padding: "7px 16px",
                 borderRadius: "8px",
-                background: "linear-gradient(135deg, var(--rolex-green, #006039) 0%, var(--rolex-green-dark, #00482B) 100%)",
-                border: "1px solid var(--border-strong, rgba(0, 163, 98, 0.35))",
-                color: "#FFFFFF",
+                background: "#FFFFFF",
+                border: "1px solid #FFFFFF",
+                color: "#000000",
                 fontSize: "12px",
                 fontWeight: 700,
                 textDecoration: "none",
                 transition: "all 140ms ease",
-                boxShadow: "0 2px 10px rgba(0, 96, 57, 0.3)",
+                boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor = "var(--rolex-gold, #C5A059)";
+                (e.currentTarget as HTMLElement).style.background = "#E4E4E7";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor = "var(--border-strong, rgba(0, 163, 98, 0.35))";
+                (e.currentTarget as HTMLElement).style.background = "#FFFFFF";
               }}
             >
               <span>Explore Storefront</span>
@@ -486,41 +495,41 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               </svg>
             </Link>
 
-            <div style={{ width: "1px", height: "24px", background: "var(--border-subtle, rgba(0, 96, 57, 0.25))" }} />
+            <div style={{ width: "1px", height: "24px", background: "#1A1A1A" }} />
 
             <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--foreground, #F8FAFC)", fontFamily: "var(--font-mono, monospace)" }}>
+              <div style={{ fontSize: "12px", fontWeight: 700, color: "#F8FAFC", fontFamily: "var(--font-mono, monospace)" }}>
                 {timeStr}
               </div>
-              <div style={{ fontSize: "10px", color: "var(--accent-muted, #8EAA9C)", fontWeight: 500 }}>
+              <div style={{ fontSize: "10px", color: "#71717A", fontWeight: 500 }}>
                 {dateStr}
               </div>
             </div>
 
-            <div style={{ width: "1px", height: "24px", background: "var(--border-subtle, rgba(0, 96, 57, 0.25))" }} />
+            <div style={{ width: "1px", height: "24px", background: "#1A1A1A" }} />
 
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <div
                 style={{
                   width: "36px",
                   height: "36px",
-                  borderRadius: "10px",
-                  background: "linear-gradient(135deg, var(--rolex-green, #006039), var(--rolex-green-dark, #00482B))",
-                  border: "1px solid var(--rolex-gold, #C5A059)",
+                  borderRadius: "8px",
+                  background: "linear-gradient(135deg, #222222 0%, #141414 100%)",
+                  border: "1px solid rgba(255, 255, 255, 0.18)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: "12px",
                   fontWeight: 800,
-                  color: "var(--rolex-gold, #C5A059)",
-                  boxShadow: "0 2px 8px var(--gold-glow, rgba(197, 160, 89, 0.28))",
+                  color: "#FFFFFF",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.5)",
                 }}
               >
                 KA
               </div>
               <div>
-                <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--foreground, #F8FAFC)" }}>Boutique Director</div>
-                <div style={{ fontSize: "10px", color: "var(--rolex-gold, #C5A059)", fontWeight: 700 }}>Master Access</div>
+                <div style={{ fontSize: "12px", fontWeight: 700, color: "#F8FAFC" }}>Boutique Director</div>
+                <div style={{ fontSize: "10px", color: "#A1A1AA", fontWeight: 600 }}>Master Access</div>
               </div>
             </div>
           </div>
@@ -532,7 +541,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             flex: 1,
             overflowY: "auto",
             padding: "28px 32px",
-            background: "var(--background, #0E1A16)",
+            background: "#050505",
           }}
         >
           {children}
