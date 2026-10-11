@@ -140,10 +140,10 @@ CREATE POLICY "Allow All on Order Items" ON public.order_items FOR ALL USING (tr
 
 -- Seed Categories
 INSERT INTO public.categories (id, name, slug, description, image_url, badge) VALUES
-('cat-1', 'Luxury', 'luxury', 'Prestige 18K & Rose Gold Swiss Masterpieces', 'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80', 'Masterpiece'),
+('cat-1', 'Luxury', 'luxury', 'Prestige 18K & Rose Gold Swiss Masterpieces', '/images/watches/watch_1547996160-81dfa.jpg', 'Masterpiece'),
 ('cat-2', 'Automatic', 'automatic', 'Swiss Calibre Mechanical & Open-Heart Movements', '/images/watches/seastar_1000_powermatic.jpg', 'Heritage'),
-('cat-3', 'Sport', 'sport', '300M Deep Divers & Grade 5 Titanium Chronographs', 'https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=900&q=80', 'Endurance'),
-('cat-4', 'Smart', 'smart', 'Sapphire AMOLED Touchscreen with Biometric Sensors', 'https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&fit=crop&w=900&q=80', 'Innovation')
+('cat-3', 'Sport', 'sport', '300M Deep Divers & Grade 5 Titanium Chronographs', '/images/watches/watch_1434056886845-da.jpg', 'Endurance'),
+('cat-4', 'Smart', 'smart', 'Sapphire AMOLED Touchscreen with Biometric Sensors', '/images/watches/watch_1508057198894-24.jpg', 'Innovation')
 ON CONFLICT (id) DO NOTHING;
 
 -- Seed Products (Prices in LKR)
@@ -169,8 +169,8 @@ INSERT INTO public.products (
     '/images/watches/seastar_1000_powermatic.jpg',
     ARRAY[
         '/images/watches/seastar_1000_powermatic.jpg',
-        'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80',
-        'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80'
+        '/images/watches/watch_1547996160-81dfa.jpg',
+        '/images/watches/watch_1524592094714-0f.jpg'
     ],
     'Handcrafted luxury timepiece with Swiss automatic movement, anti-reflective sapphire crystal glass, and top-grain Italian leather strap.',
     'Swiss Automatic ETA 2824-2',
@@ -194,9 +194,9 @@ INSERT INTO public.products (
     'Limited Season: Ends Sep 20, 2026',
     true,
     22,
-    'https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=900&q=80',
+    '/images/watches/watch_1542496658-e33a6.jpg',
     ARRAY[
-        'https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=900&q=80',
+        '/images/watches/watch_1542496658-e33a6.jpg',
         '/images/watches/seastar_1000_powermatic.jpg'
     ],
     'Precision mechanical chronograph with lightweight Grade 5 titanium case, Super-LumiNova markers, and 48-hour power reserve.',
@@ -221,10 +221,10 @@ INSERT INTO public.products (
     'Flash Sale: This Week Only',
     true,
     21,
-    'https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=900&q=80',
+    '/images/watches/watch_1434056886845-da.jpg',
     ARRAY[
-        'https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=900&q=80',
-        'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80'
+        '/images/watches/watch_1434056886845-da.jpg',
+        '/images/watches/watch_1524592094714-0f.jpg'
     ],
     'Legendary diver timepiece featuring 300m water resistance, scratch-resistant cerachrom bezel, and precision Oystersteel bracelet.',
     'Perpetual Calibre 3235 Automatic',
@@ -248,10 +248,10 @@ INSERT INTO public.products (
     'Special Promotion: Ends Sep 30, 2026',
     true,
     25,
-    'https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&fit=crop&w=900&q=80',
+    '/images/watches/watch_1508057198894-24.jpg',
     ARRAY[
-        'https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&fit=crop&w=900&q=80',
-        'https://images.unsplash.com/photo-1510017803434-a899398421b3?auto=format&fit=crop&w=900&q=80'
+        '/images/watches/watch_1508057198894-24.jpg',
+        '/images/watches/watch_1510017803434-a8.jpg'
     ],
     'Next-generation AMOLED display with advanced biometric sensors, sapphire crystal touchscreen, GPS tracking, and 14-day battery life.',
     'Custom KronoOS Dual-Core Processor',
@@ -275,10 +275,10 @@ INSERT INTO public.products (
     'Prestige Gala Period: Aug 25 - Sep 30, 2026',
     false,
     15,
-    'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80',
+    '/images/watches/watch_1547996160-81dfa.jpg',
     ARRAY[
-        'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80',
-        'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80'
+        '/images/watches/watch_1547996160-81dfa.jpg',
+        '/images/watches/watch_1524592094714-0f.jpg'
     ],
     '18k rose gold bezel with diamond index markers, skeleton open-heart dial, and genuine alligator grain leather band.',
     'In-House Skeleton Tourbillon Movement',
@@ -302,10 +302,10 @@ INSERT INTO public.products (
     'Valid until Sep 30, 2026',
     true,
     22,
-    'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80',
+    '/images/watches/watch_1524592094714-0f.jpg',
     ARRAY[
-        'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80',
-        'https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=900&q=80'
+        '/images/watches/watch_1524592094714-0f.jpg',
+        '/images/watches/watch_1542496658-e33a6.jpg'
     ],
     'Captivating guilloché mother-of-pearl dial with blued-steel sword-shaped hands, sapphire cabochon crown, and polished steel bracelet.',
     'Swiss Calibre 076 Automatic',
@@ -329,9 +329,9 @@ INSERT INTO public.products (
     'Valid until Sep 30, 2026',
     true,
     25,
-    'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=900&q=80',
+    '/images/watches/watch_1524805444758-08.jpg',
     ARRAY[
-        'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=900&q=80',
+        '/images/watches/watch_1524805444758-08.jpg',
         '/images/watches/seastar_1000_powermatic.jpg'
     ],
     'High-performance Swiss automatic diver with up to 80 hours power reserve and gradient sunray blue dial.',
@@ -356,10 +356,10 @@ INSERT INTO public.products (
     'Valid until Sep 30, 2026',
     true,
     23,
-    'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80',
+    '/images/watches/watch_1547996160-81dfa.jpg',
     ARRAY[
-        'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80',
-        'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80'
+        '/images/watches/watch_1547996160-81dfa.jpg',
+        '/images/watches/watch_1524592094714-0f.jpg'
     ],
     'Iconic claws design with pavé diamond bezel, mother-of-pearl dial, and Co-Axial Master Chronometer movement.',
     'Omega Calibre 8700 Co-Axial',
@@ -398,7 +398,7 @@ INSERT INTO public.posters (
     'Save 30% Today',
     'Season Launch Period: Active until Sep 30, 2026',
     'HERO30',
-    'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=1200&q=80',
+    '/images/watches/watch_1522312346375-d1.jpg',
     'Aurelia Master Classic',
     'LKR 385,000',
     '#shop',
@@ -412,7 +412,7 @@ INSERT INTO public.posters (
     'Up to 50% OFF',
     'Promotion Period: Aug 28 - Sep 15, 2026',
     'FLASH50',
-    'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=80',
+    '/images/watches/watch_1547996160-81dfa.jpg',
     null,
     null,
     '#shop',

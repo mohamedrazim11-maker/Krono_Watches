@@ -15,6 +15,21 @@ const LOCAL_WATCH_IMAGES = [
   "/images/watches/ballon_bleu_mother_of_pearl.jpg",
   "/images/watches/constellation_diamond_bezel.jpg",
   "/images/watches/rolex_submariner_1.jpg",
+  "/images/watches/watch_1434056886845-da.jpg",
+  "/images/watches/watch_1508057198894-24.jpg",
+  "/images/watches/watch_1508685096489-7a.jpg",
+  "/images/watches/watch_1510017803434-a8.jpg",
+  "/images/watches/watch_1522312346375-d1.jpg",
+  "/images/watches/watch_1523275335684-37.jpg",
+  "/images/watches/watch_1524592094714-0f.jpg",
+  "/images/watches/watch_1524805444758-08.jpg",
+  "/images/watches/watch_1526045478516-99.jpg",
+  "/images/watches/watch_1533139502658-01.jpg",
+  "/images/watches/watch_1539185441755-76.jpg",
+  "/images/watches/watch_1542496658-e33a6.jpg",
+  "/images/watches/watch_1547996160-81dfa.jpg",
+  "/images/watches/watch_1548036328-c9fa8.jpg",
+  "/images/watches/watch_1614164185128-e4.jpg",
 ];
 
 /** Map of product ID → primary local verified watch image path */

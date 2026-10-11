@@ -134,8 +134,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     image_url: "/images/watches/submariner_deep_black_ceramic.jpg",
     images: [
       "/images/watches/submariner_deep_black_ceramic.jpg",
-      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/watch_1548036328-c9fa8.jpg",
+      "/images/watches/watch_1533139502658-01.jpg"
     ],
     description: "The benchmark among divers' watches. Features 300m water resistance, black Cerachrom unidirectional bezel, Chromalight display, and Perpetual Calibre 3235 with 70-hour power reserve.",
     movement: "Rolex Perpetual Calibre 3235 Automatic",
@@ -160,11 +160,11 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "VIP Registry",
     is_on_promotion: true,
     promo_discount_percent: 10,
-    image_url: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1547996160-81dfa.jpg",
     images: [
-      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/watch_1547996160-81dfa.jpg",
+      "/images/watches/watch_1524592094714-0f.jpg",
+      "/images/watches/watch_1539185441755-76.jpg"
     ],
     description: "Designed to display the time in two different time zones simultaneously. Features a red and blue Cerachrom ceramic 24-hour bezel, arrow-tipped 24-hour hand, and Jubilee five-link bracelet.",
     movement: "Rolex Calibre 3285 Dual Time Automatic",
@@ -189,11 +189,11 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "VIP Allocation",
     is_on_promotion: true,
     promo_discount_percent: 10,
-    image_url: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1524805444758-08.jpg",
     images: [
-      "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1526045478516-99145907023c?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/watch_1524805444758-08.jpg",
+      "/images/watches/watch_1542496658-e33a6.jpg",
+      "/images/watches/watch_1526045478516-99.jpg"
     ],
     description: "The quintessential tool watch for endurance motor racers. Features a molded tachymetric scale Cerachrom bezel, panda dial sub-dials, and the in-house Calibre 4131 chronograph movement.",
     movement: "Rolex Calibre 4131 Column-Wheel Chronograph",
@@ -218,10 +218,10 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Exclusive Vault",
     is_on_promotion: true,
     promo_discount_percent: 8,
-    image_url: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1547996160-81dfa.jpg",
     images: [
-      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/watch_1547996160-81dfa.jpg",
+      "/images/watches/watch_1614164185128-e4.jpg",
       "/images/watches/speedmaster_chrono_titanium.jpg",
     ],
     description: "The ultimate symbol of prestige and leadership. Crafted in solid 18k yellow gold with Champagne fluted bezel, bespoke President bracelet, and day of the week spelled out in full.",
@@ -250,7 +250,7 @@ export const FALLBACK_PRODUCTS: Product[] = [
     image_url: "/images/watches/seastar_1000_powermatic.jpg",
     images: [
       "/images/watches/seastar_1000_powermatic.jpg",
-      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/watch_1547996160-81dfa.jpg",
       "/images/watches/submariner_deep_black_ceramic.jpg",
     ],
     description: "An elegant timepiece for global travelers. Features dual time zones, annual calendar with revolutionary Saros mechanism, month indicator, and fluted bidirectional Ring Command bezel.",
@@ -281,8 +281,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     image_url: "/images/watches/speedmaster_chrono_titanium.jpg",
     images: [
       "/images/watches/speedmaster_chrono_titanium.jpg",
-      "https://images.unsplash.com/photo-1526045478516-99145907023c?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/watch_1526045478516-99.jpg",
+      "/images/watches/watch_1524805444758-08.jpg"
     ],
     description: "The legendary Moonwatch qualified by NASA for all manned space missions. Features the manual-winding Co-Axial Master Chronometer Calibre 3861 with dot-over-ninety anodized aluminium bezel.",
     movement: "Omega Co-Axial Master Chronometer 3861",
@@ -310,8 +310,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     image_url: "/images/watches/submariner_deep_black_ceramic.jpg",
     images: [
       "/images/watches/submariner_deep_black_ceramic.jpg",
-      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/watch_1548036328-c9fa8.jpg",
+      "/images/watches/watch_1434056886845-da.jpg"
     ],
     description: "Since 1993, the Seamaster Professional Diver 300M has enjoyed a legendary following. Black ceramic dial with laser-engraved waves, helium escape valve, and METAS-certified Calibre 8800.",
     movement: "Omega Co-Axial Master Chronometer 8800 Automatic",
@@ -339,7 +339,7 @@ export const FALLBACK_PRODUCTS: Product[] = [
     image_url: "/images/watches/seastar_1000_powermatic.jpg",
     images: [
       "/images/watches/seastar_1000_powermatic.jpg",
-      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/watch_1547996160-81dfa.jpg",
       "/images/watches/submariner_deep_black_ceramic.jpg",
     ],
     description: "A superb tribute to Omega's rich maritime heritage. Horizontal teak concept pattern dial inspired by the wooden decks of luxury yachts. Resistant to magnetic fields reaching 15,000 gauss.",
@@ -365,11 +365,11 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "VIP Allocation",
     is_on_promotion: true,
     promo_discount_percent: 12,
-    image_url: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1547996160-81dfa.jpg",
     images: [
-      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/watch_1547996160-81dfa.jpg",
+      "/images/watches/watch_1524592094714-0f.jpg",
+      "/images/watches/watch_1523275335684-37.jpg"
     ],
     description: "Distinguished by famous half-moons, iconic 'claws' on the side of the case, and mono-rang bracelet. Roman numerals engraved on the bezel with silk-embossed silver-grey dial.",
     movement: "Omega Co-Axial Master Chronometer 8800",
@@ -394,10 +394,10 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Classic Edition",
     is_on_promotion: true,
     promo_discount_percent: 14,
-    image_url: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1524592094714-0f.jpg",
     images: [
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/watch_1524592094714-0f.jpg",
+      "/images/watches/watch_1547996160-81dfa.jpg",
       "/images/watches/speedmaster_chrono_titanium.jpg",
     ],
     description: "Timeless style and refined aesthetic. Sun-brushed blue PVD dial with alternating Roman numerals and cabochon indexes, encased in a slim stainless steel profile with 7-link bracelet.",
@@ -425,11 +425,11 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Yamagata Masterpiece",
     is_on_promotion: true,
     promo_discount_percent: 12,
-    image_url: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1523275335684-37.jpg",
     images: [
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/watch_1523275335684-37.jpg",
+      "/images/watches/watch_1533139502658-01.jpg",
+      "/images/watches/watch_1508685096489-7a.jpg"
     ],
     description: "The pinnacle of G-Shock toughness with traditional Japanese craftsmanship. Deep-layer hardened recrystallized titanium, Sallaz polishing, Bluetooth connectivity, and Tough Solar.",
     movement: "Tough Solar Multi-Band 6 Connected Quartz",
@@ -454,11 +454,11 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Slim Structure Innovation",
     is_on_promotion: true,
     promo_discount_percent: 12,
-    image_url: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1508685096489-7a.jpg",
     images: [
-      "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/watch_1508685096489-7a.jpg",
+      "/images/watches/watch_1523275335684-37.jpg",
+      "/images/watches/watch_1533139502658-01.jpg"
     ],
     description: "Innovative Dual-Core Guard structure fusing resin reinforced with carbon fiber and steel exterior. Incredibly slim 12.1mm module with smartphone link and high-luminosity LED light.",
     movement: "Tough Solar Connected Module 5672",
@@ -483,11 +483,11 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Heritage Classic",
     is_on_promotion: true,
     promo_discount_percent: 14,
-    image_url: "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1533139502658-01.jpg",
     images: [
-      "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/watch_1533139502658-01.jpg",
+      "/images/watches/watch_1523275335684-37.jpg",
+      "/images/watches/watch_1508685096489-7a.jpg"
     ],
     description: "Full-metal realization of the iconic 1983 square DW-5000C origin. Stainless steel screw-lock back, STN liquid crystal display, Tough Solar power, and Bluetooth Smartphone Link.",
     movement: "Tough Solar Bluetooth Digital Multi-Band 6",
@@ -512,11 +512,11 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Land Master Series",
     is_on_promotion: true,
     promo_discount_percent: 14,
-    image_url: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1508685096489-7a.jpg",
     images: [
-      "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/watch_1508685096489-7a.jpg",
+      "/images/watches/watch_1533139502658-01.jpg",
+      "/images/watches/watch_1523275335684-37.jpg"
     ],
     description: "Built to survive sand, mud, and harsh conditions. Triple sensor featuring digital compass, altimeter/barometer, thermometer, forged carbon bezel guards, and sapphire crystal.",
     movement: "Tough Solar Triple Sensor v3 with Radio-Control",
@@ -544,8 +544,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     image_url: "/images/watches/seastar_1000_powermatic.jpg",
     images: [
       "/images/watches/seastar_1000_powermatic.jpg",
-      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/watch_1547996160-81dfa.jpg",
+      "/images/watches/watch_1524592094714-0f.jpg"
     ],
     description: "Premium Japanese craftsmanship with mirror-polished Zaratsu titanium case. 12-facet blue sapphire crystal bezel, dual-curved sapphire glass, Tough Solar, and Bluetooth time synchronization.",
     movement: "Tough Solar Chronograph with Smart Access Crown",
@@ -572,10 +572,10 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Spring Drive Master",
     is_on_promotion: true,
     promo_discount_percent: 10,
-    image_url: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1547996160-81dfa.jpg",
     images: [
-      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/watch_1547996160-81dfa.jpg",
+      "/images/watches/watch_1524592094714-0f.jpg",
       "/images/watches/seastar_1000_powermatic.jpg"
     ],
     description: "The dial captures the serene texture of fresh snow on the Shinshu mountains. Powered by the unique Spring Drive Calibre 9R65 with a mesmerizing, perfectly continuous gliding seconds hand.",
@@ -601,10 +601,10 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Four Seasons 24 Sekki",
     is_on_promotion: true,
     promo_discount_percent: 11,
-    image_url: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1524592094714-0f.jpg",
     images: [
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/watch_1524592094714-0f.jpg",
+      "/images/watches/watch_1547996160-81dfa.jpg",
       "/images/watches/submariner_deep_black_ceramic.jpg",
     ],
     description: "Celebrates the spring equinox (Shunbun) when pink cherry blossoms fall onto lake surfaces (Hana-Ikada). High-intensity titanium case with 62GS vintage bezel-free design.",
@@ -633,8 +633,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     image_url: "/images/watches/seastar_1000_powermatic.jpg",
     images: [
       "/images/watches/seastar_1000_powermatic.jpg",
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/watch_1524592094714-0f.jpg",
+      "/images/watches/watch_1547996160-81dfa.jpg"
     ],
     description: "Inspired by the frozen ridges of Lake Suwa in winter. Manual-wind Spring Drive Calibre 9R31 with dual-spring barrel delivering 72 hours of power reserve in an ultra-thin 10.2mm profile.",
     movement: "Grand Seiko Manual-Wind Spring Drive 9R31",
@@ -662,8 +662,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     image_url: "/images/watches/submariner_deep_black_ceramic.jpg",
     images: [
       "/images/watches/submariner_deep_black_ceramic.jpg",
-      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/watch_1548036328-c9fa8.jpg",
+      "/images/watches/watch_1434056886845-da.jpg"
     ],
     description: "Designed in collaboration with famed industrial designer Ken Okuyama. 300m saturation diver with lightweight super-hard coated titanium case, ceramic bezel, and Spring Drive Calibre 5R65.",
     movement: "Seiko Calibre 5R65 Spring Drive Automatic",
@@ -688,10 +688,10 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Artisan Dial Edition",
     is_on_promotion: true,
     promo_discount_percent: 12,
-    image_url: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1524592094714-0f.jpg",
     images: [
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/watch_1524592094714-0f.jpg",
+      "/images/watches/watch_1547996160-81dfa.jpg",
       "/images/watches/seastar_1000_powermatic.jpg"
     ],
     description: "Pure white enamel dial fired by master artisan Mitsuru Yokosawa. Traditional Roman numerals, tempered blue hands, and the new automatic Calibre 6R55 with 72 hours power reserve.",
@@ -719,11 +719,11 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Hot Trending Reference",
     is_on_promotion: true,
     promo_discount_percent: 14,
-    image_url: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1524805444758-08.jpg",
     images: [
-      "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/watch_1524805444758-08.jpg",
+      "/images/watches/watch_1542496658-e33a6.jpg",
+      "/images/watches/watch_1523275335684-37.jpg"
     ],
     description: "Slim, timeless 1978 design featuring a waffle pattern ice-blue dial, integrated brushed steel bracelet, Nivachron non-magnetic balance spring, and 80 hours power reserve.",
     movement: "Swiss Powermatic 80.111 Automatic",
@@ -748,10 +748,10 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Executive Standard",
     is_on_promotion: true,
     promo_discount_percent: 15,
-    image_url: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1547996160-81dfa.jpg",
     images: [
-      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/watch_1547996160-81dfa.jpg",
+      "/images/watches/watch_1524592094714-0f.jpg",
       "/images/watches/seastar_1000_powermatic.jpg"
     ],
     description: "The ultimate daily watch for the modern gentleman. Deep sunburst blue dial, crosshair motif, exhibition caseback, and anti-magnetic silicon hairspring.",
@@ -780,8 +780,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     image_url: "/images/watches/submariner_deep_black_ceramic.jpg",
     images: [
       "/images/watches/submariner_deep_black_ceramic.jpg",
-      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=1200&q=85"
+      "/images/watches/watch_1548036328-c9fa8.jpg",
+      "/images/watches/watch_1434056886845-da.jpg"
     ],
     description: "High performance underwater watch rated to 300m/1000ft. Unidirectional ceramic bezel, screw-down crown and caseback, luminous Super-LumiNova hands, and 80h power reserve.",
     movement: "Swiss Powermatic 80 Automatic",
@@ -806,10 +806,10 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Swiss Heritage",
     is_on_promotion: true,
     promo_discount_percent: 13,
-    image_url: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1524592094714-0f.jpg",
     images: [
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/watch_1524592094714-0f.jpg",
+      "/images/watches/watch_1547996160-81dfa.jpg",
       "/images/watches/speedmaster_chrono_titanium.jpg",
     ],
     description: "Named after Tissot's home city in the Swiss Jura mountains. Traditional Clous de Paris guilloché dial, classic Roman numerals, and ornate split-window exhibition caseback.",
@@ -835,10 +835,10 @@ export const FALLBACK_PRODUCTS: Product[] = [
     promotion_period: "Chronometer Standard",
     is_on_promotion: true,
     promo_discount_percent: 14,
-    image_url: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1547996160-81dfa.jpg",
     images: [
-      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=85",
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=1200&q=85",
+      "/images/watches/watch_1547996160-81dfa.jpg",
+      "/images/watches/watch_1524592094714-0f.jpg",
       "/images/watches/seastar_1000_powermatic.jpg"
     ],
     description: "Official Swiss Chronometer Testing Institute (COSC) certified precision. Fluted bezel with guilloché inner dial ring, silicon balance spring, and stainless steel link bracelet.",
@@ -881,7 +881,7 @@ export const FALLBACK_POSTERS: Poster[] = [
     discount_text: "20% OFF",
     promotion_period: "Promotion Period: Active until Sep 30, 2026",
     coupon_code: "MONO20",
-    image_url: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1200&q=85",
+    image_url: "/images/watches/watch_1548036328-c9fa8.jpg",
     featured_product_name: "Rolex GMT-Master II Pepsi",
     featured_product_price: "LKR 4,850,000",
     is_active: true

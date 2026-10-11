@@ -9,22 +9,22 @@ const PRESET_GALLERY_SETS = [
   {
     name: "Classic Dress & Leather",
     images: [
-      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80",
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80",
+      "/images/watches/watch_1547996160-81dfa.jpg",
+      "/images/watches/watch_1524592094714-0f.jpg",
     ],
   },
   {
     name: "Steel Chronograph",
     images: [
       "/images/watches/seastar_1000_powermatic.jpg",
-      "https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?auto=format&fit=crop&w=900&q=80",
+      "/images/watches/watch_1542496658-e33a6.jpg",
     ],
   },
   {
     name: "Diver 300M / Cerachrom",
     images: [
       "/images/watches/submariner_deep_black_ceramic.jpg",
-      "https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=900&q=80",
+      "/images/watches/watch_1434056886845-da.jpg",
     ],
   },
 ];
@@ -106,7 +106,7 @@ export default function UploadProductPage() {
   });
 
   const [images, setImages] = useState<string[]>([
-    "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80",
+    "/images/watches/watch_1547996160-81dfa.jpg",
   ]);
   const [newImageUrl, setNewImageUrl] = useState("");
 

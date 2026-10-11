@@ -37,7 +37,7 @@ const DEFAULT_FALLBACK_PRODUCTS = [
     category: "Automatic",
     badge: "Shinshu Snowflake",
     movement: "Grand Seiko Calibre 9R65 Spring Drive",
-    image_url: "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=85",
+    image_url: "/images/watches/watch_1547996160-81dfa.jpg",
   },
   {
     id: "prod-tissot-prx-powermatic-80",
@@ -46,7 +46,7 @@ const DEFAULT_FALLBACK_PRODUCTS = [
     category: "Automatic",
     badge: "Integrated Bracelet",
     movement: "Swiss Powermatic 80",
-    image_url: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1000&q=85",
+    image_url: "/images/watches/watch_1524805444758-08.jpg",
   },
 ];
 
@@ -179,7 +179,7 @@ export default function HeroBanner({
                 key={currentProduct.id}
                 src={
                   currentProduct.image_url ||
-                  "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1000&q=85"
+                  "/images/watches/watch_1547996160-81dfa.jpg"
                 }
                 alt={currentProduct.name}
                 className="w-full h-full object-cover object-center transition-all duration-[2000ms] ease-out group-hover:scale-105"

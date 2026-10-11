@@ -23,7 +23,10 @@
       "stock_count": 14,
       "is_featured": true,
       "stock_qty": 14,
-      "is_active": true
+      "is_active": true,
+      "images": [
+        "/images/watches/aurelia_master_classic.jpg"
+      ]
     },
     {
       "id": "prod-2",
@@ -48,7 +51,10 @@
       "stock_count": 8,
       "is_featured": true,
       "stock_qty": 8,
-      "is_active": true
+      "is_active": true,
+      "images": [
+        "/images/watches/speedmaster_chrono_titanium.jpg"
+      ]
     },
     {
       "id": "prod-3",
@@ -73,7 +79,10 @@
       "stock_count": 22,
       "is_featured": true,
       "stock_qty": 22,
-      "is_active": true
+      "is_active": true,
+      "images": [
+        "/images/watches/submariner_deep_black_ceramic.jpg"
+      ]
     },
     {
       "id": "prod-4",
@@ -98,7 +107,10 @@
       "stock_count": 19,
       "is_featured": true,
       "stock_qty": 19,
-      "is_active": true
+      "is_active": true,
+      "images": [
+        "/images/watches/helio_smart_sapphire_amoled.jpg"
+      ]
     },
     {
       "id": "prod-5",
@@ -123,7 +135,10 @@
       "stock_count": 5,
       "is_featured": false,
       "stock_qty": 5,
-      "is_active": true
+      "is_active": true,
+      "images": [
+        "/images/watches/grand_horizon_rose_gold.jpg"
+      ]
     },
     {
       "id": "prod-6",
@@ -148,7 +163,10 @@
       "stock_count": 11,
       "is_featured": false,
       "stock_qty": 11,
-      "is_active": true
+      "is_active": true,
+      "images": [
+        "/images/watches/seastar_1000_powermatic.jpg"
+      ]
     },
     {
       "id": "prod-rolex-submariner",
@@ -173,7 +191,10 @@
       "stock_count": 4,
       "is_featured": true,
       "stock_qty": 4,
-      "is_active": true
+      "is_active": true,
+      "images": [
+        "/images/watches/submariner_deep_black_ceramic.jpg"
+      ]
     },
     {
       "id": "prod-rolex-gmt-master-ii",
@@ -198,7 +219,10 @@
       "stock_count": 3,
       "is_featured": true,
       "stock_qty": 3,
-      "is_active": true
+      "is_active": true,
+      "images": [
+        "/images/watches/rolex_submariner_1.jpg"
+      ]
     },
     {
       "id": "prod-rolex-daytona",
@@ -223,7 +247,10 @@
       "stock_count": 2,
       "is_featured": true,
       "stock_qty": 2,
-      "is_active": true
+      "is_active": true,
+      "images": [
+        "/images/watches/speedmaster_chrono_titanium.jpg"
+      ]
     },
     {
       "id": "prod-rolex-day-date-40",
@@ -248,7 +275,10 @@
       "stock_count": 1,
       "is_featured": false,
       "stock_qty": 1,
-      "is_active": true
+      "is_active": true,
+      "images": [
+        "/images/watches/grand_horizon_rose_gold.jpg"
+      ]
     },
     {
       "id": "prod-omega-speedmaster-moonwatch",
@@ -273,7 +303,10 @@
       "stock_count": 5,
       "is_featured": true,
       "stock_qty": 5,
-      "is_active": true
+      "is_active": true,
+      "images": [
+        "/images/watches/speedmaster_chrono_titanium.jpg"
+      ]
     },
     {
       "id": "prod-omega-seamaster-diver-300m",
@@ -298,7 +331,10 @@
       "stock_count": 6,
       "is_featured": true,
       "stock_qty": 6,
-      "is_active": true
+      "is_active": true,
+      "images": [
+        "/images/watches/seastar_1000_powermatic.jpg"
+      ]
     },
     {
       "id": "prod-cartier-santos-de-cartier",
@@ -323,7 +359,10 @@
       "stock_count": 4,
       "is_featured": true,
       "stock_qty": 4,
-      "is_active": true
+      "is_active": true,
+      "images": [
+        "/images/watches/ballon_bleu_mother_of_pearl.jpg"
+      ]
     },
     {
       "id": "prod-tissot-prx-powermatic-80",
@@ -348,7 +387,10 @@
       "stock_count": 12,
       "is_featured": true,
       "stock_qty": 12,
-      "is_active": true
+      "is_active": true,
+      "images": [
+        "/images/watches/seastar_1000_powermatic.jpg"
+      ]
     },
     {
       "id": "prod-casio-g-shock-ga-2100",
@@ -378,6 +420,564 @@
       "updated_at": "2026-10-04T19:32:02.974Z",
       "stock_qty": 20,
       "is_active": true
+    },
+    {
+      "id": "prod-rolex-sky-dweller",
+      "name": "Rolex Sky-Dweller Annual Calendar 42mm Rolesor",
+      "brand": "Rolex",
+      "category": "Dress Watches",
+      "gender": "Men",
+      "case_size": "42mm",
+      "price": 16300000,
+      "old_price": 17800000,
+      "badge": "Grand Complication",
+      "warranty": "5 Years Certified Rolex International Guarantee",
+      "promotion_period": "VIP Allocation",
+      "is_on_promotion": true,
+      "promo_discount_percent": 8,
+      "image_url": "/images/watches/seastar_1000_powermatic.jpg",
+      "images": [
+        "/images/watches/seastar_1000_powermatic.jpg",
+        "/images/watches/watch_1547996160-81dfa.jpg",
+        "/images/watches/submariner_deep_black_ceramic.jpg"
+      ],
+      "description": "An elegant timepiece for global travelers. Features dual time zones, annual calendar with revolutionary Saros mechanism, month indicator, and fluted bidirectional Ring Command bezel.",
+      "movement": "Rolex Calibre 9002 Annual Calendar Automatic",
+      "case_material": "18K White Gold & Oystersteel",
+      "water_resistance": "100m (10 ATM)",
+      "in_stock": true,
+      "stock_count": 2,
+      "is_featured": true,
+      "created_at": "2026-09-01T10:20:00.000Z",
+      "stock_qty": 2,
+      "is_active": true
+    },
+    {
+      "id": "prod-omega-seamaster-aqua-terra",
+      "name": "Omega Seamaster Aqua Terra 150M 41mm",
+      "brand": "Omega",
+      "category": "Sports Watches",
+      "gender": "Men",
+      "case_size": "41mm",
+      "price": 2050000,
+      "old_price": 2350000,
+      "badge": "Maritime Luxury",
+      "warranty": "5 Years Master Chronometer International Warranty",
+      "promotion_period": "Valid Sep 2026",
+      "is_on_promotion": true,
+      "promo_discount_percent": 13,
+      "image_url": "/images/watches/seastar_1000_powermatic.jpg",
+      "images": [
+        "/images/watches/seastar_1000_powermatic.jpg",
+        "/images/watches/watch_1547996160-81dfa.jpg",
+        "/images/watches/submariner_deep_black_ceramic.jpg"
+      ],
+      "description": "A superb tribute to Omega's rich maritime heritage. Horizontal teak concept pattern dial inspired by the wooden decks of luxury yachts. Resistant to magnetic fields reaching 15,000 gauss.",
+      "movement": "Omega Master Chronometer Calibre 8900",
+      "case_material": "Stainless Steel (316L)",
+      "water_resistance": "150m (15 ATM)",
+      "in_stock": true,
+      "stock_count": 4,
+      "is_featured": false,
+      "created_at": "2026-09-01T10:35:00.000Z",
+      "stock_qty": 4,
+      "is_active": true
+    },
+    {
+      "id": "prod-omega-constellation",
+      "name": "Omega Constellation Co-Axial Master 39mm",
+      "brand": "Omega",
+      "category": "Dress Watches",
+      "gender": "Unisex",
+      "case_size": "39mm",
+      "price": 2300000,
+      "old_price": 2600000,
+      "badge": "Geneva Observatory",
+      "warranty": "5 Years Master Chronometer International Warranty",
+      "promotion_period": "VIP Allocation",
+      "is_on_promotion": true,
+      "promo_discount_percent": 12,
+      "image_url": "/images/watches/watch_1547996160-81dfa.jpg",
+      "images": [
+        "/images/watches/watch_1547996160-81dfa.jpg",
+        "/images/watches/watch_1524592094714-0f.jpg",
+        "/images/watches/watch_1523275335684-37.jpg"
+      ],
+      "description": "Distinguished by famous half-moons, iconic 'claws' on the side of the case, and mono-rang bracelet. Roman numerals engraved on the bezel with silk-embossed silver-grey dial.",
+      "movement": "Omega Co-Axial Master Chronometer 8800",
+      "case_material": "Stainless Steel & 18K Sedna Gold Accents",
+      "water_resistance": "50m (5 ATM)",
+      "in_stock": true,
+      "stock_count": 3,
+      "is_featured": false,
+      "created_at": "2026-09-01T10:40:00.000Z",
+      "stock_qty": 3,
+      "is_active": true
+    },
+    {
+      "id": "prod-omega-de-ville-prestige",
+      "name": "Omega De Ville Prestige Co-Axial Master 40mm",
+      "brand": "Omega",
+      "category": "Dress Watches",
+      "gender": "Men",
+      "case_size": "40mm",
+      "price": 1680000,
+      "old_price": 1950000,
+      "badge": "Pure Elegance",
+      "warranty": "5 Years Master Chronometer International Warranty",
+      "promotion_period": "Classic Edition",
+      "is_on_promotion": true,
+      "promo_discount_percent": 14,
+      "image_url": "/images/watches/watch_1524592094714-0f.jpg",
+      "images": [
+        "/images/watches/watch_1524592094714-0f.jpg",
+        "/images/watches/watch_1547996160-81dfa.jpg",
+        "/images/watches/speedmaster_chrono_titanium.jpg"
+      ],
+      "description": "Timeless style and refined aesthetic. Sun-brushed blue PVD dial with alternating Roman numerals and cabochon indexes, encased in a slim stainless steel profile with 7-link bracelet.",
+      "movement": "Omega Co-Axial Master Chronometer 8800",
+      "case_material": "Stainless Steel (316L)",
+      "water_resistance": "30m (3 ATM)",
+      "in_stock": true,
+      "stock_count": 5,
+      "is_featured": false,
+      "created_at": "2026-09-01T10:45:00.000Z",
+      "stock_qty": 5,
+      "is_active": true
+    },
+    {
+      "id": "prod-casio-g-shock-mr-g",
+      "name": "Casio G-Shock MR-G MRG-B2000 Titanium Kachi-Iro",
+      "brand": "Casio",
+      "category": "Sports Watches",
+      "gender": "Men",
+      "case_size": "49.8mm",
+      "price": 1100000,
+      "old_price": 1250000,
+      "badge": "Flagship MR-G",
+      "warranty": "3 Years Casio International Premium Guarantee",
+      "promotion_period": "Yamagata Masterpiece",
+      "is_on_promotion": true,
+      "promo_discount_percent": 12,
+      "image_url": "/images/watches/watch_1523275335684-37.jpg",
+      "images": [
+        "/images/watches/watch_1523275335684-37.jpg",
+        "/images/watches/watch_1533139502658-01.jpg",
+        "/images/watches/watch_1508685096489-7a.jpg"
+      ],
+      "description": "The pinnacle of G-Shock toughness with traditional Japanese craftsmanship. Deep-layer hardened recrystallized titanium, Sallaz polishing, Bluetooth connectivity, and Tough Solar.",
+      "movement": "Tough Solar Multi-Band 6 Connected Quartz",
+      "case_material": "Deep-Layer Hardened Titanium with DLC Coating",
+      "water_resistance": "200m (20 ATM)",
+      "in_stock": true,
+      "stock_count": 3,
+      "is_featured": true,
+      "created_at": "2026-09-01T10:50:00.000Z",
+      "stock_qty": 3,
+      "is_active": true
+    },
+    {
+      "id": "prod-casio-g-shock-mt-g",
+      "name": "Casio G-Shock MT-G MTG-B3000 Carbon Dual Core",
+      "brand": "Casio",
+      "category": "Sports Watches",
+      "gender": "Men",
+      "case_size": "50.9mm",
+      "price": 420000,
+      "old_price": 480000,
+      "badge": "Carbon Core Guard",
+      "warranty": "2 Years Casio International Warranty",
+      "promotion_period": "Slim Structure Innovation",
+      "is_on_promotion": true,
+      "promo_discount_percent": 12,
+      "image_url": "/images/watches/watch_1508685096489-7a.jpg",
+      "images": [
+        "/images/watches/watch_1508685096489-7a.jpg",
+        "/images/watches/watch_1523275335684-37.jpg",
+        "/images/watches/watch_1533139502658-01.jpg"
+      ],
+      "description": "Innovative Dual-Core Guard structure fusing resin reinforced with carbon fiber and steel exterior. Incredibly slim 12.1mm module with smartphone link and high-luminosity LED light.",
+      "movement": "Tough Solar Connected Module 5672",
+      "case_material": "Carbon-Reinforced Resin & Stainless Steel",
+      "water_resistance": "200m (20 ATM)",
+      "in_stock": true,
+      "stock_count": 6,
+      "is_featured": false,
+      "created_at": "2026-09-01T10:55:00.000Z",
+      "stock_qty": 6,
+      "is_active": true
+    },
+    {
+      "id": "prod-casio-g-shock-full-metal",
+      "name": "Casio G-Shock Full Metal GMW-B5000D-1 Silver",
+      "brand": "Casio",
+      "category": "Digital",
+      "gender": "Unisex",
+      "case_size": "43.2mm",
+      "price": 240000,
+      "old_price": 280000,
+      "badge": "Origin Heritage",
+      "warranty": "2 Years Casio International Warranty",
+      "promotion_period": "Heritage Classic",
+      "is_on_promotion": true,
+      "promo_discount_percent": 14,
+      "image_url": "/images/watches/watch_1533139502658-01.jpg",
+      "images": [
+        "/images/watches/watch_1533139502658-01.jpg",
+        "/images/watches/watch_1523275335684-37.jpg",
+        "/images/watches/watch_1508685096489-7a.jpg"
+      ],
+      "description": "Full-metal realization of the iconic 1983 square DW-5000C origin. Stainless steel screw-lock back, STN liquid crystal display, Tough Solar power, and Bluetooth Smartphone Link.",
+      "movement": "Tough Solar Bluetooth Digital Multi-Band 6",
+      "case_material": "Solid Stainless Steel with Fine Resin Dampeners",
+      "water_resistance": "200m (20 ATM)",
+      "in_stock": true,
+      "stock_count": 8,
+      "is_featured": false,
+      "created_at": "2026-09-01T11:00:00.000Z",
+      "stock_qty": 8,
+      "is_active": true
+    },
+    {
+      "id": "prod-casio-g-shock-master-of-g",
+      "name": "Casio G-Shock Master of G Mudmaster GWG-B1000",
+      "brand": "Casio",
+      "category": "Digital",
+      "gender": "Men",
+      "case_size": "54mm",
+      "price": 275000,
+      "old_price": 320000,
+      "badge": "Extreme Survival",
+      "warranty": "2 Years Casio International Warranty",
+      "promotion_period": "Land Master Series",
+      "is_on_promotion": true,
+      "promo_discount_percent": 14,
+      "image_url": "/images/watches/watch_1508685096489-7a.jpg",
+      "images": [
+        "/images/watches/watch_1508685096489-7a.jpg",
+        "/images/watches/watch_1533139502658-01.jpg",
+        "/images/watches/watch_1523275335684-37.jpg"
+      ],
+      "description": "Built to survive sand, mud, and harsh conditions. Triple sensor featuring digital compass, altimeter/barometer, thermometer, forged carbon bezel guards, and sapphire crystal.",
+      "movement": "Tough Solar Triple Sensor v3 with Radio-Control",
+      "case_material": "Carbon Core Guard & Stainless Steel Forging",
+      "water_resistance": "200m (20 ATM)",
+      "in_stock": true,
+      "stock_count": 7,
+      "is_featured": false,
+      "created_at": "2026-09-01T11:05:00.000Z",
+      "stock_qty": 7,
+      "is_active": true
+    },
+    {
+      "id": "prod-casio-oceanus-ocw",
+      "name": "Casio Oceanus Manta OCW-S7000 Slim Sapphire",
+      "brand": "Casio",
+      "category": "Dress Watches",
+      "gender": "Men",
+      "case_size": "42.8mm",
+      "price": 490000,
+      "old_price": 560000,
+      "badge": "Elegance & Technology",
+      "warranty": "3 Years Casio Premium International Warranty",
+      "promotion_period": "Japan Domestic Masterpiece",
+      "is_on_promotion": true,
+      "promo_discount_percent": 12,
+      "image_url": "/images/watches/seastar_1000_powermatic.jpg",
+      "images": [
+        "/images/watches/seastar_1000_powermatic.jpg",
+        "/images/watches/watch_1547996160-81dfa.jpg",
+        "/images/watches/watch_1524592094714-0f.jpg"
+      ],
+      "description": "Premium Japanese craftsmanship with mirror-polished Zaratsu titanium case. 12-facet blue sapphire crystal bezel, dual-curved sapphire glass, Tough Solar, and Bluetooth time synchronization.",
+      "movement": "Tough Solar Chronograph with Smart Access Crown",
+      "case_material": "Titanium with Titanium Carbide Treatment & Sapphire",
+      "water_resistance": "100m (10 ATM)",
+      "in_stock": true,
+      "stock_count": 4,
+      "is_featured": false,
+      "created_at": "2026-09-01T11:10:00.000Z",
+      "stock_qty": 4,
+      "is_active": true
+    },
+    {
+      "id": "prod-grand-seiko-spring-drive-snowflake",
+      "name": "Grand Seiko Heritage Spring Drive 'Snowflake' SBGA211",
+      "brand": "Seiko",
+      "category": "Automatic",
+      "gender": "Men",
+      "case_size": "41mm",
+      "price": 2150000,
+      "old_price": 2400000,
+      "badge": "Shinshu Snowflake",
+      "warranty": "5 Years Grand Seiko International Warranty",
+      "promotion_period": "Spring Drive Master",
+      "is_on_promotion": true,
+      "promo_discount_percent": 10,
+      "image_url": "/images/watches/watch_1547996160-81dfa.jpg",
+      "images": [
+        "/images/watches/watch_1547996160-81dfa.jpg",
+        "/images/watches/watch_1524592094714-0f.jpg",
+        "/images/watches/seastar_1000_powermatic.jpg"
+      ],
+      "description": "The dial captures the serene texture of fresh snow on the Shinshu mountains. Powered by the unique Spring Drive Calibre 9R65 with a mesmerizing, perfectly continuous gliding seconds hand.",
+      "movement": "Grand Seiko Calibre 9R65 Spring Drive (+/- 1s/day)",
+      "case_material": "High-Intensity Titanium with Zaratsu Polish",
+      "water_resistance": "100m (10 ATM)",
+      "in_stock": true,
+      "stock_count": 4,
+      "is_featured": true,
+      "created_at": "2026-09-01T11:15:00.000Z",
+      "stock_qty": 4,
+      "is_active": true
+    },
+    {
+      "id": "prod-grand-seiko-heritage-shunbun",
+      "name": "Grand Seiko Heritage 'Shunbun' SBGA413 Spring Drive",
+      "brand": "Seiko",
+      "category": "Dress Watches",
+      "gender": "Unisex",
+      "case_size": "40mm",
+      "price": 2350000,
+      "old_price": 2650000,
+      "badge": "Sakura Blossom Dial",
+      "warranty": "5 Years Grand Seiko International Warranty",
+      "promotion_period": "Four Seasons 24 Sekki",
+      "is_on_promotion": true,
+      "promo_discount_percent": 11,
+      "image_url": "/images/watches/watch_1524592094714-0f.jpg",
+      "images": [
+        "/images/watches/watch_1524592094714-0f.jpg",
+        "/images/watches/watch_1547996160-81dfa.jpg",
+        "/images/watches/submariner_deep_black_ceramic.jpg"
+      ],
+      "description": "Celebrates the spring equinox (Shunbun) when pink cherry blossoms fall onto lake surfaces (Hana-Ikada). High-intensity titanium case with 62GS vintage bezel-free design.",
+      "movement": "Grand Seiko Calibre 9R65 Spring Drive",
+      "case_material": "High-Intensity Titanium (Zaratsu Polished)",
+      "water_resistance": "100m (10 ATM)",
+      "in_stock": true,
+      "stock_count": 3,
+      "is_featured": true,
+      "created_at": "2026-09-01T11:20:00.000Z",
+      "stock_qty": 3,
+      "is_active": true
+    },
+    {
+      "id": "prod-grand-seiko-elegance-sbgy007",
+      "name": "Grand Seiko Elegance 'Omiwatari' SBGY007",
+      "brand": "Seiko",
+      "category": "Dress Watches",
+      "gender": "Men",
+      "case_size": "38.5mm",
+      "price": 2750000,
+      "old_price": 3100000,
+      "badge": "Omiwatari Glacier Dial",
+      "warranty": "5 Years Grand Seiko International Warranty",
+      "promotion_period": "Manual Wind Master",
+      "is_on_promotion": true,
+      "promo_discount_percent": 11,
+      "image_url": "/images/watches/seastar_1000_powermatic.jpg",
+      "images": [
+        "/images/watches/seastar_1000_powermatic.jpg",
+        "/images/watches/watch_1524592094714-0f.jpg",
+        "/images/watches/watch_1547996160-81dfa.jpg"
+      ],
+      "description": "Inspired by the frozen ridges of Lake Suwa in winter. Manual-wind Spring Drive Calibre 9R31 with dual-spring barrel delivering 72 hours of power reserve in an ultra-thin 10.2mm profile.",
+      "movement": "Grand Seiko Manual-Wind Spring Drive 9R31",
+      "case_material": "Stainless Steel with Zaratsu Polish & Crocodile Strap",
+      "water_resistance": "30m (Splash Resistant)",
+      "in_stock": true,
+      "stock_count": 2,
+      "is_featured": false,
+      "created_at": "2026-09-01T11:25:00.000Z",
+      "stock_qty": 2,
+      "is_active": true
+    },
+    {
+      "id": "prod-seiko-prospex-lx-diver",
+      "name": "Seiko Prospex LX Spring Drive Diver SNR029 300m",
+      "brand": "Seiko",
+      "category": "Dive Watches",
+      "gender": "Men",
+      "case_size": "44.8mm",
+      "price": 1800000,
+      "old_price": 2050000,
+      "badge": "Ken Okuyama Design",
+      "warranty": "3 Years Seiko International Warranty",
+      "promotion_period": "Professional Diver",
+      "is_on_promotion": true,
+      "promo_discount_percent": 12,
+      "image_url": "/images/watches/submariner_deep_black_ceramic.jpg",
+      "images": [
+        "/images/watches/submariner_deep_black_ceramic.jpg",
+        "/images/watches/watch_1548036328-c9fa8.jpg",
+        "/images/watches/watch_1434056886845-da.jpg"
+      ],
+      "description": "Designed in collaboration with famed industrial designer Ken Okuyama. 300m saturation diver with lightweight super-hard coated titanium case, ceramic bezel, and Spring Drive Calibre 5R65.",
+      "movement": "Seiko Calibre 5R65 Spring Drive Automatic",
+      "case_material": "Titanium with Super-Hard Coating & Ceramic Bezel",
+      "water_resistance": "300m Saturation Diving",
+      "in_stock": true,
+      "stock_count": 4,
+      "is_featured": false,
+      "created_at": "2026-09-01T11:30:00.000Z",
+      "stock_qty": 4,
+      "is_active": true
+    },
+    {
+      "id": "prod-seiko-presage-craftsmanship-enamel",
+      "name": "Seiko Presage Craftsmanship Enamel SPB403",
+      "brand": "Seiko",
+      "category": "Automatic",
+      "gender": "Men",
+      "case_size": "40.2mm",
+      "price": 360000,
+      "old_price": 410000,
+      "badge": "Handcrafted Enamel",
+      "warranty": "3 Years Seiko International Warranty",
+      "promotion_period": "Artisan Dial Edition",
+      "is_on_promotion": true,
+      "promo_discount_percent": 12,
+      "image_url": "/images/watches/watch_1524592094714-0f.jpg",
+      "images": [
+        "/images/watches/watch_1524592094714-0f.jpg",
+        "/images/watches/watch_1547996160-81dfa.jpg",
+        "/images/watches/seastar_1000_powermatic.jpg"
+      ],
+      "description": "Pure white enamel dial fired by master artisan Mitsuru Yokosawa. Traditional Roman numerals, tempered blue hands, and the new automatic Calibre 6R55 with 72 hours power reserve.",
+      "movement": "Seiko Automatic Calibre 6R55 (72-Hour Reserve)",
+      "case_material": "Stainless Steel with Dual-Curved Sapphire",
+      "water_resistance": "100m (10 ATM)",
+      "in_stock": true,
+      "stock_count": 6,
+      "is_featured": false,
+      "created_at": "2026-09-01T11:35:00.000Z",
+      "stock_qty": 6,
+      "is_active": true
+    },
+    {
+      "id": "prod-tissot-gentleman-powermatic-80",
+      "name": "Tissot Gentleman Powermatic 80 Silicium 40mm",
+      "brand": "Tissot",
+      "category": "Dress Watches",
+      "gender": "Men",
+      "case_size": "40mm",
+      "price": 265000,
+      "old_price": 310000,
+      "badge": "Silicium Hairspring",
+      "warranty": "2 Years International Tissot Warranty",
+      "promotion_period": "Executive Standard",
+      "is_on_promotion": true,
+      "promo_discount_percent": 15,
+      "image_url": "/images/watches/watch_1547996160-81dfa.jpg",
+      "images": [
+        "/images/watches/watch_1547996160-81dfa.jpg",
+        "/images/watches/watch_1524592094714-0f.jpg",
+        "/images/watches/seastar_1000_powermatic.jpg"
+      ],
+      "description": "The ultimate daily watch for the modern gentleman. Deep sunburst blue dial, crosshair motif, exhibition caseback, and anti-magnetic silicon hairspring.",
+      "movement": "Swiss Powermatic 80 Silicium Automatic",
+      "case_material": "316L Stainless Steel",
+      "water_resistance": "100m (10 ATM)",
+      "in_stock": true,
+      "stock_count": 8,
+      "is_featured": false,
+      "created_at": "2026-09-01T11:45:00.000Z",
+      "stock_qty": 8,
+      "is_active": true
+    },
+    {
+      "id": "prod-tissot-seastar-1000-powermatic",
+      "name": "Tissot Seastar 1000 Powermatic 80 43mm Diver",
+      "brand": "Tissot",
+      "category": "Dive Watches",
+      "gender": "Men",
+      "case_size": "43mm",
+      "price": 260000,
+      "old_price": 295000,
+      "badge": "300m Diver",
+      "warranty": "2 Years International Tissot Warranty",
+      "promotion_period": "Watersport Edition",
+      "is_on_promotion": true,
+      "promo_discount_percent": 12,
+      "image_url": "/images/watches/submariner_deep_black_ceramic.jpg",
+      "images": [
+        "/images/watches/submariner_deep_black_ceramic.jpg",
+        "/images/watches/watch_1548036328-c9fa8.jpg",
+        "/images/watches/watch_1434056886845-da.jpg"
+      ],
+      "description": "High performance underwater watch rated to 300m/1000ft. Unidirectional ceramic bezel, screw-down crown and caseback, luminous Super-LumiNova hands, and 80h power reserve.",
+      "movement": "Swiss Powermatic 80 Automatic",
+      "case_material": "316L Stainless Steel & Ceramic Bezel",
+      "water_resistance": "300m (30 ATM)",
+      "in_stock": true,
+      "stock_count": 7,
+      "is_featured": false,
+      "created_at": "2026-09-01T11:50:00.000Z",
+      "stock_qty": 7,
+      "is_active": true
+    },
+    {
+      "id": "prod-tissot-le-locle-powermatic-80",
+      "name": "Tissot Le Locle Powermatic 80 Guilloché 39.3mm",
+      "brand": "Tissot",
+      "category": "Dress Watches",
+      "gender": "Men",
+      "case_size": "39.3mm",
+      "price": 235000,
+      "old_price": 270000,
+      "badge": "Cradle of Horology",
+      "warranty": "2 Years International Tissot Warranty",
+      "promotion_period": "Swiss Heritage",
+      "is_on_promotion": true,
+      "promo_discount_percent": 13,
+      "image_url": "/images/watches/watch_1524592094714-0f.jpg",
+      "images": [
+        "/images/watches/watch_1524592094714-0f.jpg",
+        "/images/watches/watch_1547996160-81dfa.jpg",
+        "/images/watches/speedmaster_chrono_titanium.jpg"
+      ],
+      "description": "Named after Tissot's home city in the Swiss Jura mountains. Traditional Clous de Paris guilloché dial, classic Roman numerals, and ornate split-window exhibition caseback.",
+      "movement": "Swiss Powermatic 80 Automatic",
+      "case_material": "316L Stainless Steel",
+      "water_resistance": "30m (3 ATM)",
+      "in_stock": true,
+      "stock_count": 9,
+      "is_featured": false,
+      "created_at": "2026-09-01T11:55:00.000Z",
+      "stock_qty": 9,
+      "is_active": true
+    },
+    {
+      "id": "prod-tissot-ballade",
+      "name": "Tissot Ballade Powermatic 80 COSC Chronometer",
+      "brand": "Tissot",
+      "category": "Dress Watches",
+      "gender": "Unisex",
+      "case_size": "41mm",
+      "price": 280000,
+      "old_price": 325000,
+      "badge": "COSC Chronometer Certified",
+      "warranty": "3 Years International Tissot Warranty",
+      "promotion_period": "Chronometer Standard",
+      "is_on_promotion": true,
+      "promo_discount_percent": 14,
+      "image_url": "/images/watches/watch_1547996160-81dfa.jpg",
+      "images": [
+        "/images/watches/watch_1547996160-81dfa.jpg",
+        "/images/watches/watch_1524592094714-0f.jpg",
+        "/images/watches/seastar_1000_powermatic.jpg"
+      ],
+      "description": "Official Swiss Chronometer Testing Institute (COSC) certified precision. Fluted bezel with guilloché inner dial ring, silicon balance spring, and stainless steel link bracelet.",
+      "movement": "COSC Certified Powermatic 80 Silicium",
+      "case_material": "316L Stainless Steel with Fluted Bezel",
+      "water_resistance": "50m (5 ATM)",
+      "in_stock": true,
+      "stock_count": 5,
+      "is_featured": false,
+      "created_at": "2026-09-01T12:00:00.000Z",
+      "stock_qty": 5,
+      "is_active": true
     }
   ],
   "posters": [
@@ -388,7 +988,8 @@
       "coupon_code": "KRONO2026",
       "promotion_period": "August 25 - September 30, 2026",
       "is_active": true,
-      "updated_at": "2026-09-15T05:48:11.448Z"
+      "updated_at": "2026-09-15T05:48:11.448Z",
+      "image_url": "/images/watches/submariner_deep_black_ceramic.jpg"
     },
     {
       "section_id": "hero_drop",
@@ -402,7 +1003,7 @@
       "start_date": "2026-08-25",
       "end_date": "2026-09-30",
       "coupon_code": "HERO30",
-      "image_url": "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=1200&q=80",
+      "image_url": "/images/watches/watch_1522312346375-d1.jpg",
       "action_link": "#shop",
       "is_active": true,
       "updated_at": "2026-09-15T05:48:11.448Z"
@@ -421,7 +1022,7 @@
       "start_date": "2026-08-28",
       "end_date": "2026-09-15",
       "coupon_code": "FLASH50",
-      "image_url": "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=1200&q=80",
+      "image_url": "/images/watches/watch_1547996160-81dfa.jpg",
       "action_link": "#shop",
       "is_active": true,
       "updated_at": "2026-09-15T05:48:11.448Z"
@@ -644,6 +1245,71 @@
       "unit_price": 295000,
       "subtotal": 295000,
       "created_at": "2026-10-04T19:11:09.518Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat-1",
+      "name": "Luxury",
+      "slug": "luxury",
+      "description": "Authentic Swiss Luxury luxury collection",
+      "is_active": true
+    },
+    {
+      "id": "cat-2",
+      "name": "Automatic",
+      "slug": "automatic",
+      "description": "Authentic Swiss Automatic luxury collection",
+      "is_active": true
+    },
+    {
+      "id": "cat-3",
+      "name": "Sport",
+      "slug": "sport",
+      "description": "Authentic Swiss Sport luxury collection",
+      "is_active": true
+    },
+    {
+      "id": "cat-4",
+      "name": "Smart",
+      "slug": "smart",
+      "description": "Authentic Swiss Smart luxury collection",
+      "is_active": true
+    },
+    {
+      "id": "cat-5",
+      "name": "Dive Watches",
+      "slug": "dive-watches",
+      "description": "Authentic Swiss Dive Watches luxury collection",
+      "is_active": true
+    },
+    {
+      "id": "cat-6",
+      "name": "Sports Watches",
+      "slug": "sports-watches",
+      "description": "Authentic Swiss Sports Watches luxury collection",
+      "is_active": true
+    },
+    {
+      "id": "cat-7",
+      "name": "Chronograph",
+      "slug": "chronograph",
+      "description": "Authentic Swiss Chronograph luxury collection",
+      "is_active": true
+    },
+    {
+      "id": "cat-8",
+      "name": "Dress Watches",
+      "slug": "dress-watches",
+      "description": "Authentic Swiss Dress Watches luxury collection",
+      "is_active": true
+    },
+    {
+      "id": "cat-9",
+      "name": "Digital",
+      "slug": "digital",
+      "description": "Authentic Swiss Digital luxury collection",
+      "is_active": true
     }
   ]
 }
