@@ -61,20 +61,20 @@ export default function Footer() {
             )}
           </div>
 
-          {/* Salons */}
+          {/* Boutiques */}
           <div>
-            <div style={S.heading}>Salons</div>
+            <div style={S.heading}>Boutiques</div>
             <div style={{ fontSize: "12px", marginBottom: "12px" }}>
-              <div style={{ color: "#bbb", fontWeight: 600, marginBottom: "2px" }}>Genève Atelier</div>
-              <div style={{ color: "#555", fontSize: "11px" }}>Rue du Rhône 42, CH</div>
+              <div style={{ color: "#bbb", fontWeight: 600, marginBottom: "2px" }}>Geneva Boutique</div>
+              <div style={{ color: "#555", fontSize: "11px" }}>42 Rue du Rhone, Geneva, Switzerland</div>
             </div>
             <div style={{ fontSize: "12px", marginBottom: "12px" }}>
-              <div style={{ color: "#bbb", fontWeight: 600, marginBottom: "2px" }}>London Mayfair</div>
-              <div style={{ color: "#555", fontSize: "11px" }}>14 New Bond Street, UK</div>
+              <div style={{ color: "#bbb", fontWeight: 600, marginBottom: "2px" }}>London Boutique</div>
+              <div style={{ color: "#555", fontSize: "11px" }}>14 New Bond Street, London, UK</div>
             </div>
             <div style={{ fontSize: "12px" }}>
-              <div style={{ color: "#bbb", fontWeight: 600, marginBottom: "2px" }}>New York 5th Ave</div>
-              <div style={{ color: "#555", fontSize: "11px" }}>745 Fifth Avenue, NY</div>
+              <div style={{ color: "#bbb", fontWeight: 600, marginBottom: "2px" }}>New York Boutique</div>
+              <div style={{ color: "#555", fontSize: "11px" }}>745 Fifth Avenue, New York, USA</div>
             </div>
           </div>
 
@@ -86,7 +86,7 @@ export default function Footer() {
               { label: "Dive Watches", href: "/catalog" },
               { label: "Dress Watches", href: "/catalog" },
               { label: "Chronograph", href: "/catalog" },
-              { label: "Atelier Heritage", href: "/about" },
+              { label: "About Krono", href: "/about" },
             ].map((l) => (
               <Link key={l.label} href={l.href} style={S.link}
                 onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.color = "#C5A059"}
@@ -98,7 +98,7 @@ export default function Footer() {
           {/* Guarantees */}
           <div>
             <div style={S.heading}>Guarantees</div>
-            {["5-Year Certified Warranty", "Insured Global Air Courier", "Serialized Authenticity Card", "30-Day Return Policy"].map((g) => (
+            {["5-Year Warranty", "Insured Shipping", "Certificate of Authenticity", "30-Day Returns"].map((g) => (
               <div key={g} style={{ display: "flex", alignItems: "flex-start", gap: "8px", marginBottom: "8px" }}>
                 <span style={{ color: "#C5A059", fontSize: "10px", marginTop: "1px", flexShrink: 0 }}>✦</span>
                 <span style={{ fontSize: "11px", color: "#666" }}>{g}</span>
@@ -110,14 +110,14 @@ export default function Footer() {
         {/* Bottom bar */}
         <div style={{ borderTop: "1px solid #1a1a1a", paddingTop: "24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
           <div style={{ fontSize: "11px", color: "#444" }}>
-            © {new Date().getFullYear()} KRONO ATELIER S.A. All rights reserved.
+            © {new Date().getFullYear()} KRONO WATCHES. All rights reserved.
           </div>
           <div style={{ display: "flex", gap: "20px", fontSize: "10px", color: "#444", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "monospace" }}>
-            <span style={{ color: "#C5A059" }}>Superlative Chronometer</span>
+            <span style={{ color: "#C5A059" }}>Certified Chronometer</span>
             <span>•</span>
-            <span>SSL Encrypted</span>
+            <span>Secure Checkout</span>
             <span>•</span>
-            <span style={{ color: "#C5A059" }}>Genève Registry</span>
+            <span style={{ color: "#C5A059" }}>Official Registry</span>
           </div>
         </div>
       </div>

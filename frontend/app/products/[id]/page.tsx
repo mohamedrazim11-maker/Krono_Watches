@@ -342,14 +342,14 @@ export default function ProductDetailPage() {
             <div className="flex items-center justify-between">
               <div>
                 <span className="text-[10px] font-mono text-[#C5A059] uppercase tracking-widest font-bold">
-                  Curated Pairings
+                  Recommended
                 </span>
-                <h2 className="text-xl font-serif font-bold text-white uppercase">
-                  Related Horological References
+                <h2 className="text-xl font-bold text-white uppercase">
+                  Related Watches
                 </h2>
               </div>
               <Link href="/catalog" className="text-xs font-mono text-[#C5A059] hover:underline uppercase">
-                Explore All →
+                View All →
               </Link>
             </div>
 

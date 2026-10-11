@@ -723,7 +723,7 @@ function HeroSection({
         <div key={slide} className="hero-text-fade" style={{ maxWidth: "520px" }}>
           {/* Brand label */}
           <div style={{ fontSize: "11px", fontWeight: 700, color: "#C5A059", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "20px", fontFamily: "inherit" }}>
-            {current?.brand || "Swiss Horology"}
+            {current?.brand || "Swiss Watches"}
           </div>
 
           {/* Headline */}
@@ -732,16 +732,16 @@ function HeroSection({
             textTransform: "uppercase", lineHeight: 1.0, letterSpacing: "-0.01em",
             marginBottom: "24px", fontFamily: "inherit",
           }}>
-            {current ? current.name.split(" ").slice(0, 4).join(" ") : "Custom Watches For"}
+            {current ? current.name.split(" ").slice(0, 4).join(" ") : "Luxury Watches For"}
             <br />
             <span style={{ color: "#C5A059" }}>
-              {current ? current.name.split(" ").slice(4).join(" ") || "Any Occasion" : "Any Occasion"}
+              {current ? current.name.split(" ").slice(4).join(" ") || "Every Moment" : "Every Moment"}
             </span>
           </h1>
 
           {/* Sub */}
-          <p style={{ fontSize: "13px", color: "#999", lineHeight: 1.7, marginBottom: "36px", maxWidth: "420px", fontFamily: "inherit" }}>
-            {current?.description?.slice(0, 120) || "Precision Swiss mechanical horology. Certified chronometers crafted for timeless elegance."}
+          <p style={{ fontSize: "13px", color: "#999", lineHeight: 1.6, marginBottom: "32px", maxWidth: "420px", fontFamily: "inherit" }}>
+            {current?.description?.slice(0, 95) || "Certified luxury timepieces. Guaranteed authentic with international warranty."}
           </p>
 
           {/* Buttons */}
@@ -774,7 +774,7 @@ function HeroSection({
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#fff"; (e.currentTarget as HTMLElement).style.color = "#000"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "#fff"; }}
             >
-              View Piece
+              View Watch
             </Link>
             <Link href="/catalog" style={{
               display: "inline-block", padding: "13px 28px",
@@ -787,7 +787,7 @@ function HeroSection({
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#C5A059"; (e.currentTarget as HTMLElement).style.color = "#C5A059"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#444"; (e.currentTarget as HTMLElement).style.color = "#ccc"; }}
             >
-              Catalogue
+              All Watches
             </Link>
           </div>
 
@@ -1067,9 +1067,9 @@ export default function Home() {
       <div style={{ background: "#0a0a0a", borderTop: "1px solid #1a1a1a", padding: "20px 0" }}>
         <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px", textAlign: "center" }}>
           {[
-            { icon: "🕐", label: "Swiss Certified", sub: "Superlative chronometers" },
-            { icon: "📦", label: "Free Shipping", sub: "On all orders worldwide" },
-            { icon: "✦", label: "5-Year Warranty", sub: "Global certified service" },
+            { icon: "🕐", label: "Certified Watches", sub: "100% Authentic" },
+            { icon: "📦", label: "Free Shipping", sub: "Worldwide delivery" },
+            { icon: "✦", label: "5-Year Warranty", sub: "Full coverage" },
           ].map((item) => (
             <div key={item.label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", padding: "16px 0" }}>
               <span style={{ fontSize: "20px" }}>{item.icon}</span>

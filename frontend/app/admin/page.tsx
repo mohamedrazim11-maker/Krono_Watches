@@ -208,7 +208,7 @@ export default function AdminDashboard() {
           </div>
           <div>
             <div style={{ fontSize: "13.5px", fontWeight: 800, color: "#F8FAFC", letterSpacing: "0.02em" }}>
-              Krono Atelier · Storefront Synchronization Active
+              Krono Watches · Storefront Active
             </div>
             <div style={{ fontSize: "11px", color: "#A1A1AA", marginTop: "1px" }}>
               Live inventory vault, homepage showcases, checkout orders, and flash campaign banners are unified.
@@ -268,7 +268,7 @@ export default function AdminDashboard() {
       <div style={{ marginBottom: "28px", display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <div style={{ fontSize: "11px", fontWeight: 700, color: "#71717A", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "6px" }}>
-            Atelier Management Suite
+            Admin Management Suite
           </div>
           <h1
             style={{

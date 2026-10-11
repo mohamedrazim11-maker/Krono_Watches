@@ -10,7 +10,7 @@ const NAV_ITEMS = [
     group: "Storefront & Orders",
     items: [
       {
-        label: "Atelier Overview",
+        label: "Overview",
         href: "/admin",
         badge: "Live",
         icon: (
@@ -20,7 +20,7 @@ const NAV_ITEMS = [
         ),
       },
       {
-        label: "VIP Orders & Clients",
+        label: "Orders",
         href: "/admin/orders",
         badge: "Storefront",
         icon: (
@@ -32,10 +32,10 @@ const NAV_ITEMS = [
     ],
   },
   {
-    group: "Horological Catalogue",
+    group: "Watches Catalog",
     items: [
       {
-        label: "All Timepieces",
+        label: "All Watches",
         href: "/admin/products",
         icon: (
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
@@ -44,7 +44,7 @@ const NAV_ITEMS = [
         ),
       },
       {
-        label: "Add Timepiece",
+        label: "Add Watch",
         href: "/admin/products/new",
         icon: (
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
@@ -159,7 +159,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                   fontFamily: "var(--font-sans, system-ui, sans-serif)",
                 }}
               >
-                KRONO ATELIER
+                KRONO WATCHES
               </div>
               <div
                 style={{
@@ -171,7 +171,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                   textTransform: "uppercase",
                 }}
               >
-                Administrative Console
+                Admin Dashboard
               </div>
             </div>
           )}
@@ -452,7 +452,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 }}
               />
               <span style={{ fontSize: "11px", color: "#F8FAFC", fontWeight: 700, fontFamily: "var(--font-mono, monospace)", letterSpacing: "0.06em" }}>
-                HAUTE HORLOGERIE ATELIER · ONLINE
+                STOREFRONT · ONLINE
               </span>
             </div>
 
