@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Product } from "@/lib/api";
@@ -37,6 +38,33 @@ export default function CartDrawer({
 }: CartDrawerProps) {
   const cartContext = useCart();
   const router = useRouter();
+
+  // Lock background webpage scrolling when cart drawer is active
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    const originalPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.paddingRight = originalPaddingRight;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   const cart = propCart ?? cartContext.cart;
   const onUpdateQuantity = propUpdateQuantity ?? cartContext.updateQuantity;
@@ -86,15 +114,16 @@ export default function CartDrawer({
   const kokoInstallment = grandTotal > 0 ? grandTotal / 3 : 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end font-sans">
+    <div className="fixed inset-0 z-50 flex justify-end font-sans overscroll-none">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity overscroll-none"
         onClick={onClose}
+        onTouchMove={(e) => e.preventDefault()}
       />
 
       {/* Slide-over Cart Drawer matching the sample structure */}
-      <div className="relative z-10 w-full max-w-sm sm:max-w-md bg-[#F4F5F7] text-neutral-900 flex flex-col h-full shadow-2xl animate-pageEnter">
+      <div className="relative z-10 w-full max-w-sm sm:max-w-md bg-[#F4F5F7] text-neutral-900 flex flex-col h-full shadow-2xl animate-pageEnter overscroll-contain">
         
         {/* Header */}
         <div className="p-6 pb-4 flex items-center justify-between">
@@ -111,7 +140,7 @@ export default function CartDrawer({
         </div>
 
         {/* Scrollable Cart Items */}
-        <div className="flex-1 overflow-y-auto px-6 py-2 space-y-3 min-h-0">
+        <div className="flex-1 overflow-y-auto px-6 py-2 space-y-3 min-h-0 overscroll-contain">
           {!cartContext.isCartReady ? (
             <div className="h-full flex items-center justify-center text-xs text-neutral-500">
               Loading cart…

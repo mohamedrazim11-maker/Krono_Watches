@@ -81,6 +81,16 @@ function CheckoutContent() {
     }
   }, [user]);
 
+  // Lock background scroll when info modal is open
+  useEffect(() => {
+    if (!infoModalOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [infoModalOpen]);
+
   // Payment confirmation verification from PayHere redirect
   useEffect(() => {
     const paymentStatus = searchParams.get("payment");
