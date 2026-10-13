@@ -48,6 +48,8 @@ const ATELIER_ACCESSORIES = [
   },
 ];
 
+type TabType = "DETAIL" | "SIZE DETAIL" | "RETURN POLICY" | "DELIVERY INFO";
+
 export default function ProductDetailPage() {
   const router = useRouter();
   const params = useParams();
@@ -65,22 +67,26 @@ export default function ProductDetailPage() {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const imageContainerRef = useRef<HTMLDivElement>(null);
 
+  // Sample structure state: Active Tab & Dropdown sizes
+  const [activeTab, setActiveTab] = useState<TabType>("DETAIL");
+  const [selectedRegion, setSelectedRegion] = useState("UK");
+  const [selectedSize, setSelectedSize] = useState("41mm");
+
+  // Modals for Size Guide & Terms
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
+
   // Concierge Consultation Modal
   const [isConciergeOpen, setIsConciergeOpen] = useState(false);
   const [conciergeMsg, setConciergeMsg] = useState("");
   const [conciergeSent, setConciergeSent] = useState(false);
 
-  // Stitch Vault Reservation Timer
+  // Vault Reservation Timer
   const [timerSeconds, setTimerSeconds] = useState(28 * 60 + 44);
 
-  // Stitch Bespoke Engraving State
+  // Bespoke Engraving State
   const [engravingText, setEngravingText] = useState("");
   const [engravingSaved, setEngravingSaved] = useState(false);
-
-  // Stitch Provenance Services Preferences
-  const [provenanceOpt1, setProvenanceOpt1] = useState(true);
-  const [provenanceOpt2, setProvenanceOpt2] = useState(true);
-  const [provenanceOpt3, setProvenanceOpt3] = useState(false);
 
   // Global Cart Context
   const {
@@ -93,7 +99,6 @@ export default function ProductDetailPage() {
     setIsCartOpen,
     isWishlistOpen,
     setIsWishlistOpen,
-    setIsCheckoutOpen,
     toastMessage,
     showToast,
   } = useCart();
@@ -106,6 +111,9 @@ export default function ProductDetailPage() {
         const prod = await fetchProductById(productId);
         if (prod) {
           setProduct(prod);
+          if (prod.case_size) {
+            setSelectedSize(prod.case_size);
+          }
           const all = await fetchProducts({ category: prod.category });
           setRelatedProducts(all.filter((p) => p.id !== prod.id).slice(0, 4));
         }
@@ -165,19 +173,24 @@ export default function ProductDetailPage() {
 
   const formatUSD = (lkrAmount: number) => {
     const usd = Math.round(lkrAmount / 304);
-    return `$${usd.toLocaleString("en-US")} USD`;
+    return `$ ${usd.toLocaleString("en-US")}`;
+  };
+
+  const formatEUR = (lkrAmount: number) => {
+    const eur = Math.round(lkrAmount / 330);
+    return `€ ${eur.toLocaleString("en-US")}`;
   };
 
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050505] text-white flex flex-col font-sans">
+      <div className="min-h-screen bg-[#070707] text-white flex flex-col font-sans">
         <Navbar cartCount={totalCartCount} wishlistCount={wishlist.length} />
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-center space-y-3 font-mono text-xs text-[#C5A059] animate-pulse">
-            <div className="text-2xl">✦</div>
-            <div>Synchronizing Geneva Vault...</div>
+          <div className="text-center space-y-3 font-mono text-xs text-[#E88C30] animate-pulse">
+            <div className="text-3xl">✦</div>
+            <div>Loading product details...</div>
           </div>
         </div>
         <Footer />
@@ -187,14 +200,14 @@ export default function ProductDetailPage() {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-[#050505] text-white flex flex-col font-sans">
+      <div className="min-h-screen bg-[#070707] text-white flex flex-col font-sans">
         <Navbar cartCount={totalCartCount} wishlistCount={wishlist.length} />
         <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-4 text-center">
-          <div className="text-4xl text-[#C5A059]">✦</div>
+          <div className="text-4xl text-[#E88C30]">✦</div>
           <h2 className="text-xl font-bold uppercase tracking-tight">Timepiece Not Located</h2>
           <Link
             href="/catalog"
-            className="px-6 py-2.5 bg-[#C5A059] text-black text-xs font-mono font-bold uppercase tracking-wider hover:bg-[#b08d48]"
+            className="px-6 py-2.5 bg-[#E88C30] text-black text-xs font-mono font-bold uppercase tracking-wider hover:bg-[#d47b24]"
           >
             Return to Catalogue
           </Link>
@@ -207,8 +220,111 @@ export default function ProductDetailPage() {
   const galleryImages = getProductImages(product.id, product.images, product.image_url);
   const activeImage = galleryImages[activeImageIndex] || galleryImages[0];
 
+  // Variations list: uses related products or different angles
+  const variationList = [
+    { id: product.id, name: product.name, image: galleryImages[0], isCurrent: true },
+    ...(relatedProducts.slice(0, 3).map((p, idx) => ({
+      id: p.id,
+      name: p.name,
+      image: getProductImage(p.id, p.image_url),
+      isCurrent: false,
+    }))),
+  ];
+
+  // Dynamic Tab Content
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "DETAIL":
+        return (
+          <div className="space-y-2 text-xs font-mono">
+            <div className="flex items-center justify-between py-2 border-b border-white/5">
+              <span className="text-neutral-400">SKU</span>
+              <span className="text-white font-semibold uppercase">{product.id.replace(/^prod-/, "").toUpperCase() || "ASDK12453578GXZ"}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b border-white/5">
+              <span className="text-neutral-400">Upper Material</span>
+              <span className="text-white font-medium">{product.case_material || "Oystersteel 904L / Ceramic"}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b border-white/5">
+              <span className="text-neutral-400">Inner Material</span>
+              <span className="text-white font-medium">Anti-Reflective Sapphire Crystal</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b border-white/5">
+              <span className="text-neutral-400">Sole Material</span>
+              <span className="text-white font-medium">{product.movement || "Swiss Automatic Mechanical Calibre"}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b border-white/5">
+              <span className="text-neutral-400">Inner Sole Material</span>
+              <span className="text-white font-medium">{product.water_resistance || "100m (10 ATM) Sealed Gasket"}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b border-white/5">
+              <span className="text-neutral-400">Warranty</span>
+              <span className="text-[#E88C30] font-medium">{product.warranty || "5-Year International Atelier Warranty"}</span>
+            </div>
+          </div>
+        );
+      case "SIZE DETAIL":
+        return (
+          <div className="space-y-2 text-xs font-mono">
+            <div className="flex items-center justify-between py-2 border-b border-white/5">
+              <span className="text-neutral-400">Case Diameter</span>
+              <span className="text-white font-medium">{product.case_size || "41 mm"}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b border-white/5">
+              <span className="text-neutral-400">Case Thickness</span>
+              <span className="text-white font-medium">12.4 mm (Profile)</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b border-white/5">
+              <span className="text-neutral-400">Lug-to-Lug Distance</span>
+              <span className="text-white font-medium">48.2 mm</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b border-white/5">
+              <span className="text-neutral-400">Strap / Lug Width</span>
+              <span className="text-white font-medium">20 mm (Tapered to 16 mm)</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b border-white/5">
+              <span className="text-neutral-400">Wrist Fit Scope</span>
+              <span className="text-white font-medium">160 mm - 215 mm (Micro-adjustable)</span>
+            </div>
+          </div>
+        );
+      case "RETURN POLICY":
+        return (
+          <div className="space-y-3 text-xs font-mono text-neutral-300 leading-relaxed">
+            <p>
+              ✦ <strong className="text-white">14-Day Complimentary Inspection:</strong> You may return or exchange this timepiece within 14 days of signed delivery.
+            </p>
+            <p>
+              ✦ <strong className="text-white">Tamper-Evident Security Seal:</strong> Timepiece must retain the holographic Geneva security hangtag and undamaged caseback seal.
+            </p>
+            <p>
+              ✦ <strong className="text-white">Complimentary Insured Transit:</strong> Return shipping is fully covered via scheduled armored courier pickup.
+            </p>
+          </div>
+        );
+      case "DELIVERY INFO":
+        return (
+          <div className="space-y-3 text-xs font-mono text-neutral-300 leading-relaxed">
+            <p>
+              📦 <strong className="text-white">Insured Armored Handover:</strong> Dispatched within 24 hours under 100% full-value escrow insurance.
+            </p>
+            <p>
+              ⏱ <strong className="text-white">Transit Timelines:</strong> Domestic Sri Lanka: Next Business Day. International (Geneva/Dubai/London/NY): 2 - 4 business days.
+            </p>
+            <p>
+              ✍️ <strong className="text-white">Signature Verification:</strong> Photo ID required upon courier handover with digital custody receipt.
+            </p>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const discountPercent = product.promo_discount_percent || 30;
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#000000] text-white selection:bg-[#C5A059] selection:text-black font-sans">
+    <div className="min-h-screen flex flex-col bg-[#0A0A0A] text-white selection:bg-[#E88C30] selection:text-black font-sans">
       <Navbar
         cartCount={totalCartCount}
         wishlistCount={wishlist.length}
@@ -218,539 +334,449 @@ export default function ProductDetailPage() {
 
       {/* Global Toast */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#111] border border-[#C5A059] text-[#C5A059] px-5 py-3 text-xs font-bold font-mono uppercase tracking-wider flex items-center gap-2 shadow-2xl animate-fade-in">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#161616] border border-[#E88C30] text-[#E88C30] px-5 py-3 text-xs font-bold font-mono uppercase tracking-wider flex items-center gap-2 shadow-2xl animate-fade-in">
           <span>✦</span>
           <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Stitch Top Marquee & Escrow Status Bar */}
-      <section className="w-full bg-[#050505] border-b border-[#1F1F1F] py-2.5 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono">
+      {/* Top Allocation & Vault Status Ribbon */}
+      <section className="w-full bg-[#111111] border-b border-[#222222] py-2 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono">
           <div className="flex items-center gap-2.5">
-            <span className="inline-block w-2 h-2 rounded-full bg-[#4ADE80] shadow-[0_0_8px_rgba(74,222,128,0.6)] animate-pulse"></span>
-            <span className="text-[#C5A059] uppercase tracking-widest font-semibold">
-              Geneva Vault Synchronized
+            <span className="inline-block w-2 h-2 rounded-full bg-[#22C55E] shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse" />
+            <span className="text-[#E88C30] uppercase tracking-wider font-semibold">
+              Authenticated Stock
             </span>
-            <span className="text-[#4E4639]">/</span>
+            <span className="text-white/30">/</span>
             <span className="text-white/60">
-              Session Key: <span className="text-white">0x7F2A...{product.id.slice(-4).toUpperCase()}</span>
+              Allocation ID: <span className="text-white">#0x{product.id.slice(-6).toUpperCase()}</span>
             </span>
           </div>
 
-          <div className="flex items-center gap-3 bg-[#0E0E0E] px-3.5 py-1 border border-[#1F1F1F]">
-            <span className="text-[#C5A059] text-[13px]">⏱</span>
-            <span className="text-white/70 uppercase tracking-wider text-[10px]">Allocation Hold:</span>
-            <span className={`font-mono font-bold text-sm ${timerSeconds === 0 ? "text-red-500" : "text-[#C5A059]"}`}>
+          <div className="flex items-center gap-3 bg-[#1A1A1A] px-3 py-0.5 rounded border border-[#2B2B2B]">
+            <span className="text-[#E88C30] text-xs">⏱</span>
+            <span className="text-white/70 uppercase tracking-wider text-[10px]">Priority Hold:</span>
+            <span className={`font-mono font-bold text-xs ${timerSeconds === 0 ? "text-red-500" : "text-[#E88C30]"}`}>
               {formatTimer(timerSeconds)}
             </span>
-            <span className="text-white/40 uppercase tracking-widest text-[9px]">Remaining</span>
+            <button
+              onClick={handleExtendTimer}
+              className="text-[9px] uppercase font-bold text-white/50 hover:text-[#E88C30] ml-1 transition-colors"
+            >
+              Extend
+            </button>
           </div>
         </div>
       </section>
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 space-y-12">
-        {/* Breadcrumb Navigation */}
-        <div className="flex items-center gap-2 text-xs font-mono text-white/50">
-          <Link href="/" className="hover:text-white transition-colors">Home</Link>
-          <span>/</span>
-          <Link href="/catalog" className="hover:text-white transition-colors">Catalogue</Link>
-          <span>/</span>
-          <span className="text-[#C5A059] uppercase font-semibold">{product.brand}</span>
-          <span>/</span>
-          <span className="text-white/80 truncate max-w-xs">{product.name}</span>
-        </div>
-
-        {/* Master Vitrine & Product Details Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          
-          {/* LEFT: Photographic Vitrine & Multi-Angle Thumbnails (7 Cols) */}
-          <div className="lg:col-span-7 space-y-4">
-            <div
-              ref={imageContainerRef}
-              onMouseEnter={() => setIsHoverZooming(true)}
-              onMouseLeave={() => setIsHoverZooming(false)}
-              onMouseMove={handleMouseMove}
-              onClick={() => setIsLightboxOpen(true)}
-              className="relative aspect-square bg-[#050505] border border-[#1F1F1F] overflow-hidden cursor-zoom-in group shadow-2xl"
-            >
-              {/* Badges Overlay */}
-              <div className="absolute top-3 left-3 z-20 flex flex-col gap-1.5">
-                {product.badge && (
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest px-3 py-1 bg-[#C5A059] text-black shadow-md">
-                    {product.badge}
-                  </span>
-                )}
-                <span className="text-[9px] font-mono tracking-widest px-2 py-0.5 bg-black/80 backdrop-blur-md text-[#C5A059] border border-[#C5A059]/40 uppercase">
-                  Ref. {product.id}
-                </span>
-                {product.is_on_promotion && (
-                  <span className="text-[9px] font-mono font-bold tracking-widest px-2 py-0.5 bg-red-600/90 text-white uppercase">
-                    -{product.promo_discount_percent || 10}% Special Allocation
-                  </span>
-                )}
-              </div>
-
-              {/* Interactive Zoom or High-Resolution Vitrine Image */}
-              {isHoverZooming ? (
+      {/* Main Container - Implemented directly matching the sample layout */}
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12">
+        <div className="bg-[#121212] rounded-2xl border border-[#242424] shadow-2xl p-6 sm:p-8 lg:p-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            
+            {/* ========================================================
+                LEFT COLUMN:
+                1. Main Image Showcase with 30% Starburst Badge
+                2. Pagination Dots
+                3. OTHER VARIATIONS Section
+                4. Tabs Section (DETAIL, SIZE DETAIL, RETURN POLICY, DELIVERY INFO)
+                5. Key-Value Specification Grid
+               ======================================================== */}
+            <div className="lg:col-span-7 space-y-6">
+              
+              {/* 1. Main Showcase Image Box with Starburst Badge */}
+              <div className="relative">
                 <div
-                  className="w-full h-full"
-                  style={{
-                    backgroundImage: `url(${activeImage})`,
-                    backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
-                    backgroundSize: "220%",
-                  }}
-                />
-              ) : (
-                <SmoothImage
-                  src={activeImage}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  priority
-                />
-              )}
+                  ref={imageContainerRef}
+                  onMouseEnter={() => setIsHoverZooming(true)}
+                  onMouseLeave={() => setIsHoverZooming(false)}
+                  onMouseMove={handleMouseMove}
+                  onClick={() => setIsLightboxOpen(true)}
+                  className="relative aspect-square sm:aspect-[4/3] bg-[#1A1A1A] rounded-xl border border-[#2B2B2B] overflow-hidden flex items-center justify-center cursor-zoom-in group shadow-inner"
+                >
+                  {/* Starburst Discount Badge (Matching sample's 30% red starburst badge) */}
+                  <div className="absolute top-4 right-4 z-20 flex items-center justify-center">
+                    <div className="relative w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center filter drop-shadow-lg">
+                      <svg
+                        viewBox="0 0 100 100"
+                        className="w-full h-full text-[#EF4444] fill-current animate-pulse transform hover:scale-105 transition-transform"
+                      >
+                        <path d="M50 0 L58 15 L74 6 L75 24 L92 22 L86 38 L100 45 L89 57 L99 70 L83 76 L86 94 L70 91 L65 107 L50 97 L35 107 L30 91 L14 94 L17 76 L1 70 L11 57 L0 45 L14 38 L8 22 L25 24 L26 6 L42 15 Z" />
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-white font-extrabold font-sans text-xs sm:text-sm leading-none drop-shadow">
+                        <span>{discountPercent}%</span>
+                      </div>
+                    </div>
+                  </div>
 
-              <div className="absolute bottom-3 right-3 px-2 py-1 bg-black/70 backdrop-blur-sm text-[10px] font-mono text-white/50 border border-white/10 uppercase">
-                Hover to Magnify 10x
-              </div>
-            </div>
-
-            {/* Thumbnail Strip */}
-            {galleryImages.length > 1 && (
-              <div className="flex items-center gap-3 overflow-x-auto pb-2">
-                {galleryImages.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImageIndex(idx)}
-                    className={`w-20 h-20 bg-[#0C0C0C] border relative overflow-hidden flex-shrink-0 transition-all ${
-                      activeImageIndex === idx
-                        ? "border-[#C5A059] scale-105 shadow-[0_0_12px_rgba(197,160,89,0.3)]"
-                        : "border-[#1F1F1F] opacity-60 hover:opacity-100"
-                    }`}
-                  >
-                    <SmoothImage src={img} alt={`Angle ${idx + 1}`} className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {/* Vault Hold Guarantee Banner (from Stitch lines 51-71) */}
-            <div className="bg-[#0C0C0C] border border-[#1F1F1F] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative overflow-hidden">
-              <div className="flex items-start gap-3">
-                <span className="p-2 bg-[#1C1B1B] text-[#C5A059] text-base font-mono">⏳</span>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-mono text-[11px] font-bold text-white uppercase tracking-wider">
-                      Vault Allocation Guarantee
-                    </h3>
-                    <span className="px-1.5 py-0.5 bg-[#C5A059]/15 text-[#C5A059] font-mono text-[9px] uppercase font-bold">
-                      Active
+                  {/* Optional Ref code pill on top left */}
+                  <div className="absolute top-4 left-4 z-20">
+                    <span className="text-[10px] font-mono font-bold tracking-wider px-2.5 py-1 bg-black/70 backdrop-blur-md text-[#E88C30] border border-[#E88C30]/30 rounded">
+                      Ref. {product.id}
                     </span>
                   </div>
-                  <p className="font-mono text-[11px] text-white/60 mt-0.5 max-w-md leading-relaxed">
-                    This reference and serial number are withheld in our Geneva vault. You have priority allocation for 30 minutes.
-                  </p>
+
+                  {/* Main Product Image with Zoom */}
+                  {isHoverZooming ? (
+                    <div
+                      className="w-full h-full"
+                      style={{
+                        backgroundImage: `url(${activeImage})`,
+                        backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
+                        backgroundSize: "220%",
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full p-4 flex items-center justify-center">
+                      <SmoothImage
+                        src={activeImage}
+                        alt={product.name}
+                        className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
+                        priority
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. Carousel / Pagination Dots (Matching sample image dots) */}
+                <div className="flex items-center justify-center gap-2 pt-3">
+                  {galleryImages.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveImageIndex(idx)}
+                      className={`h-2 rounded-full transition-all duration-300 ${
+                        activeImageIndex === idx
+                          ? "w-6 bg-[#E88C30] shadow-[0_0_8px_rgba(232,140,48,0.6)]"
+                          : "w-2 bg-neutral-600 hover:bg-neutral-400"
+                      }`}
+                      aria-label={`View image ${idx + 1}`}
+                    />
+                  ))}
                 </div>
               </div>
-              <button
-                onClick={handleExtendTimer}
-                type="button"
-                className="font-mono text-[11px] font-bold text-[#C5A059] uppercase tracking-widest hover:text-[#D4AF66] transition-colors whitespace-nowrap self-start sm:self-center"
-              >
-                + Extend Hold
-              </button>
-            </div>
-          </div>
 
-          {/* RIGHT: Stitch Product Description & Buying Controls (5 Cols) */}
-          <div className="lg:col-span-5 space-y-6">
-            
-            {/* 1. Header & Identity */}
-            <div className="space-y-2 border-b border-[#1F1F1F] pb-5">
-              <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-wider">
-                <span className="text-[#C5A059] font-bold">{product.brand} · {product.category}</span>
-                <span className="text-white/40">Ref. {product.id}</span>
+              {/* 3. OTHER VARIATIONS Section (Matching sample layout) */}
+              <div className="space-y-2.5 pt-2">
+                <h3 className="text-xs font-mono uppercase tracking-widest text-neutral-400 font-bold">
+                  OTHER VARIATIONS
+                </h3>
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                  {variationList.map((variation, index) => {
+                    const isSelected = variation.isCurrent && activeImageIndex === 0;
+                    return (
+                      <Link
+                        key={variation.id + index}
+                        href={variation.isCurrent ? "#" : `/products/${variation.id}`}
+                        onClick={(e) => {
+                          if (variation.isCurrent) {
+                            e.preventDefault();
+                            setActiveImageIndex(0);
+                          }
+                        }}
+                        className={`aspect-square bg-[#1A1A1A] rounded-lg border p-2 flex items-center justify-center relative overflow-hidden group transition-all ${
+                          isSelected
+                            ? "border-[#E88C30] ring-1 ring-[#E88C30] shadow-[0_0_10px_rgba(232,140,48,0.25)]"
+                            : "border-[#2B2B2B] hover:border-neutral-500 opacity-80 hover:opacity-100"
+                        }`}
+                        title={variation.name}
+                      >
+                        <SmoothImage
+                          src={variation.image}
+                          alt={variation.name}
+                          className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform"
+                        />
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-serif font-bold text-white leading-tight">
+
+              {/* 4. Tabs Section (DETAIL, SIZE DETAIL, RETURN POLICY, DELIVERY INFO) */}
+              <div className="pt-6 border-t border-[#222222] space-y-4">
+                <div className="flex items-center gap-6 sm:gap-8 border-b border-[#242424] text-xs font-mono font-bold uppercase tracking-wider overflow-x-auto pb-1">
+                  {(["DETAIL", "SIZE DETAIL", "RETURN POLICY", "DELIVERY INFO"] as TabType[]).map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={`pb-3 relative whitespace-nowrap transition-colors ${
+                        activeTab === tab
+                          ? "text-[#E88C30] font-bold"
+                          : "text-neutral-400 hover:text-white"
+                      }`}
+                    >
+                      {tab}
+                      {activeTab === tab && (
+                        <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#E88C30] rounded-full shadow-[0_0_8px_rgba(232,140,48,0.5)]" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* 5. Key-Value Specification Grid (Matching sample detail table) */}
+                <div className="pt-2">
+                  {renderTabContent()}
+                </div>
+              </div>
+
+            </div>
+
+            {/* ========================================================
+                RIGHT COLUMN:
+                1. Category Breadcrumb (MEN / LIFESTYLE / ...)
+                2. PRODUCT CODE : 12678ASFG
+                3. Title in Accent Orange (CANVAS SNEAKER - BLACK)
+                4. Price & Star Reviews ($ 70 / € 65  ★★★★★ 17 reviews)
+                5. Product Description
+                6. SIZE (UK ⌄  SIZE ⌄  SIZE GUIDE)
+                7. Action Buttons (ADD TO CART  |  ADD TO WISHLIST)
+                8. DELIVERY ESTIMATE (Read our Terms and Conditions)
+               ======================================================== */}
+            <div className="lg:col-span-5 space-y-6">
+              
+              {/* 1. Category Breadcrumb */}
+              <div className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 flex items-center flex-wrap gap-1.5">
+                <span>{product.gender?.toUpperCase() || "MEN"}</span>
+                <span>/</span>
+                <span>{product.category?.toUpperCase() || "LUXURY"}</span>
+                <span>/</span>
+                <span>{product.brand?.toUpperCase() || "CHRONOMETER"}</span>
+                <span>/</span>
+                <span className="text-white/80">{product.movement ? "AUTOMATIC" : "TIMEPIECE"}</span>
+              </div>
+
+              {/* 2. Product Code */}
+              <div className="font-mono text-xs uppercase tracking-widest text-neutral-400">
+                PRODUCT CODE : <span className="text-white font-semibold">{product.id.replace(/^prod-/, "").toUpperCase() || "12678ASFG"}</span>
+              </div>
+
+              {/* 3. Product Title (Vibrant Accent Orange Title) */}
+              <h1 className="text-2xl sm:text-3xl font-display font-extrabold uppercase tracking-wide text-[#E88C30] leading-tight drop-shadow-sm">
                 {product.name}
               </h1>
 
-              {/* Price & USD approx */}
-              <div className="flex items-baseline justify-between pt-2">
+              {/* 4. Dual Price & Star Ratings Row */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#242424] pb-5">
                 <div className="flex items-baseline gap-3">
-                  <span className="text-2xl sm:text-3xl font-mono font-bold text-[#C5A059]">
-                    {formatCurrency(product.price)}
+                  <span className="text-2xl sm:text-3xl font-mono font-bold text-white">
+                    {formatUSD(product.price)} / {formatEUR(product.price)}
                   </span>
-                  {product.old_price && product.old_price > product.price && (
-                    <span className="text-xs font-mono text-white/40 line-through">
-                      {formatCurrency(product.old_price)}
-                    </span>
-                  )}
+                  <span className="text-xs font-mono text-[#E88C30]/80">
+                    ({formatCurrency(product.price)})
+                  </span>
                 </div>
-                <span className="font-mono text-xs text-white/50">
-                  ≈ {formatUSD(product.price)}
-                </span>
+
+                <div className="flex items-center gap-2 text-xs font-mono text-[#F59E0B]">
+                  <span className="tracking-widest">★★★★★</span>
+                  <span className="text-neutral-400 text-[11px]">(17 reviews)</span>
+                </div>
               </div>
 
-              {/* Status */}
-              <div className="flex items-center gap-2 pt-1 font-mono text-xs">
-                <span className="w-2 h-2 rounded-full bg-[#4ADE80] shadow-[0_0_6px_#4ADE80]"></span>
-                <span className="text-[#4ADE80] font-bold uppercase tracking-wider">
-                  In Stock • Geneva Vault Allocation Available
-                </span>
+              {/* 5. Product Description */}
+              <div className="text-xs text-neutral-300 font-sans leading-relaxed">
+                <p>{product.description || "Crafted to perfection with premium materials, certified chronometric movement, and exceptional attention to horological heritage."}</p>
               </div>
-            </div>
 
-            {/* 2. Concise Product Description */}
-            <div className="font-mono text-xs text-white/75 leading-relaxed bg-[#0C0C0C] p-4 border border-[#1F1F1F]">
-              <p>{product.description}</p>
-            </div>
+              {/* 6. SIZE Selection Section (Dropdowns & Size Guide Link) */}
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-mono font-bold uppercase tracking-wider text-neutral-300">
+                    SIZE
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setIsSizeGuideOpen(true)}
+                    className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 hover:text-[#E88C30] underline transition-colors"
+                  >
+                    SIZE GUIDE
+                  </button>
+                </div>
 
-            {/* 3. Stitch 3-Box Technical Specifications Vitrine Grid (from Stitch lines 94-107) */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 p-3.5 bg-[#080808] border border-[#1F1F1F] text-xs font-mono">
-              <div>
-                <span className="text-[9px] uppercase tracking-wider text-white/40 block">Case Architecture</span>
-                <span className="text-white font-medium block mt-0.5">
-                  {product.case_material || "Oystersteel 904L"} · {product.case_size || "41mm"}
-                </span>
-              </div>
-              <div>
-                <span className="text-[9px] uppercase tracking-wider text-white/40 block">Movement Calibre</span>
-                <span className="text-white font-medium block mt-0.5">
-                  {product.movement || "Swiss Automatic Calibre"}
-                </span>
-              </div>
-              <div className="col-span-2 sm:col-span-1">
-                <span className="text-[9px] uppercase tracking-wider text-white/40 block">Water Resistance</span>
-                <span className="text-white font-medium block mt-0.5">
-                  {product.water_resistance || "100m (10 ATM)"}
-                </span>
-              </div>
-            </div>
-
-            {/* 4. Manufacture & Provenance Badges (from Stitch lines 108-117) */}
-            <div className="flex flex-wrap items-center gap-2 font-mono text-[10px]">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#121212] border border-[#222] text-white">
-                <span className="text-[#C5A059]">✦</span>
-                Complimentary Atelier Box &amp; 10x Loupe
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#121212] border border-[#222] text-[#C5A059]">
-                <span>✓</span>
-                COSC Chronometer Certified
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#121212] border border-[#222] text-white/80">
-                <span>🛡️</span>
-                Insured Armored Courier Transit
-              </span>
-            </div>
-
-            {/* 5. Stitch Bespoke Hand-Engraving Accordion (from Stitch lines 138-160) */}
-            <div className="bg-[#0C0C0C] border border-[#1F1F1F] p-4">
-              <details className="group cursor-pointer">
-                <summary className="flex items-center justify-between list-none text-white/80 hover:text-white transition-colors">
-                  <div className="flex items-center gap-2 font-mono text-xs">
-                    <span className="text-[#C5A059]">✒</span>
-                    <span className="font-bold uppercase tracking-wider text-white">
-                      Request Bespoke Caseback Monogram / Engraving
-                    </span>
-                    <span className="px-1.5 py-0.5 bg-[#1F1F1F] text-[#C5A059] text-[9px] uppercase font-bold">
-                      Complimentary
+                <div className="grid grid-cols-2 gap-3 font-mono text-xs">
+                  {/* Dropdown 1: Region / System (e.g., UK, EU, US, MM) */}
+                  <div className="relative">
+                    <select
+                      value={selectedRegion}
+                      onChange={(e) => setSelectedRegion(e.target.value)}
+                      className="w-full bg-[#1A1A1A] border border-[#333333] hover:border-[#E88C30] text-white px-3.5 py-2.5 rounded-lg appearance-none cursor-pointer focus:outline-none focus:border-[#E88C30] uppercase font-mono transition-colors"
+                    >
+                      <option value="UK">UK</option>
+                      <option value="US">US</option>
+                      <option value="EU">EU</option>
+                      <option value="MM">MM (Metric)</option>
+                    </select>
+                    <span className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-400 text-[10px]">
+                      ▼
                     </span>
                   </div>
-                  <span className="text-xs transition-transform group-open:rotate-180">▼</span>
-                </summary>
-                <div className="mt-4 pt-3 border-t border-[#1F1F1F] flex flex-col gap-2.5 font-mono">
-                  <label className="text-[11px] text-white/60">
-                    Master Engraver Initial Limit: Up to 14 Roman letters or numbers on outer caseback rim.
-                  </label>
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <input
-                      type="text"
-                      maxLength={14}
-                      value={engravingText}
-                      onChange={(e) => {
-                        setEngravingText(e.target.value);
-                        setEngravingSaved(false);
-                      }}
-                      placeholder="e.g. M.V. · 2026"
-                      className="bg-black border border-[#2A2A2A] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059] flex-1 font-mono uppercase"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleSaveEngraving}
-                      className="px-4 py-2 bg-[#222] hover:bg-[#C5A059] hover:text-black text-white text-xs font-bold uppercase transition-colors"
+
+                  {/* Dropdown 2: Case Size / Strap Fit */}
+                  <div className="relative">
+                    <select
+                      value={selectedSize}
+                      onChange={(e) => setSelectedSize(e.target.value)}
+                      className="w-full bg-[#1A1A1A] border border-[#333333] hover:border-[#E88C30] text-white px-3.5 py-2.5 rounded-lg appearance-none cursor-pointer focus:outline-none focus:border-[#E88C30] uppercase font-mono transition-colors"
                     >
-                      {engravingSaved ? "✓ Engraving Saved" : "Save Engraving"}
+                      <option value="39mm">SIZE: 39mm</option>
+                      <option value="40mm">SIZE: 40mm</option>
+                      <option value="41mm">SIZE: 41mm (Standard)</option>
+                      <option value="42mm">SIZE: 42mm</option>
+                      <option value="44mm">SIZE: 44mm</option>
+                    </select>
+                    <span className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-400 text-[10px]">
+                      ▼
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 7. Action Buttons Row (ADD TO CART + ADD TO WISHLIST) */}
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center gap-3">
+                  {/* Quantity selector */}
+                  <div className="flex items-center border border-[#333333] bg-[#1A1A1A] rounded-lg">
+                    <button
+                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                      className="px-3 py-2.5 text-neutral-400 hover:text-white transition-colors"
+                      title="Decrease quantity"
+                    >
+                      -
+                    </button>
+                    <span className="px-3 py-2.5 font-mono text-xs font-bold text-white">{quantity}</span>
+                    <button
+                      onClick={() => setQuantity((q) => q + 1)}
+                      className="px-3 py-2.5 text-neutral-400 hover:text-white transition-colors"
+                      title="Increase quantity"
+                    >
+                      +
                     </button>
                   </div>
-                </div>
-              </details>
-            </div>
 
-            {/* 6. Quantity, Add to Cart & Buy Now */}
-            <div className="space-y-3 pt-2">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center border border-[#2A2A2A] bg-black">
+                  {/* Add to Cart Button (Solid Vibrant Orange Button) */}
                   <button
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="px-3 py-2.5 text-white/70 hover:text-white"
+                    onClick={() => {
+                      addToCart(product, quantity);
+                      setIsCartOpen(true);
+                    }}
+                    className="flex-1 py-3.5 px-6 bg-gradient-to-r from-[#E67E22] via-[#E88C30] to-[#F39C12] hover:from-[#D35400] hover:to-[#E67E22] text-white font-bold text-xs uppercase tracking-widest rounded-lg shadow-lg shadow-orange-500/25 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
                   >
-                    -
+                    <span>ADD TO CART</span>
                   </button>
-                  <span className="px-4 py-2.5 font-mono text-xs font-bold">{quantity}</span>
+
+                  {/* Add to Wishlist Button (Outlined Button) */}
                   <button
-                    onClick={() => setQuantity((q) => q + 1)}
-                    className="px-3 py-2.5 text-white/70 hover:text-white"
+                    onClick={() => toggleWishlist(product)}
+                    className={`py-3.5 px-5 rounded-lg border font-mono text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                      isWishlisted
+                        ? "border-red-500 bg-red-500/10 text-red-400"
+                        : "border-[#333333] hover:border-[#E88C30] text-neutral-300 hover:text-white bg-[#1A1A1A]"
+                    }`}
+                    title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
                   >
-                    +
+                    <span>{isWishlisted ? "♥" : "♡"}</span>
+                    <span className="hidden sm:inline">{isWishlisted ? "WISHLISTED" : "WISHLIST"}</span>
                   </button>
                 </div>
 
+                {/* Instant Checkout Button */}
                 <button
-                  onClick={() => {
-                    addToCart(product, quantity);
-                    setIsCartOpen(true);
-                  }}
-                  className="flex-1 py-3.5 bg-white hover:bg-[#C5A059] hover:text-black text-black font-bold text-xs tracking-widest uppercase transition-colors shadow"
+                  onClick={handleBuyNow}
+                  className="w-full py-3 bg-[#1A1A1A] hover:bg-[#252525] border border-[#333333] hover:border-[#E88C30] text-white text-xs font-mono font-bold uppercase tracking-wider rounded-lg transition-all"
                 >
-                  Add to Cart
-                </button>
-
-                <button
-                  onClick={() => toggleWishlist(product)}
-                  className={`p-3.5 border transition-colors ${
-                    isWishlisted ? "border-red-500 text-red-500" : "border-[#2A2A2A] text-white/60 hover:text-white"
-                  }`}
-                  title="Save to Wishlist"
-                >
-                  ♥
+                  Proceed Directly to Checkout →
                 </button>
               </div>
 
-              <button
-                onClick={handleBuyNow}
-                className="w-full py-4 bg-[#C5A059] hover:bg-[#b08d48] text-black font-bold text-xs tracking-[0.16em] uppercase transition-all shadow-xl hover:shadow-[#C5A059]/20"
-              >
-                Proceed to Secure Checkout
-              </button>
+              {/* 8. DELIVERY ESTIMATE Section */}
+              <div className="pt-5 border-t border-[#242424] space-y-2 font-mono text-xs">
+                <h4 className="text-neutral-300 font-bold uppercase tracking-wider text-xs">
+                  DELIVERY ESTIMATE
+                </h4>
+                <p className="text-neutral-400 leading-relaxed text-[11px]">
+                  Estimated delivery: 2 - 4 business days via insured armored courier. Direct signature required upon delivery.
+                </p>
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setIsTermsOpen(true)}
+                    className="text-[#E88C30] hover:underline text-[11px] font-semibold"
+                  >
+                    Read our Terms and Conditions
+                  </button>
+                </div>
+              </div>
 
+              {/* Bespoke Caseback Engraving (Collapsible Accordion) */}
+              <div className="bg-[#171717] rounded-lg border border-[#2B2B2B] p-3.5">
+                <details className="group cursor-pointer">
+                  <summary className="flex items-center justify-between list-none text-neutral-300 hover:text-white transition-colors">
+                    <div className="flex items-center gap-2 font-mono text-xs">
+                      <span className="text-[#E88C30]">✒</span>
+                      <span className="font-bold uppercase tracking-wider">
+                        Bespoke Caseback Engraving
+                      </span>
+                      <span className="px-1.5 py-0.5 bg-[#262626] text-[#E88C30] text-[9px] uppercase font-bold rounded">
+                        Complimentary
+                      </span>
+                    </div>
+                    <span className="text-xs transition-transform group-open:rotate-180">▼</span>
+                  </summary>
+                  <div className="mt-3 pt-3 border-t border-[#2B2B2B] flex flex-col gap-2 font-mono text-xs">
+                    <label className="text-[10px] text-neutral-400">
+                      Up to 14 characters engraved on caseback rim:
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        maxLength={14}
+                        value={engravingText}
+                        onChange={(e) => {
+                          setEngravingText(e.target.value);
+                          setEngravingSaved(false);
+                        }}
+                        placeholder="e.g. M.V. · 2026"
+                        className="bg-black border border-[#333333] px-3 py-1.5 text-xs text-white rounded focus:outline-none focus:border-[#E88C30] flex-1 font-mono uppercase"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleSaveEngraving}
+                        className="px-3 py-1.5 bg-[#2B2B2B] hover:bg-[#E88C30] hover:text-black text-white text-xs font-bold uppercase rounded transition-colors"
+                      >
+                        {engravingSaved ? "✓ Saved" : "Save"}
+                      </button>
+                    </div>
+                  </div>
+                </details>
+              </div>
+
+              {/* Private Concierge Consultation Desk */}
               <button
                 onClick={() => setIsConciergeOpen(true)}
-                className="w-full py-2.5 border border-[#333] hover:border-white text-white/80 hover:text-white text-xs font-mono uppercase tracking-wider transition-colors"
+                className="w-full py-2.5 border border-dashed border-[#333333] hover:border-[#E88C30] text-neutral-400 hover:text-[#E88C30] text-xs font-mono uppercase tracking-wider rounded-lg transition-colors flex items-center justify-center gap-2"
               >
-                Inquire with Private Concierge
+                <span>✦</span>
+                <span>Inquire with Private Horology Concierge</span>
               </button>
-            </div>
 
-            {/* 7. Concierge Handover & Provenance Protocol Services (from Stitch lines 252-298) */}
-            <div className="bg-[#0C0C0C] border border-[#1F1F1F] p-4 space-y-3">
-              <div className="flex items-center justify-between border-b border-[#1F1F1F] pb-2">
-                <div>
-                  <span className="font-mono text-[9px] uppercase tracking-widest text-[#C5A059] font-bold">
-                    Haute Horlogerie Protocol
-                  </span>
-                  <h4 className="text-xs font-serif font-bold text-white uppercase mt-0.5">
-                    Concierge Handover &amp; Provenance
-                  </h4>
-                </div>
-                <span className="text-base text-[#C5A059]">✦</span>
-              </div>
-
-              <div className="grid grid-cols-1 gap-2.5 font-mono text-xs">
-                {/* Protocol 1 */}
-                <label className="flex items-start gap-3 p-2.5 bg-black/50 border border-[#1F1F1F] hover:border-[#333] cursor-pointer transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={provenanceOpt1}
-                    onChange={(e) => setProvenanceOpt1(e.target.checked)}
-                    className="accent-[#C5A059] mt-0.5"
-                  />
-                  <div className="flex-1">
-                    <span className="font-bold text-white uppercase text-[11px] block">
-                      Hand-Calligraphed Provenance Folio
-                    </span>
-                    <span className="text-[10px] text-white/60">
-                      Bound in Swiss calfskin folio with wax seal of the Watchmaker Master.
-                    </span>
-                  </div>
-                  <span className="text-[9px] text-[#C5A059] uppercase font-bold whitespace-nowrap">
-                    Included
-                  </span>
-                </label>
-
-                {/* Protocol 2 */}
-                <label className="flex items-start gap-3 p-2.5 bg-black/50 border border-[#1F1F1F] hover:border-[#333] cursor-pointer transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={provenanceOpt2}
-                    onChange={(e) => setProvenanceOpt2(e.target.checked)}
-                    className="accent-[#C5A059] mt-0.5"
-                  />
-                  <div className="flex-1">
-                    <span className="font-bold text-white uppercase text-[11px] block">
-                      Bespoke Presentation Box
-                    </span>
-                    <span className="text-[10px] text-white/60">
-                      Architectural presentation box with custom brass key and velvet lining.
-                    </span>
-                  </div>
-                  <span className="text-[9px] text-[#C5A059] uppercase font-bold whitespace-nowrap">
-                    Courtesy
-                  </span>
-                </label>
-
-                {/* Protocol 3 */}
-                <label className="flex items-start gap-3 p-2.5 bg-black/50 border border-[#1F1F1F] hover:border-[#333] cursor-pointer transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={provenanceOpt3}
-                    onChange={(e) => setProvenanceOpt3(e.target.checked)}
-                    className="accent-[#C5A059] mt-0.5"
-                  />
-                  <div className="flex-1">
-                    <span className="font-bold text-white uppercase text-[11px] block">
-                      Geneva Flagship Salon Handover
-                    </span>
-                    <span className="text-[10px] text-white/60">
-                      Receive in person at Geneva Flagship Salon with Horologist consultation.
-                    </span>
-                  </div>
-                  <span className="text-[9px] text-white/40 uppercase font-bold whitespace-nowrap">
-                    By Appt
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            {/* 8. Swiss Escrow Security Protocol Ledger Badges (from Stitch lines 381-405) */}
-            <div className="bg-[#080808] border border-[#1F1F1F] p-4 space-y-3 font-mono text-xs">
-              <span className="text-[9px] uppercase tracking-wider text-white/40 block font-bold">
-                Security &amp; Authenticity Guarantees
-              </span>
-              <div className="grid grid-cols-1 gap-2">
-                <div className="flex items-center gap-3 text-white/80">
-                  <span className="text-base text-[#C5A059]">🛡️</span>
-                  <div>
-                    <span className="font-bold text-[11px] text-white uppercase block">
-                      256-Bit Swiss Banking Protocol
-                    </span>
-                    <span className="text-[10px] text-white/50">
-                      Regulated escrow protection through Geneva banking channels
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 text-white/80">
-                  <span className="text-base text-[#C5A059]">📡</span>
-                  <div>
-                    <span className="font-bold text-[11px] text-white uppercase block">
-                      NFC Cryptographic Digital Passport
-                    </span>
-                    <span className="text-[10px] text-white/50">
-                      Tamper-evident serial verification and ownership certificate
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 text-white/80">
-                  <span className="text-base text-[#C5A059]">📦</span>
-                  <div>
-                    <span className="font-bold text-[11px] text-white uppercase block">
-                      Full Value Transit Insurance
-                    </span>
-                    <span className="text-[10px] text-white/50">
-                      Armored door-to-door courier until signature handover
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
 
           </div>
         </div>
 
-        {/* 9. Curated Atelier Accessories & Care Vitrine (from Stitch lines 410-502) */}
-        <section className="pt-12 border-t border-[#1F1F1F] space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-            <div>
-              <span className="text-[10px] font-mono text-[#C5A059] uppercase tracking-widest font-bold">
-                Manufacture Atelier Care
-              </span>
-              <h2 className="text-xl sm:text-2xl font-serif font-bold text-white uppercase mt-0.5">
-                Recommended Complications &amp; Accessories
-              </h2>
-              <p className="text-xs text-white/60 font-mono mt-1">
-                Preserve and travel with your timepieces under optimal chronometric protection.
-              </p>
-            </div>
-            <Link href="/catalog" className="text-xs font-mono text-[#C5A059] hover:underline uppercase">
-              Explore Collection →
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {ATELIER_ACCESSORIES.map((acc) => (
-              <article
-                key={acc.id}
-                className="bg-[#0C0C0C] border border-[#1F1F1F] hover:border-[#333] p-5 flex flex-col justify-between transition-all group"
-              >
-                <div>
-                  <div className="relative aspect-video bg-[#050505] mb-4 overflow-hidden flex items-center justify-center">
-                    <SmoothImage
-                      src={acc.image_url}
-                      alt={acc.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-black/80 font-mono text-[9px] text-[#C5A059] uppercase font-bold border border-[#C5A059]/40">
-                      {acc.tag}
-                    </span>
-                  </div>
-                  <span className="font-mono text-[9px] uppercase text-white/40 block">
-                    {acc.refCode}
-                  </span>
-                  <h3 className="font-serif font-bold text-base text-white mt-1 group-hover:text-[#C5A059] transition-colors">
-                    {acc.name}
-                  </h3>
-                  <p className="font-mono text-xs text-white/60 mt-1.5 leading-relaxed">
-                    {acc.description}
-                  </p>
-                </div>
-
-                <div className="mt-6 pt-3 border-t border-[#1F1F1F] flex items-center justify-between">
-                  <div>
-                    <span className="font-mono text-[9px] uppercase text-white/40 block">Allocation Price</span>
-                    <span className="font-mono text-sm font-bold text-[#C5A059]">
-                      {formatCurrency(acc.price)}
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => {
-                      addToCart(acc as any, 1);
-                      setIsCartOpen(true);
-                    }}
-                    type="button"
-                    className="bg-[#1F1F1F] hover:bg-[#C5A059] hover:text-black text-white font-mono text-xs font-bold uppercase px-3.5 py-2 transition-colors"
-                  >
-                    + Add to Cart
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        {/* 10. Related Watches Section */}
+        {/* Curated Accessories / Related Timepieces Grid */}
         {relatedProducts.length > 0 && (
-          <div className="pt-12 border-t border-[#1F1F1F] space-y-6">
-            <div className="flex items-center justify-between">
+          <section className="mt-16 space-y-6">
+            <div className="flex items-center justify-between border-b border-[#222222] pb-4">
               <div>
-                <span className="text-[10px] font-mono text-[#C5A059] uppercase tracking-widest font-bold">
-                  Recommended
+                <span className="text-[10px] font-mono text-[#E88C30] uppercase tracking-widest font-bold">
+                  Recommended Timepieces
                 </span>
-                <h2 className="text-xl font-bold text-white uppercase">
-                  Related Watches
+                <h2 className="text-xl font-bold text-white uppercase mt-1">
+                  You May Also Like
                 </h2>
               </div>
-              <Link href="/catalog" className="text-xs font-mono text-[#C5A059] hover:underline uppercase">
-                View All →
+              <Link href="/catalog" className="text-xs font-mono text-[#E88C30] hover:underline uppercase">
+                Explore All →
               </Link>
             </div>
 
@@ -761,53 +787,157 @@ export default function ProductDetailPage() {
                   <Link
                     key={rel.id}
                     href={`/products/${rel.id}`}
-                    className="bg-[#0C0C0C] border border-[#1F1F1F] hover:border-[#C5A059] p-4 transition-all group block"
+                    className="bg-[#121212] border border-[#242424] hover:border-[#E88C30] rounded-xl p-4 transition-all group block shadow-md hover:shadow-xl"
                   >
-                    <div className="aspect-square bg-black mb-3 overflow-hidden">
-                      <SmoothImage src={img} alt={rel.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    <div className="aspect-square bg-[#1A1A1A] rounded-lg mb-3 overflow-hidden flex items-center justify-center p-3">
+                      <SmoothImage src={img} alt={rel.name} className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform" />
                     </div>
-                    <div className="text-[9px] font-mono text-[#C5A059] uppercase font-bold">
+                    <div className="text-[9px] font-mono text-[#E88C30] uppercase font-bold">
                       {rel.brand}
                     </div>
-                    <div className="text-xs font-semibold text-white group-hover:text-[#C5A059] truncate">
+                    <div className="text-xs font-semibold text-white group-hover:text-[#E88C30] truncate mt-1">
                       {rel.name}
                     </div>
-                    <div className="text-xs font-mono text-[#C5A059] font-bold mt-2">
+                    <div className="text-xs font-mono text-white font-bold mt-2">
                       {formatCurrency(rel.price)}
                     </div>
                   </Link>
                 );
               })}
             </div>
-          </div>
+          </section>
         )}
       </main>
+
+      {/* Size Guide Modal */}
+      {isSizeGuideOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#141414] border border-[#333333] rounded-xl p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#262626] pb-3">
+              <h3 className="text-sm font-mono uppercase text-[#E88C30] font-bold tracking-wider">
+                Watch Case &amp; Wrist Sizing Guide
+              </h3>
+              <button
+                onClick={() => setIsSizeGuideOpen(false)}
+                className="text-neutral-400 hover:text-white text-sm"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="space-y-4 text-xs font-mono text-neutral-300">
+              <p>
+                Our cases are engineered according to Swiss horological standards. Use the chart below to match case diameter to your wrist circumference:
+              </p>
+              <div className="border border-[#2B2B2B] rounded overflow-hidden">
+                <table className="w-full text-left">
+                  <thead className="bg-[#1A1A1A] text-neutral-400 border-b border-[#2B2B2B]">
+                    <tr>
+                      <th className="p-2.5">Case Diameter</th>
+                      <th className="p-2.5">Wrist Circumference</th>
+                      <th className="p-2.5">Fit Recommendation</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#242424]">
+                    <tr>
+                      <td className="p-2.5 font-bold text-white">38mm - 39mm</td>
+                      <td className="p-2.5">150mm - 170mm (6.0&quot; - 6.7&quot;)</td>
+                      <td className="p-2.5 text-[#22C55E]">Classic Vintage</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2.5 font-bold text-white">40mm - 41mm</td>
+                      <td className="p-2.5">165mm - 190mm (6.5&quot; - 7.5&quot;)</td>
+                      <td className="p-2.5 text-[#E88C30]">Universal Standard</td>
+                    </tr>
+                    <tr>
+                      <td className="p-2.5 font-bold text-white">42mm - 44mm</td>
+                      <td className="p-2.5">180mm - 210mm (7.1&quot; - 8.3&quot;)</td>
+                      <td className="p-2.5 text-blue-400">Sport Chrono</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-[11px] text-neutral-400">
+                Complimentary micro-adjustment links and custom strap sizing are provided with every order.
+              </p>
+            </div>
+            <div className="pt-2 flex justify-end">
+              <button
+                onClick={() => setIsSizeGuideOpen(false)}
+                className="px-4 py-2 bg-[#E88C30] text-black text-xs font-mono font-bold uppercase rounded hover:bg-[#d47b24]"
+              >
+                Got It
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Terms and Conditions Modal */}
+      {isTermsOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#141414] border border-[#333333] rounded-xl p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#262626] pb-3">
+              <h3 className="text-sm font-mono uppercase text-[#E88C30] font-bold tracking-wider">
+                Delivery &amp; Authentication Terms
+              </h3>
+              <button
+                onClick={() => setIsTermsOpen(false)}
+                className="text-neutral-400 hover:text-white text-sm"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="space-y-3 text-xs font-mono text-neutral-300 leading-relaxed max-h-80 overflow-y-auto pr-2">
+              <p>
+                <strong>1. Armored Transit Escrow:</strong> Every timepiece shipment is secured with 100% full-value Lloyd&apos;s or Swiss marine insurance until in-person signature handover.
+              </p>
+              <p>
+                <strong>2. Tamper-Evident Security Seal:</strong> Timepieces arrive with verified serial verification holograms. Removal of the caseback tag constitutes ownership acceptance.
+              </p>
+              <p>
+                <strong>3. 14-Day Return Guarantee:</strong> If unsatisfied, notify concierge within 14 days of receipt for an insured return dispatch.
+              </p>
+              <p>
+                <strong>4. Customs &amp; Import Duties:</strong> All taxes and duties are prepaid and inclusive in your checkout total. No surprise fees upon courier handover.
+              </p>
+            </div>
+            <div className="pt-2 flex justify-end">
+              <button
+                onClick={() => setIsTermsOpen(false)}
+                className="px-4 py-2 bg-[#E88C30] text-black text-xs font-mono font-bold uppercase rounded hover:bg-[#d47b24]"
+              >
+                Close Terms
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Concierge Modal */}
       {isConciergeOpen && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0C0C0C] border border-white/20 p-6 sm:p-8 max-w-md w-full space-y-4">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <span className="text-xs font-mono uppercase text-[#C5A059] font-bold tracking-widest">
-                Geneva Private Salon Consultation
+          <div className="bg-[#141414] border border-[#333333] rounded-xl p-6 sm:p-8 max-w-md w-full space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#262626] pb-3">
+              <span className="text-xs font-mono uppercase text-[#E88C30] font-bold tracking-widest">
+                Private Horology Consultation
               </span>
               <button onClick={() => setIsConciergeOpen(false)} className="text-white/60 hover:text-white">✕</button>
             </div>
             {conciergeSent ? (
               <div className="text-center py-6 space-y-2">
-                <div className="text-2xl text-[#C5A059]">✓</div>
-                <div className="text-sm font-serif font-bold">Inquiry Dispatched</div>
+                <div className="text-2xl text-[#E88C30]">✓</div>
+                <div className="text-sm font-sans font-bold">Inquiry Dispatched</div>
                 <p className="text-xs text-white/60 font-mono">Our senior horologist will contact you within 2 business hours.</p>
                 <button
                   onClick={() => { setIsConciergeOpen(false); setConciergeSent(false); }}
-                  className="mt-4 px-4 py-2 bg-[#C5A059] text-black text-xs font-mono font-bold uppercase"
+                  className="mt-4 px-4 py-2 bg-[#E88C30] text-black text-xs font-mono font-bold uppercase rounded"
                 >
                   Close
                 </button>
               </div>
             ) : (
               <div className="space-y-3">
-                <p className="text-xs text-white/70 font-mono">
+                <p className="text-xs text-neutral-300 font-mono">
                   Inquiring on: <span className="text-white font-semibold">{product.name}</span>
                 </p>
                 <textarea
@@ -815,11 +945,11 @@ export default function ProductDetailPage() {
                   value={conciergeMsg}
                   onChange={(e) => setConciergeMsg(e.target.value)}
                   placeholder="Inquire about bespoke sizing, vault inspection, or private wire transfer..."
-                  className="w-full bg-black border border-[#2A2A2A] p-3 text-xs text-white focus:outline-none focus:border-[#C5A059] font-mono resize-none"
+                  className="w-full bg-black border border-[#333333] rounded p-3 text-xs text-white focus:outline-none focus:border-[#E88C30] font-mono resize-none"
                 />
                 <button
                   onClick={() => setConciergeSent(true)}
-                  className="w-full py-2.5 bg-[#C5A059] text-black text-xs font-mono font-bold uppercase hover:bg-[#b08d48]"
+                  className="w-full py-2.5 bg-[#E88C30] text-black text-xs font-mono font-bold uppercase rounded hover:bg-[#d47b24] transition-colors"
                 >
                   Dispatch to Concierge Desk
                 </button>

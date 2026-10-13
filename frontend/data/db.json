@@ -2,7 +2,7 @@
   "products": [
     {
       "id": "prod-1",
-      "name": "Aurelia Master Classic 40mm",
+      "name": "Aurelia Master Classic",
       "brand": "Krono Swiss",
       "category": "Luxury",
       "gender": "Men",
@@ -30,7 +30,7 @@
     },
     {
       "id": "prod-2",
-      "name": "Nova Chronograph Titanium 42mm",
+      "name": "Speedmaster Chrono Titanium",
       "brand": "Omega",
       "category": "Automatic",
       "gender": "Men",
@@ -114,12 +114,12 @@
     },
     {
       "id": "prod-5",
-      "name": "Grand Horizon 18k Rose Gold 42mm",
+      "name": "Grand Horizon 18k Rose Gold",
       "brand": "Patek Philippe",
       "category": "Luxury",
       "gender": "Men",
       "case_size": "42mm",
-      "price": 850000,
+      "price": 780000,
       "old_price": 1100000,
       "badge": "Exclusive",
       "warranty": "Lifetime Mechanism Guarantee & Free Annual Polish",
@@ -1069,136 +1069,61 @@
   ],
   "orders": [
     {
-      "id": "KR-799175",
-      "order_number": "KR-799175",
-      "customer_name": "dfsdf",
-      "customer_email": "mohomed_20242134@fot.ruh.ac.lk",
-      "customer_phone": "0776867969",
-      "delivery_address": "fdkfjmasfma;s, Colombo 00100, Sri Lanka",
-      "city": "Colombo",
-      "postal_code": "00100",
-      "country": "Sri Lanka",
-      "payment_method": "payhere",
-      "payment_status": "pending",
-      "payment_id": null,
-      "subtotal": 385000,
-      "discount_amount": 0,
+      "id": "KR-1031",
+      "order_number": "KR-1031",
+      "customer_name": "A. Perera",
+      "customer_email": "a.perera@example.lk",
       "total_amount": 385000,
-      "coupon_code": null,
-      "wrist_size": "Standard (19cm)",
-      "gift_packaging": true,
-      "special_instructions": "",
+      "subtotal": 385000,
+      "status": "pending",
+      "payment_status": "pending",
+      "created_at": "2026-10-11T15:14:50.319Z",
       "items": [
         {
           "product_id": "prod-1",
-          "product_name": "Aurelia Master Classic 40mm",
+          "product_name": "Aurelia Master Classic",
           "quantity": 1,
-          "unit_price": 385000,
-          "subtotal": 385000,
-          "image_url": "/images/watches/aurelia_master_classic.jpg"
+          "unit_price": 385000
         }
-      ],
-      "status": "pending_payment",
-      "created_at": "2026-10-06T03:56:44.729Z"
+      ]
     },
     {
-      "id": "KR-826582",
-      "order_number": "KR-826582",
-      "customer_name": "Razim",
-      "customer_email": "mohamedrazim20@gmail.com",
-      "customer_phone": "0776867969",
-      "delivery_address": "kegale, Colombo 00100, Sri Lanka",
-      "city": "Colombo",
-      "postal_code": "00100",
-      "country": "Sri Lanka",
-      "payment_method": "payhere",
-      "payment_status": "pending",
-      "payment_id": null,
-      "subtotal": 100,
-      "discount_amount": 0,
-      "total_amount": 100,
-      "coupon_code": null,
-      "wrist_size": "Standard (19cm)",
-      "gift_packaging": true,
-      "special_instructions": "X",
-      "items": [
-        {
-          "product_id": "prod-casio-g-shock-ga-2100",
-          "product_name": "Casio G-Shock 'CasiOak' Carbon Core GA-2100",
-          "quantity": 1,
-          "unit_price": 100,
-          "subtotal": 100,
-          "image_url": "/images/watches/submariner_deep_black_ceramic.jpg"
-        }
-      ],
-      "status": "pending_payment",
-      "created_at": "2026-10-04T19:33:11.200Z"
-    },
-    {
-      "id": "KR-182864",
-      "order_number": "KR-182864",
-      "customer_name": "Razim",
-      "customer_email": "mohamedrazim20@gmail.com",
-      "customer_phone": "0776867969",
-      "delivery_address": "kegale, Colombo 00100, Sri Lanka",
-      "city": "Colombo",
-      "postal_code": "00100",
-      "country": "Sri Lanka",
-      "payment_method": "payhere",
-      "payment_status": "pending",
-      "payment_id": null,
-      "subtotal": 385000,
-      "discount_amount": 0,
-      "total_amount": 385000,
-      "coupon_code": null,
-      "wrist_size": "Standard (19cm)",
-      "gift_packaging": true,
-      "special_instructions": "X",
-      "items": [
-        {
-          "product_id": "prod-1",
-          "product_name": "Aurelia Master Classic 40mm",
-          "quantity": 1,
-          "unit_price": 385000,
-          "subtotal": 385000,
-          "image_url": "/images/watches/aurelia_master_classic.jpg"
-        }
-      ],
-      "status": "pending_payment",
-      "created_at": "2026-10-04T19:30:28.006Z"
-    },
-    {
-      "id": "KR-566142",
-      "order_number": "KR-566142",
-      "customer_name": "Razim",
-      "customer_email": "mohamedrazim20@gmail.com",
-      "customer_phone": "0776867969",
-      "delivery_address": "kegale, Colombo 00100, Sri Lanka",
-      "city": "Colombo",
-      "postal_code": "00100",
-      "country": "Sri Lanka",
-      "payment_method": "payhere",
-      "payment_status": "pending",
-      "payment_id": null,
-      "subtotal": 295000,
-      "discount_amount": 0,
+      "id": "KR-1032",
+      "order_number": "KR-1032",
+      "customer_name": "N. Silva",
+      "customer_email": "n.silva@example.lk",
       "total_amount": 295000,
-      "coupon_code": null,
-      "wrist_size": "Standard (19cm)",
-      "gift_packaging": true,
-      "special_instructions": "X",
+      "subtotal": 295000,
+      "status": "paid",
+      "payment_status": "completed",
+      "created_at": "2026-10-11T12:14:50.320Z",
       "items": [
         {
           "product_id": "prod-2",
-          "product_name": "Nova Chronograph Titanium 42mm",
+          "product_name": "Speedmaster Chrono Titanium",
           "quantity": 1,
-          "unit_price": 295000,
-          "subtotal": 295000,
-          "image_url": "/images/watches/speedmaster_chrono_titanium.jpg"
+          "unit_price": 295000
         }
-      ],
-      "status": "pending_payment",
-      "created_at": "2026-10-04T19:11:09.518Z"
+      ]
+    },
+    {
+      "id": "KR-1033",
+      "order_number": "KR-1033",
+      "customer_name": "K. Fernando",
+      "customer_email": "k.fernando@example.lk",
+      "total_amount": 490000,
+      "subtotal": 490000,
+      "status": "shipped",
+      "payment_status": "completed",
+      "created_at": "2026-10-11T09:14:50.320Z",
+      "items": [
+        {
+          "product_id": "prod-3",
+          "product_name": "Submariner Deep Black Ceramic",
+          "quantity": 1,
+          "unit_price": 490000
+        }
+      ]
     }
   ],
   "order_items": [

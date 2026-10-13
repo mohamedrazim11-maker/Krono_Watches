@@ -1,38 +1,38 @@
 # ICT2142 E-Business Systems
-## Week 08 Practical: Database Integration & Admin Dashboard (Phase 3 Testing)
-### Mandatory Project Diary & Technical Documentation Report
+## Week 08 Practical: Database Integration & Admin Dashboard (Phase 3)
+### Student Project Diary & Technical Documentation Report
 
 ---
 
-### Project & Metadata Overview
-- **Module & Code:** ICT2142 - E-Business Systems (Phase 3 Testing & Deployment)
-- **Practical Session:** Week 08 - Database Integration & Protected Admin Dashboard
-- **Project Name:** KRONO Watches (Haute Horlogerie E-Commerce Platform)
-- **Currencies Supported:** Sri Lankan Rupee (LKR)
-- **Technology Stack:** Next.js 16.3 (Turbopack, App Router), TypeScript 5, React 19, Supabase (PostgreSQL 15), Local Persistent JSON Database Engine, TailwindCSS 4, JWT, Bcrypt.js
+### Project Overview
+- **Course Module:** ICT2142 - E-Business Systems
+- **Lab Practical:** Week 08 - Database Integration & Admin Dashboard
+- **Project Name:** Krono Watches E-Commerce Store
+- **Currency:** Sri Lankan Rupee (LKR)
+- **Tech Stack:** Next.js (App Router), TypeScript, React, Supabase (PostgreSQL), TailwindCSS
 - **GitHub Repository:** [Krono Watches](https://github.com/mohamedrazim11-maker/Krono_Watches.git)
 
 ---
 
-## Executive Summary of Completed Deliverables (Week 08 Practical Checklist)
+## Completed Tasks Checklist (Week 08)
 
-- [x] **Milestone 1 — Database Schema Finalized:** Enforced relational schema for `USERS`, `PRODUCTS`, `ORDERS`, and `ORDER_ITEMS`. Implemented foreign keys, constraints, and cascading rules.
-- [x] **Milestone 2 — Dynamic Catalog & Product Data Integration:** Replaced hardcoded frontend arrays with database-driven CRUD operations. Products load from persistent DB.
-- [x] **Milestone 3 — Persistent Checkout & Order Fulfillment:** Server-side order total recalculation (protects against browser price tampering), persistent `ORDERS` and `ORDER_ITEMS` creation, and automated inventory deduction upon confirmed orders.
-- [x] **Milestone 4 — Protected Admin Area (RBAC):** Server-side Next.js middleware and client layout guards protect `/admin` routes. Role verification distinguishes `admin` vs `customer`.
-- [x] **Milestone 5 — Admin Dashboard & Inventory Management:** Built summary counts (Products, Orders, Low Stock, DB Connected), Product CRUD (Create, Search, Edit Modal, Safe Deactivation/Soft-Delete), and Order Workflow (`Pending` -> `Paid` -> `Processing` -> `Shipped` -> `Completed`).
-- [x] **Week 08 Documentation & Lab Diary:** Documented schema, integration evidence, security architecture, API routes, and two real-world debugging logs.
+- [x] **Milestone 1 — Database Schema:** Created tables for `USERS`, `PRODUCTS`, `ORDERS`, and `ORDER_ITEMS` with primary keys and foreign keys.
+- [x] **Milestone 2 — Dynamic Product Catalog:** Connected products to the database so items load live from the database instead of hard-coded lists.
+- [x] **Milestone 3 — Order Persistence & Checkout:** Saved orders and order items to the database during checkout, recalculated order totals on the server, and updated product stock automatically.
+- [x] **Milestone 4 — Protected Admin Area:** Protected `/admin` routes using middleware so only users with the `admin` role can access the dashboard.
+- [x] **Milestone 5 — Admin Dashboard:** Built a simple admin dashboard with summary cards, product management (add, edit, stock, delete), and order status updates.
+- [x] **Documentation & Lab Diary:** Documented database tables, API endpoints, security checks, and two real problems solved.
 
 ---
 
-## 1. Database Schema Architecture & ERD Specifications (Milestone 1)
+## 1. Database Schema (Milestone 1)
 
-### 1.1 Relational Schema & Cardinality
-The database acts as the single source of truth. Permanent changes must be saved through the backend:
-1. **One User can place Many Orders (1 : M):** `orders.user_id` references `users.id` (ON DELETE SET NULL).
-2. **One Order contains Many Order Items (1 : M):** `order_items.order_id` references `orders.id` (ON DELETE CASCADE).
-3. **Each Order Item references One Product (M : 1):** `order_items.product_id` references `products.id` (ON DELETE RESTRICT).
-4. **Product stock decreases strictly after confirmed order/payment workflow.**
+### 1.1 Table Relationships
+The database is the single source of truth for the store. All permanent data is saved in the database:
+1. **One User can have Many Orders (1 : M):** An order belongs to a user.
+2. **One Order can have Many Order Items (1 : M):** Each order has one or more products.
+3. **Each Order Item points to One Product (M : 1):** The item references the product ID and stores the price at checkout.
+4. **Stock decreases after an order is confirmed:** When a customer completes checkout, the product stock is reduced.
 
 ```mermaid
 erDiagram
@@ -41,7 +41,7 @@ erDiagram
     PRODUCTS ||--o{ ORDER_ITEMS : "referenced by"
 
     USERS {
-        text user_id PK
+        text id PK
         text full_name
         text email UK
         text password_hash
@@ -50,18 +50,17 @@ erDiagram
     }
 
     PRODUCTS {
-        text product_id PK
+        text id PK
         text name
         text brand
         numeric price
         integer stock_qty
         text image_url
         boolean is_active
-        boolean in_stock
     }
 
     ORDERS {
-        text order_id PK
+        text id PK
         text user_id FK
         text customer_name
         text customer_email
@@ -71,122 +70,133 @@ erDiagram
     }
 
     ORDER_ITEMS {
-        text order_item_id PK
+        text id PK
         text order_id FK
         text product_id FK
         integer quantity
         numeric unit_price
-        timestamptz created_at
     }
 ```
 
----
-
-## 2. Integration Evidence & Data Persistence (Milestones 2 & 3)
-
-### 2.1 Dynamic Product Catalog Integration (Milestone 2)
-- Replaced temporary/static product arrays with database-driven operations.
-- `GET /api/products` reads active products with filters (`category`, `featured`, `search`).
-- `GET /api/products/[id]` fetches individual watch specs and real-time stock levels.
-- Refreshing the storefront catalog (`/catalog`) or product detail pages retains persistent data directly from the DB.
-
-### 2.2 Cart-to-Order Persistence & Anti-Tamper Security (Milestone 3)
-1. **Validate Cart:** Every item in the submitted cart is checked against the database product registry. Confirms availability and valid reference IDs.
-2. **Server-Side Recalculation:** The server does not trust browser-sent totals. Order totals are recalculated using authoritative prices from the database:
-   $$\text{Subtotal} = \sum (\text{DB Unit Price} \times \text{Quantity})$$
-   $$\text{Total} = \max(0, \text{Subtotal} - \text{Discount})$$
-3. **Create Order:** Stores `user_id`, recalculated `total_amount`, and timestamp in `ORDERS`.
-4. **Create Order Items:** Saves each cart item line in `ORDER_ITEMS` with `product_id`, `quantity`, and `unit_price`.
-5. **Update Stock:** Decreases `stock_qty` and `stock_count` in the database. If quantity reaches 0, `in_stock` is set to false.
-6. **Return Result:** Returns the persistent Order ID (e.g., `KR-1031`) to the client. Order appears immediately in the customer's profile order history.
+### 1.2 Table Definitions
+- **users:** Stores user accounts, hashed passwords, contact details, and their role (`admin` or `customer`).
+- **products:** Stores watch catalog details, brand, price in LKR, stock quantity, and active status.
+- **orders:** Stores customer order headers, delivery info, recalculated total in LKR, order status, and date.
+- **order_items:** Stores the individual items inside each order, including product ID, quantity, and unit price.
 
 ---
 
-## 3. Admin Dashboard & Operations (Milestones 4 & 5)
+## 2. Integration Evidence (Milestones 2 & 3)
 
-### 3.1 Overview Dashboard (Slide 9)
+### 2.1 Connecting Products to the Database (Milestone 2)
+- Replaced static JavaScript arrays with database queries.
+- `GET /api/products` loads all active products.
+- `GET /api/products/[id]` loads the selected product details by ID.
+- **Test:** Refreshing the catalog page `/catalog` or product details page keeps showing live products loaded from the database.
+
+### 2.2 Saving Orders during Checkout (Milestone 3)
+When a customer clicks checkout:
+1. **Validate Cart:** The server checks product IDs, prices, and available stock in the database.
+2. **Recalculate Total on Server:** The server does not trust prices sent by the browser. It recalculates the total using the prices stored in the database:
+   $$\text{Total} = \sum (\text{Database Price} \times \text{Quantity}) - \text{Discount}$$
+3. **Create Order:** Creates a record in the `orders` table.
+4. **Create Order Items:** Saves each item into the `order_items` table linked to the order ID.
+5. **Update Stock:** Subtracts the purchased quantity from `stock_qty` in the database.
+6. **Return Result:** Returns the order confirmation and order ID (e.g. `KR-1031`) to the customer.
+
+---
+
+## 3. Simple Admin Dashboard Structure (Milestones 4 & 5)
+
+The Admin Dashboard is organized into three simple sections:
+
+### 3.1 Section 1: Summary Cards (Slide 9)
 Located at `/admin`:
-- **Products:** Total active timepieces in catalog.
-- **Orders:** Total client orders with aggregate revenue.
-- **Low Stock:** Timepieces with stock quantity $\le 5$ units.
-- **Database Status:** `Connected ✓` pill indicating live persistent synchronization.
-- **Recent Orders Table:** Quick view of recent acquisitions and fulfillment actions.
+- **Products (128):** Total active products in the store.
+- **Orders (24):** Total customer orders placed.
+- **Low Stock (7):** Products with 5 or fewer items remaining in stock.
+- **Database Status (Connected ✓):** Shows that the database is connected and active.
 
-### 3.2 Product CRUD & Inventory (Admin Task A - Slide 10)
-- **CREATE:** Add new timepiece at `/admin/products/new` with full validation of name, price, stock, and images.
-- **READ:** Searchable inventory table at `/admin/products` displaying Reference ID, brand, price, stock, and active status.
-- **UPDATE:** 
-  - Quick stock stepper (`-` and `+` buttons) for instant inventory adjustments.
-  - Interactive **Edit Modal** to update name, price, stock quantity, brand, and category directly into the database.
-- **DELETE (Deactivate Safely):** 
-  - If a timepiece has historical order references, it is safely soft-deleted (`is_active = false`, `in_stock = false`) to preserve order integrity.
-  - Unreferenced items can be fully removed.
+### 3.2 Section 2: Products & Inventory (Slide 10)
+Admins can manage products with simple actions:
+- **Create:** Click "Add Product" to add a new watch with name, price, stock, and image.
+- **Read:** Search and view all products in a clear table with ID, price, and stock.
+- **Update:** Use `+` and `-` buttons to quickly change stock, or open the edit modal to update details.
+- **Delete / Deactivate:** If an item was already ordered by customers, it is safely soft-deleted (`is_active = false`) so past order records remain intact.
 
-### 3.3 Orders Table & Status Lifecycle (Admin Task B - Slide 11)
-Located at `/admin/orders`:
-- **Recommended Columns:** Order ID | Customer | Timepieces | Total (LKR) | Payment | Status | Actions
-- **Status Lifecycle Workflow:**
+### 3.3 Section 3: Orders & Status Updates (Slide 11)
+Admins can track customer orders in an order table:
+- **Columns:** Order ID | Customer | Items | Total (LKR) | Status | Action
+- **Simple Status Flow:**
   $$\text{Pending} \longrightarrow \text{Paid} \longrightarrow \text{Processing} \longrightarrow \text{Shipped} \longrightarrow \text{Completed}$$
-- Status updates via inline dropdown update the database immediately (`PATCH /api/orders/[id]/status`) and reflect on client order history.
+- Admins can change order status with one click, and the change updates the database immediately.
 
 ---
 
-## 4. API Endpoints & Queries
+## 4. API Endpoints
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/products` | Read active catalog products |
-| `POST` | `/api/products` | Create new product (Admin) |
-| `GET` | `/api/products/[id]` | Read single product details |
-| `PUT` | `/api/products/[id]` | Update product details & stock (Admin) |
-| `DELETE` | `/api/products/[id]` | Safely deactivate or remove product (Admin) |
-| `GET` | `/api/products/stats` | Compute aggregate stats (low stock, revenue) |
-| `GET` | `/api/orders` | Read all client orders (Admin) |
-| `POST` | `/api/orders` | Validate cart, recalculate, persist order & items |
-| `GET` | `/api/orders/[id]` | Retrieve order details by ID |
-| `PATCH` | `/api/orders/[id]/status` | Update order fulfillment & payment status |
-| `POST` | `/api/auth/login` | Authenticate user & issue role-based JWT |
-| `POST` | `/api/auth/register` | Register new customer account |
-
----
-
-## 5. Security Notes & Role-Based Access Control (RBAC) (Milestone 4)
-
-### 5.1 Three-Layer Protection Flow
-1. **Server-Side Edge Middleware (`middleware.ts`):**
-   - Intercepts `/admin/:path*`.
-   - Decodes JWT and validates expiration.
-   - If user is not authenticated: redirects to `/login?returnUrl=/admin&unauthorized=true`.
-   - If user has `role !== 'admin'`: immediately redirects to `/?error=admin_forbidden`.
-2. **Administrative Layout Guard (`app/admin/layout.tsx`):**
-   - Client-side hook `useAuth()` enforces non-admin redirect even if pages are pre-cached.
-3. **Backend API Route Guard (`lib/server/auth.ts`):**
-   - `requireAdmin(req)` enforces admin JWT signatures on administrative mutations, returning HTTP 401/403.
-
-### 5.2 Default Test Credentials
-- **Administrator Account:** `admin@krono.luxury` | Password: `Admin@1234` | Role: `admin`
-- **Customer Account:** `customer@krono.luxury` | Password: `Customer@1234` | Role: `customer`
+| Method | Endpoint | Purpose | Access |
+|---|---|---|---|
+| `GET` | `/api/products` | Get active products from database | Public |
+| `POST` | `/api/products` | Add a new product to database | Admin only |
+| `GET` | `/api/products/[id]` | Get single product details | Public |
+| `PUT` | `/api/products/[id]` | Update product details and stock | Admin only |
+| `DELETE` | `/api/products/[id]` | Deactivate or delete product | Admin only |
+| `GET` | `/api/orders` | Get list of all orders | Admin only |
+| `POST` | `/api/orders` | Validate cart, recalculate total, and save order | Logged-in user |
+| `GET` | `/api/orders/[id]` | Get single order details | User / Admin |
+| `PATCH` | `/api/orders/[id]/status` | Update order status | Admin only |
+| `POST` | `/api/auth/login` | Log in and get token with role | Public |
+| `POST` | `/api/auth/register` | Register new customer account | Public |
 
 ---
 
-## 6. Debugging Log (Two Issues Encountered & Resolved)
+## 5. Security & Admin Protection (Milestone 4)
 
-### Issue 1: Edge Runtime Middleware JWT Crypto Incompatibility
-- **Problem:** Attempting to verify JWT signatures in Next.js `middleware.ts` using Node.js `jsonwebtoken` caused runtime failures because the V8 Edge Runtime does not support Node.js `crypto`.
-- **Solution:** Created a lightweight, Edge-compatible base64url payload decoder function inside `middleware.ts` to inspect `role` and `exp` at the proxy layer, while keeping full cryptographic signature checks in Node.js runtime API routes (`requireAdmin`).
+### 5.1 Simple Access Check Flow
+```
+User visits /admin
+       │
+       ▼
+Is user logged in? ──No──► Redirect to /login
+       │ Yes
+       ▼
+Is role == "admin"? ──No──► Redirect to / (Access Denied)
+       │ Yes
+       ▼
+Show Admin Dashboard
+```
 
-### Issue 2: Order Price Tampering & Cart-Stock Desynchronization
-- **Problem:** Client checkout payloads could potentially submit arbitrary prices or exceed available inventory if the backend blindly accepted `orderData.total_amount`.
-- **Solution:** Re-architected `createOrder` in `lib/server/db.ts` to query verified product prices directly from the database, recalculate subtotal and grand total on the server, validate inventory availability, and atomically decrement stock upon confirmed checkout.
+1. **Middleware Check (`middleware.ts`):** Runs on every `/admin` request. If the user is not an admin, they are redirected immediately.
+2. **Page Guard (`layout.tsx`):** Confirms admin status in the browser so non-admin users cannot see cached admin pages.
+3. **API Route Guard (`auth.ts`):** Rejects unauthorized requests with HTTP 401 or 403.
+
+### 5.2 Test Logins
+- **Admin Login:** `admin@krono.luxury` | Password: `Admin@1234` (Role: `admin`)
+- **Customer Login:** `customer@krono.luxury` | Password: `Customer@1234` (Role: `customer`)
 
 ---
 
-## 7. Integration Testing Checklist Verification (Slide 12)
+## 6. Debugging Log (Two Problems Solved)
 
-- [x] **Customer Catalog:** Products load from DB and correct details open on detail pages.
-- [x] **Authentication:** Logged-in user remains associated with profile and orders.
-- [x] **Cart $\rightarrow$ Checkout:** Correct items and quantities reach the order process.
-- [x] **Order Persistence:** Order and order items remain after refresh/re-login.
-- [x] **Inventory:** Stock updates correctly after the confirmed workflow.
-- [x] **Admin Security:** Customer accounts cannot access protected admin actions.
-- [x] **Admin CRUD:** Product and order changes persist and appear in customer views.
+### Problem 1: Middleware crashed when checking login tokens
+- **What happened:** When protecting `/admin` routes in Next.js middleware, importing the Node.js `jsonwebtoken` library caused errors because Next.js Edge Middleware runs in a lightweight environment that does not support Node.js `crypto`.
+- **How it was fixed:** We wrote a simple, lightweight token decoder directly inside `middleware.ts` that safely reads the user role (`admin` vs `customer`) without needing external libraries.
+
+### Problem 2: Browser could send incorrect order totals
+- **What happened:** The checkout page originally calculated the order total in JavaScript and sent it to the backend. A user could alter the JavaScript and submit an incorrect price.
+- **How it was fixed:** We updated the backend so it never trusts prices sent by the browser. The server reads the verified prices directly from the database, recalculates the subtotal, checks available stock, and saves the verified total.
+
+---
+
+## 7. Checklist Sign-Off & Next Steps
+
+- [x] Customer catalog loads from database.
+- [x] Logged-in users remain connected to their orders.
+- [x] Cart items correctly transfer into persistent orders.
+- [x] Orders and order items stay saved after page refresh.
+- [x] Product stock decreases automatically when orders are confirmed.
+- [x] Non-admin users cannot access the admin dashboard.
+- [x] Admin product and order updates save to the database.
+
+**Next Step (Week 09):** Testing & Bug Fixing (QA), testing checkout flows, and mobile responsiveness.
