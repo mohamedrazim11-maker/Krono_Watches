@@ -4,7 +4,7 @@
  * and automatic renewal/revocation orchestration.
  */
 
-import { getClientSession, deleteCookie } from "./cookieManager";
+import { getClientSession } from "./cookieManager";
 
 export interface SessionInfo {
   id: string;

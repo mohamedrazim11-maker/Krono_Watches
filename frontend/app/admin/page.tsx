@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { fetchStats, fetchProducts, fetchOrders, updateProduct, Product, Order, Stats } from "@/lib/api";
+import { fetchProducts, fetchOrders, updateProduct, Product, Order } from "@/lib/api";
 
 export default function AdminDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -18,15 +17,13 @@ export default function AdminDashboard() {
 
   const loadRealData = async () => {
     try {
-      const [pList, oList, sData] = await Promise.all([
+      const [pList, oList] = await Promise.all([
         fetchProducts(),
         fetchOrders(),
-        fetchStats().catch(() => null),
       ]);
 
       setProducts(pList);
       setOrders(oList);
-      if (sData) setStats(sData);
     } catch (e) {
       console.error("Error loading real data from database:", e);
     } finally {

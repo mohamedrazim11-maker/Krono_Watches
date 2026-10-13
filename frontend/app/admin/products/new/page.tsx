@@ -316,8 +316,8 @@ export default function UploadProductPage() {
 
             <LabeledField label="Gender / Allocation">
               <select name="gender" value={formData.gender} onChange={handleChange} style={inputSt}>
-                <option value="Men" style={{ background: "#141414", color: "#FFF" }}>Men's Horology</option>
-                <option value="Women" style={{ background: "#141414", color: "#FFF" }}>Women's Horology</option>
+                <option value="Men" style={{ background: "#141414", color: "#FFF" }}>Men&apos;s Horology</option>
+                <option value="Women" style={{ background: "#141414", color: "#FFF" }}>Women&apos;s Horology</option>
                 <option value="Unisex" style={{ background: "#141414", color: "#FFF" }}>Unisex</option>
               </select>
             </LabeledField>
@@ -485,7 +485,7 @@ export default function UploadProductPage() {
                   style={{ width: "18px", height: "18px", accentColor: "#FFFFFF" }}
                 />
                 <span style={{ fontSize: "13px", fontWeight: 700, color: "#F8FAFC" }}>
-                  Feature prominently on Storefront Homepage ("Curated Masterpieces" Hero Carousel)
+                  Feature prominently on Storefront Homepage (&ldquo;Curated Masterpieces&rdquo; Hero Carousel)
                 </span>
               </label>
             </div>

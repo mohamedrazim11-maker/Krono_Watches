@@ -88,7 +88,7 @@ export function getUserFromRequest(
     }
 
     return { user, session };
-  } catch (err) {
+  } catch {
     return { user: null, session: null };
   }
 }

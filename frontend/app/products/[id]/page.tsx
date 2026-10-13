@@ -12,41 +12,6 @@ import WishlistDrawer from "@/components/WishlistDrawer";
 import { useCart } from "@/lib/CartContext";
 import { getProductImage, getProductImages } from "@/lib/productImages";
 
-const ATELIER_ACCESSORIES = [
-  {
-    id: "acc-roll-03",
-    name: "Barénia Leather Watch Roll",
-    category: "Accessories",
-    price: 380000,
-    image_url: "/images/watches/watch_1548036328-c9fa8.jpg",
-    description: "Tri-compartment cylindrical roll crafted in vegetable-tanned French calfskin with cushioned micro-suede dividers.",
-    refCode: "Travel & Storage · Ref. ACC-ROLL-03",
-    tag: "Hand-Stitched",
-    warranty: "Lifetime Atelier Leather Guarantee",
-  },
-  {
-    id: "acc-wnd-01",
-    name: "Monolith Kinetic Calibre Winder",
-    category: "Accessories",
-    price: 640000,
-    image_url: "/images/watches/watch_1523275335684-37.jpg",
-    description: "Whisper-quiet brushless Swiss micro-motor engineered with customizable turns-per-day programs for automatic calibres.",
-    refCode: "Winding Cabinet · Ref. ACC-WND-01",
-    tag: "Programmable",
-    warranty: "5-Year Swiss Motor Warranty",
-  },
-  {
-    id: "acc-lop-10",
-    name: "Aplanatic 10x Horologist Loupe",
-    category: "Accessories",
-    price: 165000,
-    image_url: "/images/watches/speedmaster_chrono_titanium.jpg",
-    description: "Anti-reflective coated double sapphire lens set in knurled warm champagne anodized brass housing with engraved serial number.",
-    refCode: "Optics & Inspection · Ref. ACC-LOP-10",
-    tag: "Collector Edition",
-    warranty: "Certified Optical Alignment",
-  },
-];
 
 type TabType = "DETAIL" | "SIZE DETAIL" | "RETURN POLICY" | "DELIVERY INFO";
 
@@ -64,7 +29,6 @@ export default function ProductDetailPage() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isHoverZooming, setIsHoverZooming] = useState(false);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
-  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const imageContainerRef = useRef<HTMLDivElement>(null);
 
   // Sample structure state: Active Tab & Dropdown sizes
@@ -392,7 +356,6 @@ export default function ProductDetailPage() {
                   onMouseEnter={() => setIsHoverZooming(true)}
                   onMouseLeave={() => setIsHoverZooming(false)}
                   onMouseMove={handleMouseMove}
-                  onClick={() => setIsLightboxOpen(true)}
                   className="relative aspect-square sm:aspect-[4/3] bg-[#1A1A1A] rounded-xl border border-[#2B2B2B] overflow-hidden flex items-center justify-center cursor-zoom-in group shadow-inner"
                 >
                   {/* Starburst Discount Badge (Matching sample's 30% red starburst badge) */}

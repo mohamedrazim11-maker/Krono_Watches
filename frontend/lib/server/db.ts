@@ -280,7 +280,7 @@ export async function createProduct(productData: any) {
     try {
       const { data, error } = await supabase.from('products').insert([newProduct]).select().single();
       if (!error && data) return data;
-    } catch (e) {}
+    } catch {}
   }
 
   const db = readLocalDb();
@@ -294,7 +294,7 @@ export async function updateProduct(id: string, updates: any) {
     try {
       const { data, error } = await supabase.from('products').update(updates).eq('id', id).select().single();
       if (!error && data) return data;
-    } catch (e) {}
+    } catch {}
   }
 
   const db = readLocalDb();
@@ -364,7 +364,7 @@ export async function deleteProduct(id: string, forceHardDelete = false) {
             .from('products')
             .update({ is_active: false, in_stock: false })
             .eq('id', id);
-        } catch (e) {}
+        } catch {}
       }
       return { success: true, softDeleted: true, id, message: 'Timepiece deactivated safely (archived) to preserve order history.' };
     }
@@ -375,7 +375,7 @@ export async function deleteProduct(id: string, forceHardDelete = false) {
   if (supabase) {
     try {
       await supabase.from('products').delete().eq('id', id);
-    } catch (e) {}
+    } catch {}
   }
 
   db.products = db.products.filter((p: any) => String(p.id) !== String(id));
@@ -414,7 +414,7 @@ export async function updatePoster(posterData: any) {
         .select()
         .single();
       if (!error && data) return data;
-    } catch (e) {}
+    } catch {}
   }
 
   const db = readLocalDb();
@@ -554,7 +554,7 @@ export async function createOrder(orderData: any) {
             .from('products')
             .update({ stock_qty: newStock, stock_count: newStock, in_stock: newStock > 0 })
             .eq('id', item.product_id);
-        } catch (e) {}
+        } catch {}
       }
     }
   }
@@ -570,7 +570,7 @@ export async function createOrder(orderData: any) {
       if (newOrderItemsRecords.length > 0) {
         await supabase.from('order_items').insert(newOrderItemsRecords);
       }
-    } catch (e) {}
+    } catch {}
   }
 
   // 5. Return result (Slide 7 Step 5: "Show order ID / confirmation to customer")
@@ -605,7 +605,7 @@ export async function updateOrder(orderId: string, updateFields: any) {
         .select()
         .single();
       if (!error && data) return data;
-    } catch (e) {}
+    } catch {}
   }
   return updatedOrder;
 }
@@ -622,7 +622,7 @@ export async function getOrderById(orderId: string) {
         .or(`id.eq.${orderId},order_number.eq.${orderId}`)
         .single();
       if (!error && data) return data;
-    } catch (e) {}
+    } catch {}
   }
   return null;
 }
@@ -635,7 +635,7 @@ export async function getOrders() {
         .select('*')
         .order('created_at', { ascending: false });
       if (!error && data && data.length > 0) return data;
-    } catch (e) {}
+    } catch {}
   }
 
   const db = readLocalDb();
@@ -690,7 +690,7 @@ export async function getUserByEmail(email: string) {
     try {
       const { data, error } = await supabase.from('users').select('*').eq('email', email).single();
       if (!error && data) return data;
-    } catch (e) {}
+    } catch {}
   }
   const db = readLocalDb();
   return (db.users || []).find((u: any) => u.email === email) || null;
@@ -701,7 +701,7 @@ export async function getUserById(id: string) {
     try {
       const { data, error } = await supabase.from('users').select('*').eq('id', id).single();
       if (!error && data) return data;
-    } catch (e) {}
+    } catch {}
   }
   const db = readLocalDb();
   return (db.users || []).find((u: any) => u.id === id) || null;
@@ -745,7 +745,7 @@ export async function createUser({
         created_at: newUser.created_at,
       }]).select().single();
       if (!error && data) return data;
-    } catch (e) {}
+    } catch {}
   }
 
   const db = readLocalDb();
@@ -760,7 +760,7 @@ export async function updateUser(id: string, fields: any) {
     try {
       const { data, error } = await supabase.from('users').update(fields).eq('id', id).select().single();
       if (!error && data) return data;
-    } catch (e) {}
+    } catch {}
   }
 
   const db = readLocalDb();

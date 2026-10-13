@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/server/auth';
 import { getUserById } from '@/lib/server/db';
-import * as sessionManager from '@/lib/server/sessionManager';
 
 export async function GET(req: NextRequest) {
   try {

@@ -404,12 +404,14 @@ export default function AdminOrdersPage() {
                           {o.order_number || o.id}
                         </div>
                         <div style={{ fontSize: "10.5px", color: "#71717A", marginTop: "2px" }}>
-                          {new Date(o.created_at || Date.now()).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
+                          {o.created_at
+                            ? new Date(o.created_at).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })
+                            : "—"}
                         </div>
                       </td>
 
@@ -687,7 +689,7 @@ export default function AdminOrdersPage() {
                   Engraving / Horological Note
                 </div>
                 <div style={{ fontSize: "12px", color: "#F8FAFC", marginTop: "4px", fontStyle: "italic" }}>
-                  "{selectedOrder.special_instructions}"
+                  &ldquo;{selectedOrder.special_instructions}&rdquo;
                 </div>
               </div>
             )}
