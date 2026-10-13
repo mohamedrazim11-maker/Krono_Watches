@@ -314,7 +314,7 @@ export default function CheckoutModal({
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    placeholder="sterling@geneva-vault.ch"
+                    placeholder="john@example.com"
                     className="w-full bg-[#111] border border-[#2a2a2a] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059]"
                   />
                 </div>

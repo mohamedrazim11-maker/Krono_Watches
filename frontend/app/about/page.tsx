@@ -14,7 +14,7 @@ export default function AboutPage() {
         {/* Header */}
         <div className="space-y-3 text-center">
           <span className="text-[11px] font-mono uppercase tracking-[0.25em] text-[#C5A059] font-bold">
-            Swiss Heritage • Geneva
+            Authentic Luxury Watches
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-tight text-white">
             About Krono Watches

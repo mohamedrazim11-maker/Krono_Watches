@@ -241,7 +241,7 @@ export default function CatalogPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
           <div className="max-w-3xl space-y-2">
             <span className="text-[11px] font-mono tracking-[0.25em] text-[#C5A059] uppercase font-bold">
-              The Collection • Geneva
+              Official Watch Collection
             </span>
             <h1 className="text-2xl sm:text-4xl font-extrabold uppercase tracking-tight text-white font-sans">
               Watch Catalogue

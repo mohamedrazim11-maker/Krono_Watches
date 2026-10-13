@@ -12,8 +12,7 @@ import WishlistDrawer from "@/components/WishlistDrawer";
 import { useCart } from "@/lib/CartContext";
 import { getProductImage, getProductImages } from "@/lib/productImages";
 
-
-type TabType = "DETAIL" | "SIZE DETAIL" | "RETURN POLICY" | "DELIVERY INFO";
+type TabType = "SPECIFICATIONS" | "SIZE & FIT" | "RETURN POLICY" | "DELIVERY INFO";
 
 export default function ProductDetailPage() {
   const router = useRouter();
@@ -31,8 +30,8 @@ export default function ProductDetailPage() {
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
   const imageContainerRef = useRef<HTMLDivElement>(null);
 
-  // Sample structure state: Active Tab & Dropdown sizes
-  const [activeTab, setActiveTab] = useState<TabType>("DETAIL");
+  // Active Tab & Dropdown sizes
+  const [activeTab, setActiveTab] = useState<TabType>("SPECIFICATIONS");
   const [selectedRegion, setSelectedRegion] = useState("UK");
   const [selectedSize, setSelectedSize] = useState("41mm");
 
@@ -40,15 +39,15 @@ export default function ProductDetailPage() {
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [isTermsOpen, setIsTermsOpen] = useState(false);
 
-  // Concierge Consultation Modal
-  const [isConciergeOpen, setIsConciergeOpen] = useState(false);
-  const [conciergeMsg, setConciergeMsg] = useState("");
-  const [conciergeSent, setConciergeSent] = useState(false);
+  // Support Inquiry Modal
+  const [isSupportOpen, setIsSupportOpen] = useState(false);
+  const [supportMsg, setSupportMsg] = useState("");
+  const [supportSent, setSupportSent] = useState(false);
 
-  // Vault Reservation Timer
+  // Hold Timer
   const [timerSeconds, setTimerSeconds] = useState(28 * 60 + 44);
 
-  // Bespoke Engraving State
+  // Custom Engraving State
   const [engravingText, setEngravingText] = useState("");
   const [engravingSaved, setEngravingSaved] = useState(false);
 
@@ -106,13 +105,13 @@ export default function ProductDetailPage() {
 
   const handleExtendTimer = () => {
     setTimerSeconds((prev) => prev + 15 * 60);
-    showToast("Geneva Vault Hold extended by +15:00 minutes.");
+    showToast("Cart reservation extended by 15 minutes.");
   };
 
   const handleSaveEngraving = () => {
     if (!engravingText.trim()) return;
     setEngravingSaved(true);
-    showToast(`Bespoke engraving "${engravingText.trim()}" saved.`);
+    showToast(`Custom engraving "${engravingText.trim()}" saved.`);
   };
 
   const isWishlisted = product ? isInWishlist(product.id) : false;
@@ -133,16 +132,6 @@ export default function ProductDetailPage() {
 
   const formatCurrency = (amount: number) => {
     return `LKR ${Number(amount || 0).toLocaleString("en-US")}`;
-  };
-
-  const formatUSD = (lkrAmount: number) => {
-    const usd = Math.round(lkrAmount / 304);
-    return `$ ${usd.toLocaleString("en-US")}`;
-  };
-
-  const formatEUR = (lkrAmount: number) => {
-    const eur = Math.round(lkrAmount / 330);
-    return `€ ${eur.toLocaleString("en-US")}`;
   };
 
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -168,7 +157,7 @@ export default function ProductDetailPage() {
         <Navbar cartCount={totalCartCount} wishlistCount={wishlist.length} />
         <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-4 text-center">
           <div className="text-4xl text-[#E88C30]">✦</div>
-          <h2 className="text-xl font-bold uppercase tracking-tight">Timepiece Not Located</h2>
+          <h2 className="text-xl font-bold uppercase tracking-tight">Product Not Found</h2>
           <Link
             href="/catalog"
             className="px-6 py-2.5 bg-[#E88C30] text-black text-xs font-mono font-bold uppercase tracking-wider hover:bg-[#d47b24]"
@@ -187,7 +176,7 @@ export default function ProductDetailPage() {
   // Variations list: uses related products or different angles
   const variationList = [
     { id: product.id, name: product.name, image: galleryImages[0], isCurrent: true },
-    ...(relatedProducts.slice(0, 3).map((p, idx) => ({
+    ...(relatedProducts.slice(0, 3).map((p) => ({
       id: p.id,
       name: p.name,
       image: getProductImage(p.id, p.image_url),
@@ -195,39 +184,39 @@ export default function ProductDetailPage() {
     }))),
   ];
 
-  // Dynamic Tab Content
+  // Dynamic Tab Content in Normal English
   const renderTabContent = () => {
     switch (activeTab) {
-      case "DETAIL":
+      case "SPECIFICATIONS":
         return (
           <div className="space-y-2 text-xs font-mono">
             <div className="flex items-center justify-between py-2 border-b border-white/5">
-              <span className="text-neutral-400">SKU</span>
-              <span className="text-white font-semibold uppercase">{product.id.replace(/^prod-/, "").toUpperCase() || "ASDK12453578GXZ"}</span>
+              <span className="text-neutral-400">Product Code</span>
+              <span className="text-white font-semibold uppercase">{product.id.replace(/^prod-/, "").toUpperCase() || "KW-1002"}</span>
             </div>
             <div className="flex items-center justify-between py-2 border-b border-white/5">
-              <span className="text-neutral-400">Upper Material</span>
-              <span className="text-white font-medium">{product.case_material || "Oystersteel 904L / Ceramic"}</span>
+              <span className="text-neutral-400">Case Material</span>
+              <span className="text-white font-medium">{product.case_material || "Stainless Steel"}</span>
             </div>
             <div className="flex items-center justify-between py-2 border-b border-white/5">
-              <span className="text-neutral-400">Inner Material</span>
+              <span className="text-neutral-400">Glass &amp; Dial</span>
               <span className="text-white font-medium">Anti-Reflective Sapphire Crystal</span>
             </div>
             <div className="flex items-center justify-between py-2 border-b border-white/5">
-              <span className="text-neutral-400">Sole Material</span>
-              <span className="text-white font-medium">{product.movement || "Swiss Automatic Mechanical Calibre"}</span>
+              <span className="text-neutral-400">Movement</span>
+              <span className="text-white font-medium">{product.movement || "Swiss Automatic Movement"}</span>
             </div>
             <div className="flex items-center justify-between py-2 border-b border-white/5">
-              <span className="text-neutral-400">Inner Sole Material</span>
-              <span className="text-white font-medium">{product.water_resistance || "100m (10 ATM) Sealed Gasket"}</span>
+              <span className="text-neutral-400">Water Resistance</span>
+              <span className="text-white font-medium">{product.water_resistance || "100m (10 ATM)"}</span>
             </div>
             <div className="flex items-center justify-between py-2 border-b border-white/5">
-              <span className="text-neutral-400">Warranty</span>
-              <span className="text-[#E88C30] font-medium">{product.warranty || "5-Year International Atelier Warranty"}</span>
+              <span className="text-neutral-400">Official Warranty</span>
+              <span className="text-[#E88C30] font-medium">{product.warranty || "5-Year Official Brand Warranty"}</span>
             </div>
           </div>
         );
-      case "SIZE DETAIL":
+      case "SIZE & FIT":
         return (
           <div className="space-y-2 text-xs font-mono">
             <div className="flex items-center justify-between py-2 border-b border-white/5">
@@ -236,19 +225,19 @@ export default function ProductDetailPage() {
             </div>
             <div className="flex items-center justify-between py-2 border-b border-white/5">
               <span className="text-neutral-400">Case Thickness</span>
-              <span className="text-white font-medium">12.4 mm (Profile)</span>
+              <span className="text-white font-medium">12.4 mm</span>
             </div>
             <div className="flex items-center justify-between py-2 border-b border-white/5">
-              <span className="text-neutral-400">Lug-to-Lug Distance</span>
+              <span className="text-neutral-400">Lug-to-Lug Length</span>
               <span className="text-white font-medium">48.2 mm</span>
             </div>
             <div className="flex items-center justify-between py-2 border-b border-white/5">
-              <span className="text-neutral-400">Strap / Lug Width</span>
-              <span className="text-white font-medium">20 mm (Tapered to 16 mm)</span>
+              <span className="text-neutral-400">Strap Width</span>
+              <span className="text-white font-medium">20 mm</span>
             </div>
             <div className="flex items-center justify-between py-2 border-b border-white/5">
               <span className="text-neutral-400">Wrist Fit Scope</span>
-              <span className="text-white font-medium">160 mm - 215 mm (Micro-adjustable)</span>
+              <span className="text-white font-medium">160 mm - 215 mm (Adjustable)</span>
             </div>
           </div>
         );
@@ -256,13 +245,13 @@ export default function ProductDetailPage() {
         return (
           <div className="space-y-3 text-xs font-mono text-neutral-300 leading-relaxed">
             <p>
-              ✦ <strong className="text-white">14-Day Complimentary Inspection:</strong> You may return or exchange this timepiece within 14 days of signed delivery.
+              ✦ <strong className="text-white">14-Day Free Returns:</strong> You can easily return or exchange this watch within 14 days of delivery.
             </p>
             <p>
-              ✦ <strong className="text-white">Tamper-Evident Security Seal:</strong> Timepiece must retain the holographic Geneva security hangtag and undamaged caseback seal.
+              ✦ <strong className="text-white">Original Condition:</strong> The watch must be unworn with all security tags, protective films, and original packaging intact.
             </p>
             <p>
-              ✦ <strong className="text-white">Complimentary Insured Transit:</strong> Return shipping is fully covered via scheduled armored courier pickup.
+              ✦ <strong className="text-white">Doorstep Pickup:</strong> We arrange free doorstep courier pickup for approved returns.
             </p>
           </div>
         );
@@ -270,13 +259,13 @@ export default function ProductDetailPage() {
         return (
           <div className="space-y-3 text-xs font-mono text-neutral-300 leading-relaxed">
             <p>
-              📦 <strong className="text-white">Insured Armored Handover:</strong> Dispatched within 24 hours under 100% full-value escrow insurance.
+              📦 <strong className="text-white">Fast Islandwide Delivery:</strong> Orders dispatched within 24 hours. Delivered across Sri Lanka in 1 to 3 business days.
             </p>
             <p>
-              ⏱ <strong className="text-white">Transit Timelines:</strong> Domestic Sri Lanka: Next Business Day. International (Geneva/Dubai/London/NY): 2 - 4 business days.
+              🛡️ <strong className="text-white">Insured Shipping:</strong> Every shipment is fully insured against damage or loss during transit.
             </p>
             <p>
-              ✍️ <strong className="text-white">Signature Verification:</strong> Photo ID required upon courier handover with digital custody receipt.
+              💳 <strong className="text-white">Payment Options:</strong> Secure online payment with Visa, MasterCard, Koko, or Cash on Delivery.
             </p>
           </div>
         );
@@ -304,23 +293,23 @@ export default function ProductDetailPage() {
         </div>
       )}
 
-      {/* Top Allocation & Vault Status Ribbon */}
+      {/* Top Status Banner in Normal English */}
       <section className="w-full bg-[#111111] border-b border-[#222222] py-2 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono">
           <div className="flex items-center gap-2.5">
             <span className="inline-block w-2 h-2 rounded-full bg-[#22C55E] shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse" />
             <span className="text-[#E88C30] uppercase tracking-wider font-semibold">
-              Authenticated Stock
+              In Stock • 100% Genuine Guaranteed
             </span>
             <span className="text-white/30">/</span>
             <span className="text-white/60">
-              Allocation ID: <span className="text-white">#0x{product.id.slice(-6).toUpperCase()}</span>
+              Ref: <span className="text-white">{product.id.replace(/^prod-/, "").toUpperCase()}</span>
             </span>
           </div>
 
           <div className="flex items-center gap-3 bg-[#1A1A1A] px-3 py-0.5 rounded border border-[#2B2B2B]">
             <span className="text-[#E88C30] text-xs">⏱</span>
-            <span className="text-white/70 uppercase tracking-wider text-[10px]">Priority Hold:</span>
+            <span className="text-white/70 uppercase tracking-wider text-[10px]">Cart Hold:</span>
             <span className={`font-mono font-bold text-xs ${timerSeconds === 0 ? "text-red-500" : "text-[#E88C30]"}`}>
               {formatTimer(timerSeconds)}
             </span>
@@ -334,7 +323,7 @@ export default function ProductDetailPage() {
         </div>
       </section>
 
-      {/* Main Container - Implemented directly matching the sample layout */}
+      {/* Main Container */}
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12">
         <div className="bg-[#121212] rounded-2xl border border-[#242424] shadow-2xl p-6 sm:p-8 lg:p-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
@@ -344,7 +333,7 @@ export default function ProductDetailPage() {
                 1. Main Image Showcase with 30% Starburst Badge
                 2. Pagination Dots
                 3. OTHER VARIATIONS Section
-                4. Tabs Section (DETAIL, SIZE DETAIL, RETURN POLICY, DELIVERY INFO)
+                4. Tabs Section (SPECIFICATIONS, SIZE & FIT, RETURN POLICY, DELIVERY INFO)
                 5. Key-Value Specification Grid
                ======================================================== */}
             <div className="lg:col-span-7 space-y-6">
@@ -358,7 +347,7 @@ export default function ProductDetailPage() {
                   onMouseMove={handleMouseMove}
                   className="relative aspect-square sm:aspect-[4/3] bg-[#1A1A1A] rounded-xl border border-[#2B2B2B] overflow-hidden flex items-center justify-center cursor-zoom-in group shadow-inner"
                 >
-                  {/* Starburst Discount Badge (Matching sample's 30% red starburst badge) */}
+                  {/* Starburst Discount Badge */}
                   <div className="absolute top-4 right-4 z-20 flex items-center justify-center">
                     <div className="relative w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center filter drop-shadow-lg">
                       <svg
@@ -373,10 +362,10 @@ export default function ProductDetailPage() {
                     </div>
                   </div>
 
-                  {/* Optional Ref code pill on top left */}
+                  {/* Ref pill on top left */}
                   <div className="absolute top-4 left-4 z-20">
                     <span className="text-[10px] font-mono font-bold tracking-wider px-2.5 py-1 bg-black/70 backdrop-blur-md text-[#E88C30] border border-[#E88C30]/30 rounded">
-                      Ref. {product.id}
+                      Ref: {product.id.replace(/^prod-/, "").toUpperCase()}
                     </span>
                   </div>
 
@@ -402,7 +391,7 @@ export default function ProductDetailPage() {
                   )}
                 </div>
 
-                {/* 2. Carousel / Pagination Dots (Matching sample image dots) */}
+                {/* 2. Carousel / Pagination Dots */}
                 <div className="flex items-center justify-center gap-2 pt-3">
                   {galleryImages.map((_, idx) => (
                     <button
@@ -419,7 +408,7 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              {/* 3. OTHER VARIATIONS Section (Matching sample layout) */}
+              {/* 3. OTHER VARIATIONS Section */}
               <div className="space-y-2.5 pt-2">
                 <h3 className="text-xs font-mono uppercase tracking-widest text-neutral-400 font-bold">
                   OTHER VARIATIONS
@@ -455,10 +444,10 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              {/* 4. Tabs Section (DETAIL, SIZE DETAIL, RETURN POLICY, DELIVERY INFO) */}
+              {/* 4. Tabs Section */}
               <div className="pt-6 border-t border-[#222222] space-y-4">
                 <div className="flex items-center gap-6 sm:gap-8 border-b border-[#242424] text-xs font-mono font-bold uppercase tracking-wider overflow-x-auto pb-1">
-                  {(["DETAIL", "SIZE DETAIL", "RETURN POLICY", "DELIVERY INFO"] as TabType[]).map((tab) => (
+                  {(["SPECIFICATIONS", "SIZE & FIT", "RETURN POLICY", "DELIVERY INFO"] as TabType[]).map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
@@ -476,7 +465,7 @@ export default function ProductDetailPage() {
                   ))}
                 </div>
 
-                {/* 5. Key-Value Specification Grid (Matching sample detail table) */}
+                {/* 5. Key-Value Specification Grid */}
                 <div className="pt-2">
                   {renderTabContent()}
                 </div>
@@ -486,14 +475,14 @@ export default function ProductDetailPage() {
 
             {/* ========================================================
                 RIGHT COLUMN:
-                1. Category Breadcrumb (MEN / LIFESTYLE / ...)
+                1. Category Breadcrumb
                 2. PRODUCT CODE : 12678ASFG
-                3. Title in Accent Orange (CANVAS SNEAKER - BLACK)
-                4. Price & Star Reviews ($ 70 / € 65  ★★★★★ 17 reviews)
+                3. Title in Accent Orange
+                4. Primary LKR Price & Star Reviews
                 5. Product Description
                 6. SIZE (UK ⌄  SIZE ⌄  SIZE GUIDE)
                 7. Action Buttons (ADD TO CART  |  ADD TO WISHLIST)
-                8. DELIVERY ESTIMATE (Read our Terms and Conditions)
+                8. DELIVERY ESTIMATE
                ======================================================== */}
             <div className="lg:col-span-5 space-y-6">
               
@@ -501,32 +490,34 @@ export default function ProductDetailPage() {
               <div className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 flex items-center flex-wrap gap-1.5">
                 <span>{product.gender?.toUpperCase() || "MEN"}</span>
                 <span>/</span>
-                <span>{product.category?.toUpperCase() || "LUXURY"}</span>
+                <span>{product.category?.toUpperCase() || "WATCHES"}</span>
                 <span>/</span>
-                <span>{product.brand?.toUpperCase() || "CHRONOMETER"}</span>
+                <span>{product.brand?.toUpperCase() || "KRONO"}</span>
                 <span>/</span>
-                <span className="text-white/80">{product.movement ? "AUTOMATIC" : "TIMEPIECE"}</span>
+                <span className="text-white/80">{product.movement ? "AUTOMATIC" : "WATCH"}</span>
               </div>
 
               {/* 2. Product Code */}
               <div className="font-mono text-xs uppercase tracking-widest text-neutral-400">
-                PRODUCT CODE : <span className="text-white font-semibold">{product.id.replace(/^prod-/, "").toUpperCase() || "12678ASFG"}</span>
+                PRODUCT CODE : <span className="text-white font-semibold">{product.id.replace(/^prod-/, "").toUpperCase() || "KW-1002"}</span>
               </div>
 
-              {/* 3. Product Title (Vibrant Accent Orange Title) */}
+              {/* 3. Product Title */}
               <h1 className="text-2xl sm:text-3xl font-display font-extrabold uppercase tracking-wide text-[#E88C30] leading-tight drop-shadow-sm">
                 {product.name}
               </h1>
 
-              {/* 4. Dual Price & Star Ratings Row */}
+              {/* 4. Primary LKR Price & Star Ratings Row */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#242424] pb-5">
                 <div className="flex items-baseline gap-3">
                   <span className="text-2xl sm:text-3xl font-mono font-bold text-white">
-                    {formatUSD(product.price)} / {formatEUR(product.price)}
+                    {formatCurrency(product.price)}
                   </span>
-                  <span className="text-xs font-mono text-[#E88C30]/80">
-                    ({formatCurrency(product.price)})
-                  </span>
+                  {product.old_price && product.old_price > product.price && (
+                    <span className="text-sm font-mono text-neutral-500 line-through">
+                      {formatCurrency(product.old_price)}
+                    </span>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-2 text-xs font-mono text-[#F59E0B]">
@@ -535,12 +526,12 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              {/* 5. Product Description */}
+              {/* 5. Product Description in Normal English */}
               <div className="text-xs text-neutral-300 font-sans leading-relaxed">
-                <p>{product.description || "Crafted to perfection with premium materials, certified chronometric movement, and exceptional attention to horological heritage."}</p>
+                <p>{product.description || "Crafted to perfection with premium materials, verified Swiss movement, and exceptional attention to detail."}</p>
               </div>
 
-              {/* 6. SIZE Selection Section (Dropdowns & Size Guide Link) */}
+              {/* 6. SIZE Selection Section */}
               <div className="space-y-3 pt-2">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-mono font-bold uppercase tracking-wider text-neutral-300">
@@ -556,16 +547,16 @@ export default function ProductDetailPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 font-mono text-xs">
-                  {/* Dropdown 1: Region / System (e.g., UK, EU, US, MM) */}
+                  {/* Dropdown 1: Region / System */}
                   <div className="relative">
                     <select
                       value={selectedRegion}
                       onChange={(e) => setSelectedRegion(e.target.value)}
                       className="w-full bg-[#1A1A1A] border border-[#333333] hover:border-[#E88C30] text-white px-3.5 py-2.5 rounded-lg appearance-none cursor-pointer focus:outline-none focus:border-[#E88C30] uppercase font-mono transition-colors"
                     >
-                      <option value="UK">UK</option>
-                      <option value="US">US</option>
-                      <option value="EU">EU</option>
+                      <option value="UK">UK Standard</option>
+                      <option value="US">US Standard</option>
+                      <option value="EU">EU Standard</option>
                       <option value="MM">MM (Metric)</option>
                     </select>
                     <span className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-400 text-[10px]">
@@ -573,18 +564,18 @@ export default function ProductDetailPage() {
                     </span>
                   </div>
 
-                  {/* Dropdown 2: Case Size / Strap Fit */}
+                  {/* Dropdown 2: Case Size */}
                   <div className="relative">
                     <select
                       value={selectedSize}
                       onChange={(e) => setSelectedSize(e.target.value)}
                       className="w-full bg-[#1A1A1A] border border-[#333333] hover:border-[#E88C30] text-white px-3.5 py-2.5 rounded-lg appearance-none cursor-pointer focus:outline-none focus:border-[#E88C30] uppercase font-mono transition-colors"
                     >
-                      <option value="39mm">SIZE: 39mm</option>
-                      <option value="40mm">SIZE: 40mm</option>
-                      <option value="41mm">SIZE: 41mm (Standard)</option>
-                      <option value="42mm">SIZE: 42mm</option>
-                      <option value="44mm">SIZE: 44mm</option>
+                      <option value="39mm">Size: 39mm</option>
+                      <option value="40mm">Size: 40mm</option>
+                      <option value="41mm">Size: 41mm (Standard)</option>
+                      <option value="42mm">Size: 42mm</option>
+                      <option value="44mm">Size: 44mm</option>
                     </select>
                     <span className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-400 text-[10px]">
                       ▼
@@ -615,7 +606,7 @@ export default function ProductDetailPage() {
                     </button>
                   </div>
 
-                  {/* Add to Cart Button (Solid Vibrant Orange Button) */}
+                  {/* Add to Cart Button */}
                   <button
                     onClick={() => {
                       addToCart(product, quantity);
@@ -626,7 +617,7 @@ export default function ProductDetailPage() {
                     <span>ADD TO CART</span>
                   </button>
 
-                  {/* Add to Wishlist Button (Outlined Button) */}
+                  {/* Add to Wishlist Button */}
                   <button
                     onClick={() => toggleWishlist(product)}
                     className={`py-3.5 px-5 rounded-lg border font-mono text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${
@@ -646,7 +637,7 @@ export default function ProductDetailPage() {
                   onClick={handleBuyNow}
                   className="w-full py-3 bg-[#1A1A1A] hover:bg-[#252525] border border-[#333333] hover:border-[#E88C30] text-white text-xs font-mono font-bold uppercase tracking-wider rounded-lg transition-all"
                 >
-                  Proceed Directly to Checkout →
+                  Proceed to Checkout →
                 </button>
               </div>
 
@@ -656,7 +647,7 @@ export default function ProductDetailPage() {
                   DELIVERY ESTIMATE
                 </h4>
                 <p className="text-neutral-400 leading-relaxed text-[11px]">
-                  Estimated delivery: 2 - 4 business days via insured armored courier. Direct signature required upon delivery.
+                  Estimated delivery in Sri Lanka: 1 - 3 business days. Free islandwide insured shipping on all orders.
                 </p>
                 <div>
                   <button
@@ -669,24 +660,24 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              {/* Bespoke Caseback Engraving (Collapsible Accordion) */}
+              {/* Custom Caseback Engraving */}
               <div className="bg-[#171717] rounded-lg border border-[#2B2B2B] p-3.5">
                 <details className="group cursor-pointer">
                   <summary className="flex items-center justify-between list-none text-neutral-300 hover:text-white transition-colors">
                     <div className="flex items-center gap-2 font-mono text-xs">
                       <span className="text-[#E88C30]">✒</span>
                       <span className="font-bold uppercase tracking-wider">
-                        Bespoke Caseback Engraving
+                        Free Custom Engraving (Optional)
                       </span>
                       <span className="px-1.5 py-0.5 bg-[#262626] text-[#E88C30] text-[9px] uppercase font-bold rounded">
-                        Complimentary
+                        Free
                       </span>
                     </div>
                     <span className="text-xs transition-transform group-open:rotate-180">▼</span>
                   </summary>
                   <div className="mt-3 pt-3 border-t border-[#2B2B2B] flex flex-col gap-2 font-mono text-xs">
                     <label className="text-[10px] text-neutral-400">
-                      Up to 14 characters engraved on caseback rim:
+                      Enter up to 14 characters to engrave on the caseback:
                     </label>
                     <div className="flex gap-2">
                       <input
@@ -712,13 +703,13 @@ export default function ProductDetailPage() {
                 </details>
               </div>
 
-              {/* Private Concierge Consultation Desk */}
+              {/* Customer Support Desk */}
               <button
-                onClick={() => setIsConciergeOpen(true)}
+                onClick={() => setIsSupportOpen(true)}
                 className="w-full py-2.5 border border-dashed border-[#333333] hover:border-[#E88C30] text-neutral-400 hover:text-[#E88C30] text-xs font-mono uppercase tracking-wider rounded-lg transition-colors flex items-center justify-center gap-2"
               >
                 <span>✦</span>
-                <span>Inquire with Private Horology Concierge</span>
+                <span>Need Assistance? Contact Customer Support</span>
               </button>
 
             </div>
@@ -726,7 +717,7 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* Curated Accessories / Related Timepieces Grid */}
+        {/* Recommended Watches Grid */}
         {relatedProducts.length > 0 && (
           <section className="mt-16 space-y-6">
             <div className="flex items-center justify-between border-b border-[#222222] pb-4">
@@ -772,13 +763,13 @@ export default function ProductDetailPage() {
         )}
       </main>
 
-      {/* Size Guide Modal */}
+      {/* Size Guide Modal in Normal English */}
       {isSizeGuideOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#141414] border border-[#333333] rounded-xl p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl">
             <div className="flex items-center justify-between border-b border-[#262626] pb-3">
               <h3 className="text-sm font-mono uppercase text-[#E88C30] font-bold tracking-wider">
-                Watch Case &amp; Wrist Sizing Guide
+                Watch Sizing Guide
               </h3>
               <button
                 onClick={() => setIsSizeGuideOpen(false)}
@@ -789,14 +780,14 @@ export default function ProductDetailPage() {
             </div>
             <div className="space-y-4 text-xs font-mono text-neutral-300">
               <p>
-                Our cases are engineered according to Swiss horological standards. Use the chart below to match case diameter to your wrist circumference:
+                Use the table below to find the case diameter that best fits your wrist:
               </p>
               <div className="border border-[#2B2B2B] rounded overflow-hidden">
                 <table className="w-full text-left">
                   <thead className="bg-[#1A1A1A] text-neutral-400 border-b border-[#2B2B2B]">
                     <tr>
-                      <th className="p-2.5">Case Diameter</th>
-                      <th className="p-2.5">Wrist Circumference</th>
+                      <th className="p-2.5">Case Size</th>
+                      <th className="p-2.5">Wrist Size</th>
                       <th className="p-2.5">Fit Recommendation</th>
                     </tr>
                   </thead>
@@ -804,23 +795,23 @@ export default function ProductDetailPage() {
                     <tr>
                       <td className="p-2.5 font-bold text-white">38mm - 39mm</td>
                       <td className="p-2.5">150mm - 170mm (6.0&quot; - 6.7&quot;)</td>
-                      <td className="p-2.5 text-[#22C55E]">Classic Vintage</td>
+                      <td className="p-2.5 text-[#22C55E]">Slim / Classic Fit</td>
                     </tr>
                     <tr>
                       <td className="p-2.5 font-bold text-white">40mm - 41mm</td>
                       <td className="p-2.5">165mm - 190mm (6.5&quot; - 7.5&quot;)</td>
-                      <td className="p-2.5 text-[#E88C30]">Universal Standard</td>
+                      <td className="p-2.5 text-[#E88C30]">Standard Everyday Fit</td>
                     </tr>
                     <tr>
                       <td className="p-2.5 font-bold text-white">42mm - 44mm</td>
                       <td className="p-2.5">180mm - 210mm (7.1&quot; - 8.3&quot;)</td>
-                      <td className="p-2.5 text-blue-400">Sport Chrono</td>
+                      <td className="p-2.5 text-blue-400">Bold / Sport Fit</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
               <p className="text-[11px] text-neutral-400">
-                Complimentary micro-adjustment links and custom strap sizing are provided with every order.
+                All metal bracelet watches include extra links and adjustment tools. Leather straps fit standard wrist sizes with multiple buckle holes.
               </p>
             </div>
             <div className="pt-2 flex justify-end">
@@ -835,13 +826,13 @@ export default function ProductDetailPage() {
         </div>
       )}
 
-      {/* Terms and Conditions Modal */}
+      {/* Terms and Conditions Modal in Normal English */}
       {isTermsOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#141414] border border-[#333333] rounded-xl p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl">
             <div className="flex items-center justify-between border-b border-[#262626] pb-3">
               <h3 className="text-sm font-mono uppercase text-[#E88C30] font-bold tracking-wider">
-                Delivery &amp; Authentication Terms
+                Delivery &amp; Return Terms
               </h3>
               <button
                 onClick={() => setIsTermsOpen(false)}
@@ -852,16 +843,16 @@ export default function ProductDetailPage() {
             </div>
             <div className="space-y-3 text-xs font-mono text-neutral-300 leading-relaxed max-h-80 overflow-y-auto pr-2">
               <p>
-                <strong>1. Armored Transit Escrow:</strong> Every timepiece shipment is secured with 100% full-value Lloyd&apos;s or Swiss marine insurance until in-person signature handover.
+                <strong>1. Free Insured Delivery:</strong> Every order is carefully packaged, tracked, and 100% insured until safely delivered to your doorstep.
               </p>
               <p>
-                <strong>2. Tamper-Evident Security Seal:</strong> Timepieces arrive with verified serial verification holograms. Removal of the caseback tag constitutes ownership acceptance.
+                <strong>2. 14-Day Return Guarantee:</strong> If you are not satisfied with your purchase, you can return or exchange it within 14 days of delivery.
               </p>
               <p>
-                <strong>3. 14-Day Return Guarantee:</strong> If unsatisfied, notify concierge within 14 days of receipt for an insured return dispatch.
+                <strong>3. Product Authenticity:</strong> All watches are 100% original, brand new, and come with manufacturer serial numbers and official warranty cards.
               </p>
               <p>
-                <strong>4. Customs &amp; Import Duties:</strong> All taxes and duties are prepaid and inclusive in your checkout total. No surprise fees upon courier handover.
+                <strong>4. Transparent Pricing:</strong> All listed prices are in LKR with no hidden charges. Free shipping across Sri Lanka.
               </p>
             </div>
             <div className="pt-2 flex justify-end">
@@ -876,23 +867,23 @@ export default function ProductDetailPage() {
         </div>
       )}
 
-      {/* Concierge Modal */}
-      {isConciergeOpen && (
+      {/* Customer Support Modal in Normal English */}
+      {isSupportOpen && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#141414] border border-[#333333] rounded-xl p-6 sm:p-8 max-w-md w-full space-y-4 shadow-2xl">
             <div className="flex items-center justify-between border-b border-[#262626] pb-3">
               <span className="text-xs font-mono uppercase text-[#E88C30] font-bold tracking-widest">
-                Private Horology Consultation
+                Customer Support Inquiry
               </span>
-              <button onClick={() => setIsConciergeOpen(false)} className="text-white/60 hover:text-white">✕</button>
+              <button onClick={() => setIsSupportOpen(false)} className="text-white/60 hover:text-white">✕</button>
             </div>
-            {conciergeSent ? (
+            {supportSent ? (
               <div className="text-center py-6 space-y-2">
                 <div className="text-2xl text-[#E88C30]">✓</div>
-                <div className="text-sm font-sans font-bold">Inquiry Dispatched</div>
-                <p className="text-xs text-white/60 font-mono">Our senior horologist will contact you within 2 business hours.</p>
+                <div className="text-sm font-sans font-bold">Message Sent</div>
+                <p className="text-xs text-white/60 font-mono">Our customer support team will reply to you within a few hours.</p>
                 <button
-                  onClick={() => { setIsConciergeOpen(false); setConciergeSent(false); }}
+                  onClick={() => { setIsSupportOpen(false); supportSent; }}
                   className="mt-4 px-4 py-2 bg-[#E88C30] text-black text-xs font-mono font-bold uppercase rounded"
                 >
                   Close
@@ -901,20 +892,20 @@ export default function ProductDetailPage() {
             ) : (
               <div className="space-y-3">
                 <p className="text-xs text-neutral-300 font-mono">
-                  Inquiring on: <span className="text-white font-semibold">{product.name}</span>
+                  Inquiring about: <span className="text-white font-semibold">{product.name}</span>
                 </p>
                 <textarea
                   rows={3}
-                  value={conciergeMsg}
-                  onChange={(e) => setConciergeMsg(e.target.value)}
-                  placeholder="Inquire about bespoke sizing, vault inspection, or private wire transfer..."
+                  value={supportMsg}
+                  onChange={(e) => setSupportMsg(e.target.value)}
+                  placeholder="Ask a question about size, delivery time, or payment options..."
                   className="w-full bg-black border border-[#333333] rounded p-3 text-xs text-white focus:outline-none focus:border-[#E88C30] font-mono resize-none"
                 />
                 <button
-                  onClick={() => setConciergeSent(true)}
+                  onClick={() => setSupportSent(true)}
                   className="w-full py-2.5 bg-[#E88C30] text-black text-xs font-mono font-bold uppercase rounded hover:bg-[#d47b24] transition-colors"
                 >
-                  Dispatch to Concierge Desk
+                  Send Inquiry
                 </button>
               </div>
             )}
