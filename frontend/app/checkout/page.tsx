@@ -767,26 +767,22 @@ function CheckoutContent() {
                 {cart.length === 0 ? (
                   <p className="text-xs text-white/40 font-mono py-4">No items in your cart.</p>
                 ) : (
-                  <div className="divide-y divide-white/10 max-h-80 overflow-y-auto pr-1">
+                  <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
                     {cart.map((item) => (
-                      <div key={item.product.id} className="py-3 flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-lg bg-black overflow-hidden relative flex-shrink-0 border border-white/10">
-                          <SmoothImage
-                            src={item.product.image_url}
-                            alt={item.product.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs text-white font-medium truncate">
-                            {item.product.name}
-                          </p>
-                          <p className="text-[11px] text-white/50 font-mono">
-                            Qty: {item.quantity} × LKR {item.product.price.toLocaleString()}
-                          </p>
-                        </div>
-                        <div className="text-xs font-mono text-[#C5A059] font-bold">
-                          LKR {(item.product.price * item.quantity).toLocaleString()}
+                      <div
+                        key={item.product.id}
+                        className="bg-[#141414] border border-white/10 rounded-xl p-3.5 space-y-2"
+                      >
+                        <p className="text-xs text-white font-semibold line-clamp-2">
+                          {item.product.name}
+                        </p>
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-white/60">Quantity: {item.quantity}</span>
+                          <span className="font-semibold text-white">
+                            Rs. {(item.product.price * item.quantity).toLocaleString("en-US", {
+                              minimumFractionDigits: 2,
+                            })}
+                          </span>
                         </div>
                       </div>
                     ))}
@@ -796,22 +792,25 @@ function CheckoutContent() {
                 <div className="pt-4 mt-4 border-t border-white/10 space-y-2 text-xs font-mono">
                   <div className="flex justify-between text-white/60">
                     <span>Subtotal:</span>
-                    <span>LKR {subtotal.toLocaleString()}</span>
+                    <span>Rs. {subtotal.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
                   </div>
                   {discountAmount > 0 && (
                     <div className="flex justify-between text-emerald-400">
                       <span>Discount ({appliedCoupon}):</span>
-                      <span>- LKR {discountAmount.toLocaleString()}</span>
+                      <span>- Rs. {discountAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-white/60">
                     <span>Insured Delivery:</span>
                     <span className="text-emerald-400 uppercase">Free</span>
                   </div>
-                  <div className="pt-3 border-t border-white/10 flex justify-between text-base font-bold text-[#C5A059]">
-                    <span>Total Amount:</span>
-                    <span>LKR {grandTotal.toLocaleString()}</span>
+                  <div className="pt-3 border-t border-white/10 flex justify-between text-base font-bold text-white">
+                    <span>Total</span>
+                    <span>Rs. {grandTotal.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
                   </div>
+                  <p className="text-[11px] text-white/50 leading-relaxed font-sans">
+                    Cash price. Or pay Rs. {(grandTotal / 3).toLocaleString("en-US", { minimumFractionDigits: 2 })} × 3 with KOKO.
+                  </p>
                 </div>
 
                 {/* Secure Badge */}
