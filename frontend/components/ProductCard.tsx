@@ -112,23 +112,6 @@ export default function ProductCard({
             transition: "transform 400ms ease",
           }}
         />
-        {/* Quick view overlay */}
-        <div
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onQuickView(product); }}
-          style={{
-            position: "absolute", inset: 0, background: "rgba(0,0,0,0.4)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            opacity: hovered ? 1 : 0, transition: "opacity 200ms",
-          }}
-        >
-          <span style={{
-            padding: "8px 18px", fontSize: "10px", fontWeight: 700,
-            letterSpacing: "0.12em", textTransform: "uppercase",
-            border: "1px solid #fff", color: "#fff", background: "rgba(0,0,0,0.6)",
-          }}>
-            Quick View
-          </span>
-        </div>
       </Link>
 
       {/* Info */}

@@ -875,13 +875,6 @@ export default function CatalogPage() {
                           ♥
                         </button>
 
-                        {/* Quick View Hover overlay */}
-                        <button
-                          onClick={() => setQuickViewProduct(p)}
-                          className="absolute bottom-3 left-3 right-3 py-2 bg-black/80 hover:bg-black text-white text-[11px] font-mono tracking-widest uppercase border border-white/20 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm"
-                        >
-                          Quick Inspection
-                        </button>
                       </div>
 
                       {/* Content */}
