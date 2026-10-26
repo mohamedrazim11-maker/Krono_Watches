@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { fetchProducts, Product } from "@/lib/api";
 import SmoothImage from "./SmoothImage";
+import ThemeToggle from "./ThemeToggle";
 import { useCart } from "@/lib/CartContext";
 import { useAuth } from "@/lib/AuthContext";
 
@@ -279,6 +280,9 @@ export default function Navbar({
 
           {/* Right Action Icons */}
           <div className="flex items-center gap-3">
+            {/* Theme Toggle Button */}
+            <ThemeToggle />
+
             {/* Wishlist Button */}
             <button
               onClick={effectiveOpenWishlist}
@@ -478,6 +482,12 @@ export default function Navbar({
                     </Link>
                   </>
                 )}
+
+                {/* Mobile Theme Toggle Row */}
+                <div className="px-3 py-2 flex items-center justify-between border-t border-white/10 mt-2 pt-3">
+                  <span className="text-xs font-mono text-[#8E95A5]">Appearance Mode</span>
+                  <ThemeToggle showLabel />
+                </div>
               </div>
             </nav>
           </div>

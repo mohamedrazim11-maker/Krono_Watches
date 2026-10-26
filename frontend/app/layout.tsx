@@ -7,6 +7,7 @@ export const metadata: Metadata = {
     "Discover certified luxury Swiss and international watches. Authenticated movements, secure checkout, and insured worldwide delivery.",
 };
 
+import { ThemeProvider } from "@/lib/ThemeContext";
 import { CartProvider } from "@/lib/CartContext";
 import { AuthProvider } from "@/lib/AuthContext";
 
@@ -33,16 +34,25 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                document.documentElement.classList.add('dark');
+                const saved = localStorage.getItem('krono_theme');
+                if (saved === 'light') {
+                  document.documentElement.classList.remove('dark');
+                  document.documentElement.classList.add('light');
+                } else {
+                  document.documentElement.classList.remove('light');
+                  document.documentElement.classList.add('dark');
+                }
               } catch (_) {}
             `,
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-[#050505] text-white selection:bg-[#C5A059] selection:text-black font-sans">
-        <AuthProvider>
-          <CartProvider>{children}</CartProvider>
-        </AuthProvider>
+      <body className="min-h-full flex flex-col transition-colors duration-300 font-sans selection:bg-[#C5A059] selection:text-black">
+        <ThemeProvider>
+          <AuthProvider>
+            <CartProvider>{children}</CartProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

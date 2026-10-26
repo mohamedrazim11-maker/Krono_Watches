@@ -10,6 +10,7 @@ import CartDrawer from "@/components/CartDrawer";
 import WishlistDrawer from "@/components/WishlistDrawer";
 import QuickViewModal from "@/components/QuickViewModal";
 import CheckoutModal from "@/components/CheckoutModal";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useCart } from "@/lib/CartContext";
 import { useAuth } from "@/lib/AuthContext";
 import { getProductImage } from "@/lib/productImages";
@@ -259,6 +260,9 @@ function DarkNavbar({
                 </span>
               )}
             </button>
+
+            {/* Theme Mode Toggle Button */}
+            <ThemeToggle />
 
             {/* 4. Account Icon & Popover Menu */}
             <div ref={accountRef} style={{ position: "relative" }}>

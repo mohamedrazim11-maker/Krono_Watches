@@ -455,3 +455,84 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ─── Light Mode Luxury Overrides ────────────────────────────────────── */
+html.light,
+html.light body {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+html.light .bg-\[\#07080A\],
+html.light .bg-\[\#050505\],
+html.light .bg-\[\#000\],
+html.light .bg-\[\#000000\],
+html.light .bg-black {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+html.light .bg-\[\#0E1015\],
+html.light .bg-\[\#0D0D0D\],
+html.light .bg-\[\#0c0c0c\],
+html.light .bg-\[\#111\],
+html.light .bg-\[\#111111\],
+html.light .bg-\[\#12141A\],
+html.light .bg-\[\#14161C\],
+html.light .bg-\[\#101217\],
+html.light .bg-\[\#15181F\],
+html.light .bg-\[\#16191E\],
+html.light .bg-\[\#181B22\] {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+html.light .border-\[\#1E232B\],
+html.light .border-\[\#262A33\],
+html.light .border-\[\#1A1D24\],
+html.light .border-\[\#181B22\],
+html.light .border-\[\#282E38\],
+html.light .border-\[\#2E3440\],
+html.light .border-\[\#1C2028\],
+html.light .border-\[\#2A303C\],
+html.light .border-white\/10,
+html.light .border-white\/20 {
+  border-color: #E2E8F0 !important;
+}
+
+html.light .divide-\[\#181B22\] > :not([hidden]) ~ :not([hidden]),
+html.light .divide-\[\#161820\] > :not([hidden]) ~ :not([hidden]),
+html.light .divide-\[\#1A1D24\] > :not([hidden]) ~ :not([hidden]) {
+  border-color: #F1F5F9 !important;
+}
+
+html.light .text-white {
+  color: #0F172A !important;
+}
+
+html.light .text-white\/70,
+html.light .text-white\/80 {
+  color: #334155 !important;
+}
+
+html.light .text-white\/50,
+html.light .text-white\/60,
+html.light .text-\[\#8E95A5\],
+html.light .text-\[\#6E7585\],
+html.light .text-\[\#5E6573\] {
+  color: #64748B !important;
+}
+
+html.light input:not([type="checkbox"]),
+html.light textarea,
+html.light select {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94A3B8 !important;
+}
+

@@ -62,6 +62,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Load saved state before enabling persistence so hydration cannot overwrite it.
   useEffect(() => {
     try {
+      // Ensure initial cart is completely empty by default by purging any stale demo items
+      const RESET_FLAG = "krono_cart_clean_v3";
+      if (!localStorage.getItem(RESET_FLAG)) {
+        localStorage.removeItem(CART_STORAGE_KEY);
+        sessionStorage.removeItem(CART_STORAGE_KEY);
+        localStorage.setItem(RESET_FLAG, "true");
+        setCart([]);
+        setHydrated(true);
+        return;
+      }
+
       const rawCart =
         sessionStorage.getItem(CART_STORAGE_KEY) ||
         localStorage.getItem(CART_STORAGE_KEY);
