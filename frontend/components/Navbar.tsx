@@ -223,11 +223,19 @@ export default function Navbar({
 
   return (
     <>
-      {/* 6. Sticky Navigation: Header stays permanently visible on scroll */}
+      {/* 6. Sticky Navigation: Header stays permanently visible on scroll with glassmorphic transparency */}
       <header
-        style={{ position: "sticky", top: 0, zIndex: 999 }}
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 999,
+          backdropFilter: scrolled ? "blur(16px) saturate(180%)" : "none",
+          WebkitBackdropFilter: scrolled ? "blur(16px) saturate(180%)" : "none",
+        }}
         className={`w-full transition-all duration-300 border-b ${
-          scrolled ? "bg-black/95 backdrop-blur-md border-[#222] shadow-2xl" : "bg-black border-[#1a1a1a]"
+          scrolled
+            ? "bg-black/60 border-white/10 shadow-2xl"
+            : "bg-black border-[#1a1a1a]"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
