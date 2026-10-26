@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useAuth } from "@/lib/AuthContext";
-import { fetchAdminUsers, updateAdminUser, deleteAdminUser, createAdminUser, AdminUser } from "@/lib/api";
+import { fetchAdminUsers, updateAdminUser, deleteAdminUser, AdminUser } from "@/lib/api";
 
 const S = {
   card: {
@@ -40,20 +40,6 @@ export default function AdminUsersPage() {
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "suspended">("all");
   const [toast, setToast] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-
-  // Add User Modal state
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newUserData, setNewUserData] = useState({
-    name: "",
-    email: "",
-    username: "",
-    password: "",
-    role: "customer" as "admin" | "customer",
-    phone: "",
-    address: "",
-  });
-  const [addLoading, setAddLoading] = useState(false);
-  const [addError, setAddError] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -162,41 +148,6 @@ export default function AdminUsersPage() {
     }
   };
 
-  const handleCreateUser = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAddError(null);
-
-    if (!newUserData.name.trim() || !newUserData.email.trim() || !newUserData.password.trim()) {
-      setAddError("Name, email, and password are required.");
-      return;
-    }
-
-    setAddLoading(true);
-    try {
-      const res = await createAdminUser(newUserData);
-      if (res.success && res.data) {
-        setUsers((prev) => [res.data!, ...prev]);
-        showToast(`User account created for ${res.data.name}`);
-        setIsAddModalOpen(false);
-        setNewUserData({
-          name: "",
-          email: "",
-          username: "",
-          password: "",
-          role: "customer",
-          phone: "",
-          address: "",
-        });
-      } else {
-        setAddError(res.message || "Failed to create user.");
-      }
-    } catch (err: any) {
-      setAddError(err.message || "An error occurred.");
-    } finally {
-      setAddLoading(false);
-    }
-  };
-
   return (
     <div style={{ position: "relative" }}>
       {/* Toast Alert */}
@@ -249,26 +200,6 @@ export default function AdminUsersPage() {
             View, manage, and administer registered storefront customer accounts.
           </p>
         </div>
-
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
-            background: "#38BDF8",
-            color: "#0B0F14",
-            border: "none",
-            borderRadius: "8px",
-            padding: "9px 18px",
-            fontSize: "13px",
-            fontWeight: 600,
-            cursor: "pointer",
-            boxShadow: "0 4px 14px rgba(56, 189, 248, 0.3)",
-          }}
-        >
-          <span>+ Add Customer</span>
-        </button>
       </div>
 
       {/* Summary KPI Cards */}
@@ -507,17 +438,19 @@ export default function AdminUsersPage() {
                             onClick={() => handleDelete(u)}
                             disabled={updatingId === u.id}
                             style={{
-                              padding: "5px 9px",
-                              background: "#261315",
-                              border: "1px solid #451A1D",
+                              padding: "5px 12px",
+                              background: "rgba(239, 68, 68, 0.12)",
+                              border: "1px solid rgba(239, 68, 68, 0.3)",
                               borderRadius: "6px",
-                              color: "#EF4444",
+                              color: "#F87171",
                               fontSize: "11px",
+                              fontWeight: 600,
                               cursor: "pointer",
+                              transition: "all 0.15s ease",
                             }}
-                            title="Delete customer"
+                            title="Permanently delete customer account"
                           >
-                            ✕
+                            Delete
                           </button>
                         </div>
                       </td>
@@ -529,239 +462,6 @@ export default function AdminUsersPage() {
           </table>
         </div>
       </div>
-
-      {/* Add User Modal */}
-      {isAddModalOpen && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0, 0, 0, 0.75)",
-            backdropFilter: "blur(4px)",
-            zIndex: 1000,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "16px",
-          }}
-          onClick={() => setIsAddModalOpen(false)}
-        >
-          <div
-            style={{
-              background: "#0F1115",
-              border: "1px solid #282E38",
-              borderRadius: "14px",
-              padding: "24px",
-              width: "100%",
-              maxWidth: "500px",
-              boxShadow: "0 20px 40px rgba(0, 0, 0, 0.8)",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
-              <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#FFFFFF", margin: 0 }}>Add New Customer Account</h2>
-              <button
-                type="button"
-                onClick={() => setIsAddModalOpen(false)}
-                style={{ background: "transparent", border: "none", color: "#6B7280", fontSize: "18px", cursor: "pointer" }}
-              >
-                ✕
-              </button>
-            </div>
-
-            {addError && (
-              <div
-                style={{
-                  background: "rgba(239, 68, 68, 0.15)",
-                  border: "1px solid rgba(239, 68, 68, 0.3)",
-                  color: "#F87171",
-                  padding: "10px 14px",
-                  borderRadius: "8px",
-                  fontSize: "12px",
-                  marginBottom: "16px",
-                }}
-              >
-                {addError}
-              </div>
-            )}
-
-            <form onSubmit={handleCreateUser} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <div>
-                <label style={{ display: "block", fontSize: "11px", color: "#9CA3AF", marginBottom: "4px", textTransform: "uppercase" }}>
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={newUserData.name}
-                  onChange={(e) => setNewUserData({ ...newUserData, name: e.target.value })}
-                  placeholder="e.g. Jean-Luc Picard"
-                  style={{
-                    width: "100%",
-                    background: "#16191E",
-                    border: "1px solid #282E38",
-                    borderRadius: "8px",
-                    padding: "9px 12px",
-                    fontSize: "12.5px",
-                    color: "#FFFFFF",
-                    outline: "none",
-                  }}
-                />
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                <div>
-                  <label style={{ display: "block", fontSize: "11px", color: "#9CA3AF", marginBottom: "4px", textTransform: "uppercase" }}>
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={newUserData.email}
-                    onChange={(e) => setNewUserData({ ...newUserData, email: e.target.value })}
-                    placeholder="user@krono.luxury"
-                    style={{
-                      width: "100%",
-                      background: "#16191E",
-                      border: "1px solid #282E38",
-                      borderRadius: "8px",
-                      padding: "9px 12px",
-                      fontSize: "12.5px",
-                      color: "#FFFFFF",
-                      outline: "none",
-                    }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ display: "block", fontSize: "11px", color: "#9CA3AF", marginBottom: "4px", textTransform: "uppercase" }}>
-                    Role
-                  </label>
-                  <input
-                    type="text"
-                    disabled
-                    value="Customer"
-                    style={{
-                      width: "100%",
-                      background: "#16191E",
-                      border: "1px solid #282E38",
-                      borderRadius: "8px",
-                      padding: "9px 12px",
-                      fontSize: "12.5px",
-                      color: "#9CA3AF",
-                      outline: "none",
-                      cursor: "not-allowed",
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label style={{ display: "block", fontSize: "11px", color: "#9CA3AF", marginBottom: "4px", textTransform: "uppercase" }}>
-                  Initial Password *
-                </label>
-                <input
-                  type="password"
-                  required
-                  value={newUserData.password}
-                  onChange={(e) => setNewUserData({ ...newUserData, password: e.target.value })}
-                  placeholder="At least 8 characters"
-                  style={{
-                    width: "100%",
-                    background: "#16191E",
-                    border: "1px solid #282E38",
-                    borderRadius: "8px",
-                    padding: "9px 12px",
-                    fontSize: "12.5px",
-                    color: "#FFFFFF",
-                    outline: "none",
-                  }}
-                />
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                <div>
-                  <label style={{ display: "block", fontSize: "11px", color: "#9CA3AF", marginBottom: "4px", textTransform: "uppercase" }}>
-                    Phone Number
-                  </label>
-                  <input
-                    type="text"
-                    value={newUserData.phone}
-                    onChange={(e) => setNewUserData({ ...newUserData, phone: e.target.value })}
-                    placeholder="+94 77 123 4567"
-                    style={{
-                      width: "100%",
-                      background: "#16191E",
-                      border: "1px solid #282E38",
-                      borderRadius: "8px",
-                      padding: "9px 12px",
-                      fontSize: "12.5px",
-                      color: "#FFFFFF",
-                      outline: "none",
-                    }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ display: "block", fontSize: "11px", color: "#9CA3AF", marginBottom: "4px", textTransform: "uppercase" }}>
-                    Location / Address
-                  </label>
-                  <input
-                    type="text"
-                    value={newUserData.address}
-                    onChange={(e) => setNewUserData({ ...newUserData, address: e.target.value })}
-                    placeholder="Colombo, Sri Lanka"
-                    style={{
-                      width: "100%",
-                      background: "#16191E",
-                      border: "1px solid #282E38",
-                      borderRadius: "8px",
-                      padding: "9px 12px",
-                      fontSize: "12.5px",
-                      color: "#FFFFFF",
-                      outline: "none",
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "16px" }}>
-                <button
-                  type="button"
-                  onClick={() => setIsAddModalOpen(false)}
-                  style={{
-                    background: "transparent",
-                    border: "1px solid #282E38",
-                    borderRadius: "8px",
-                    padding: "9px 16px",
-                    fontSize: "12.5px",
-                    color: "#9CA3AF",
-                    cursor: "pointer",
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={addLoading}
-                  style={{
-                    background: "#38BDF8",
-                    border: "none",
-                    borderRadius: "8px",
-                    padding: "9px 20px",
-                    fontSize: "12.5px",
-                    fontWeight: 600,
-                    color: "#0B0F14",
-                    cursor: "pointer",
-                  }}
-                >
-                  {addLoading ? "Saving User..." : "Create Account"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
