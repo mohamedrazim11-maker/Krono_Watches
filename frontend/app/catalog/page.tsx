@@ -354,36 +354,7 @@ export default function CatalogPage() {
 
       {/* Main Catalogue Area */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-10 space-y-8">
-        {/* Brand Bar */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-3 no-scrollbar border-b border-[#1a1a1a]">
-          <span className="text-[10px] font-mono uppercase font-bold text-[#C5A059] pr-2 flex-shrink-0 tracking-widest">
-            BRANDS:
-          </span>
-          {PRESTIGE_BRANDS.map((brand) => {
-            const count =
-              brand === "All"
-                ? products.length
-                : products.filter((p) => p.brand?.toLowerCase() === brand.toLowerCase()).length;
-            if (brand !== "All" && count === 0) return null;
-            const isSelected = selectedBrand === brand;
 
-            return (
-              <button
-                key={brand}
-                onClick={() => setSelectedBrand(brand)}
-                className={`px-3.5 py-1.5 text-xs font-mono tracking-wider uppercase whitespace-nowrap transition-all flex items-center gap-2 border flex-shrink-0 ${isSelected
-                    ? "bg-white text-black font-bold border-white"
-                    : "bg-[#111] text-white/70 border-[#222] hover:text-white hover:border-white/30"
-                  }`}
-              >
-                <span>{brand}</span>
-                <span className={`text-[9px] px-1 py-0.2 rounded font-mono ${isSelected ? "bg-black/20 text-black" : "text-white/40"}`}>
-                  {count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
 
         {/* Search & Discovery Bar (Autocomplete, Voice & Visual Search, Typo Tolerance) */}
         <div className="bg-[#0A0A0A] border border-[#1a1a1a] p-4 space-y-3">
@@ -596,6 +567,44 @@ export default function CatalogPage() {
                 />
                 <span>In Stock Only</span>
               </label>
+            </div>
+
+            {/* Watch Brands */}
+            <div className="pt-2 border-t border-[#1a1a1a] space-y-2">
+              <span className="block text-[10px] font-mono uppercase tracking-wider text-[#C5A059] font-bold">
+                Brands
+              </span>
+              <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                {PRESTIGE_BRANDS.map((brand) => {
+                  const count =
+                    brand === "All"
+                      ? products.length
+                      : products.filter((p) => p.brand?.toLowerCase() === brand.toLowerCase()).length;
+                  if (brand !== "All" && count === 0) return null;
+                  const isSelected = selectedBrand === brand;
+
+                  return (
+                    <button
+                      key={brand}
+                      onClick={() => setSelectedBrand(brand)}
+                      className={`w-full text-left px-2 py-1 text-xs font-mono rounded transition-colors flex items-center justify-between ${
+                        isSelected
+                          ? "bg-[#C5A059] text-black font-bold"
+                          : "text-white/60 hover:text-white hover:bg-white/5"
+                      }`}
+                    >
+                      <span>{brand}</span>
+                      <span
+                        className={`text-[9px] px-1.5 py-0.5 rounded font-mono ${
+                          isSelected ? "bg-black/20 text-black font-bold" : "text-white/40"
+                        }`}
+                      >
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Calibre Movement */}
