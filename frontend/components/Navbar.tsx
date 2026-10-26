@@ -378,7 +378,7 @@ export default function Navbar({
                   {searchEngineOutput.autocompleteSuggestions.length > 0 && (
                     <div className="p-3 bg-[#14161C] border-b border-white/10 space-y-2">
                       <div className="text-[10px] font-mono uppercase text-[#8E95A5] font-bold tracking-wider">
-                        Suggested Keywords (Autocomplete)
+                        Suggested Searches
                       </div>
                       <div className="flex flex-wrap gap-1.5">
                         {searchEngineOutput.autocompleteSuggestions.map((sug, idx) => (
@@ -395,7 +395,7 @@ export default function Navbar({
                     </div>
                   )}
 
-                  {/* 2. Typo Tolerance Banner ("Did you mean...") */}
+                  {/* 2. Typo Correction Banner ("Did you mean...") */}
                   {searchEngineOutput.hasTypoCorrection && searchEngineOutput.didYouMean && (
                     <div className="px-4 py-2 bg-amber-950/40 border-b border-amber-500/30 flex items-center justify-between text-xs font-mono text-amber-300">
                       <span>
@@ -409,13 +409,12 @@ export default function Navbar({
                         </button>
                         ?
                       </span>
-                      <span className="text-[10px] text-amber-400/80">Typo Tolerance</span>
                     </div>
                   )}
 
-                  {/* 3. Relevance Ranking Results List */}
+                  {/* 3. Results List */}
                   <div className="p-2.5 bg-[#101217] border-b border-white/5 flex items-center justify-between text-[10px] font-mono text-white/60 uppercase tracking-wider">
-                    <span>Ranked Results</span>
+                    <span>Matching Timepieces</span>
                     <span className="text-[#C5A059] font-bold">
                       {searchEngineOutput.totalMatches} matches
                     </span>

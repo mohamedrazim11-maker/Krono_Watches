@@ -401,7 +401,7 @@ export default function CatalogPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by calibre, brand, or model with typo tolerance (e.g. Omega, Rolex, Chrono)..."
+                placeholder="Search by calibre, brand, or model (e.g. Omega, Rolex, Chrono)..."
                 className="w-full bg-[#111] border border-[#262626] focus:border-[#C5A059] text-white text-xs font-mono pl-10 pr-24 py-2.5 rounded-none outline-none transition-colors"
               />
               <div className="absolute right-2 flex items-center gap-1">
@@ -465,7 +465,7 @@ export default function CatalogPage() {
           {/* Autocomplete Quick Keywords Strip */}
           <div className="flex flex-wrap items-center gap-2 pt-1">
             <span className="text-[10px] font-mono uppercase tracking-wider text-white/40">
-              {searchQuery.trim() ? "Autocomplete Matches:" : "Trending Searches:"}
+              {searchQuery.trim() ? "Suggestions:" : "Trending Searches:"}
             </span>
             {(searchQuery.trim() && searchEngineOutput.autocompleteSuggestions.length > 0
               ? searchEngineOutput.autocompleteSuggestions
@@ -481,7 +481,7 @@ export default function CatalogPage() {
             ))}
           </div>
 
-          {/* Typo Tolerance Suggestion Banner ("Did you mean: ...?") */}
+          {/* Typo Correction Suggestion Banner ("Did you mean: ...?") */}
           {searchEngineOutput.hasTypoCorrection && searchEngineOutput.didYouMean && (
             <div className="px-3.5 py-2 bg-amber-950/30 border border-amber-500/30 text-amber-300 text-xs font-mono flex items-center justify-between">
               <div>
@@ -495,7 +495,6 @@ export default function CatalogPage() {
                 </button>
                 <span>?</span>
               </div>
-              <span className="text-[10px] text-amber-400/70 uppercase tracking-widest">Typo Tolerant Search</span>
             </div>
           )}
         </div>
