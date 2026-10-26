@@ -321,13 +321,11 @@ export default function CatalogPage() {
       {/* Hero Header */}
       <div className="border-b border-[#1a1a1a] bg-[#000]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
-          <div className="max-w-3xl space-y-2">
+          <div className="max-w-3xl space-y-1.5">
+            <h1 className="sr-only">Official Watch Collection</h1>
             <span className="text-[11px] font-mono tracking-[0.25em] text-[#C5A059] uppercase font-bold">
               Official Watch Collection
             </span>
-            <h1 className="text-2xl sm:text-4xl font-extrabold uppercase tracking-tight text-white font-sans">
-              Watch Catalogue
-            </h1>
             <p className="text-xs text-white/60 font-mono">
               Explore {products.length} certified luxury timepieces.
             </p>
