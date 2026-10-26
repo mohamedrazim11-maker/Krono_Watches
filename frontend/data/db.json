@@ -2,7 +2,7 @@
   "products": [
     {
       "id": "prod-1",
-      "name": "Aurelia Master",
+      "name": "Master Classic",
       "brand": "Krono Swiss",
       "category": "Luxury",
       "gender": "Men",
@@ -30,7 +30,7 @@
     },
     {
       "id": "prod-2",
-      "name": "Speedmaster Chrono",
+      "name": "Speed Master",
       "brand": "Omega",
       "category": "Automatic",
       "gender": "Men",
@@ -58,7 +58,7 @@
     },
     {
       "id": "prod-3",
-      "name": "Vanta Sport",
+      "name": "Black Sport",
       "brand": "Rolex",
       "category": "Sport",
       "gender": "Men",
@@ -86,7 +86,7 @@
     },
     {
       "id": "prod-4",
-      "name": "Helio Smart",
+      "name": "Smart Tech",
       "brand": "TAG Heuer",
       "category": "Smart",
       "gender": "Unisex",
@@ -114,7 +114,7 @@
     },
     {
       "id": "prod-5",
-      "name": "Grand Horizon",
+      "name": "Royal Rose",
       "brand": "Patek Philippe",
       "category": "Luxury",
       "gender": "Men",
@@ -142,7 +142,7 @@
     },
     {
       "id": "prod-6",
-      "name": "Eclipse Diver",
+      "name": "Ocean Diver",
       "brand": "Omega",
       "category": "Sport",
       "gender": "Men",
@@ -170,7 +170,7 @@
     },
     {
       "id": "prod-rolex-submariner",
-      "name": "Submariner Date",
+      "name": "Deep Diver",
       "brand": "Rolex",
       "category": "Dive Watches",
       "gender": "Men",
@@ -226,7 +226,7 @@
     },
     {
       "id": "prod-rolex-daytona",
-      "name": "Cosmograph Daytona",
+      "name": "Daytona Sport",
       "brand": "Rolex",
       "category": "Chronograph",
       "gender": "Men",
@@ -282,7 +282,7 @@
     },
     {
       "id": "prod-omega-speedmaster-moonwatch",
-      "name": "Speedmaster Moonwatch",
+      "name": "Moon Watch",
       "brand": "Omega",
       "category": "Chronograph",
       "gender": "Men",
@@ -310,7 +310,7 @@
     },
     {
       "id": "prod-omega-seamaster-diver-300m",
-      "name": "Seamaster Diver",
+      "name": "Sea Diver",
       "brand": "Omega",
       "category": "Dive Watches",
       "gender": "Men",
@@ -338,7 +338,7 @@
     },
     {
       "id": "prod-cartier-santos-de-cartier",
-      "name": "Santos Cartier",
+      "name": "Santos Classic",
       "brand": "Cartier",
       "category": "Dress Watches",
       "gender": "Unisex",
@@ -366,7 +366,7 @@
     },
     {
       "id": "prod-tissot-prx-powermatic-80",
-      "name": "PRX Powermatic",
+      "name": "PRX Steel",
       "brand": "Tissot",
       "category": "Automatic",
       "gender": "Men",
@@ -394,7 +394,7 @@
     },
     {
       "id": "prod-casio-g-shock-ga-2100",
-      "name": "CasiOak Carbon",
+      "name": "Carbon Black",
       "brand": "Casio",
       "category": "Digital",
       "gender": "Unisex",
@@ -423,7 +423,7 @@
     },
     {
       "id": "prod-rolex-sky-dweller",
-      "name": "Sky Dweller",
+      "name": "Sky Master",
       "brand": "Rolex",
       "category": "Dress Watches",
       "gender": "Men",
@@ -454,7 +454,7 @@
     },
     {
       "id": "prod-omega-seamaster-aqua-terra",
-      "name": "Aqua Terra",
+      "name": "Aqua Sport",
       "brand": "Omega",
       "category": "Sports Watches",
       "gender": "Men",
@@ -485,7 +485,7 @@
     },
     {
       "id": "prod-omega-constellation",
-      "name": "Omega Constellation",
+      "name": "Silver Star",
       "brand": "Omega",
       "category": "Dress Watches",
       "gender": "Unisex",
@@ -516,7 +516,7 @@
     },
     {
       "id": "prod-omega-de-ville-prestige",
-      "name": "DeVille Prestige",
+      "name": "Gold Prestige",
       "brand": "Omega",
       "category": "Dress Watches",
       "gender": "Men",
@@ -547,7 +547,7 @@
     },
     {
       "id": "prod-casio-g-shock-mr-g",
-      "name": "MRG Titanium",
+      "name": "Tough Titan",
       "brand": "Casio",
       "category": "Sports Watches",
       "gender": "Men",
@@ -578,7 +578,7 @@
     },
     {
       "id": "prod-casio-g-shock-mt-g",
-      "name": "MTG Carbon",
+      "name": "Carbon Sport",
       "brand": "Casio",
       "category": "Sports Watches",
       "gender": "Men",
@@ -609,7 +609,7 @@
     },
     {
       "id": "prod-casio-g-shock-full-metal",
-      "name": "Full Metal",
+      "name": "Silver Steel",
       "brand": "Casio",
       "category": "Digital",
       "gender": "Unisex",
@@ -640,7 +640,7 @@
     },
     {
       "id": "prod-casio-g-shock-master-of-g",
-      "name": "Master Mudmaster",
+      "name": "Mud Master",
       "brand": "Casio",
       "category": "Digital",
       "gender": "Men",
@@ -671,7 +671,7 @@
     },
     {
       "id": "prod-casio-oceanus-ocw",
-      "name": "Oceanus Manta",
+      "name": "Ocean Wave",
       "brand": "Casio",
       "category": "Dress Watches",
       "gender": "Men",
@@ -702,7 +702,7 @@
     },
     {
       "id": "prod-grand-seiko-spring-drive-snowflake",
-      "name": "Heritage Snowflake",
+      "name": "Snow White",
       "brand": "Seiko",
       "category": "Automatic",
       "gender": "Men",
@@ -733,7 +733,7 @@
     },
     {
       "id": "prod-grand-seiko-heritage-shunbun",
-      "name": "Heritage Shunbun",
+      "name": "Spring Rose",
       "brand": "Seiko",
       "category": "Dress Watches",
       "gender": "Unisex",
@@ -764,7 +764,7 @@
     },
     {
       "id": "prod-grand-seiko-elegance-sbgy007",
-      "name": "Elegance Omiwatari",
+      "name": "Ice Blue",
       "brand": "Seiko",
       "category": "Dress Watches",
       "gender": "Men",
@@ -795,7 +795,7 @@
     },
     {
       "id": "prod-seiko-prospex-lx-diver",
-      "name": "Prospex Diver",
+      "name": "Deep Sea",
       "brand": "Seiko",
       "category": "Dive Watches",
       "gender": "Men",
@@ -826,7 +826,7 @@
     },
     {
       "id": "prod-seiko-presage-craftsmanship-enamel",
-      "name": "Presage Enamel",
+      "name": "Pure White",
       "brand": "Seiko",
       "category": "Automatic",
       "gender": "Men",
@@ -857,7 +857,7 @@
     },
     {
       "id": "prod-tissot-gentleman-powermatic-80",
-      "name": "Gentleman Powermatic",
+      "name": "City Blue",
       "brand": "Tissot",
       "category": "Dress Watches",
       "gender": "Men",
@@ -888,7 +888,7 @@
     },
     {
       "id": "prod-tissot-seastar-1000-powermatic",
-      "name": "Seastar Powermatic",
+      "name": "Sea Star",
       "brand": "Tissot",
       "category": "Dive Watches",
       "gender": "Men",
@@ -919,7 +919,7 @@
     },
     {
       "id": "prod-tissot-le-locle-powermatic-80",
-      "name": "LeLocle Powermatic",
+      "name": "Classic Silver",
       "brand": "Tissot",
       "category": "Dress Watches",
       "gender": "Men",
@@ -950,7 +950,7 @@
     },
     {
       "id": "prod-tissot-ballade",
-      "name": "Ballade Chronometer",
+      "name": "Rose Gold",
       "brand": "Tissot",
       "category": "Dress Watches",
       "gender": "Unisex",
@@ -996,7 +996,7 @@
       "badge": "New season collection 2026",
       "title": "Timekeeping that defines your legacy.",
       "subtitle": "Discover master-crafted wristwatches designed for visionaries, collectors, and connoisseurs who demand unwavering accuracy, luxury materials, and timeless design.",
-      "featured_product_name": "Aurelia Master Classic",
+      "featured_product_name": "Master Classic",
       "featured_product_price": "$1,240",
       "discount_text": "Save 30% Today",
       "promotion_period": "Season Launch Period: Active until Sep 30, 2026",

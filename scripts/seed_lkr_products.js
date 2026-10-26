@@ -65,7 +65,7 @@ function resolveLocalImage(id) {
 const SEED_PRODUCTS = [
   {
     id: "prod-1",
-    name: "Aurelia Master Classic 40mm",
+    name: "Master Classic",
     brand: "Krono Swiss",
     category: "Luxury",
     gender: "Men",
@@ -88,7 +88,7 @@ const SEED_PRODUCTS = [
   },
   {
     id: "prod-2",
-    name: "Nova Chronograph Titanium 42mm",
+    name: "Speed Master",
     brand: "Omega",
     category: "Automatic",
     gender: "Men",
@@ -111,7 +111,7 @@ const SEED_PRODUCTS = [
   },
   {
     id: "prod-3",
-    name: "Vanta Sport Stealth Edition 41mm",
+    name: "Black Sport",
     brand: "Rolex",
     category: "Sport",
     gender: "Men",
@@ -134,7 +134,7 @@ const SEED_PRODUCTS = [
   },
   {
     id: "prod-4",
-    name: "Helio Smart Sapphire AMOLED 44mm",
+    name: "Smart Tech",
     brand: "TAG Heuer",
     category: "Smart",
     gender: "Unisex",
@@ -157,7 +157,7 @@ const SEED_PRODUCTS = [
   },
   {
     id: "prod-5",
-    name: "Grand Horizon 18k Rose Gold 42mm",
+    name: "Royal Rose",
     brand: "Patek Philippe",
     category: "Luxury",
     gender: "Men",
@@ -180,7 +180,7 @@ const SEED_PRODUCTS = [
   },
   {
     id: "prod-6",
-    name: "Eclipse Diver 300M Ceramic 41mm",
+    name: "Ocean Diver",
     brand: "Omega",
     category: "Sport",
     gender: "Men",
@@ -203,7 +203,7 @@ const SEED_PRODUCTS = [
   },
   {
     id: "prod-rolex-submariner",
-    name: "Rolex Submariner Date 41mm Cerachrom",
+    name: "Deep Diver",
     brand: "Rolex",
     category: "Dive Watches",
     gender: "Men",
@@ -226,7 +226,7 @@ const SEED_PRODUCTS = [
   },
   {
     id: "prod-rolex-gmt-master-ii",
-    name: "Rolex GMT-Master II 'Pepsi' Jubilee 40mm",
+    name: "GMT Master",
     brand: "Rolex",
     category: "Sports Watches",
     gender: "Men",
@@ -249,7 +249,7 @@ const SEED_PRODUCTS = [
   },
   {
     id: "prod-rolex-daytona",
-    name: "Rolex Cosmograph Daytona 40mm Cerachrom",
+    name: "Daytona Sport",
     brand: "Rolex",
     category: "Chronograph",
     gender: "Men",
@@ -272,7 +272,7 @@ const SEED_PRODUCTS = [
   },
   {
     id: "prod-rolex-day-date-40",
-    name: "Rolex Day-Date 40 Olive Green Dial",
+    name: "Day Date",
     brand: "Rolex",
     category: "Dress Watches",
     gender: "Men",
@@ -295,7 +295,7 @@ const SEED_PRODUCTS = [
   },
   {
     id: "prod-omega-speedmaster-moonwatch",
-    name: "Omega Speedmaster Moonwatch Professional 42mm",
+    name: "Moon Watch",
     brand: "Omega",
     category: "Chronograph",
     gender: "Men",
@@ -318,7 +318,7 @@ const SEED_PRODUCTS = [
   },
   {
     id: "prod-omega-seamaster-diver-300m",
-    name: "Omega Seamaster Diver 300M Co-Axial 42mm",
+    name: "Sea Diver",
     brand: "Omega",
     category: "Dive Watches",
     gender: "Men",
@@ -341,7 +341,7 @@ const SEED_PRODUCTS = [
   },
   {
     id: "prod-cartier-santos-de-cartier",
-    name: "Cartier Santos de Cartier Medium Model",
+    name: "Santos Classic",
     brand: "Cartier",
     category: "Dress Watches",
     gender: "Unisex",
@@ -364,7 +364,7 @@ const SEED_PRODUCTS = [
   },
   {
     id: "prod-tissot-prx-powermatic-80",
-    name: "Tissot PRX Powermatic 80 Ice Blue 40mm",
+    name: "PRX Steel",
     brand: "Tissot",
     category: "Automatic",
     gender: "Men",
@@ -387,7 +387,7 @@ const SEED_PRODUCTS = [
   },
   {
     id: "prod-casio-g-shock-ga-2100",
-    name: "Casio G-Shock 'CasiOak' Carbon Core GA-2100",
+    name: "Carbon Black",
     brand: "Casio",
     category: "Digital",
     gender: "Unisex",
