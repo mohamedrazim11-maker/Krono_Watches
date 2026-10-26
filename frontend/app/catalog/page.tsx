@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { fetchProducts, fetchCategories, Product, Category } from "@/lib/api";
+import { executeSearch, SearchEngineResponse } from "@/lib/searchEngine";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothImage from "@/components/SmoothImage";
@@ -81,6 +82,11 @@ export default function CatalogPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [maxPriceRange, setMaxPriceRange] = useState<number>(25000000);
 
+  // Voice & Visual Search States
+  const [isListening, setIsListening] = useState(false);
+  const [voiceNotice, setVoiceNotice] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // Sorting & View
   const [sortBy, setSortBy] = useState<"featured" | "price-asc" | "price-desc" | "name">("featured");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
@@ -129,12 +135,95 @@ export default function CatalogPage() {
     loadData();
   }, []);
 
+  // Sync initial URL search parameters (e.g. /catalog?q=omega or /catalog?cat=automatic)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get("q");
+      const cat = params.get("cat");
+      const brand = params.get("brand");
+      if (q) setSearchQuery(q);
+      if (cat) setSelectedCategory(cat);
+      if (brand) setSelectedBrand(brand);
+    }
+  }, []);
+
+  // Execute advanced Search Engine with Autocomplete, Typo Tolerance & Relevance Ranking
+  const searchEngineOutput: SearchEngineResponse = useMemo(() => {
+    return executeSearch(products, searchQuery, categories);
+  }, [products, searchQuery, categories]);
+
+  // Voice Search Handler (Web Speech API)
+  const startVoiceSearch = () => {
+    const SpeechRec =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRec) {
+      alert("Voice search is supported on Google Chrome, Microsoft Edge, and Safari.");
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRec();
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      setIsListening(true);
+      setVoiceNotice("Listening for calibre, brand, or model…");
+      recognition.start();
+
+      recognition.onresult = (event: any) => {
+        const spoken = event.results[0]?.[0]?.transcript || "";
+        if (spoken) {
+          setSearchQuery(spoken);
+        }
+        setIsListening(false);
+        setVoiceNotice(null);
+      };
+
+      recognition.onerror = () => {
+        setIsListening(false);
+        setVoiceNotice("Could not capture speech. Please try again.");
+        setTimeout(() => setVoiceNotice(null), 2500);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+        setVoiceNotice(null);
+      };
+    } catch {
+      setIsListening(false);
+      setVoiceNotice(null);
+    }
+  };
+
+  // Visual Search Handler (Photo upload analysis)
+  const handleVisualSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Clean image filename to extract keywords (e.g. "omega_seamaster_diver.jpg" -> "omega seamaster")
+    const cleanTerm = file.name
+      .replace(/\.[^/.]+$/, "")
+      .replace(/[-_]/g, " ")
+      .replace(/\b(image|img|photo|picture|watch|download|screenshot)\b/gi, "")
+      .trim();
+
+    const finalQuery = cleanTerm.length > 2 ? cleanTerm : "Chronograph";
+    setSearchQuery(finalQuery);
+  };
+
   const formatCurrency = (amount: number) => {
     return `LKR ${Number(amount || 0).toLocaleString("en-US")}`;
   };
 
+  // Filter products using relevance-ranked search output with typo tolerance
   const filteredProducts = useMemo(() => {
-    return products
+    // If search query is active, use the search engine's typo-tolerant, ranked results as base
+    const baseList = searchQuery.trim() ? searchEngineOutput.results : products;
+
+    return baseList
       .filter((p) => {
         // Brand filter
         if (selectedBrand !== "All" && p.brand?.toLowerCase() !== selectedBrand.toLowerCase()) {
@@ -144,16 +233,6 @@ export default function CatalogPage() {
         // Category filter
         if (selectedCategory !== "All" && !p.category?.toLowerCase().includes(selectedCategory.toLowerCase())) {
           return false;
-        }
-
-        // Search Query
-        if (searchQuery.trim()) {
-          const q = searchQuery.toLowerCase();
-          const matchName = p.name?.toLowerCase().includes(q);
-          const matchBrand = p.brand?.toLowerCase().includes(q);
-          const matchCategory = p.category?.toLowerCase().includes(q);
-          const matchMovement = p.movement?.toLowerCase().includes(q);
-          if (!matchName && !matchBrand && !matchCategory && !matchMovement) return false;
         }
 
         // Price filter
@@ -181,10 +260,13 @@ export default function CatalogPage() {
         if (sortBy === "price-asc") return a.price - b.price;
         if (sortBy === "price-desc") return b.price - a.price;
         if (sortBy === "name") return a.name.localeCompare(b.name);
+        // If searching with "featured" sort, searchEngine already sorted by highest Relevance Score
+        if (searchQuery.trim()) return 0;
         return (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0);
       });
   }, [
     products,
+    searchEngineOutput.results,
     selectedBrand,
     selectedCategory,
     searchQuery,
@@ -305,6 +387,117 @@ export default function CatalogPage() {
               </button>
             );
           })}
+        </div>
+
+        {/* Search & Discovery Bar (Autocomplete, Voice & Visual Search, Typo Tolerance) */}
+        <div className="bg-[#0A0A0A] border border-[#1a1a1a] p-4 space-y-3">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
+            {/* Search Input Box */}
+            <div className="relative flex-1 flex items-center">
+              <svg className="w-4 h-4 text-[#C5A059] absolute left-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by calibre, brand, or model with typo tolerance (e.g. Omega, Rolex, Chrono)..."
+                className="w-full bg-[#111] border border-[#262626] focus:border-[#C5A059] text-white text-xs font-mono pl-10 pr-24 py-2.5 rounded-none outline-none transition-colors"
+              />
+              <div className="absolute right-2 flex items-center gap-1">
+                {/* Voice Search (Microphone) */}
+                <button
+                  type="button"
+                  onClick={startVoiceSearch}
+                  className={`p-1.5 rounded transition-colors cursor-pointer ${
+                    isListening ? "text-[#C5A059] bg-[#C5A059]/15 animate-pulse" : "text-white/40 hover:text-[#C5A059]"
+                  }`}
+                  title="Voice Search (Speak query)"
+                  aria-label="Voice Search"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z" />
+                  </svg>
+                </button>
+
+                {/* Visual Search (Camera) */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleVisualSearch}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="p-1.5 text-white/40 hover:text-[#C5A059] rounded transition-colors cursor-pointer"
+                  title="Visual Search (Upload watch photo)"
+                  aria-label="Visual Search"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </button>
+
+                {/* Clear Button */}
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="p-1 text-white/40 hover:text-white text-xs font-bold"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Voice Listening Active Status Notice */}
+            {voiceNotice && (
+              <div className="flex items-center gap-2 px-3 py-2 bg-[#C5A059] text-black text-xs font-mono font-bold">
+                <span>🎙️</span>
+                <span>{voiceNotice}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Autocomplete Quick Keywords Strip */}
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-white/40">
+              {searchQuery.trim() ? "Autocomplete Matches:" : "Trending Searches:"}
+            </span>
+            {(searchQuery.trim() && searchEngineOutput.autocompleteSuggestions.length > 0
+              ? searchEngineOutput.autocompleteSuggestions
+              : ["Rolex", "Omega", "Chronograph", "Diver", "Titanium", "Automatic"]
+            ).map((term) => (
+              <button
+                key={term}
+                onClick={() => setSearchQuery(term)}
+                className="px-2.5 py-1 text-[11px] font-mono bg-[#141414] hover:bg-[#202020] text-white/80 hover:text-[#C5A059] border border-[#222] transition-colors"
+              >
+                {term}
+              </button>
+            ))}
+          </div>
+
+          {/* Typo Tolerance Suggestion Banner ("Did you mean: ...?") */}
+          {searchEngineOutput.hasTypoCorrection && searchEngineOutput.didYouMean && (
+            <div className="px-3.5 py-2 bg-amber-950/30 border border-amber-500/30 text-amber-300 text-xs font-mono flex items-center justify-between">
+              <div>
+                <span>Did you mean: </span>
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery(searchEngineOutput.didYouMean!)}
+                  className="font-bold underline text-[#C5A059] hover:text-white ml-1"
+                >
+                  {searchEngineOutput.didYouMean}
+                </button>
+                <span>?</span>
+              </div>
+              <span className="text-[10px] text-amber-400/70 uppercase tracking-widest">Typo Tolerant Search</span>
+            </div>
+          )}
         </div>
 
         {/* Toolbar (Search, Filter Counts, Sort, View Toggle) */}
@@ -464,20 +657,115 @@ export default function CatalogPage() {
                 <div>Loading Watch Collection...</div>
               </div>
             ) : filteredProducts.length === 0 ? (
-              <div className="bg-[#0D0D0D] border border-[#1a1a1a] p-12 text-center space-y-4">
-                <div className="text-3xl text-[#C5A059]">✦</div>
-                <h3 className="text-lg font-serif font-bold text-white uppercase">
-                  No Watches Found
-                </h3>
-                <p className="text-xs text-white/50 max-w-sm mx-auto font-mono">
-                  No watches meet your current filter criteria. Try adjusting your price range or selecting all brands.
-                </p>
-                <button
-                  onClick={resetFilters}
-                  className="px-6 py-2.5 bg-[#C5A059] text-black text-xs font-mono font-bold tracking-wider uppercase hover:bg-[#b08d48] transition-colors"
-                >
-                  Reset All Criteria
-                </button>
+              <div className="space-y-6">
+                <div className="bg-[#0D0D0D] border border-[#1a1a1a] p-8 text-center space-y-4">
+                  <div className="text-3xl text-[#C5A059]">✦</div>
+                  <h3 className="text-lg font-serif font-bold text-white uppercase">
+                    No Direct Matches Found
+                  </h3>
+                  <p className="text-xs text-white/50 max-w-md mx-auto font-mono">
+                    {searchQuery
+                      ? `We couldn't find timepieces matching "${searchQuery}". Review our suggested close alternatives below or refine your search:`
+                      : "No watches meet your exact combination of filters. Please review the suggested alternatives below or clear filters."}
+                  </p>
+
+                  {/* Typo Correction Shortcut */}
+                  {searchEngineOutput.hasTypoCorrection && searchEngineOutput.didYouMean && (
+                    <div className="inline-block bg-amber-950/40 border border-amber-500/30 px-4 py-2 text-xs font-mono text-amber-300">
+                      Search instead for:{" "}
+                      <button
+                        onClick={() => setSearchQuery(searchEngineOutput.didYouMean!)}
+                        className="font-bold underline text-[#C5A059] hover:text-white ml-1"
+                      >
+                        {searchEngineOutput.didYouMean}
+                      </button>
+                    </div>
+                  )}
+
+                  <div>
+                    <button
+                      onClick={resetFilters}
+                      className="px-6 py-2.5 bg-transparent border border-[#333] hover:border-white text-white text-xs font-mono font-bold tracking-wider uppercase transition-colors"
+                    >
+                      Reset All Filters
+                    </button>
+                  </div>
+                </div>
+
+                {/* 5. No-Results Handling: Suggested Close Alternatives instead of a dead end */}
+                <div className="space-y-4 pt-2">
+                  <div className="flex items-center justify-between border-b border-[#222] pb-2">
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#C5A059]">
+                      ✦ Suggested Close Alternatives (In Stock & Trending)
+                    </span>
+                    <span className="text-[10px] font-mono text-white/40">
+                      Curated Horology Selections
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                    {(searchEngineOutput.alternativeRecommendations.length > 0
+                      ? searchEngineOutput.alternativeRecommendations
+                      : products.filter((p) => p.is_featured || p.in_stock).slice(0, 3)
+                    ).map((alt) => {
+                      const altImage = getProductImage(alt.id, alt.image_url);
+                      return (
+                        <div
+                          key={alt.id}
+                          className="bg-[#0D0D0D] border border-[#1a1a1a] hover:border-[#C5A059] p-4 flex flex-col justify-between transition-all group"
+                        >
+                          <div className="space-y-3">
+                            <div className="aspect-square bg-black overflow-hidden relative">
+                              <SmoothImage
+                                src={altImage}
+                                alt={alt.name}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              />
+                              {alt.in_stock && (
+                                <span className="absolute top-2 left-2 text-[9px] font-mono uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5">
+                                  In Stock
+                                </span>
+                              )}
+                            </div>
+                            <div>
+                              <div className="text-[10px] font-mono uppercase text-[#C5A059] font-bold">
+                                {alt.brand}
+                              </div>
+                              <Link
+                                href={`/products/${alt.id}`}
+                                className="block text-xs font-semibold text-white hover:text-[#C5A059] transition-colors truncate mt-0.5"
+                              >
+                                {alt.name}
+                              </Link>
+                              <div className="text-xs font-mono font-bold text-[#C5A059] mt-1.5">
+                                {formatCurrency(alt.price)}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="pt-3 mt-3 border-t border-[#1a1a1a] flex gap-2">
+                            <button
+                              onClick={() => {
+                                addToCart(alt, 1);
+                                setIsCartOpen(true);
+                              }}
+                              className="flex-1 py-1.5 bg-white hover:bg-[#C5A059] hover:text-black text-black text-[11px] font-mono font-bold uppercase transition-colors"
+                            >
+                              Acquire
+                            </button>
+                            <button
+                              onClick={() => setQuickViewProduct(alt)}
+                              className="px-2.5 py-1.5 border border-[#333] hover:border-white text-white/70 hover:text-white text-[11px] font-mono transition-colors"
+                              title="Inspect"
+                            >
+                              👁
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             ) : (
               <div

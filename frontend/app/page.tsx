@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { fetchProducts, fetchPosters, Product, Poster } from "@/lib/api";
+import { executeSearch, SearchEngineResponse } from "@/lib/searchEngine";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import CartDrawer from "@/components/CartDrawer";
@@ -38,8 +39,59 @@ function DarkNavbar({
   // Interactive Search State
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isListening, setIsListening] = useState(false);
+  const [voiceNotice, setVoiceNotice] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Voice Search Handler (Web Speech API)
+  const startVoiceSearch = () => {
+    const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRec) {
+      alert("Voice search is supported on Google Chrome, Microsoft Edge, and Safari.");
+      return;
+    }
+    try {
+      const recognition = new SpeechRec();
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+      setIsListening(true);
+      setVoiceNotice("Listening for timepiece, brand, or calibre…");
+      recognition.start();
+
+      recognition.onresult = (event: any) => {
+        const spoken = event.results[0]?.[0]?.transcript || "";
+        if (spoken) setSearchQuery(spoken);
+        setIsListening(false);
+        setVoiceNotice(null);
+      };
+      recognition.onerror = () => {
+        setIsListening(false);
+        setVoiceNotice("Speech recognition failed. Try again.");
+        setTimeout(() => setVoiceNotice(null), 2500);
+      };
+      recognition.onend = () => {
+        setIsListening(false);
+        setVoiceNotice(null);
+      };
+    } catch {
+      setIsListening(false);
+      setVoiceNotice(null);
+    }
+  };
+
+  // Visual Search Handler (Photo file analysis)
+  const handleVisualSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const cleanTerm = file.name
+      .replace(/\.[^/.]+$/, "")
+      .replace(/[-_]/g, " ")
+      .replace(/\b(image|img|photo|picture|watch|download|screenshot)\b/gi, "")
+      .trim();
+    setSearchQuery(cleanTerm.length > 2 ? cleanTerm : "Chronograph");
+  };
 
   // Interactive Account Popover State
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
@@ -57,6 +109,8 @@ function DarkNavbar({
       setTimeout(() => searchInputRef.current?.focus(), 80);
     } else {
       setSearchQuery("");
+      setVoiceNotice(null);
+      setIsListening(false);
     }
   }, [searchOpen]);
 
@@ -88,17 +142,9 @@ function DarkNavbar({
     };
   }, []);
 
-  // Filter products in real-time
-  const searchResults = useMemo(() => {
-    if (!searchQuery.trim()) return [];
-    const q = searchQuery.toLowerCase().trim();
-    return products.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.brand?.toLowerCase().includes(q) ||
-        p.category?.toLowerCase().includes(q) ||
-        p.movement?.toLowerCase().includes(q)
-    ).slice(0, 5);
+  // Filter products in real-time with Autocomplete, Typo Tolerance, and Relevance Ranking
+  const searchEngineOutput: SearchEngineResponse = useMemo(() => {
+    return executeSearch(products, searchQuery);
   }, [products, searchQuery]);
 
   const navLinks = [
@@ -472,7 +518,7 @@ function DarkNavbar({
                     border: "1px solid #333",
                     borderRadius: "8px",
                     color: "#fff",
-                    padding: "12px 48px 12px 42px",
+                    padding: "12px 105px 12px 42px",
                     fontSize: "13px",
                     outline: "none",
                     fontFamily: "inherit",
@@ -481,25 +527,111 @@ function DarkNavbar({
                   onFocus={(e) => (e.target.style.borderColor = "#C5A059")}
                   onBlur={(e) => (e.target.style.borderColor = "#333")}
                 />
-                {searchQuery ? (
+                
+                {/* Search Action Controls: Voice, Visual, Clear */}
+                <div style={{ position: "absolute", right: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
+                  {/* Voice Search (Microphone) */}
                   <button
-                    onClick={() => setSearchQuery("")}
+                    type="button"
+                    onClick={startVoiceSearch}
                     style={{
-                      position: "absolute", right: "14px", background: "none", border: "none", color: "#888",
-                      cursor: "pointer", fontSize: "14px", padding: "4px",
+                      background: isListening ? "rgba(197,160,89,0.2)" : "none",
+                      border: "none",
+                      color: isListening ? "#C5A059" : "#888",
+                      cursor: "pointer",
+                      padding: "4px",
+                      display: "flex",
+                      alignItems: "center",
+                      borderRadius: "4px",
                     }}
+                    title="Voice Search (Speak query)"
+                    aria-label="Voice Search"
                   >
-                    ✕
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3z" />
+                    </svg>
                   </button>
-                ) : (
-                  <span style={{ position: "absolute", right: "14px", fontSize: "10px", color: "#555", fontFamily: "monospace", border: "1px solid #333", borderRadius: "3px", padding: "2px 5px" }}>ESC</span>
-                )}
+
+                  {/* Visual Search (Photo Upload) */}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleVisualSearch}
+                    style={{ display: "none" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "#888",
+                      cursor: "pointer",
+                      padding: "4px",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                    title="Visual Search (Upload watch photo)"
+                    aria-label="Visual Search"
+                  >
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </button>
+
+                  {searchQuery ? (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      style={{
+                        background: "none", border: "none", color: "#888",
+                        cursor: "pointer", fontSize: "14px", padding: "4px",
+                      }}
+                    >
+                      ✕
+                    </button>
+                  ) : (
+                    <span style={{ fontSize: "10px", color: "#555", fontFamily: "monospace", border: "1px solid #333", borderRadius: "3px", padding: "2px 5px" }}>ESC</span>
+                  )}
+                </div>
               </div>
 
-              {/* Quick tags */}
+              {/* Voice Listening Notice */}
+              {voiceNotice && (
+                <div style={{ marginTop: "8px", padding: "6px 12px", background: "rgba(197,160,89,0.15)", border: "1px solid #C5A059", borderRadius: "4px", color: "#C5A059", fontSize: "11px", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span>🎙️</span>
+                  <span>{voiceNotice}</span>
+                </div>
+              )}
+
+              {/* Typo Tolerance Suggestion ("Did you mean: ...?") */}
+              {searchEngineOutput.hasTypoCorrection && searchEngineOutput.didYouMean && (
+                <div style={{ marginTop: "8px", padding: "6px 12px", background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.4)", borderRadius: "4px", color: "#fcd34d", fontSize: "11px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <span>Did you mean: </span>
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery(searchEngineOutput.didYouMean!)}
+                      style={{ background: "none", border: "none", color: "#C5A059", fontWeight: 700, textDecoration: "underline", cursor: "pointer", padding: 0 }}
+                    >
+                      {searchEngineOutput.didYouMean}
+                    </button>
+                    <span>?</span>
+                  </div>
+                  <span style={{ fontSize: "9px", textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.8 }}>Typo Tolerance</span>
+                </div>
+              )}
+
+              {/* Autocomplete / Quick tags */}
               <div style={{ display: "flex", gap: "8px", marginTop: "12px", alignItems: "center", flexWrap: "wrap" }}>
-                <span style={{ fontSize: "10px", color: "#666", textTransform: "uppercase", letterSpacing: "0.1em" }}>Quick:</span>
-                {["Chronograph", "Dive Watches", "Automatic", "Titanium", "Gold"].map((cat) => (
+                <span style={{ fontSize: "10px", color: "#666", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                  {searchQuery.trim() ? "Suggestions:" : "Quick:"}
+                </span>
+                {(searchQuery.trim() && searchEngineOutput.autocompleteSuggestions.length > 0
+                  ? searchEngineOutput.autocompleteSuggestions
+                  : ["Rolex", "Omega", "Chronograph", "Diver", "Titanium", "Automatic"]
+                ).map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setSearchQuery(cat)}
@@ -516,12 +648,12 @@ function DarkNavbar({
                 ))}
               </div>
 
-              {/* Instant Search Results */}
+              {/* Instant Ranked Search Results or No-Results Alternative Handling */}
               {searchQuery.trim() && (
                 <div style={{ marginTop: "16px", borderTop: "1px solid #222", paddingTop: "12px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "#888", marginBottom: "8px" }}>
-                    <span>Matching Watches ({searchResults.length})</span>
-                    {searchResults.length > 0 && (
+                    <span>Ranked Results ({searchEngineOutput.totalMatches})</span>
+                    {searchEngineOutput.results.length > 0 && (
                       <Link
                         href={`/catalog?q=${encodeURIComponent(searchQuery)}`}
                         onClick={() => setSearchOpen(false)}
@@ -532,9 +664,9 @@ function DarkNavbar({
                     )}
                   </div>
 
-                  {searchResults.length > 0 ? (
+                  {searchEngineOutput.results.length > 0 ? (
                     <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                      {searchResults.map((prod) => (
+                      {searchEngineOutput.results.slice(0, 5).map((prod, idx) => (
                         <Link
                           key={prod.id}
                           href={`/products/${prod.id}`}
@@ -562,7 +694,7 @@ function DarkNavbar({
                             />
                             <div>
                               <div style={{ fontSize: "10px", color: "#C5A059", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-                                {prod.brand || "Swiss Horology"} • {prod.category}
+                                {prod.brand || "Swiss Horology"} • {prod.category} {idx === 0 && "• Top Match"}
                               </div>
                               <div style={{ fontSize: "13px", fontWeight: 600, color: "#fff" }}>
                                 {prod.name}
@@ -583,8 +715,60 @@ function DarkNavbar({
                       ))}
                     </div>
                   ) : (
-                    <div style={{ textAlign: "center", padding: "20px 0", color: "#666", fontSize: "12px" }}>
-                      No watches found matching "{searchQuery}". Try searching for another brand or model.
+                    /* No-Results Handling: Suggest close alternatives instead of a dead end */
+                    <div style={{ padding: "12px 0", display: "flex", flexDirection: "column", gap: "12px" }}>
+                      <div style={{ textAlign: "center", color: "#aaa", fontSize: "12px", marginBottom: "4px" }}>
+                        No direct matches found for "{searchQuery}". Here are popular alternative timepieces:
+                      </div>
+
+                      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                        {(searchEngineOutput.alternativeRecommendations.length > 0
+                          ? searchEngineOutput.alternativeRecommendations
+                          : products.slice(0, 3)
+                        ).map((alt) => (
+                          <Link
+                            key={alt.id}
+                            href={`/products/${alt.id}`}
+                            onClick={() => setSearchOpen(false)}
+                            style={{
+                              display: "flex", alignItems: "center", justifyContent: "space-between",
+                              padding: "8px 12px", background: "#111", borderRadius: "6px",
+                              textDecoration: "none", transition: "background 150ms",
+                              border: "1px solid #222",
+                            }}
+                            onMouseEnter={(e) => {
+                              (e.currentTarget as HTMLElement).style.background = "#181818";
+                              (e.currentTarget as HTMLElement).style.borderColor = "#C5A059";
+                            }}
+                            onMouseLeave={(e) => {
+                              (e.currentTarget as HTMLElement).style.background = "#111";
+                              (e.currentTarget as HTMLElement).style.borderColor = "#222";
+                            }}
+                          >
+                            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                              <img
+                                src={getProductImage(alt.id, alt.image_url)}
+                                alt={alt.name}
+                                style={{ width: "36px", height: "36px", objectFit: "cover", borderRadius: "4px", background: "#000" }}
+                              />
+                              <div>
+                                <div style={{ fontSize: "9px", color: "#C5A059", textTransform: "uppercase" }}>
+                                  {alt.brand} • Alternative Recommendation
+                                </div>
+                                <div style={{ fontSize: "12px", fontWeight: 600, color: "#fff" }}>
+                                  {alt.name}
+                                </div>
+                              </div>
+                            </div>
+                            <div style={{ textAlign: "right" }}>
+                              <div style={{ fontSize: "11px", fontWeight: 700, color: "#C5A059", fontFamily: "monospace" }}>
+                                LKR {Number(alt.price || 0).toLocaleString("en-US")}
+                              </div>
+                              <span style={{ fontSize: "9px", color: "#4ade80" }}>Available</span>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
