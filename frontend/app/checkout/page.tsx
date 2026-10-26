@@ -28,12 +28,12 @@ function CheckoutContent() {
   } = useCart();
 
   const [deliveryMethod, setDeliveryMethod] = useState<"standard" | "express">("standard");
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "bank" | "cod">("card");
+  const [paymentMethod, setPaymentMethod] = useState<"payhere" | "bank" | "cod">("payhere");
   const [termsAgreed, setTermsAgreed] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [orderId, setOrderId] = useState("");
-  const [confirmedPaymentMethod, setConfirmedPaymentMethod] = useState("card");
+  const [confirmedPaymentMethod, setConfirmedPaymentMethod] = useState("payhere");
   const [errorMsg, setErrorMsg] = useState("");
   const [cancelMsg, setCancelMsg] = useState("");
   const [cancelDismissed, setCancelDismissed] = useState(false);
@@ -84,7 +84,7 @@ function CheckoutContent() {
           const order = await fetchOrderById(paramOrderId);
           if (!isCurrent) return;
           setOrderId(paramOrderId);
-          setConfirmedPaymentMethod("card");
+          setConfirmedPaymentMethod("payhere");
           if (order.payment_status === "paid") {
             setOrderConfirmed(true);
             clearCart();
@@ -154,6 +154,13 @@ function CheckoutContent() {
     e.preventDefault();
     setErrorMsg("");
 
+    // Enforce login requirement before order creation
+    if (!isAuthenticated) {
+      setErrorMsg("You must be signed in to place an order. Redirecting to login...");
+      router.push("/login?redirect=/checkout");
+      return;
+    }
+
     if (cart.length === 0) {
       setErrorMsg("Your cart is empty.");
       return;
@@ -197,7 +204,7 @@ function CheckoutContent() {
         city: formData.city,
         postal_code: formData.postalCode,
         country: "Sri Lanka",
-        payment_method: paymentMethod === "card" ? "payhere" : paymentMethod === "bank" ? "wire" : "cod",
+        payment_method: paymentMethod === "payhere" ? "payhere" : paymentMethod === "bank" ? "wire" : "cod",
         items: cart.map((i) => ({
           product_id: i.product.id,
           name: i.product.name,
@@ -216,8 +223,8 @@ function CheckoutContent() {
       setOrderId(generatedOrderId);
       setConfirmedPaymentMethod(paymentMethod);
 
-      if (paymentMethod === "card") {
-        // Continue to PayHere trigger
+      if (paymentMethod === "payhere") {
+        // Continue to PayHere sandbox trigger
         return;
       }
 
@@ -245,6 +252,56 @@ function CheckoutContent() {
             Loading checkout...
           </div>
         </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Strict Authentication Gate: User MUST be signed in to place order
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#07080A] text-white selection:bg-[#C5A059] selection:text-black font-sans">
+        <Navbar />
+        <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-16 flex items-center justify-center">
+          <div className="w-full max-w-lg bg-[#0E1015] border border-[#C5A059]/40 rounded-2xl p-8 sm:p-10 text-center space-y-6 shadow-2xl">
+            <div className="w-16 h-16 mx-auto rounded-full bg-[#14161C] border border-[#C5A059] flex items-center justify-center text-[#C5A059] text-3xl shadow-lg shadow-[#C5A059]/10">
+              🔒
+            </div>
+            <div className="space-y-2">
+              <span className="text-[11px] font-mono text-[#C5A059] uppercase tracking-widest font-bold block">
+                Account Sign In Required
+              </span>
+              <h1 className="text-2xl sm:text-3xl font-serif font-bold text-white">
+                Authentication Required
+              </h1>
+              <p className="text-xs sm:text-sm text-[#8E95A5] max-w-sm mx-auto leading-relaxed">
+                You must be logged in to place an order and proceed to PayHere sandbox payment gateway.
+              </p>
+            </div>
+
+            <div className="space-y-3 pt-2">
+              <Link
+                href="/login?redirect=/checkout"
+                className="block w-full py-4 bg-[#C5A059] hover:bg-[#d4af37] text-black font-bold text-xs uppercase tracking-[0.18em] rounded-xl transition-all shadow-lg hover:shadow-[#C5A059]/20"
+              >
+                Sign In to Place Order
+              </Link>
+              <Link
+                href="/register?redirect=/checkout"
+                className="block w-full py-3.5 border border-[#282E38] hover:border-[#C5A059] text-white hover:text-[#C5A059] font-mono text-xs uppercase tracking-wider rounded-xl transition-colors bg-[#14161C]"
+              >
+                Create New Account
+              </Link>
+            </div>
+
+            {cart.length > 0 && (
+              <div className="pt-4 border-t border-[#1E232B] flex items-center justify-between text-xs font-mono text-[#8E95A5]">
+                <span>{cart.reduce((s, i) => s + i.quantity, 0)} Items waiting in cart</span>
+                <span className="text-[#C5A059] font-bold">{formatPrice(finalTotal)}</span>
+              </div>
+            )}
+          </div>
+        </main>
         <Footer />
       </div>
     );
@@ -484,56 +541,64 @@ function CheckoutContent() {
                   PAYMENT
                 </h2>
                 <div className="space-y-3">
-                  {/* Card Option */}
-                  <label
-                    onClick={() => setPaymentMethod("card")}
-                    className={`block p-4 rounded-lg border cursor-pointer transition-all ${
-                      paymentMethod === "card"
-                        ? "bg-[#14161C] border-[#C5A059]"
+                  {/* PayHere Payment Gateway (Sandbox) */}
+                  <div
+                    onClick={() => setPaymentMethod("payhere")}
+                    className={`block p-4 sm:p-5 rounded-xl border cursor-pointer transition-all ${
+                      paymentMethod === "payhere"
+                        ? "bg-[#14161C] border-[#C5A059] shadow-lg shadow-[#C5A059]/10"
                         : "bg-[#101217] border-[#262A33] hover:border-[#383E4B]"
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <span className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] ${paymentMethod === "card" ? "border-[#C5A059] text-[#C5A059]" : "border-[#5E6573]"}`}>
-                          {paymentMethod === "card" && "●"}
+                        <span className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] ${paymentMethod === "payhere" ? "border-[#C5A059] text-[#C5A059]" : "border-[#5E6573]"}`}>
+                          {paymentMethod === "payhere" && "●"}
                         </span>
-                        <span className="text-xs font-mono text-white font-medium">Credit / debit card</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-mono text-white font-bold">PayHere Payment Gateway</span>
+                          <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                            Sandbox Mode
+                          </span>
+                        </div>
                       </div>
-                      <span className="text-[11px] font-mono text-[#8E95A5]">Visa, Mastercard, PayHere</span>
+                      <span className="text-[11px] font-mono text-[#8E95A5]">Visa • Mastercard • Amex</span>
                     </div>
 
-                    {paymentMethod === "card" && (
-                      <div className="mt-4 pt-4 border-t border-[#262A33] space-y-3" onClick={(e) => e.stopPropagation()}>
-                        <input
-                          type="text"
-                          name="cardNumber"
-                          placeholder="Card number"
-                          value={formData.cardNumber}
-                          onChange={handleInputChange}
-                          className="w-full bg-[#0E1015] border border-[#262A33] rounded-lg px-4 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-[#C5A059] placeholder:text-[#5E6573]"
-                        />
-                        <div className="grid grid-cols-2 gap-3">
-                          <input
-                            type="text"
-                            name="cardExpiry"
-                            placeholder="MM / YY"
-                            value={formData.cardExpiry}
-                            onChange={handleInputChange}
-                            className="w-full bg-[#0E1015] border border-[#262A33] rounded-lg px-4 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-[#C5A059] placeholder:text-[#5E6573]"
-                          />
-                          <input
-                            type="text"
-                            name="cardCvv"
-                            placeholder="CVV"
-                            value={formData.cardCvv}
-                            onChange={handleInputChange}
-                            className="w-full bg-[#0E1015] border border-[#262A33] rounded-lg px-4 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-[#C5A059] placeholder:text-[#5E6573]"
-                          />
+                    {paymentMethod === "payhere" && (
+                      <div className="mt-4 pt-4 border-t border-[#262A33] space-y-3">
+                        <p className="text-xs text-[#8E95A5] leading-relaxed">
+                          Transactions are safely processed via the official <strong className="text-white">PayHere Sandbox</strong> payment portal. Card numbers are entered securely on PayHere&apos;s hosted page.
+                        </p>
+
+                        {/* Sandbox Test Card Credentials Helper */}
+                        <div className="bg-[#0A0B0E] border border-amber-500/30 rounded-lg p-3 space-y-2 text-xs font-mono">
+                          <div className="flex items-center justify-between text-amber-300 font-bold text-[11px]">
+                            <span>💳 PayHere Sandbox Test Credentials</span>
+                            <span className="text-[10px] uppercase text-white/50">TEST MODE</span>
+                          </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] text-[#A0A6B5]">
+                            <div>
+                              <span className="text-white/40 block text-[9px] uppercase">Card Number</span>
+                              <span className="text-white font-mono font-bold select-all">4111 1111 1111 1111</span>
+                            </div>
+                            <div>
+                              <span className="text-white/40 block text-[9px] uppercase">Expiry</span>
+                              <span className="text-white font-mono select-all">12 / 28</span>
+                            </div>
+                            <div>
+                              <span className="text-white/40 block text-[9px] uppercase">CVV</span>
+                              <span className="text-white font-mono select-all">123</span>
+                            </div>
+                            <div>
+                              <span className="text-white/40 block text-[9px] uppercase">SMS OTP</span>
+                              <span className="text-white font-mono select-all">123456</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     )}
-                  </label>
+                  </div>
 
                   {/* Bank Transfer */}
                   <label
@@ -646,10 +711,10 @@ function CheckoutContent() {
 
                 {/* Action Button & Terms Checkbox matching Wireframe 2 */}
                 <div className="space-y-4 pt-2">
-                  {orderId && paymentMethod === "card" ? (
+                  {orderId && paymentMethod === "payhere" ? (
                     <div className="space-y-3">
                       <div className="p-3 bg-emerald-950/40 border border-emerald-500/30 rounded-lg text-[11px] text-emerald-300 font-mono text-center">
-                        Order registered: {orderId}. Click below to proceed to PayHere gateway.
+                        Order registered: <span className="font-bold text-white">{orderId}</span>. Click below to proceed to PayHere sandbox payment.
                       </div>
                       <PayHereForm
                         orderId={orderId}
@@ -671,7 +736,11 @@ function CheckoutContent() {
                       disabled={submitting || cart.length === 0}
                       className="w-full py-4 bg-[#C5A059] hover:bg-[#D4AF37] text-black font-bold text-xs uppercase tracking-[0.18em] transition-all rounded-lg shadow-lg hover:shadow-[#C5A059]/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     >
-                      {submitting ? "PROCESSING ORDER..." : "PLACE ORDER"}
+                      {submitting
+                        ? "PROCESSING ORDER..."
+                        : paymentMethod === "payhere"
+                        ? "PLACE ORDER & PAY WITH PAYHERE"
+                        : "PLACE ORDER"}
                     </button>
                   )}
 

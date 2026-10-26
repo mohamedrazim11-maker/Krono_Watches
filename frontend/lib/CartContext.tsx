@@ -187,25 +187,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const existingIndex = prevCart.findIndex((item) => item.product.id === product.id);
 
         if (existingIndex > -1) {
-          return prevCart.map((item, index) =>
-            index === existingIndex
-              ? {
-                  ...item,
-                  product,
-                  quantity:
-                    typeof product.stock_count === "number"
-                      ? Math.min(item.quantity + safeQuantity, product.stock_count)
-                      : item.quantity + safeQuantity,
-                }
-              : item
-          );
+          const updatedItem = {
+            ...prevCart[existingIndex],
+            product,
+            quantity:
+              typeof product.stock_count === "number"
+                ? Math.min(prevCart[existingIndex].quantity + safeQuantity, product.stock_count)
+                : prevCart[existingIndex].quantity + safeQuantity,
+          };
+          // Move the updated product to the top so it is immediately visible
+          return [updatedItem, ...prevCart.filter((_, index) => index !== existingIndex)];
         } else {
+          // Prepend new item to the top of the cart
           return [
-            ...prevCart,
             {
               product,
               quantity: safeQuantity,
             },
+            ...prevCart,
           ];
         }
       });
