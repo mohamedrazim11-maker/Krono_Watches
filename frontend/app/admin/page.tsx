@@ -184,61 +184,49 @@ export default function AdminDashboard() {
       }));
     }
 
-    // When no orders placed yet, display current vault pieces with actual stock count
+    // When no orders placed yet, display current inventory pieces with stock count
     return products.slice(0, 5).map((p) => ({
       name: p.name,
       brand: p.brand || "Swiss",
-      sales: `${p.stock_qty ?? (p as any).stock_count ?? 0} in vault`,
+      sales: `${p.stock_qty ?? (p as any).stock_count ?? 0} in stock`,
     }));
   }, [orders, products]);
 
   return (
-    <div className="space-y-7">
-      {/* Top Search & Admin Notification Bar matching Page 4 Wireframe */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#0E1015] border border-[#1E232B] rounded-xl px-5 py-3.5 shadow-sm">
-        <div className="flex-1 max-w-md">
+    <div className="space-y-6">
+      {/* Clean Dashboard Header & Search */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#0E1015] border border-[#1E232B] rounded-xl px-5 py-4 shadow-sm">
+        <div>
+          <h1 className="text-lg font-bold font-mono text-white tracking-wider uppercase">
+            Dashboard
+          </h1>
+          <p className="text-xs font-mono text-[#6E7585] mt-0.5">
+            Store performance and recent activity
+          </p>
+        </div>
+
+        <div className="w-full sm:w-72">
           <input
             type="text"
-            placeholder="Search orders, products…"
+            placeholder="Search orders or products…"
             value={searchFilter}
             onChange={(e) => setSearchFilter(e.target.value)}
             className="w-full bg-[#14161C] border border-[#262A33] rounded-lg px-3.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-[#C5A059] placeholder:text-[#5E6573]"
           />
         </div>
-
-        <div className="flex items-center gap-4 text-xs font-mono text-[#8E95A5]">
-          <Link
-            href="/admin/reports"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#C5A059]/10 border border-[#C5A059]/40 text-[#C5A059] rounded-lg hover:bg-[#C5A059] hover:text-black transition-all font-bold uppercase tracking-wider text-[11px]"
-          >
-            <span>📊</span>
-            <span>Sales Reports & PDF</span>
-          </Link>
-          <span className="text-[#383E4B]">|</span>
-          <span className="text-white font-semibold flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-            {authUser?.name || authUser?.email || "Administrator"}
-          </span>
-        </div>
       </div>
 
-      {/* 1. TOP 4 METRIC CARDS matching Page 4 Wireframe */}
+      {/* TOP 4 METRIC CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* TOTAL SALES */}
-        <Link href="/admin/reports" style={S.card} className="group hover:border-[#C5A059] transition-colors block">
-          <div className="flex items-center justify-between">
-            <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#C5A059] font-bold">
-              TOTAL SALES
-            </div>
-            <span className="text-[10px] font-mono text-white/40 group-hover:text-[#C5A059]">View Report →</span>
+        <div style={S.card}>
+          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#C5A059] font-bold">
+            TOTAL SALES
           </div>
           <div className="text-2xl font-bold font-mono text-white mt-2 truncate">
             {loading ? "..." : fmtCurrency(totalRevenue)}
           </div>
-          <div className="text-[11px] font-mono text-[#6E7585] mt-1">
-            Certified transactions
-          </div>
-        </Link>
+        </div>
 
         {/* NEW ORDERS */}
         <div style={S.card}>
@@ -247,9 +235,6 @@ export default function AdminDashboard() {
           </div>
           <div className="text-2xl font-bold font-mono text-white mt-2">
             {loading ? "..." : newOrdersCount}
-          </div>
-          <div className="text-[11px] font-mono text-[#6E7585] mt-1">
-            Awaiting fulfillment
           </div>
         </div>
 
@@ -261,9 +246,6 @@ export default function AdminDashboard() {
           <div className="text-2xl font-bold font-mono text-white mt-2">
             {loading ? "..." : customerCount}
           </div>
-          <div className="text-[11px] font-mono text-[#6E7585] mt-1">
-            Registered accounts
-          </div>
         </div>
 
         {/* LOW STOCK */}
@@ -273,9 +255,6 @@ export default function AdminDashboard() {
           </div>
           <div className="text-2xl font-bold font-mono text-[#F59E0B] mt-2">
             {loading ? "..." : lowStockCount}
-          </div>
-          <div className="text-[11px] font-mono text-[#6E7585] mt-1">
-            Under 5 units in vault
           </div>
         </div>
       </div>
@@ -391,7 +370,7 @@ export default function AdminDashboard() {
                 displayedOrders.map((ord) => {
                   const paymentDisplay = ord.payment_status || "Paid";
                   const statusDisplay = ord.order_status || ord.status || "Processing";
-                  const itemsSummary = ord.items?.map((i) => `${i.name || i.product_name || "Watch"} (x${i.quantity})`).join(", ") || "1 Timepiece";
+                  const itemsSummary = ord.items?.map((i) => `${i.name || i.product_name || "Watch"} (x${i.quantity})`).join(", ") || "1 item";
 
                   return (
                     <tr key={ord.id} className="hover:bg-[#14161C] transition-colors">
@@ -448,7 +427,6 @@ export default function AdminDashboard() {
                 <th style={S.th}>IMAGE</th>
                 <th style={S.th}>NAME</th>
                 <th style={S.th}>BRAND</th>
-                <th style={S.th}>MOVEMENT</th>
                 <th style={S.th}>PRICE</th>
                 <th style={S.th}>STOCK</th>
                 <th style={{ ...S.th, textAlign: "right" }}>ACTION</th>
@@ -457,13 +435,13 @@ export default function AdminDashboard() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={7} style={{ ...S.td, textAlign: "center", padding: "30px", color: "#6E7585" }}>
+                  <td colSpan={6} style={{ ...S.td, textAlign: "center", padding: "30px", color: "#6E7585" }}>
                     Loading products…
                   </td>
                 </tr>
               ) : displayedProducts.length === 0 ? (
                 <tr>
-                  <td colSpan={7} style={{ ...S.td, textAlign: "center", padding: "30px", color: "#6E7585" }}>
+                  <td colSpan={6} style={{ ...S.td, textAlign: "center", padding: "30px", color: "#6E7585" }}>
                     No products found.
                   </td>
                 </tr>
@@ -484,9 +462,6 @@ export default function AdminDashboard() {
                       </td>
                       <td style={S.td} className="text-[#8E95A5] font-mono text-[11px]">
                         {p.brand}
-                      </td>
-                      <td style={S.td} className="text-[#8E95A5] font-mono text-[11px]">
-                        {p.movement || "Automatic"}
                       </td>
                       <td style={S.td} className="font-mono font-bold text-white">
                         {fmtCurrency(p.price)}

@@ -40,11 +40,11 @@ const STATUS_OPTIONS = [
   { value: "Shipped", label: "Shipped", bg: "rgba(168, 85, 247, 0.12)", text: "#C084FC", border: "rgba(168, 85, 247, 0.25)" },
   { value: "Completed", label: "Completed", bg: "rgba(16, 185, 129, 0.15)", text: "#10B981", border: "rgba(16, 185, 129, 0.3)" },
   { value: "pending_payment", label: "Pending Payment", bg: "rgba(245, 158, 11, 0.12)", text: "#FBBF24", border: "rgba(245, 158, 11, 0.25)" },
-  { value: "processing", label: "Processing & Verifying", bg: "rgba(96, 165, 250, 0.12)", text: "#60A5FA", border: "rgba(96, 165, 250, 0.25)" },
-  { value: "authenticated", label: "Horology Authenticated", bg: "rgba(255, 255, 255, 0.08)", text: "#E4E4E7", border: "rgba(255, 255, 255, 0.2)" },
-  { value: "dispatched", label: "Insured Courier Dispatched", bg: "rgba(168, 85, 247, 0.12)", text: "#C084FC", border: "rgba(168, 85, 247, 0.25)" },
-  { value: "delivered", label: "Delivered to Client", bg: "rgba(16, 185, 129, 0.15)", text: "#10B981", border: "rgba(16, 185, 129, 0.3)" },
-  { value: "cancelled", label: "Cancelled / Void", bg: "rgba(239, 68, 68, 0.12)", text: "#F87171", border: "rgba(239, 68, 68, 0.25)" },
+  { value: "processing", label: "Processing", bg: "rgba(96, 165, 250, 0.12)", text: "#60A5FA", border: "rgba(96, 165, 250, 0.25)" },
+  { value: "authenticated", label: "Verified", bg: "rgba(255, 255, 255, 0.08)", text: "#E4E4E7", border: "rgba(255, 255, 255, 0.2)" },
+  { value: "dispatched", label: "Dispatched", bg: "rgba(168, 85, 247, 0.12)", text: "#C084FC", border: "rgba(168, 85, 247, 0.25)" },
+  { value: "delivered", label: "Delivered", bg: "rgba(16, 185, 129, 0.15)", text: "#10B981", border: "rgba(16, 185, 129, 0.3)" },
+  { value: "cancelled", label: "Cancelled", bg: "rgba(239, 68, 68, 0.12)", text: "#F87171", border: "rgba(239, 68, 68, 0.25)" },
 ];
 
 export default function AdminOrdersPage() {

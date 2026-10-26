@@ -218,9 +218,6 @@ export default function AdminUsersPage() {
           <div style={{ fontSize: "28px", fontWeight: 800, color: "#FFFFFF", marginTop: "8px" }}>
             {totalCount}
           </div>
-          <div style={{ fontSize: "11.5px", color: "#9CA3AF", marginTop: "4px" }}>
-            Registered storefront customer accounts
-          </div>
         </div>
 
         <div style={S.card}>
@@ -230,9 +227,6 @@ export default function AdminUsersPage() {
           <div style={{ fontSize: "28px", fontWeight: 800, color: "#34D399", marginTop: "8px" }}>
             {activeCount}
           </div>
-          <div style={{ fontSize: "11.5px", color: "#9CA3AF", marginTop: "4px" }}>
-            Healthy authentication status
-          </div>
         </div>
 
         <div style={S.card}>
@@ -241,9 +235,6 @@ export default function AdminUsersPage() {
           </div>
           <div style={{ fontSize: "28px", fontWeight: 800, color: "#F87171", marginTop: "8px" }}>
             {suspendedCount}
-          </div>
-          <div style={{ fontSize: "11.5px", color: "#9CA3AF", marginTop: "4px" }}>
-            Restricted customer accounts
           </div>
         </div>
       </div>
@@ -314,7 +305,6 @@ export default function AdminUsersPage() {
               <tr>
                 <th style={S.th}>Customer</th>
                 <th style={S.th}>Email Address</th>
-                <th style={S.th}>Role</th>
                 <th style={S.th}>Account Status</th>
                 <th style={S.th}>Contact &amp; Location</th>
                 <th style={S.th}>Joined</th>
@@ -324,13 +314,13 @@ export default function AdminUsersPage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={7} style={{ ...S.td, textAlign: "center", padding: "40px", color: "#6B7280" }}>
-                    Loading user accounts from vault database...
+                  <td colSpan={6} style={{ ...S.td, textAlign: "center", padding: "40px", color: "#6B7280" }}>
+                    Loading customers…
                   </td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} style={{ ...S.td, textAlign: "center", padding: "40px", color: "#6B7280" }}>
+                  <td colSpan={6} style={{ ...S.td, textAlign: "center", padding: "40px", color: "#6B7280" }}>
                     No customers found matching your search.
                   </td>
                 </tr>
@@ -354,26 +344,6 @@ export default function AdminUsersPage() {
                       <td style={S.td}>
                         <span style={{ fontFamily: "monospace", fontSize: "12px", color: "#D1D5DB" }}>
                           {u.email}
-                        </span>
-                      </td>
-
-                      {/* Role */}
-                      <td style={S.td}>
-                        <span
-                          style={{
-                            display: "inline-block",
-                            padding: "3px 9px",
-                            borderRadius: "6px",
-                            fontSize: "11px",
-                            fontWeight: 700,
-                            letterSpacing: "0.04em",
-                            textTransform: "uppercase",
-                            background: "rgba(251, 191, 36, 0.12)",
-                            color: "#FBBF24",
-                            border: "1px solid rgba(251, 191, 36, 0.25)",
-                          }}
-                        >
-                          {u.role || "customer"}
                         </span>
                       </td>
 

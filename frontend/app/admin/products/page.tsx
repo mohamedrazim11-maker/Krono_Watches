@@ -160,7 +160,7 @@ export default function AdminProductsPage() {
   };
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Delete or safely deactivate "${name}" from boutique vault?`)) return;
+    if (!confirm(`Delete or safely deactivate "${name}"?`)) return;
     setDeletingId(id);
     try {
       const res = await deleteProduct(id);
@@ -168,10 +168,10 @@ export default function AdminProductsPage() {
         setProducts((prev) =>
           prev.map((p) => (p.id === id ? { ...p, is_active: false, in_stock: false } : p))
         );
-        toast(`"${name}" deactivated safely (soft-deleted) to protect orders.`);
+        toast(`"${name}" deactivated safely.`);
       } else {
         setProducts((prev) => prev.filter((p) => p.id !== id));
-        toast(`"${name}" removed from vault.`);
+        toast(`"${name}" deleted successfully.`);
       }
     } catch (err: any) {
       alert(err.message || "Failed to delete");
@@ -239,7 +239,7 @@ export default function AdminProductsPage() {
       <div style={{ marginBottom: "24px", display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <div style={{ fontSize: "11px", fontWeight: 700, color: "#A1A1AA", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "5px" }}>
-            Vault Inventory
+            Products
           </div>
           <h1
             style={{
@@ -251,10 +251,10 @@ export default function AdminProductsPage() {
               letterSpacing: "0.02em",
             }}
           >
-            Vault Timepiece Catalogue
+            Product Catalogue
           </h1>
           <p style={{ fontSize: "12.5px", color: "#71717A", marginTop: "4px" }}>
-            {products.length} certified timepieces in vault · {filtered.length} currently filtered
+            {products.length} products total · {filtered.length} currently filtered
           </p>
         </div>
 
@@ -396,10 +396,10 @@ export default function AdminProductsPage() {
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "960px" }}>
             <thead>
               <tr>
-                <th style={S.th}>Timepiece</th>
+                <th style={S.th}>Product</th>
                 <th style={S.th}>Brand</th>
                 <th style={S.th}>Price (LKR)</th>
-                <th style={S.th}>Stock & Vault Controls</th>
+                <th style={S.th}>Stock</th>
                 <th style={S.th}>Status</th>
                 <th style={S.th}>Showcase</th>
                 <th style={{ ...S.th, textAlign: "right" }}>Actions</th>
@@ -410,14 +410,14 @@ export default function AdminProductsPage() {
                 [...Array(6)].map((_, i) => (
                   <tr key={i}>
                     <td colSpan={7} style={{ padding: "16px", textAlign: "center", color: "#71717A" }}>
-                      Loading timepieces...
+                      Loading products...
                     </td>
                   </tr>
                 ))
               ) : filtered.length === 0 ? (
                 <tr>
                   <td colSpan={7} style={{ padding: "40px 16px", textAlign: "center", color: "#71717A" }}>
-                    No timepieces matched your filters.
+                    No products matched your filters.
                   </td>
                 </tr>
               ) : (
