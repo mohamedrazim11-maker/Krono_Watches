@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import { PAYHERE_SANDBOX_URL } from "@/lib/payhere";
+import { PAYHERE_SANDBOX_URL, launchPayHerePayment } from "@/lib/payhere";
 
 export interface PayHereCustomer {
   fullName: string;
@@ -19,6 +19,8 @@ interface PayHereFormProps {
   itemsDescription: string;
   customer: PayHereCustomer;
   isSubmitting?: boolean;
+  onSuccess?: (orderId: string) => void;
+  autoLaunch?: boolean;
 }
 
 interface PayHerePaymentFields {
@@ -36,9 +38,12 @@ export default function PayHereForm({
   itemsDescription,
   customer,
   isSubmitting = false,
+  onSuccess,
+  autoLaunch = true,
 }: PayHereFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
-  const [showHashBreakdown, setShowHashBreakdown] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
+  const [hasAutoLaunched, setHasAutoLaunched] = useState(false);
   const [paymentResult, setPaymentResult] = useState<{
     requestKey: string;
     fields: PayHerePaymentFields;
@@ -57,11 +62,12 @@ export default function PayHereForm({
   const paymentAmount = paymentFields?.amount || formattedAmount;
   const paymentCurrency = paymentFields?.currency || currency;
 
-  // Split name into first and last name
+  // Split name dynamically from customer's actual input
   const nameParts = (customer.fullName || "").trim().split(/\s+/);
-  const firstName = nameParts[0] || "Client";
-  const lastName = nameParts.slice(1).join(" ") || "Customer";
+  const firstName = nameParts[0] || "Customer";
+  const lastName = nameParts.slice(1).join(" ") || "Client";
 
+  // Fetch security hash dynamically from backend
   useEffect(() => {
     if (!orderId || !Number.isFinite(amount) || amount <= 0) {
       return;
@@ -116,35 +122,68 @@ export default function PayHereForm({
     };
   }, [orderId, amount, formattedAmount, currency]);
 
-  useEffect(() => {
-    const formElement = formRef.current;
-    if (!formElement) return;
+  // Launch the official PayHere UI modal
+  const openOfficialPayHereModal = async () => {
+    if (!paymentFields) return;
+    setModalLoading(true);
 
-    const handleSubmitListener = () => {
+    try {
       const origin = (process.env.NEXT_PUBLIC_APP_URL || window.location.origin).replace(/\/+$/, "");
-      const returnUrl = formElement.querySelector<HTMLInputElement>('[name="return_url"]');
-      const cancelUrl = formElement.querySelector<HTMLInputElement>('[name="cancel_url"]');
-      const notifyUrl = formElement.querySelector<HTMLInputElement>('[name="notify_url"]');
-      if (returnUrl) {
-        returnUrl.value = `${origin}/checkout?payment=success&order_id=${encodeURIComponent(orderId)}`;
-      }
-      if (cancelUrl) {
-        cancelUrl.value = `${origin}/checkout?payment=cancelled&order_id=${encodeURIComponent(orderId)}`;
-      }
-      if (notifyUrl) {
-        notifyUrl.value = `${origin}/api/orders/payhere-notify`;
-      }
-    };
+      await launchPayHerePayment(
+        {
+          sandbox: true,
+          merchant_id: paymentFields.merchant_id,
+          return_url: `${origin}/checkout?payment=success&order_id=${encodeURIComponent(orderId)}`,
+          cancel_url: `${origin}/checkout?payment=cancelled&order_id=${encodeURIComponent(orderId)}`,
+          notify_url: `${origin}/api/orders/payhere-notify`,
+          order_id: paymentFields.order_id,
+          items: itemsDescription || "Krono Order",
+          amount: paymentFields.amount,
+          currency: paymentFields.currency,
+          hash: paymentFields.hash,
+          first_name: firstName,
+          last_name: lastName,
+          email: customer.email,
+          phone: customer.phone,
+          address: customer.address,
+          city: customer.city,
+          country: customer.country || "Sri Lanka",
+        },
+        {
+          onCompleted: (completedId) => {
+            if (onSuccess) {
+              onSuccess(completedId);
+            } else {
+              window.location.href = `/checkout?payment=success&order_id=${encodeURIComponent(orderId)}`;
+            }
+          },
+          onDismissed: () => {
+            console.log("PayHere payment modal dismissed by user");
+          },
+          onError: (err) => {
+            alert(`PayHere Notice: ${err}`);
+          },
+        }
+      );
+    } catch (e: any) {
+      console.error("Failed to launch PayHere in-page modal, falling back to form submit:", e);
+      formRef.current?.submit();
+    } finally {
+      setModalLoading(false);
+    }
+  };
 
-    formElement.addEventListener("submit", handleSubmitListener);
-    return () => {
-      formElement.removeEventListener("submit", handleSubmitListener);
-    };
-  }, [orderId]);
+  // Automatically launch original PayHere UI when hash is ready
+  useEffect(() => {
+    if (autoLaunch && paymentFields && !hasAutoLaunched) {
+      setHasAutoLaunched(true);
+      openOfficialPayHereModal();
+    }
+  }, [paymentFields, autoLaunch, hasAutoLaunched]);
 
   return (
     <div className="bg-[#0A0A0A] border border-[#C5A059]/40 rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
-      {/* Top Banner */}
+      {/* Top Gateway Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-5">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#003B95] to-[#001D4A] border border-blue-400/40 flex items-center justify-center font-bold text-white text-base shadow-lg">
@@ -160,14 +199,14 @@ export default function PayHereForm({
               </span>
             </div>
             <p className="text-xs text-white/50 font-mono">
-              Central Bank of Sri Lanka (CBSL) Compliant Payment Processing
+              Central Bank of Sri Lanka (CBSL) Approved Payment Service
             </p>
           </div>
         </div>
 
-        {/* Payment logos / accepted types */}
+        {/* Accepted Payment Cards */}
         <div className="flex items-center gap-1.5 flex-wrap">
-          {["VISA", "Mastercard", "AMEX", "eZ Cash", "Genie", "FriMi", "Online Banking"].map((badge) => (
+          {["VISA", "Mastercard", "AMEX", "eZ Cash", "Genie", "FriMi"].map((badge) => (
             <span
               key={badge}
               className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] font-mono text-white/70"
@@ -178,124 +217,124 @@ export default function PayHereForm({
         </div>
       </div>
 
-      {/* Summary Box */}
+      {/* Dynamic Order & Customer Details (No Hardcoding) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-black/60 border border-white/10 rounded-xl p-4 text-xs font-mono">
         <div>
-          <span className="text-white/40 block text-[10px] uppercase">Order Reference (order_id)</span>
+          <span className="text-white/40 block text-[10px] uppercase">Order Reference</span>
           <span className="text-[#C5A059] font-bold text-sm">{orderId}</span>
         </div>
         <div>
-          <span className="text-white/40 block text-[10px] uppercase">Total Payable (amount)</span>
+          <span className="text-white/40 block text-[10px] uppercase">Payable Total</span>
           <span className="text-emerald-400 font-bold text-sm">
             {currency} {formattedAmount}
           </span>
         </div>
         <div>
-          <span className="text-white/40 block text-[10px] uppercase">Customer Details</span>
+          <span className="text-white/40 block text-[10px] uppercase">Customer / Client</span>
           <span className="text-white/90 truncate block">{customer.fullName} ({customer.email})</span>
         </div>
         <div>
           <span className="text-white/40 block text-[10px] uppercase">Security Hash Status</span>
           <span className="text-blue-400 flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
-            {paymentFields ? "Server hash ready" : hashError ? "Hash unavailable" : "Preparing server hash"}
+            {paymentFields ? "Server hash verified" : hashError ? "Hash error" : "Generating security hash..."}
           </span>
         </div>
       </div>
 
-      {/* Course Requirements / Interactive Hash Inspector */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between text-xs">
-          <button
-            type="button"
-            onClick={() => setShowHashBreakdown(!showHashBreakdown)}
-            className="text-[#C5A059] hover:underline flex items-center gap-1 font-mono"
-          >
-            <span>{showHashBreakdown ? "▲ Hide" : "▼ Inspect"} PayHere Hash Formula Breakdown</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#C5A059]/10 border border-[#C5A059]/30">
-              E-Business Systems
-            </span>
-          </button>
-
+      {/* Manual Sandbox Card Entry Guide for PayHere UI */}
+      <div className="bg-[#12141A] border border-amber-500/30 rounded-xl p-4 space-y-2.5 text-xs font-mono">
+        <div className="flex items-center justify-between text-amber-300 font-bold text-[11px]">
+          <span>💳 Enter Card Details Manually in PayHere Sandbox</span>
+          <span className="text-[10px] uppercase px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-200">
+            TEST CREDENTIALS
+          </span>
         </div>
-
-        {showHashBreakdown && (
-          <div className="p-4 bg-black/90 border border-blue-500/30 rounded-xl space-y-2.5 text-[11px] font-mono text-white/80 animate-fadeIn">
-            <div className="text-blue-400 font-bold uppercase tracking-wider text-[10px]">
-              PayHere MD5 hash formula (calculated on the server)
-            </div>
-            <div className="space-y-1">
-              <span className="text-white/40 block text-[10px]">1. Hashed merchant secret:</span>
-              <div className="p-2 bg-black rounded border border-white/10 text-white/90 break-all">
-                UPPERCASE(MD5(merchant_secret)) — retained on the server
-              </div>
-            </div>
-            <div className="space-y-1">
-              <span className="text-white/40 block text-[10px]">2. Hash input:</span>
-              <div className="p-2 bg-black rounded border border-white/10 text-white/90 break-all">
-                {paymentFields
-                  ? `${paymentFields.merchant_id} + ${paymentFields.order_id} + ${paymentFields.amount} + ${paymentFields.currency} + UPPERCASE(MD5(merchant_secret))`
-                  : "Waiting for the server to prepare this order's payment hash."}
-              </div>
-            </div>
-            <div className="space-y-1">
-              <span className="text-white/40 block text-[10px]">3. Generated Mandatory Security Hash:</span>
-              <div className="p-2 bg-black rounded border border-emerald-500/40 text-emerald-400 font-bold break-all">
-                {paymentFields?.hash || "Not available"}
-              </div>
-            </div>
+        <p className="text-[11px] text-white/60 leading-relaxed font-sans">
+          In the PayHere checkout popup, click <strong className="text-white">VISA</strong> or <strong className="text-white">Mastercard</strong> and manually enter these test card numbers:
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] bg-black/60 p-2.5 rounded-lg border border-white/5">
+          <div>
+            <span className="text-white/40 block text-[9px] uppercase">Card Number</span>
+            <span className="text-white font-mono font-bold select-all">4111 1111 1111 1111</span>
           </div>
-        )}
-
-        {hashError && (
-          <p role="alert" className="text-xs text-red-300 font-mono">
-            {hashError}
-          </p>
-        )}
+          <div>
+            <span className="text-white/40 block text-[9px] uppercase">Expiry</span>
+            <span className="text-white font-mono select-all">12 / 28</span>
+          </div>
+          <div>
+            <span className="text-white/40 block text-[9px] uppercase">CVV</span>
+            <span className="text-white font-mono select-all">123</span>
+          </div>
+          <div>
+            <span className="text-white/40 block text-[9px] uppercase">SMS OTP</span>
+            <span className="text-white font-mono select-all">123456</span>
+          </div>
+        </div>
       </div>
 
-      {/* The Actual HTML Form Matching Slide Specification */}
-      <form
-        id="payhere_form"
-        ref={formRef}
-        method="POST"
-        action={PAYHERE_SANDBOX_URL}
-        className="space-y-4"
-      >
-        {/* Hidden inputs matching exact IDs and Names from course slide */}
-        <input type="hidden" name="merchant_id" id="merchant_id" value={paymentFields?.merchant_id || ""} />
-        <input type="hidden" name="return_url" defaultValue="" />
-        <input type="hidden" name="cancel_url" defaultValue="" />
-        <input type="hidden" name="notify_url" defaultValue="" />
-        <input type="hidden" name="first_name" value={firstName} />
-        <input type="hidden" name="last_name" value={lastName} />
-        <input type="hidden" name="email" value={customer.email || "client@krono.luxury"} />
-        <input type="hidden" name="phone" value={customer.phone || "+94 77 123 4567"} />
-        <input type="hidden" name="address" value={customer.address || "Marina Boulevard"} />
-        <input type="hidden" name="city" value={customer.city || "Colombo"} />
-        <input type="hidden" name="country" value={customer.country || "Sri Lanka"} />
-        <input type="hidden" name="order_id" id="order_id" value={paymentFields?.order_id || ""} />
-        <input type="hidden" name="items" value={itemsDescription || "Krono Luxury Watch Order"} />
-        <input type="hidden" name="currency" id="currency" value={paymentCurrency} />
-        <input type="hidden" name="amount" id="amount" value={paymentAmount} />
-        <input type="hidden" name="hash" id="hash" value={paymentFields?.hash || ""} />
+      {hashError && (
+        <div className="p-3 bg-red-950/40 border border-red-500/40 rounded-lg text-xs text-red-300 font-mono">
+          {hashError}
+        </div>
+      )}
 
-        {/* Submission Action Buttons */}
-        <div className="space-y-3 pt-2">
+      {/* Primary Action Button: Opens the Original PayHere UI Modal */}
+      <div className="space-y-3 pt-1">
+        <button
+          type="button"
+          onClick={openOfficialPayHereModal}
+          disabled={isSubmitting || modalLoading || !paymentFields}
+          className="w-full py-4 bg-gradient-to-r from-[#C5A059] to-[#d4af37] hover:from-[#b08d48] hover:to-[#c5a059] text-black font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-xl hover:shadow-[#C5A059]/30 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+        >
+          {modalLoading ? (
+            <span>Opening PayHere Gateway...</span>
+          ) : (
+            <>
+              <span>Pay with PayHere (Original Gateway) →</span>
+              <span className="font-mono text-xs">({paymentCurrency} {paymentAmount})</span>
+            </>
+          )}
+        </button>
+
+        {/* Fallback direct submission form if popups are blocked */}
+        <form
+          id="payhere_form"
+          ref={formRef}
+          method="POST"
+          action={PAYHERE_SANDBOX_URL}
+          className="text-center"
+        >
+          <input type="hidden" name="merchant_id" value={paymentFields?.merchant_id || ""} />
+          <input type="hidden" name="return_url" value={typeof window !== "undefined" ? `${window.location.origin}/checkout?payment=success&order_id=${encodeURIComponent(orderId)}` : ""} />
+          <input type="hidden" name="cancel_url" value={typeof window !== "undefined" ? `${window.location.origin}/checkout?payment=cancelled&order_id=${encodeURIComponent(orderId)}` : ""} />
+          <input type="hidden" name="notify_url" value={typeof window !== "undefined" ? `${window.location.origin}/api/orders/payhere-notify` : ""} />
+          <input type="hidden" name="first_name" value={firstName} />
+          <input type="hidden" name="last_name" value={lastName} />
+          <input type="hidden" name="email" value={customer.email} />
+          <input type="hidden" name="phone" value={customer.phone} />
+          <input type="hidden" name="address" value={customer.address} />
+          <input type="hidden" name="city" value={customer.city} />
+          <input type="hidden" name="country" value={customer.country || "Sri Lanka"} />
+          <input type="hidden" name="order_id" value={paymentFields?.order_id || ""} />
+          <input type="hidden" name="items" value={itemsDescription || "Krono Order"} />
+          <input type="hidden" name="currency" value={paymentCurrency} />
+          <input type="hidden" name="amount" value={paymentAmount} />
+          <input type="hidden" name="hash" value={paymentFields?.hash || ""} />
+
           <button
             type="submit"
-            disabled={isSubmitting || !paymentFields || amount <= 0}
-            className="w-full py-4 bg-gradient-to-r from-[#C5A059] to-[#d4af37] hover:from-[#b08d48] hover:to-[#c5a059] text-black font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-xl hover:shadow-[#C5A059]/30 flex items-center justify-center gap-2 disabled:opacity-50"
+            disabled={!paymentFields}
+            className="text-[11px] font-mono text-[#8E95A5] hover:text-[#C5A059] underline mt-1 transition-colors cursor-pointer"
           >
-            <span>Proceed to PayHere Secure Payment →</span>
-            <span className="font-mono text-xs">({paymentCurrency} {paymentAmount})</span>
+            Popup not opening? Click here to continue on full page PayHere
           </button>
-        </div>
-      </form>
+        </form>
+      </div>
 
       {/* Footer Info */}
       <div className="text-[10px] font-mono text-white/40 text-center leading-relaxed">
-        Encrypted TLS 1.3 / 256-bit AES cryptographic transaction channel. No card numbers or credentials stored on uncertified nodes.
+        Encrypted TLS 1.3 cryptographic transaction. Card details are entered directly on PayHere&apos;s secured payment system.
       </div>
     </div>
   );

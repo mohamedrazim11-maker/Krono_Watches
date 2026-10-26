@@ -550,6 +550,11 @@ export default function CheckoutModal({
                   country: formData.country,
                 }}
                 isSubmitting={submitting}
+                onSuccess={() => {
+                  setOrderConfirmed(true);
+                  if (onOrderSuccess) onOrderSuccess();
+                  if (onClearCart) onClearCart();
+                }}
               />
             </div>
           )}

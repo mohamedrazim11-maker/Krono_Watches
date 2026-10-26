@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 import SmoothImage from "@/components/SmoothImage";
 import PayHereForm from "@/components/PayHereForm";
 import { getProductImage } from "@/lib/productImages";
+import { launchPayHerePayment } from "@/lib/payhere";
 
 function CheckoutContent() {
   const router = useRouter();
@@ -224,7 +225,57 @@ function CheckoutContent() {
       setConfirmedPaymentMethod(paymentMethod);
 
       if (paymentMethod === "payhere") {
-        // Continue to PayHere sandbox trigger
+        // Fetch server hash dynamically from /api/orders/payhere-hash
+        const hashRes = await fetch("/api/orders/payhere-hash", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: generatedOrderId }),
+        });
+        const hashData = await hashRes.json();
+        if (!hashRes.ok || !hashData.success || !hashData.data) {
+          throw new Error(hashData.message || "Failed to generate PayHere security hash.");
+        }
+
+        const origin = window.location.origin.replace(/\/+$/, "");
+        const itemsDescription = cart.map((i) => `${i.product.name} (x${i.quantity})`).join(", ") || "Krono Timepiece Order";
+
+        // Launch the ORIGINAL PayHere UI modal immediately
+        await launchPayHerePayment(
+          {
+            sandbox: true,
+            merchant_id: hashData.data.merchant_id,
+            return_url: `${origin}/checkout?payment=success&order_id=${encodeURIComponent(generatedOrderId)}`,
+            cancel_url: `${origin}/checkout?payment=cancelled&order_id=${encodeURIComponent(generatedOrderId)}`,
+            notify_url: `${origin}/api/orders/payhere-notify`,
+            order_id: generatedOrderId,
+            items: itemsDescription,
+            amount: finalTotal,
+            currency: "LKR",
+            hash: hashData.data.hash,
+            first_name: formData.firstName.trim() || "Customer",
+            last_name: formData.lastName.trim() || "Client",
+            email: formData.email.trim(),
+            phone: formData.phone.trim(),
+            address: formData.address.trim(),
+            city: formData.city.trim(),
+            country: "Sri Lanka",
+            delivery_address: fullAddress,
+            delivery_city: formData.city.trim(),
+            delivery_country: "Sri Lanka",
+          },
+          {
+            onCompleted: () => {
+              setOrderConfirmed(true);
+              clearCart();
+            },
+            onDismissed: () => {
+              setErrorMsg("PayHere payment modal was closed. You can click 'Pay with PayHere' below to re-open.");
+            },
+            onError: (error) => {
+              setErrorMsg(`PayHere Error: ${error}`);
+            },
+          }
+        );
         return;
       }
 
