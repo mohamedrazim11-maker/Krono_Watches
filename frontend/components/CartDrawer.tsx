@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Product } from "@/lib/api";
@@ -38,6 +38,7 @@ export default function CartDrawer({
 }: CartDrawerProps) {
   const cartContext = useCart();
   const router = useRouter();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Lock background webpage scrolling when cart drawer is active
   useEffect(() => {
@@ -65,6 +66,13 @@ export default function CartDrawer({
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen, onClose]);
+
+  // Ensure scroll position is at top whenever cart drawer opens or items change
+  useEffect(() => {
+    if (isOpen && scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+  }, [isOpen, propCart?.length, cartContext.cart.length]);
 
   const cart = propCart ?? cartContext.cart;
   const onUpdateQuantity = propUpdateQuantity ?? cartContext.updateQuantity;
@@ -114,7 +122,7 @@ export default function CartDrawer({
   const kokoInstallment = grandTotal > 0 ? grandTotal / 3 : 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end font-sans overscroll-none">
+    <div className="fixed inset-0 z-[10000] flex justify-end font-sans overscroll-none">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity overscroll-none"
@@ -122,25 +130,41 @@ export default function CartDrawer({
         onTouchMove={(e) => e.preventDefault()}
       />
 
-      {/* Slide-over Cart Drawer matching the sample structure */}
+      {/* Slide-over Cart Drawer */}
       <div className="relative z-10 w-full max-w-sm sm:max-w-md bg-[#F4F5F7] text-neutral-900 flex flex-col h-full shadow-2xl animate-pageEnter overscroll-contain">
         
-        {/* Header */}
-        <div className="p-6 pb-4 flex items-center justify-between">
-          <h2 className="text-2xl font-bold tracking-tight text-neutral-900">
-            Cart
-          </h2>
-          <button
-            onClick={onClose}
-            className="p-1.5 text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer text-lg leading-none"
-            aria-label="Close cart"
-          >
-            ✕
-          </button>
+        {/* Header (fixed at top, not overlapping navbar) */}
+        <div className="flex-shrink-0 p-6 pb-4 flex items-center justify-between border-b border-neutral-200/80 bg-white">
+          <div className="flex items-center gap-2.5">
+            <h2 className="text-2xl font-bold tracking-tight text-neutral-900">
+              Cart
+            </h2>
+            <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-neutral-200 text-neutral-800">
+              {cart.reduce((sum, item) => sum + item.quantity, 0)}
+            </span>
+          </div>
+          <div className="flex items-center gap-4">
+            {cart.length > 0 && (
+              <Link
+                href="/checkout"
+                onClick={handleProceed}
+                className="text-xs font-bold text-[#C5A059] hover:text-black uppercase tracking-wider flex items-center gap-1 transition-colors underline decoration-[#C5A059]"
+              >
+                Checkout →
+              </Link>
+            )}
+            <button
+              onClick={onClose}
+              className="p-1.5 text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer text-lg leading-none"
+              aria-label="Close cart"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         {/* Scrollable Cart Items */}
-        <div className="flex-1 overflow-y-auto px-6 py-2 space-y-3 min-h-0 overscroll-contain">
+        <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-6 py-3 space-y-3 min-h-0 overscroll-contain">
           {!cartContext.isCartReady ? (
             <div className="h-full flex items-center justify-center text-xs text-neutral-500">
               Loading cart…
@@ -247,12 +271,9 @@ export default function CartDrawer({
           )}
         </div>
 
-        {/* Footer Area: Total & Checkout (matching sample image) */}
+        {/* Footer Area: Total & Checkout (pinned at bottom, never pushed out) */}
         {cart.length > 0 && (
-          <div className="p-6 pt-2 bg-[#F4F5F7]">
-            {/* Top Divider */}
-            <div className="border-t border-neutral-300 mb-4" />
-
+          <div className="flex-shrink-0 p-6 pt-3 bg-[#F4F5F7] border-t border-neutral-300">
             {/* Total Section */}
             <div className="space-y-1.5">
               <div className="flex items-center justify-between text-base font-bold text-neutral-900">
@@ -291,14 +312,15 @@ export default function CartDrawer({
                 </svg>
               </button>
 
-              {/* Checkout Button */}
-              <button
-                type="button"
+              {/* Checkout Link / Button */}
+              <Link
+                href="/checkout"
                 onClick={handleProceed}
-                className="bg-[#18181B] hover:bg-black text-white font-bold text-xs tracking-wider uppercase px-8 py-3.5 rounded-lg shadow-md transition-all active:scale-[0.98] cursor-pointer flex-1 max-w-[200px] text-center"
+                className="bg-[#18181B] hover:bg-black text-white font-bold text-xs tracking-wider uppercase px-8 py-3.5 rounded-lg shadow-md transition-all active:scale-[0.98] cursor-pointer flex-1 text-center flex items-center justify-center gap-2"
               >
-                CHECKOUT
-              </button>
+                <span>CHECKOUT</span>
+                <span>→</span>
+              </Link>
             </div>
           </div>
         )}

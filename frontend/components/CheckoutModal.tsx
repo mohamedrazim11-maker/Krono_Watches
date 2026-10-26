@@ -100,7 +100,7 @@ export default function CheckoutModal({
 
   if (!isCartReady) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 text-xs font-mono text-[#C5A059]">
+      <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/85 text-xs font-mono text-[#C5A059]">
         Restoring your cart...
       </div>
     );
@@ -109,7 +109,7 @@ export default function CheckoutModal({
   // Strict Authentication Gate: User MUST be logged in to checkout
   if (!isAuthenticated) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
         <div className="fixed inset-0 bg-black/85 backdrop-blur-md" onClick={onClose} />
         <div className="relative z-10 w-full max-w-md bg-[#0D0D0D] border border-[#C5A059]/40 p-8 text-center space-y-6 shadow-2xl rounded-xl">
           <div className="w-14 h-14 mx-auto rounded-full bg-black border border-[#C5A059] flex items-center justify-center text-[#C5A059] text-2xl shadow-lg shadow-[#C5A059]/10">
@@ -238,7 +238,7 @@ export default function CheckoutModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
       <div
         className="fixed inset-0 bg-black/85 backdrop-blur-sm transition-opacity"
         onClick={orderConfirmed ? onClose : undefined}
