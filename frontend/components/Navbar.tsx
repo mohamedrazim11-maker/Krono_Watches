@@ -221,8 +221,9 @@ export default function Navbar({
 
       {/* 6. Sticky Navigation: Header stays permanently visible on scroll */}
       <header
-        className={`sticky top-0 z-50 transition-all duration-300 border-b ${
-          scrolled ? "bg-black/95 backdrop-blur-md border-[#222] shadow-xl" : "bg-black border-[#1a1a1a]"
+        style={{ position: "sticky", top: 0, zIndex: 999 }}
+        className={`w-full transition-all duration-300 border-b ${
+          scrolled ? "bg-black/95 backdrop-blur-md border-[#222] shadow-2xl" : "bg-black border-[#1a1a1a]"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
