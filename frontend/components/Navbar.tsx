@@ -44,12 +44,14 @@ export default function Navbar({
   const [internalQuery, setInternalQuery] = useState(searchQuery || "");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [voiceNotice, setVoiceNotice] = useState<string | null>(null);
 
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const mobileSearchContainerRef = useRef<HTMLDivElement>(null);
+  const accountMenuRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const mobileFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -104,11 +106,18 @@ export default function Navbar({
       ) {
         setIsDropdownOpen(false);
       }
+      if (
+        accountMenuRef.current &&
+        !accountMenuRef.current.contains(e.target as Node)
+      ) {
+        setAccountDropdownOpen(false);
+      }
     }
 
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
         setIsDropdownOpen(false);
+        setAccountDropdownOpen(false);
       }
     }
 
@@ -538,116 +547,161 @@ export default function Navbar({
           )}
 
           {/* Right Action Icons: Theme Toggle, Wishlist, Cart & Account */}
-          <div className="flex items-center gap-3">
-            {/* Theme Toggle Button */}
+          {/* Right Action Icons: Theme Toggle, Profile, Wishlist & Cart/Checkout */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* Theme Toggle */}
             <ThemeToggle />
 
-            {/* Wishlist Button */}
+            {/* 1. Account / Profile Icon */}
+            <div className="relative" ref={accountMenuRef}>
+              <button
+                type="button"
+                onClick={() => setAccountDropdownOpen(!accountDropdownOpen)}
+                className={`relative p-2 rounded-full text-white/80 hover:text-white transition-all cursor-pointer ${
+                  accountDropdownOpen ? "text-[#C5A059] bg-white/10" : "hover:bg-white/5"
+                }`}
+                title={isAuthenticated && user ? `Account: ${user.name}` : "Account: Sign In / Register"}
+                aria-label="Account Menu"
+              >
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.75}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+                {/* Active user indicator dot */}
+                {isAuthenticated && (
+                  <span className="absolute bottom-1 right-1 w-2 h-2 rounded-full bg-[#34D399] ring-2 ring-[#0A0A0A]" />
+                )}
+              </button>
+
+              {/* Account Dropdown (Sign In / Register / User Details) */}
+              {accountDropdownOpen && (
+                <div className="absolute right-0 top-full mt-2 w-64 bg-[#0F1115] border border-[#282E38] rounded-xl shadow-2xl p-4 z-50 animate-in fade-in zoom-in-95">
+                  {isAuthenticated && user ? (
+                    <div>
+                      {/* Logged In User Details */}
+                      <div className="flex items-center gap-3 pb-3 border-b border-white/10">
+                        <div className="w-9 h-9 rounded-full bg-[#C5A059] text-black font-bold flex items-center justify-center text-sm flex-shrink-0">
+                          {user.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-bold text-white truncate">{user.name}</div>
+                          <div className="text-[11px] text-white/50 truncate font-mono">{user.email}</div>
+                          <span className="inline-block mt-0.5 px-1.5 py-0.2 text-[9px] font-mono uppercase font-bold rounded bg-white/10 text-[#C5A059]">
+                            {user.role || "Customer"}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="pt-2 space-y-1">
+                        <Link
+                          href="/profile"
+                          onClick={() => setAccountDropdownOpen(false)}
+                          className="flex items-center justify-between px-3 py-2 rounded-lg text-xs text-white/80 hover:text-white hover:bg-white/5 transition"
+                        >
+                          <span>My Profile &amp; Orders</span>
+                          <span className="text-[#C5A059]">→</span>
+                        </Link>
+                        {user.role === "admin" && (
+                          <Link
+                            href="/admin"
+                            onClick={() => setAccountDropdownOpen(false)}
+                            className="flex items-center justify-between px-3 py-2 rounded-lg text-xs text-[#38BDF8] hover:bg-white/5 transition"
+                          >
+                            <span>Admin Portal</span>
+                            <span>⚡</span>
+                          </Link>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAccountDropdownOpen(false);
+                            logout();
+                          }}
+                          className="w-full text-left flex items-center justify-between px-3 py-2 rounded-lg text-xs text-red-400 hover:bg-red-500/10 transition cursor-pointer"
+                        >
+                          <span>Sign Out</span>
+                          <span>✕</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      {/* Not Logged In */}
+                      <div className="text-xs font-semibold text-white mb-1">Welcome to Krono</div>
+                      <p className="text-[11px] text-white/50 mb-3 leading-snug">
+                        Sign in to access your profile, track orders, or create a new account.
+                      </p>
+                      <div className="space-y-2">
+                        <Link
+                          href="/login"
+                          onClick={() => setAccountDropdownOpen(false)}
+                          className="block w-full py-2 text-center text-xs font-bold bg-[#C5A059] hover:bg-[#d4af66] text-black rounded-lg transition"
+                        >
+                          Sign In
+                        </Link>
+                        <Link
+                          href="/register"
+                          onClick={() => setAccountDropdownOpen(false)}
+                          className="block w-full py-2 text-center text-xs font-bold border border-white/20 hover:border-white text-white rounded-lg transition"
+                        >
+                          Register
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* 2. Wishlist Icon (Heart with badge) */}
             <button
+              type="button"
               onClick={effectiveOpenWishlist}
-              className="relative p-2 text-white/70 hover:text-white transition-colors cursor-pointer"
-              title="Saved Timepieces"
+              className="relative p-2 rounded-full text-white/80 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+              title="Saved Wishlist"
               aria-label="Wishlist"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={1.6}
+                  strokeWidth={1.75}
                   d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                 />
               </svg>
               {effectiveWishlistCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-[#C5A059] text-black text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center font-mono">
+                <span className="absolute -top-1 -right-1 bg-[#E15B4C] text-white text-[10px] font-bold h-4 min-w-[16px] px-1 rounded-full flex items-center justify-center font-mono shadow-sm">
                   {effectiveWishlistCount}
                 </span>
               )}
             </button>
 
-            {/* Cart Button */}
+            {/* 3. Bag Icon (Cart & Checkout with badge) */}
             <button
+              type="button"
               onClick={effectiveOpenCart}
-              className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/20 hover:border-[#C5A059] text-white transition-all cursor-pointer group"
-              title="Shopping Cart"
-              aria-label="Cart"
+              className="relative p-2 rounded-full text-white/80 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+              title="Shopping Bag &amp; Checkout"
+              aria-label="Shopping Bag and Checkout"
             >
-              <svg className="w-4 h-4 text-white/80 group-hover:text-[#C5A059] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={1.8}
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                  strokeWidth={1.75}
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 />
               </svg>
-              <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-wider text-white">
-                Cart
-              </span>
               {effectiveCartCount > 0 && (
-                <span className="bg-[#C5A059] text-black text-[9px] font-bold h-4 min-w-[16px] px-1 rounded-full flex items-center justify-center font-mono">
+                <span className="absolute -top-1 -right-1 bg-[#E15B4C] text-white text-[10px] font-bold h-4 min-w-[16px] px-1 rounded-full flex items-center justify-center font-mono shadow-sm">
                   {effectiveCartCount}
                 </span>
               )}
             </button>
-
-            {/* Standalone Checkout Link */}
-            <Link
-              href="/checkout"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#C5A059]/70 bg-[#C5A059]/10 text-[#C5A059] hover:bg-[#C5A059] hover:text-black text-[11px] font-bold uppercase tracking-wider transition-all"
-              aria-label="Go to checkout"
-              title="Checkout"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M5 12h14m-6-6 6 6-6 6" />
-              </svg>
-              <span className="hidden md:inline">Checkout</span>
-            </Link>
-
-            {/* Auth Controls */}
-            {isAuthenticated && user ? (
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/profile"
-                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-white/20 hover:border-[#C5A059] text-white transition-all"
-                  title={`Signed in as ${user.name}`}
-                >
-                  <div className="w-5 h-5 rounded-full bg-[#C5A059] text-black font-serif font-bold text-[10px] flex items-center justify-center">
-                    {user.name.charAt(0).toUpperCase()}
-                  </div>
-                  <span className="text-xs font-mono hidden xl:inline max-w-[90px] truncate">
-                    {user.name}
-                  </span>
-                </Link>
-                <button
-                  onClick={logout}
-                  className="p-1.5 rounded-lg text-white/50 hover:text-red-400 hover:bg-white/5 text-xs transition-colors cursor-pointer"
-                  title="Sign Out"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.8}
-                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                    />
-                  </svg>
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/login"
-                  className="px-3 py-1.5 rounded-lg border border-white/20 hover:border-white text-xs font-mono text-white transition-colors"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/register"
-                  className="hidden xl:inline-block px-3 py-1.5 rounded-lg bg-[#C5A059] hover:bg-[#d4af66] text-black text-xs font-mono font-bold transition-colors"
-                >
-                  Register
-                </Link>
-              </div>
-            )}
 
             {/* Mobile Hamburger Button */}
             <button
