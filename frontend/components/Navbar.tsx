@@ -223,11 +223,6 @@ export default function Navbar({
 
   return (
     <>
-      {/* Announcement bar */}
-      <div className="bg-[#111] border-b border-[#222] text-center py-2 px-4 text-[11px] text-[#888] tracking-widest uppercase font-mono">
-        Authentic Horology Boutique • Insured Worldwide Priority Delivery
-      </div>
-
       {/* 6. Sticky Navigation: Header stays permanently visible on scroll */}
       <header
         style={{ position: "sticky", top: 0, zIndex: 999 }}
