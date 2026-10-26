@@ -206,11 +206,14 @@ export default function AdminDashboard() {
           />
         </div>
 
-        <div className="flex items-center gap-5 text-xs font-mono text-[#8E95A5]">
-          <span className="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors">
-            <span>🔔</span>
-            <span>Notifications</span>
-          </span>
+        <div className="flex items-center gap-4 text-xs font-mono text-[#8E95A5]">
+          <Link
+            href="/admin/reports"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#C5A059]/10 border border-[#C5A059]/40 text-[#C5A059] rounded-lg hover:bg-[#C5A059] hover:text-black transition-all font-bold uppercase tracking-wider text-[11px]"
+          >
+            <span>📊</span>
+            <span>Sales Reports & PDF</span>
+          </Link>
           <span className="text-[#383E4B]">|</span>
           <span className="text-white font-semibold flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
@@ -221,10 +224,13 @@ export default function AdminDashboard() {
 
       {/* 1. TOP 4 METRIC CARDS matching Page 4 Wireframe */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* REVENUE TODAY */}
-        <div style={S.card}>
-          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#C5A059] font-bold">
-            REVENUE TODAY
+        {/* TOTAL SALES */}
+        <Link href="/admin/reports" style={S.card} className="group hover:border-[#C5A059] transition-colors block">
+          <div className="flex items-center justify-between">
+            <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#C5A059] font-bold">
+              TOTAL SALES
+            </div>
+            <span className="text-[10px] font-mono text-white/40 group-hover:text-[#C5A059]">View Report →</span>
           </div>
           <div className="text-2xl font-bold font-mono text-white mt-2 truncate">
             {loading ? "..." : fmtCurrency(totalRevenue)}
@@ -232,7 +238,7 @@ export default function AdminDashboard() {
           <div className="text-[11px] font-mono text-[#6E7585] mt-1">
             Certified transactions
           </div>
-        </div>
+        </Link>
 
         {/* NEW ORDERS */}
         <div style={S.card}>

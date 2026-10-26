@@ -108,26 +108,8 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    label: "Promotions",
-    href: "/admin/promotions",
-    icon: (active) => (
-      <svg
-        className="w-4 h-4"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={active ? "#000000" : "currentColor"}
-        strokeWidth={1.8}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-        <line x1="7" y1="7" x2="7.01" y2="7" />
-      </svg>
-    ),
-  },
-  {
     label: "Reports",
-    href: "/admin#reports",
+    href: "/admin/reports",
     icon: (active) => (
       <svg
         className="w-4 h-4"
