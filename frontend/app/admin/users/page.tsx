@@ -37,7 +37,7 @@ export default function AdminUsersPage() {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState<"all" | "admin" | "customer">("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "suspended">("all");
   const [toast, setToast] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
@@ -79,10 +79,21 @@ export default function AdminUsersPage() {
     loadUsers();
   }, []);
 
-  // Filtered Users
+  // Exclude administrators: show ONLY customer data
+  const customerUsers = useMemo(() => {
+    return users.filter(
+      (u) =>
+        u.role !== "admin" &&
+        u.email?.toLowerCase() !== "admin@krono.luxury" &&
+        u.username?.toLowerCase() !== "admin"
+    );
+  }, [users]);
+
+  // Filtered Users (Customers only)
   const filteredUsers = useMemo(() => {
-    return users.filter((u) => {
-      if (roleFilter !== "all" && u.role !== roleFilter) return false;
+    return customerUsers.filter((u) => {
+      if (statusFilter === "active" && u.status === "Suspended") return false;
+      if (statusFilter === "suspended" && u.status !== "Suspended") return false;
       if (!search.trim()) return true;
       const q = search.toLowerCase();
       return (
@@ -93,55 +104,19 @@ export default function AdminUsersPage() {
         u.address?.toLowerCase().includes(q)
       );
     });
-  }, [users, roleFilter, search]);
+  }, [customerUsers, statusFilter, search]);
 
-  // Aggregate Stats
-  const totalCount = users.length;
-  const adminCount = users.filter((u) => u.role === "admin").length;
-  const customerCount = users.filter((u) => u.role === "customer").length;
-  const activeCount = users.filter((u) => u.status !== "Suspended").length;
-
-  const handleRoleToggle = async (user: AdminUser) => {
-    const nextRole: "admin" | "customer" = user.role === "admin" ? "customer" : "admin";
-    if (currentUser && (user.id === currentUser.id || user.email?.toLowerCase() === currentUser.email?.toLowerCase())) {
-      alert("You cannot change the role of your own logged-in administrator account.");
-      return;
-    }
-    if (user.role === "admin" && adminCount <= 1) {
-      alert("At least one system administrator account must be retained.");
-      return;
-    }
-
-    if (!confirm(`Change ${user.name}'s role from ${user.role} to ${nextRole}?`)) return;
-
-    setUpdatingId(user.id);
-    try {
-      const res = await updateAdminUser(user.id, { role: nextRole });
-      if (res.success) {
-        setUsers((prev) =>
-          prev.map((u) => (u.id === user.id ? { ...u, role: nextRole } : u))
-        );
-        showToast(`Role updated to ${nextRole} for ${user.name}`);
-      } else {
-        alert(res.message || "Failed to update role");
-      }
-    } catch (err: any) {
-      alert(err.message || "Network error");
-    } finally {
-      setUpdatingId(null);
-    }
-  };
+  // Aggregate Stats (Customers Only)
+  const totalCount = customerUsers.length;
+  const activeCount = customerUsers.filter((u) => u.status !== "Suspended").length;
+  const suspendedCount = customerUsers.filter((u) => u.status === "Suspended").length;
 
   const handleStatusToggle = async (user: AdminUser) => {
+    if (user.role === "admin") {
+      alert("Administrator accounts cannot be modified from customer management.");
+      return;
+    }
     const nextStatus = user.status === "Suspended" ? "Active" : "Suspended";
-    if (currentUser && (user.id === currentUser.id || user.email?.toLowerCase() === currentUser.email?.toLowerCase())) {
-      alert("You cannot suspend your own administrator account.");
-      return;
-    }
-    if (user.role === "admin" && adminCount <= 1) {
-      alert("The sole administrator account cannot be suspended.");
-      return;
-    }
 
     setUpdatingId(user.id);
     try {
@@ -162,16 +137,12 @@ export default function AdminUsersPage() {
   };
 
   const handleDelete = async (user: AdminUser) => {
-    if (currentUser && (user.id === currentUser.id || user.email?.toLowerCase() === currentUser.email?.toLowerCase())) {
-      alert("You cannot delete your own administrator account.");
-      return;
-    }
-    if (user.role === "admin" && adminCount <= 1) {
-      alert("At least one administrator account must be retained.");
+    if (user.role === "admin") {
+      alert("Administrator accounts cannot be deleted here.");
       return;
     }
 
-    if (!confirm(`Are you sure you want to permanently delete user "${user.name}" (${user.email})?`)) {
+    if (!confirm(`Are you sure you want to permanently delete customer "${user.name}" (${user.email})?`)) {
       return;
     }
 
@@ -272,10 +243,10 @@ export default function AdminUsersPage() {
               margin: 0,
             }}
           >
-            User Management
+            Customer Management
           </h1>
           <p style={{ fontSize: "12.5px", color: "#6B7280", margin: "4px 0 0" }}>
-            View, manage, assign roles, and administer customer and staff accounts.
+            View, manage, and administer registered storefront customer accounts.
           </p>
         </div>
 
@@ -296,7 +267,7 @@ export default function AdminUsersPage() {
             boxShadow: "0 4px 14px rgba(56, 189, 248, 0.3)",
           }}
         >
-          <span>+ Add User</span>
+          <span>+ Add Customer</span>
         </button>
       </div>
 
@@ -304,44 +275,20 @@ export default function AdminUsersPage() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
           gap: "16px",
           marginBottom: "24px",
         }}
       >
         <div style={S.card}>
           <div style={{ fontSize: "11px", color: "#6B7280", fontWeight: 700, textTransform: "uppercase" }}>
-            Total Registered Users
+            Total Customers
           </div>
           <div style={{ fontSize: "28px", fontWeight: 800, color: "#FFFFFF", marginTop: "8px" }}>
             {totalCount}
           </div>
           <div style={{ fontSize: "11.5px", color: "#9CA3AF", marginTop: "4px" }}>
-            Platform customer &amp; staff registry
-          </div>
-        </div>
-
-        <div style={S.card}>
-          <div style={{ fontSize: "11px", color: "#38BDF8", fontWeight: 700, textTransform: "uppercase" }}>
-            Administrators
-          </div>
-          <div style={{ fontSize: "28px", fontWeight: 800, color: "#38BDF8", marginTop: "8px" }}>
-            {adminCount}
-          </div>
-          <div style={{ fontSize: "11.5px", color: "#9CA3AF", marginTop: "4px" }}>
-            Privileged management access
-          </div>
-        </div>
-
-        <div style={S.card}>
-          <div style={{ fontSize: "11px", color: "#FBBF24", fontWeight: 700, textTransform: "uppercase" }}>
-            Customers
-          </div>
-          <div style={{ fontSize: "28px", fontWeight: 800, color: "#FBBF24", marginTop: "8px" }}>
-            {customerCount}
-          </div>
-          <div style={{ fontSize: "11.5px", color: "#9CA3AF", marginTop: "4px" }}>
-            Registered storefront clients
+            Registered storefront customer accounts
           </div>
         </div>
 
@@ -354,6 +301,18 @@ export default function AdminUsersPage() {
           </div>
           <div style={{ fontSize: "11.5px", color: "#9CA3AF", marginTop: "4px" }}>
             Healthy authentication status
+          </div>
+        </div>
+
+        <div style={S.card}>
+          <div style={{ fontSize: "11px", color: "#F87171", fontWeight: 700, textTransform: "uppercase" }}>
+            Suspended Accounts
+          </div>
+          <div style={{ fontSize: "28px", fontWeight: 800, color: "#F87171", marginTop: "8px" }}>
+            {suspendedCount}
+          </div>
+          <div style={{ fontSize: "11.5px", color: "#9CA3AF", marginTop: "4px" }}>
+            Restricted customer accounts
           </div>
         </div>
       </div>
@@ -391,23 +350,26 @@ export default function AdminUsersPage() {
         </div>
 
         <div style={{ display: "flex", gap: "6px" }}>
-          {(["all", "customer", "admin"] as const).map((r) => (
+          {([
+            { key: "all", label: "All Customers" },
+            { key: "active", label: "Active" },
+            { key: "suspended", label: "Suspended" },
+          ] as const).map((tab) => (
             <button
-              key={r}
-              onClick={() => setRoleFilter(r)}
+              key={tab.key}
+              onClick={() => setStatusFilter(tab.key)}
               style={{
                 padding: "6px 14px",
                 borderRadius: "6px",
                 fontSize: "12px",
                 fontWeight: 600,
-                textTransform: "capitalize",
                 cursor: "pointer",
-                background: roleFilter === r ? "#38BDF8" : "#16191E",
-                color: roleFilter === r ? "#0B0F14" : "#9CA3AF",
-                border: "1px solid " + (roleFilter === r ? "#38BDF8" : "#282E38"),
+                background: statusFilter === tab.key ? "#38BDF8" : "#16191E",
+                color: statusFilter === tab.key ? "#0B0F14" : "#9CA3AF",
+                border: "1px solid " + (statusFilter === tab.key ? "#38BDF8" : "#282E38"),
               }}
             >
-              {r === "all" ? "All Users" : `${r}s`}
+              {tab.label}
             </button>
           ))}
         </div>
@@ -419,7 +381,7 @@ export default function AdminUsersPage() {
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "860px" }}>
             <thead>
               <tr>
-                <th style={S.th}>Client / User</th>
+                <th style={S.th}>Customer</th>
                 <th style={S.th}>Email Address</th>
                 <th style={S.th}>Role</th>
                 <th style={S.th}>Account Status</th>
@@ -438,41 +400,21 @@ export default function AdminUsersPage() {
               ) : filteredUsers.length === 0 ? (
                 <tr>
                   <td colSpan={7} style={{ ...S.td, textAlign: "center", padding: "40px", color: "#6B7280" }}>
-                    No users found matching your search.
+                    No customers found matching your search.
                   </td>
                 </tr>
               ) : (
                 filteredUsers.map((u) => {
-                  const isPrimaryAdmin = (currentUser && (u.id === currentUser.id || u.email?.toLowerCase() === currentUser.email?.toLowerCase())) || (u.role === "admin" && adminCount <= 1);
                   const isSuspended = u.status === "Suspended";
 
                   return (
                     <tr key={u.id} style={{ opacity: isSuspended ? 0.6 : 1 }}>
-                      {/* Name & Avatar */}
+                      {/* Customer Name */}
                       <td style={S.td}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <div
-                            style={{
-                              width: "32px",
-                              height: "32px",
-                              borderRadius: "8px",
-                              background: u.role === "admin" ? "#0369A1" : "#854D0E",
-                              color: "#FFFFFF",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              fontSize: "12px",
-                              fontWeight: 700,
-                              flexShrink: 0,
-                            }}
-                          >
-                            {(u.name || "U").charAt(0).toUpperCase()}
-                          </div>
-                          <div>
-                            <div style={{ fontWeight: 600, color: "#FFFFFF" }}>{u.name || "User"}</div>
-                            <div style={{ fontSize: "11px", color: "#6B7280", fontFamily: "monospace" }}>
-                              @{u.username || u.email.split("@")[0]}
-                            </div>
+                        <div>
+                          <div style={{ fontWeight: 600, color: "#FFFFFF" }}>{u.name || "Customer"}</div>
+                          <div style={{ fontSize: "11px", color: "#6B7280", fontFamily: "monospace" }}>
+                            @{u.username || u.email.split("@")[0]}
                           </div>
                         </div>
                       </td>
@@ -495,12 +437,12 @@ export default function AdminUsersPage() {
                             fontWeight: 700,
                             letterSpacing: "0.04em",
                             textTransform: "uppercase",
-                            background: u.role === "admin" ? "rgba(56, 189, 248, 0.14)" : "rgba(251, 191, 36, 0.12)",
-                            color: u.role === "admin" ? "#38BDF8" : "#FBBF24",
-                            border: "1px solid " + (u.role === "admin" ? "rgba(56, 189, 248, 0.3)" : "rgba(251, 191, 36, 0.25)"),
+                            background: "rgba(251, 191, 36, 0.12)",
+                            color: "#FBBF24",
+                            border: "1px solid rgba(251, 191, 36, 0.25)",
                           }}
                         >
-                          {u.role}
+                          {u.role || "customer"}
                         </span>
                       </td>
 
@@ -540,72 +482,43 @@ export default function AdminUsersPage() {
                       {/* Actions */}
                       <td style={{ ...S.td, textAlign: "right" }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "6px" }}>
-                          {/* Toggle Role Button */}
-                          {!isPrimaryAdmin && (
-                            <button
-                              type="button"
-                              onClick={() => handleRoleToggle(u)}
-                              disabled={updatingId === u.id}
-                              style={{
-                                padding: "5px 9px",
-                                background: "#16191E",
-                                border: "1px solid #282E38",
-                                borderRadius: "6px",
-                                color: "#9CA3AF",
-                                fontSize: "11px",
-                                cursor: "pointer",
-                              }}
-                              title={`Switch to ${u.role === "admin" ? "Customer" : "Admin"}`}
-                            >
-                              {u.role === "admin" ? "Demote" : "Promote"}
-                            </button>
-                          )}
-
                           {/* Toggle Status Button */}
-                          {!isPrimaryAdmin && (
-                            <button
-                              type="button"
-                              onClick={() => handleStatusToggle(u)}
-                              disabled={updatingId === u.id}
-                              style={{
-                                padding: "5px 9px",
-                                background: "#16191E",
-                                border: "1px solid #282E38",
-                                borderRadius: "6px",
-                                color: isSuspended ? "#34D399" : "#F87171",
-                                fontSize: "11px",
-                                cursor: "pointer",
-                              }}
-                              title={isSuspended ? "Activate account" : "Suspend account"}
-                            >
-                              {isSuspended ? "Activate" : "Suspend"}
-                            </button>
-                          )}
+                          <button
+                            type="button"
+                            onClick={() => handleStatusToggle(u)}
+                            disabled={updatingId === u.id}
+                            style={{
+                              padding: "5px 9px",
+                              background: "#16191E",
+                              border: "1px solid #282E38",
+                              borderRadius: "6px",
+                              color: isSuspended ? "#34D399" : "#F87171",
+                              fontSize: "11px",
+                              cursor: "pointer",
+                            }}
+                            title={isSuspended ? "Activate account" : "Suspend account"}
+                          >
+                            {isSuspended ? "Activate" : "Suspend"}
+                          </button>
 
                           {/* Delete Button */}
-                          {!isPrimaryAdmin ? (
-                            <button
-                              type="button"
-                              onClick={() => handleDelete(u)}
-                              disabled={updatingId === u.id}
-                              style={{
-                                padding: "5px 9px",
-                                background: "#261315",
-                                border: "1px solid #451A1D",
-                                borderRadius: "6px",
-                                color: "#EF4444",
-                                fontSize: "11px",
-                                cursor: "pointer",
-                              }}
-                              title="Delete user"
-                            >
-                              ✕
-                            </button>
-                          ) : (
-                            <span style={{ fontSize: "10px", color: "#38BDF8", fontWeight: 700, padding: "4px 8px" }}>
-                              PROTECTED
-                            </span>
-                          )}
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(u)}
+                            disabled={updatingId === u.id}
+                            style={{
+                              padding: "5px 9px",
+                              background: "#261315",
+                              border: "1px solid #451A1D",
+                              borderRadius: "6px",
+                              color: "#EF4444",
+                              fontSize: "11px",
+                              cursor: "pointer",
+                            }}
+                            title="Delete customer"
+                          >
+                            ✕
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -646,7 +559,7 @@ export default function AdminUsersPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
-              <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#FFFFFF", margin: 0 }}>Add New User Account</h2>
+              <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#FFFFFF", margin: 0 }}>Add New Customer Account</h2>
               <button
                 type="button"
                 onClick={() => setIsAddModalOpen(false)}
@@ -722,11 +635,12 @@ export default function AdminUsersPage() {
 
                 <div>
                   <label style={{ display: "block", fontSize: "11px", color: "#9CA3AF", marginBottom: "4px", textTransform: "uppercase" }}>
-                    Role *
+                    Role
                   </label>
-                  <select
-                    value={newUserData.role}
-                    onChange={(e) => setNewUserData({ ...newUserData, role: e.target.value as any })}
+                  <input
+                    type="text"
+                    disabled
+                    value="Customer"
                     style={{
                       width: "100%",
                       background: "#16191E",
@@ -734,13 +648,11 @@ export default function AdminUsersPage() {
                       borderRadius: "8px",
                       padding: "9px 12px",
                       fontSize: "12.5px",
-                      color: "#FFFFFF",
+                      color: "#9CA3AF",
                       outline: "none",
+                      cursor: "not-allowed",
                     }}
-                  >
-                    <option value="customer">Customer</option>
-                    <option value="admin">Administrator</option>
-                  </select>
+                  />
                 </div>
               </div>
 
