@@ -339,11 +339,10 @@ export default function CatalogPage() {
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-4 py-2 text-xs font-mono tracking-wider uppercase whitespace-nowrap transition-all border rounded-none ${
-                    isSelected
+                  className={`px-4 py-2 text-xs font-mono tracking-wider uppercase whitespace-nowrap transition-all border rounded-none ${isSelected
                       ? "bg-[#C5A059] text-black font-bold border-[#C5A059]"
                       : "bg-transparent text-white/60 border-[#2a2a2a] hover:text-white hover:border-white/40"
-                  }`}
+                    }`}
                 >
                   {cat === "All" ? "All Series" : cat}
                 </button>
@@ -372,11 +371,10 @@ export default function CatalogPage() {
               <button
                 key={brand}
                 onClick={() => setSelectedBrand(brand)}
-                className={`px-3.5 py-1.5 text-xs font-mono tracking-wider uppercase whitespace-nowrap transition-all flex items-center gap-2 border flex-shrink-0 ${
-                  isSelected
+                className={`px-3.5 py-1.5 text-xs font-mono tracking-wider uppercase whitespace-nowrap transition-all flex items-center gap-2 border flex-shrink-0 ${isSelected
                     ? "bg-white text-black font-bold border-white"
                     : "bg-[#111] text-white/70 border-[#222] hover:text-white hover:border-white/30"
-                }`}
+                  }`}
               >
                 <span>{brand}</span>
                 <span className={`text-[9px] px-1 py-0.2 rounded font-mono ${isSelected ? "bg-black/20 text-black" : "text-white/40"}`}>
@@ -407,9 +405,8 @@ export default function CatalogPage() {
                 <button
                   type="button"
                   onClick={startVoiceSearch}
-                  className={`p-1.5 rounded transition-colors cursor-pointer ${
-                    isListening ? "text-[#C5A059] bg-[#C5A059]/15 animate-pulse" : "text-white/40 hover:text-[#C5A059]"
-                  }`}
+                  className={`p-1.5 rounded transition-colors cursor-pointer ${isListening ? "text-[#C5A059] bg-[#C5A059]/15 animate-pulse" : "text-white/40 hover:text-[#C5A059]"
+                    }`}
                   title="Voice Search (Speak query)"
                   aria-label="Voice Search"
                 >
@@ -611,11 +608,10 @@ export default function CatalogPage() {
                   <button
                     key={mov}
                     onClick={() => setSelectedMovement(mov)}
-                    className={`w-full text-left px-2 py-1 text-xs font-mono rounded transition-colors ${
-                      selectedMovement === mov
+                    className={`w-full text-left px-2 py-1 text-xs font-mono rounded transition-colors ${selectedMovement === mov
                         ? "bg-[#C5A059] text-black font-bold"
                         : "text-white/60 hover:text-white hover:bg-white/5"
-                    }`}
+                      }`}
                   >
                     {mov}
                   </button>
@@ -633,11 +629,10 @@ export default function CatalogPage() {
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`py-1 text-[11px] font-mono border text-center transition-colors ${
-                      selectedSize === size
+                    className={`py-1 text-[11px] font-mono border text-center transition-colors ${selectedSize === size
                         ? "bg-[#C5A059] text-black font-bold border-[#C5A059]"
                         : "border-[#222] text-white/60 hover:text-white"
-                    }`}
+                      }`}
                   >
                     {size}
                   </button>
@@ -831,9 +826,8 @@ export default function CatalogPage() {
                             </button>
                             <button
                               onClick={() => toggleWishlist(p)}
-                              className={`p-2 border transition-colors ${
-                                isSaved ? "border-red-500 text-red-500" : "border-[#333] text-white/60 hover:text-white"
-                              }`}
+                              className={`p-2 border transition-colors ${isSaved ? "border-red-500 text-red-500" : "border-[#333] text-white/60 hover:text-white"
+                                }`}
                             >
                               ♥
                             </button>
@@ -873,11 +867,10 @@ export default function CatalogPage() {
                         {/* Wishlist Button */}
                         <button
                           onClick={() => toggleWishlist(p)}
-                          className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors z-10 ${
-                            isSaved
+                          className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors z-10 ${isSaved
                               ? "bg-red-950/80 border border-red-500 text-red-400"
                               : "bg-black/60 border border-white/20 text-white/70 hover:text-white"
-                          }`}
+                            }`}
                         >
                           ♥
                         </button>
