@@ -2,7 +2,7 @@
   "products": [
     {
       "id": "prod-1",
-      "name": "Aurelia Master Classic",
+      "name": "Aurelia Master",
       "brand": "Krono Swiss",
       "category": "Luxury",
       "gender": "Men",
@@ -30,7 +30,7 @@
     },
     {
       "id": "prod-2",
-      "name": "Speedmaster Chrono Titanium",
+      "name": "Speedmaster Chrono",
       "brand": "Omega",
       "category": "Automatic",
       "gender": "Men",
@@ -58,7 +58,7 @@
     },
     {
       "id": "prod-3",
-      "name": "Vanta Sport Stealth Edition 41mm",
+      "name": "Vanta Sport",
       "brand": "Rolex",
       "category": "Sport",
       "gender": "Men",
@@ -86,7 +86,7 @@
     },
     {
       "id": "prod-4",
-      "name": "Helio Smart Sapphire AMOLED 44mm",
+      "name": "Helio Smart",
       "brand": "TAG Heuer",
       "category": "Smart",
       "gender": "Unisex",
@@ -114,7 +114,7 @@
     },
     {
       "id": "prod-5",
-      "name": "Grand Horizon 18k Rose Gold",
+      "name": "Grand Horizon",
       "brand": "Patek Philippe",
       "category": "Luxury",
       "gender": "Men",
@@ -142,7 +142,7 @@
     },
     {
       "id": "prod-6",
-      "name": "Eclipse Diver 300M Ceramic 41mm",
+      "name": "Eclipse Diver",
       "brand": "Omega",
       "category": "Sport",
       "gender": "Men",
@@ -170,7 +170,7 @@
     },
     {
       "id": "prod-rolex-submariner",
-      "name": "Rolex Submariner Date 41mm Cerachrom",
+      "name": "Submariner Date",
       "brand": "Rolex",
       "category": "Dive Watches",
       "gender": "Men",
@@ -198,7 +198,7 @@
     },
     {
       "id": "prod-rolex-gmt-master-ii",
-      "name": "Rolex GMT-Master II 'Pepsi' Jubilee 40mm",
+      "name": "GMT Master",
       "brand": "Rolex",
       "category": "Sports Watches",
       "gender": "Men",
@@ -226,7 +226,7 @@
     },
     {
       "id": "prod-rolex-daytona",
-      "name": "Rolex Cosmograph Daytona 40mm Cerachrom",
+      "name": "Cosmograph Daytona",
       "brand": "Rolex",
       "category": "Chronograph",
       "gender": "Men",
@@ -254,7 +254,7 @@
     },
     {
       "id": "prod-rolex-day-date-40",
-      "name": "Rolex Day-Date 40 Olive Green Dial",
+      "name": "Day Date",
       "brand": "Rolex",
       "category": "Dress Watches",
       "gender": "Men",
@@ -282,7 +282,7 @@
     },
     {
       "id": "prod-omega-speedmaster-moonwatch",
-      "name": "Omega Speedmaster Moonwatch Professional 42mm",
+      "name": "Speedmaster Moonwatch",
       "brand": "Omega",
       "category": "Chronograph",
       "gender": "Men",
@@ -310,7 +310,7 @@
     },
     {
       "id": "prod-omega-seamaster-diver-300m",
-      "name": "Omega Seamaster Diver 300M Co-Axial 42mm",
+      "name": "Seamaster Diver",
       "brand": "Omega",
       "category": "Dive Watches",
       "gender": "Men",
@@ -338,7 +338,7 @@
     },
     {
       "id": "prod-cartier-santos-de-cartier",
-      "name": "Cartier Santos de Cartier Medium Model",
+      "name": "Santos Cartier",
       "brand": "Cartier",
       "category": "Dress Watches",
       "gender": "Unisex",
@@ -366,7 +366,7 @@
     },
     {
       "id": "prod-tissot-prx-powermatic-80",
-      "name": "Tissot PRX Powermatic 80 Ice Blue 40mm",
+      "name": "PRX Powermatic",
       "brand": "Tissot",
       "category": "Automatic",
       "gender": "Men",
@@ -394,7 +394,7 @@
     },
     {
       "id": "prod-casio-g-shock-ga-2100",
-      "name": "Casio G-Shock 'CasiOak' Carbon Core GA-2100",
+      "name": "CasiOak Carbon",
       "brand": "Casio",
       "category": "Digital",
       "gender": "Unisex",
@@ -423,7 +423,7 @@
     },
     {
       "id": "prod-rolex-sky-dweller",
-      "name": "Rolex Sky-Dweller Annual Calendar 42mm Rolesor",
+      "name": "Sky Dweller",
       "brand": "Rolex",
       "category": "Dress Watches",
       "gender": "Men",
@@ -454,7 +454,7 @@
     },
     {
       "id": "prod-omega-seamaster-aqua-terra",
-      "name": "Omega Seamaster Aqua Terra 150M 41mm",
+      "name": "Aqua Terra",
       "brand": "Omega",
       "category": "Sports Watches",
       "gender": "Men",
@@ -485,7 +485,7 @@
     },
     {
       "id": "prod-omega-constellation",
-      "name": "Omega Constellation Co-Axial Master 39mm",
+      "name": "Omega Constellation",
       "brand": "Omega",
       "category": "Dress Watches",
       "gender": "Unisex",
@@ -516,7 +516,7 @@
     },
     {
       "id": "prod-omega-de-ville-prestige",
-      "name": "Omega De Ville Prestige Co-Axial Master 40mm",
+      "name": "DeVille Prestige",
       "brand": "Omega",
       "category": "Dress Watches",
       "gender": "Men",
@@ -547,7 +547,7 @@
     },
     {
       "id": "prod-casio-g-shock-mr-g",
-      "name": "Casio G-Shock MR-G MRG-B2000 Titanium Kachi-Iro",
+      "name": "MRG Titanium",
       "brand": "Casio",
       "category": "Sports Watches",
       "gender": "Men",
@@ -578,7 +578,7 @@
     },
     {
       "id": "prod-casio-g-shock-mt-g",
-      "name": "Casio G-Shock MT-G MTG-B3000 Carbon Dual Core",
+      "name": "MTG Carbon",
       "brand": "Casio",
       "category": "Sports Watches",
       "gender": "Men",
@@ -609,7 +609,7 @@
     },
     {
       "id": "prod-casio-g-shock-full-metal",
-      "name": "Casio G-Shock Full Metal GMW-B5000D-1 Silver",
+      "name": "Full Metal",
       "brand": "Casio",
       "category": "Digital",
       "gender": "Unisex",
@@ -640,7 +640,7 @@
     },
     {
       "id": "prod-casio-g-shock-master-of-g",
-      "name": "Casio G-Shock Master of G Mudmaster GWG-B1000",
+      "name": "Master Mudmaster",
       "brand": "Casio",
       "category": "Digital",
       "gender": "Men",
@@ -671,7 +671,7 @@
     },
     {
       "id": "prod-casio-oceanus-ocw",
-      "name": "Casio Oceanus Manta OCW-S7000 Slim Sapphire",
+      "name": "Oceanus Manta",
       "brand": "Casio",
       "category": "Dress Watches",
       "gender": "Men",
@@ -702,7 +702,7 @@
     },
     {
       "id": "prod-grand-seiko-spring-drive-snowflake",
-      "name": "Grand Seiko Heritage Spring Drive 'Snowflake' SBGA211",
+      "name": "Heritage Snowflake",
       "brand": "Seiko",
       "category": "Automatic",
       "gender": "Men",
@@ -733,7 +733,7 @@
     },
     {
       "id": "prod-grand-seiko-heritage-shunbun",
-      "name": "Grand Seiko Heritage 'Shunbun' SBGA413 Spring Drive",
+      "name": "Heritage Shunbun",
       "brand": "Seiko",
       "category": "Dress Watches",
       "gender": "Unisex",
@@ -764,7 +764,7 @@
     },
     {
       "id": "prod-grand-seiko-elegance-sbgy007",
-      "name": "Grand Seiko Elegance 'Omiwatari' SBGY007",
+      "name": "Elegance Omiwatari",
       "brand": "Seiko",
       "category": "Dress Watches",
       "gender": "Men",
@@ -795,7 +795,7 @@
     },
     {
       "id": "prod-seiko-prospex-lx-diver",
-      "name": "Seiko Prospex LX Spring Drive Diver SNR029 300m",
+      "name": "Prospex Diver",
       "brand": "Seiko",
       "category": "Dive Watches",
       "gender": "Men",
@@ -826,7 +826,7 @@
     },
     {
       "id": "prod-seiko-presage-craftsmanship-enamel",
-      "name": "Seiko Presage Craftsmanship Enamel SPB403",
+      "name": "Presage Enamel",
       "brand": "Seiko",
       "category": "Automatic",
       "gender": "Men",
@@ -857,7 +857,7 @@
     },
     {
       "id": "prod-tissot-gentleman-powermatic-80",
-      "name": "Tissot Gentleman Powermatic 80 Silicium 40mm",
+      "name": "Gentleman Powermatic",
       "brand": "Tissot",
       "category": "Dress Watches",
       "gender": "Men",
@@ -888,7 +888,7 @@
     },
     {
       "id": "prod-tissot-seastar-1000-powermatic",
-      "name": "Tissot Seastar 1000 Powermatic 80 43mm Diver",
+      "name": "Seastar Powermatic",
       "brand": "Tissot",
       "category": "Dive Watches",
       "gender": "Men",
@@ -919,7 +919,7 @@
     },
     {
       "id": "prod-tissot-le-locle-powermatic-80",
-      "name": "Tissot Le Locle Powermatic 80 Guilloché 39.3mm",
+      "name": "LeLocle Powermatic",
       "brand": "Tissot",
       "category": "Dress Watches",
       "gender": "Men",
@@ -950,7 +950,7 @@
     },
     {
       "id": "prod-tissot-ballade",
-      "name": "Tissot Ballade Powermatic 80 COSC Chronometer",
+      "name": "Ballade Chronometer",
       "brand": "Tissot",
       "category": "Dress Watches",
       "gender": "Unisex",
