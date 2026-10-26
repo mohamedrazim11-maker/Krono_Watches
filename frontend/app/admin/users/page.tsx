@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { useAuth } from "@/lib/AuthContext";
 import { fetchAdminUsers, updateAdminUser, deleteAdminUser, createAdminUser, AdminUser } from "@/lib/api";
 
 const S = {
@@ -32,6 +33,7 @@ const S = {
 };
 
 export default function AdminUsersPage() {
+  const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -101,8 +103,12 @@ export default function AdminUsersPage() {
 
   const handleRoleToggle = async (user: AdminUser) => {
     const nextRole: "admin" | "customer" = user.role === "admin" ? "customer" : "admin";
-    if (user.email === "admin@krono.luxury" || user.username === "admin") {
-      alert("Primary system administrator role cannot be demoted.");
+    if (currentUser && (user.id === currentUser.id || user.email?.toLowerCase() === currentUser.email?.toLowerCase())) {
+      alert("You cannot change the role of your own logged-in administrator account.");
+      return;
+    }
+    if (user.role === "admin" && adminCount <= 1) {
+      alert("At least one system administrator account must be retained.");
       return;
     }
 
@@ -128,8 +134,12 @@ export default function AdminUsersPage() {
 
   const handleStatusToggle = async (user: AdminUser) => {
     const nextStatus = user.status === "Suspended" ? "Active" : "Suspended";
-    if (user.email === "admin@krono.luxury" || user.username === "admin") {
-      alert("Primary system administrator cannot be suspended.");
+    if (currentUser && (user.id === currentUser.id || user.email?.toLowerCase() === currentUser.email?.toLowerCase())) {
+      alert("You cannot suspend your own administrator account.");
+      return;
+    }
+    if (user.role === "admin" && adminCount <= 1) {
+      alert("The sole administrator account cannot be suspended.");
       return;
     }
 
@@ -152,8 +162,12 @@ export default function AdminUsersPage() {
   };
 
   const handleDelete = async (user: AdminUser) => {
-    if (user.email === "admin@krono.luxury" || user.username === "admin") {
-      alert("Primary system administrator cannot be deleted.");
+    if (currentUser && (user.id === currentUser.id || user.email?.toLowerCase() === currentUser.email?.toLowerCase())) {
+      alert("You cannot delete your own administrator account.");
+      return;
+    }
+    if (user.role === "admin" && adminCount <= 1) {
+      alert("At least one administrator account must be retained.");
       return;
     }
 
@@ -429,7 +443,7 @@ export default function AdminUsersPage() {
                 </tr>
               ) : (
                 filteredUsers.map((u) => {
-                  const isPrimaryAdmin = u.email === "admin@krono.luxury" || u.username === "admin";
+                  const isPrimaryAdmin = (currentUser && (u.id === currentUser.id || u.email?.toLowerCase() === currentUser.email?.toLowerCase())) || (u.role === "admin" && adminCount <= 1);
                   const isSuspended = u.status === "Suspended";
 
                   return (

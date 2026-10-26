@@ -326,7 +326,7 @@ export default function CheckoutModal({
                     required
                     value={formData.name}
                     onChange={handleInputChange}
-                    placeholder="Lord Alexander Sterling"
+                    placeholder="Full name"
                     className="w-full bg-[#111] border border-[#2a2a2a] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#C5A059]"
                   />
                 </div>

@@ -38,22 +38,22 @@ export function readLocalDb(): any {
       mutated = true;
     }
 
-    // Ensure default admin and customer user exists (Milestone 4 - Slide 8)
+    // Ensure at least one system administrator exists
     const adminEmail = (process.env.ADMIN_EMAIL || 'admin@krono.luxury').toLowerCase();
     const hasAdmin = data.users.some((u: any) => u.email?.toLowerCase() === adminEmail || u.role === 'admin' || u.username === 'admin');
     if (!hasAdmin) {
       data.users.unshift({
         id: 'usr-admin-01',
         user_id: 'usr-admin-01',
-        name: 'Krono Atelier Director',
-        full_name: 'Krono Atelier Director',
+        name: 'Administrator',
+        full_name: 'Administrator',
         username: 'admin',
         email: adminEmail,
         password_hash: '$2b$10$fpvtcCOaApIIBbj98vzDDOwCRpnj2n7FUhYlzUi77plgpVo2unDaG', // Admin@1234
         role: 'admin',
-        phone: '+94 11 234 5678',
-        address: 'Galle Face Court, Colombo 03, Sri Lanka',
-        status: 'Active Administrator',
+        phone: '',
+        address: '',
+        status: 'Active',
         created_at: new Date().toISOString(),
       });
       mutated = true;
@@ -64,24 +64,6 @@ export function readLocalDb(): any {
           mutated = true;
         }
       }
-    }
-
-    const hasCustomer = data.users.some((u: any) => u.email === 'customer@krono.luxury');
-    if (!hasCustomer) {
-      data.users.push({
-        id: 'usr-cust-02',
-        user_id: 'usr-cust-02',
-        name: 'A. Perera',
-        full_name: 'A. Perera',
-        email: 'customer@krono.luxury',
-        password_hash: '$2b$10$rO233iyK3TBtoVaqs2sU8OcG/rIJy3kEFtpP2VtQUQdwGwBpqW6uy', // Customer@1234
-        role: 'customer',
-        phone: '+94 77 123 4567',
-        address: 'Alfred House Gardens, Colombo 03, Sri Lanka',
-        status: 'Active Member',
-        created_at: new Date().toISOString(),
-      });
-      mutated = true;
     }
 
     // Ensure existing products have stock_qty and is_active (Milestone 1 - Slide 5)
@@ -841,10 +823,10 @@ export async function deleteUser(id: string) {
   const db = readLocalDb();
   db.users = db.users || [];
   const idx = db.users.findIndex((u: any) => u.id === id);
-  if (idx === -1) throw new Error('User not found');
   const target = db.users[idx];
-  if (target.role === 'admin' && (target.email === 'admin@krono.luxury' || target.username === 'admin')) {
-    throw new Error('Primary system administrator cannot be deleted');
+  const adminCount = db.users.filter((u: any) => u.role === 'admin').length;
+  if (target.role === 'admin' && adminCount <= 1) {
+    throw new Error('At least one administrator account must be retained');
   }
 
   if (supabase) {

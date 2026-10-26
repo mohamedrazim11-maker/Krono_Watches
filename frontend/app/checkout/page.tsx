@@ -45,9 +45,9 @@ function CheckoutContent() {
     firstName: "",
     lastName: "",
     address: "",
-    city: "Colombo",
-    district: "Western",
-    postalCode: "00100",
+    city: "",
+    district: "",
+    postalCode: "",
     cardNumber: "",
     cardExpiry: "",
     cardCvv: "",
@@ -124,6 +124,20 @@ function CheckoutContent() {
       };
     }
   }, [searchParams, clearCart]);
+
+  // Smooth scroll to payment section if redirected from "Proceed to Payment"
+  useEffect(() => {
+    const step = searchParams.get("step") || searchParams.get("focus");
+    if (step === "payment") {
+      const timer = setTimeout(() => {
+        const el = document.getElementById("payment-section");
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 350);
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -465,7 +479,7 @@ function CheckoutContent() {
               </div>
 
               {/* Box 4: PAYMENT */}
-              <div className="bg-[#0E1015] border border-[#1E232B] rounded-xl p-6 space-y-4 shadow-md">
+              <div id="payment-section" className="bg-[#0E1015] border border-[#1E232B] rounded-xl p-6 space-y-4 shadow-md scroll-mt-24">
                 <h2 className="text-xs font-mono uppercase font-bold text-[#C5A059] tracking-[0.2em]">
                   PAYMENT
                 </h2>

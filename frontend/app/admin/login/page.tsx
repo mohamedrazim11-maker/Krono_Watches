@@ -40,11 +40,6 @@ function AdminLoginForm() {
     }
   }, [isSessionExpired, urlError, isUnauthorized]);
 
-  const handleFillDemo = () => {
-    setUsername("admin");
-    setPassword("Admin@1234");
-    setError(null);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -257,7 +252,7 @@ function AdminLoginForm() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="admin (or admin@krono.luxury)"
+              placeholder="Username or email address"
               required
               autoComplete="username"
               style={{
@@ -495,51 +490,6 @@ function AdminLoginForm() {
         </button>
       </form>
 
-      {/* Quick Test / Demo Credentials Assistant */}
-      <div
-        style={{
-          marginTop: "24px",
-          padding: "12px 14px",
-          background: "#0B0D10",
-          border: "1px dashed #222730",
-          borderRadius: "8px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: "12px",
-        }}
-      >
-        <div style={{ fontSize: "11.5px", color: "#6B7280" }}>
-          <div style={{ color: "#9CA3AF", fontWeight: 600, marginBottom: "2px" }}>Default Credentials:</div>
-          Username: <code>admin</code> (or <code>admin@krono.luxury</code>) / Password: <code>Admin@1234</code>
-        </div>
-        <button
-          type="button"
-          onClick={handleFillDemo}
-          style={{
-            padding: "6px 10px",
-            background: "#161920",
-            border: "1px solid #2A303C",
-            borderRadius: "6px",
-            color: "#38BDF8",
-            fontSize: "11px",
-            fontWeight: 600,
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-            transition: "all 120ms ease",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.background = "#1D232D";
-            (e.currentTarget as HTMLElement).style.borderColor = "#38BDF8";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.background = "#161920";
-            (e.currentTarget as HTMLElement).style.borderColor = "#2A303C";
-          }}
-        >
-          Autofill
-        </button>
-      </div>
 
       {/* Return to Public Boutique */}
       <div style={{ marginTop: "20px", textAlign: "center" }}>

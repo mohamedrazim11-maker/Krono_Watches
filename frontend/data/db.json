@@ -1032,40 +1032,16 @@
     {
       "id": "usr-admin-01",
       "user_id": "usr-admin-01",
-      "name": "Krono Atelier Director",
-      "full_name": "Krono Atelier Director",
+      "name": "Administrator",
+      "full_name": "Administrator",
       "email": "admin@krono.luxury",
       "password_hash": "$2b$10$fpvtcCOaApIIBbj98vzDDOwCRpnj2n7FUhYlzUi77plgpVo2unDaG",
       "role": "admin",
-      "phone": "+94 11 234 5678",
-      "address": "Galle Face Court, Colombo 03, Sri Lanka",
-      "status": "Active Administrator",
+      "phone": null,
+      "address": null,
+      "status": "Active",
       "created_at": "2026-10-10T18:32:54.029Z",
       "username": "admin"
-    },
-    {
-      "id": "user-1789451291557",
-      "name": "Lord Sterling",
-      "email": "collector_1789451291448@geneva-vault.ch",
-      "password_hash": "$2b$10$S82JP9orCtyDG9MENsQ59OkhNrRclsNvuGrkHP65DStL6aaDEBSw2",
-      "phone": "+41 22 700 0000",
-      "address": "Quai du Mont-Blanc 19, Geneva",
-      "status": "Active Member",
-      "created_at": "2026-09-15T05:48:11.557Z",
-      "secondary_address": "Krono Vault, Zurich"
-    },
-    {
-      "id": "usr-cust-02",
-      "user_id": "usr-cust-02",
-      "name": "A. Perera",
-      "full_name": "A. Perera",
-      "email": "customer@krono.luxury",
-      "password_hash": "$2b$10$rO233iyK3TBtoVaqs2sU8OcG/rIJy3kEFtpP2VtQUQdwGwBpqW6uy",
-      "role": "customer",
-      "phone": "+94 77 123 4567",
-      "address": "Alfred House Gardens, Colombo 03, Sri Lanka",
-      "status": "Active Member",
-      "created_at": "2026-10-10T18:32:54.029Z"
     },
     {
       "id": "user-1793007555682",
@@ -1082,111 +1058,8 @@
       "created_at": "2026-10-26T09:39:15.682Z"
     }
   ],
-  "orders": [
-    {
-      "id": "KR-1031",
-      "order_number": "KR-1031",
-      "customer_name": "A. Perera",
-      "customer_email": "a.perera@example.lk",
-      "total_amount": 385000,
-      "subtotal": 385000,
-      "status": "pending",
-      "payment_status": "pending",
-      "created_at": "2026-10-11T15:14:50.319Z",
-      "items": [
-        {
-          "product_id": "prod-1",
-          "product_name": "Aurelia Master Classic",
-          "quantity": 1,
-          "unit_price": 385000
-        }
-      ]
-    },
-    {
-      "id": "KR-1032",
-      "order_number": "KR-1032",
-      "customer_name": "N. Silva",
-      "customer_email": "n.silva@example.lk",
-      "total_amount": 295000,
-      "subtotal": 295000,
-      "status": "paid",
-      "payment_status": "completed",
-      "created_at": "2026-10-11T12:14:50.320Z",
-      "items": [
-        {
-          "product_id": "prod-2",
-          "product_name": "Speedmaster Chrono Titanium",
-          "quantity": 1,
-          "unit_price": 295000
-        }
-      ]
-    },
-    {
-      "id": "KR-1033",
-      "order_number": "KR-1033",
-      "customer_name": "K. Fernando",
-      "customer_email": "k.fernando@example.lk",
-      "total_amount": 490000,
-      "subtotal": 490000,
-      "status": "shipped",
-      "payment_status": "completed",
-      "created_at": "2026-10-11T09:14:50.320Z",
-      "items": [
-        {
-          "product_id": "prod-3",
-          "product_name": "Submariner Deep Black Ceramic",
-          "quantity": 1,
-          "unit_price": 490000
-        }
-      ]
-    }
-  ],
-  "order_items": [
-    {
-      "id": "item-KR-799175-0",
-      "order_item_id": "item-KR-799175-0",
-      "order_id": "KR-799175",
-      "product_id": "prod-1",
-      "product_name": "Aurelia Master Classic 40mm",
-      "quantity": 1,
-      "unit_price": 385000,
-      "subtotal": 385000,
-      "created_at": "2026-10-06T03:56:44.729Z"
-    },
-    {
-      "id": "item-KR-826582-0",
-      "order_item_id": "item-KR-826582-0",
-      "order_id": "KR-826582",
-      "product_id": "prod-casio-g-shock-ga-2100",
-      "product_name": "Casio G-Shock 'CasiOak' Carbon Core GA-2100",
-      "quantity": 1,
-      "unit_price": 100,
-      "subtotal": 100,
-      "created_at": "2026-10-04T19:33:11.200Z"
-    },
-    {
-      "id": "item-KR-182864-0",
-      "order_item_id": "item-KR-182864-0",
-      "order_id": "KR-182864",
-      "product_id": "prod-1",
-      "product_name": "Aurelia Master Classic 40mm",
-      "quantity": 1,
-      "unit_price": 385000,
-      "subtotal": 385000,
-      "created_at": "2026-10-04T19:30:28.006Z"
-    },
-    {
-      "id": "item-KR-566142-0",
-      "order_item_id": "item-KR-566142-0",
-      "order_id": "KR-566142",
-      "product_id": "prod-2",
-      "product_name": "Nova Chronograph Titanium 42mm",
-      "quantity": 1,
-      "unit_price": 295000,
-      "subtotal": 295000,
-      "created_at": "2026-10-04T19:11:09.518Z"
-    }
-  ],
+  "orders": [],
+  "order_items": [],
   "categories": [
     {
       "id": "cat-1",

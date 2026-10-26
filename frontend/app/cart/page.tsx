@@ -288,7 +288,7 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                {/* PROCEED TO CHECKOUT Button */}
+                {/* Checkout & Direct Payment Action Buttons */}
                 <div className="space-y-3 pt-2">
                   <Link
                     href="/checkout"
@@ -297,8 +297,26 @@ export default function CartPage() {
                     PROCEED TO CHECKOUT
                   </Link>
 
+                  <Link
+                    href="/checkout?step=payment"
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-[#14161C] hover:bg-[#1C2028] text-white border border-[#2E3440] hover:border-[#C5A059] text-center font-mono font-bold text-xs uppercase tracking-[0.12em] transition-all rounded-lg group"
+                  >
+                    <span className="text-[#C5A059]">⚡</span>
+                    <span>PROCEED TO PAYMENT</span>
+                    <span className="text-[#C5A059] group-hover:translate-x-1 transition-transform">→</span>
+                  </Link>
+
+                  {/* Payment Methods Badges */}
+                  <div className="flex flex-wrap items-center justify-center gap-1.5 py-1 text-[10px] font-mono text-[#8E95A5]">
+                    <span className="px-2 py-0.5 bg-[#14161C] border border-[#262A33] rounded text-white">VISA</span>
+                    <span className="px-2 py-0.5 bg-[#14161C] border border-[#262A33] rounded text-white">Mastercard</span>
+                    <span className="px-2 py-0.5 bg-[#14161C] border border-[#262A33] rounded text-[#C5A059]">PayHere</span>
+                    <span className="px-2 py-0.5 bg-[#14161C] border border-[#262A33] rounded">Bank Wire</span>
+                    <span className="px-2 py-0.5 bg-[#14161C] border border-[#262A33] rounded">COD</span>
+                  </div>
+
                   {/* Trust Notes matching Wireframe 1 */}
-                  <div className="text-center text-[10px] font-mono text-[#6E7585] tracking-wider">
+                  <div className="text-center text-[10px] font-mono text-[#6E7585] tracking-wider pt-1">
                     Secure payment · Warranty · Easy returns
                   </div>
                 </div>

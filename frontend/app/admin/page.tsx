@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
+import { useAuth } from "@/lib/AuthContext";
 import { fetchProducts, fetchOrders, fetchAdminUsers, Product, Order, AdminUser } from "@/lib/api";
 import { getProductImage } from "@/lib/productImages";
 import SmoothImage from "@/components/SmoothImage";
@@ -35,6 +36,7 @@ const S = {
 };
 
 export default function AdminDashboard() {
+  const { user: authUser } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -111,6 +113,85 @@ export default function AdminDashboard() {
     );
   }, [products, searchFilter]);
 
+  // Dynamic monthly sales breakdown for SVG chart
+  const monthlyData = useMemo(() => {
+    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    const now = new Date();
+    const months: { label: string; year: number; month: number; total: number }[] = [];
+
+    // Last 6 months
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push({
+        label: monthNames[d.getMonth()],
+        year: d.getFullYear(),
+        month: d.getMonth(),
+        total: 0,
+      });
+    }
+
+    for (const ord of orders) {
+      if (ord.created_at) {
+        const d = new Date(ord.created_at);
+        const match = months.find((m) => m.year === d.getFullYear() && m.month === d.getMonth());
+        if (match) {
+          match.total += Number(ord.total_amount) || 0;
+        }
+      }
+    }
+
+    const maxVal = Math.max(...months.map((m) => m.total), 1);
+    const points: [number, number][] = months.map((m, idx) => {
+      const x = 30 + idx * (520 / (months.length - 1));
+      const ratio = m.total / maxVal;
+      const y = m.total > 0 ? Math.round(130 - ratio * 90) : 130;
+      return [x, y];
+    });
+
+    const polylineStr = points.map(([x, y]) => `${x},${y}`).join(" ");
+    const polygonStr = `${points[0][0]},145 ` + points.map(([x, y]) => `${x},${y}`).join(" ") + ` ${points[points.length - 1][0]},145`;
+
+    return { months, points, polylineStr, polygonStr };
+  }, [orders]);
+
+  // Dynamic top selling watches derived from orders & active inventory
+  const topSellingWatches = useMemo(() => {
+    const soldMap: Record<string, { name: string; brand: string; count: number }> = {};
+    for (const ord of orders) {
+      if (Array.isArray(ord.items)) {
+        for (const item of ord.items) {
+          const pid = item.product_id || (item as any).id;
+          const name = item.product_name || (item as any).name || "Timepiece";
+          if (!soldMap[pid]) {
+            const prod = products.find((p) => p.id === pid);
+            soldMap[pid] = {
+              name,
+              brand: prod?.brand || "Swiss",
+              count: 0,
+            };
+          }
+          soldMap[pid].count += item.quantity || 1;
+        }
+      }
+    }
+
+    const sortedSold = Object.values(soldMap).sort((a, b) => b.count - a.count);
+    if (sortedSold.length > 0) {
+      return sortedSold.slice(0, 5).map((s) => ({
+        name: s.name,
+        brand: s.brand,
+        sales: `${s.count} sold`,
+      }));
+    }
+
+    // When no orders placed yet, display current vault pieces with actual stock count
+    return products.slice(0, 5).map((p) => ({
+      name: p.name,
+      brand: p.brand || "Swiss",
+      sales: `${p.stock_qty ?? (p as any).stock_count ?? 0} in vault`,
+    }));
+  }, [orders, products]);
+
   return (
     <div className="space-y-7">
       {/* Top Search & Admin Notification Bar matching Page 4 Wireframe */}
@@ -133,7 +214,7 @@ export default function AdminDashboard() {
           <span className="text-[#383E4B]">|</span>
           <span className="text-white font-semibold flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-            Director [Admin]
+            {authUser?.name || authUser?.email || "Administrator"}
           </span>
         </div>
       </div>
@@ -204,7 +285,7 @@ export default function AdminDashboard() {
             <span className="text-[11px] font-mono text-[#6E7585]">Monthly Performance</span>
           </div>
 
-          {/* Interactive SVG Line / Bar Chart Representation */}
+          {/* Interactive Dynamic SVG Line / Bar Chart Representation */}
           <div className="h-56 w-full flex flex-col justify-between py-2">
             <svg className="w-full h-40 overflow-visible" viewBox="0 0 600 160">
               <defs>
@@ -220,7 +301,7 @@ export default function AdminDashboard() {
 
               {/* Area fill */}
               <polygon
-                points="20,130 90,110 180,120 270,70 360,90 450,45 540,35 580,25 580,150 20,150"
+                points={monthlyData.polygonStr}
                 fill="url(#chartGrad)"
               />
               {/* Path line */}
@@ -228,50 +309,30 @@ export default function AdminDashboard() {
                 fill="none"
                 stroke="#C5A059"
                 strokeWidth="2.5"
-                points="20,130 90,110 180,120 270,70 360,90 450,45 540,35 580,25"
+                points={monthlyData.polylineStr}
               />
               {/* Data points */}
-              {[
-                [20, 130],
-                [90, 110],
-                [180, 120],
-                [270, 70],
-                [360, 90],
-                [450, 45],
-                [540, 35],
-                [580, 25],
-              ].map(([x, y], idx) => (
+              {monthlyData.points.map(([x, y], idx) => (
                 <circle key={idx} cx={x} cy={y} r="4" fill="#C5A059" stroke="#0E1015" strokeWidth="2" />
               ))}
             </svg>
 
             <div className="flex justify-between text-[10px] font-mono text-[#6E7585] pt-2 border-t border-[#1C2028]">
-              <span>MAY</span>
-              <span>JUN</span>
-              <span>JUL</span>
-              <span>AUG</span>
-              <span>SEP</span>
-              <span>OCT</span>
-              <span>NOV</span>
-              <span>DEC</span>
+              {monthlyData.months.map((m, idx) => (
+                <span key={idx}>{m.label}</span>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Right Card: TOP SELLING WATCHES matching wireframe */}
+        {/* Right Card: TOP SELLING WATCHES */}
         <div className="lg:col-span-4" style={S.card}>
           <h2 className="text-xs font-mono uppercase font-bold text-[#C5A059] tracking-[0.2em] border-b border-[#1C2028] pb-3 mb-4">
             TOP SELLING WATCHES
           </h2>
 
           <div className="divide-y divide-[#181B22] space-y-3">
-            {[
-              { name: "Aurelia Master Classic", brand: "Krono Swiss", sales: "14 sold" },
-              { name: "Speedmaster Chrono Titanium", brand: "Omega", sales: "11 sold" },
-              { name: "Vanta Sport Stealth 41mm", brand: "Rolex", sales: "9 sold" },
-              { name: "Submariner Deep Black Ceramic", brand: "Rolex", sales: "7 sold" },
-              { name: "Grand Horizon Rose Gold", brand: "Patek", sales: "5 sold" },
-            ].map((top, idx) => (
+            {topSellingWatches.map((top, idx) => (
               <div key={idx} className="pt-3 flex items-center justify-between text-xs font-mono">
                 <div>
                   <div className="text-white font-medium">{top.name}</div>

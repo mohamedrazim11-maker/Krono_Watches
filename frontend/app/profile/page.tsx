@@ -150,7 +150,7 @@ export default function ProfilePage() {
     );
   }
 
-  const defaultAddressDisplay = user.address || "Galle Face Court, Colombo 03, Sri Lanka";
+  const defaultAddressDisplay = user.address || "No shipping address on file yet. Click Edit to add your address.";
   const userInitials = (user.name || "Customer")
     .split(" ")
     .map((p) => p[0])
