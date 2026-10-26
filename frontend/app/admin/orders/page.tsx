@@ -510,7 +510,7 @@ export default function AdminOrdersPage() {
                               border: o.payment_status === "completed" ? "1px solid rgba(16, 185, 129, 0.3)" : "1px solid rgba(245, 158, 11, 0.3)",
                               cursor: "pointer",
                             }}
-                            onClick={() => handlePaymentStatusChange(o.id || o.order_number, o.payment_status === "completed" ? "pending" : "completed")}
+                            onClick={() => handlePaymentStatusChange(String(o.id || o.order_number || ""), o.payment_status === "completed" ? "pending" : "completed")}
                             title="Click to toggle payment confirmation"
                           >
                             {o.payment_status === "completed" ? "✓ Paid" : "⏳ Pending"}
@@ -523,7 +523,7 @@ export default function AdminOrdersPage() {
                         <select
                           value={o.status || "pending_payment"}
                           disabled={updatingId === (o.id || o.order_number)}
-                          onChange={(e) => handleStatusChange(o.id || o.order_number, e.target.value)}
+                          onChange={(e) => handleStatusChange(String(o.id || o.order_number || ""), e.target.value)}
                           style={{
                             background: statusObj.bg,
                             color: statusObj.text,
@@ -675,7 +675,7 @@ export default function AdminOrdersPage() {
                       </div>
                     </div>
                     <div style={{ fontWeight: 800, color: "#FFFFFF", fontFamily: "var(--font-mono, monospace)", fontSize: "13px" }}>
-                      {fmt(it.subtotal || it.unit_price * it.quantity)}
+                      {fmt(it.subtotal || (it.unit_price ?? it.price ?? 0) * it.quantity)}
                     </div>
                   </div>
                 ))}

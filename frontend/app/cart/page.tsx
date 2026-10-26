@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothImage from "@/components/SmoothImage";
-import CheckoutModal from "@/components/CheckoutModal";
 import { useCart } from "@/lib/CartContext";
 import { getProductImage } from "@/lib/productImages";
+import { fetchProducts, Product } from "@/lib/api";
 
 export default function CartPage() {
   const {
@@ -18,21 +18,30 @@ export default function CartPage() {
     grandTotal,
     discountAmount,
     appliedCoupon,
-    couponDiscountPercent,
     updateQuantity,
     removeFromCart,
     clearCart,
-    toggleWishlist,
-    isInWishlist,
     applyCoupon,
-    isCheckoutOpen,
-    setIsCheckoutOpen,
     toastMessage,
     showToast,
   } = useCart();
 
   const [couponInput, setCouponInput] = useState("");
   const [couponError, setCouponError] = useState("");
+  const [recommendedWatches, setRecommendedWatches] = useState<Product[]>([]);
+
+  useEffect(() => {
+    fetchProducts()
+      .then((prods) => {
+        if (prods && prods.length > 0) {
+          // Filter out items already in cart, pick first 3
+          const cartIds = new Set(cart.map((c) => c.product.id));
+          const available = prods.filter((p) => !cartIds.has(p.id));
+          setRecommendedWatches(available.slice(0, 3));
+        }
+      })
+      .catch(() => {});
+  }, [cart]);
 
   const formatCurrency = (amount: number) => {
     return `LKR ${Number(amount || 0).toLocaleString("en-US")}`;
@@ -44,15 +53,15 @@ export default function CartPage() {
     if (!couponInput.trim()) return;
     const success = applyCoupon(couponInput.trim());
     if (!success) {
-      setCouponError("Invalid coupon code. Try MONO20 or ROYAL20");
+      setCouponError("Invalid promo code. Try MONO20 or ROYAL20");
     } else {
       setCouponInput("");
-      showToast(`Coupon applied! 20% discount granted.`);
+      showToast(`Promo code applied! 20% discount granted.`);
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#050505] text-white selection:bg-[#C5A059] selection:text-black">
+    <div className="min-h-screen flex flex-col bg-[#07080A] text-white selection:bg-[#C5A059] selection:text-black font-sans">
       <Navbar cartCount={totalItems} />
 
       {/* Global Toast */}
@@ -63,228 +72,277 @@ export default function CartPage() {
         </div>
       )}
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-10 sm:py-14 space-y-10">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#1a1a1a] pb-6">
-          <div className="space-y-1">
-            <div className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#C5A059] font-bold">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12">
+        {/* Title matching Page 1 Wireframe: "Shopping Cart 3 items" */}
+        <div className="flex items-baseline justify-between border-b border-[#1A1D24] pb-6">
+          <div className="flex items-baseline gap-3">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-serif">
               Shopping Cart
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-tight text-white font-sans">
-              Your Cart
             </h1>
+            {isCartReady && (
+              <span className="text-xs sm:text-sm font-mono text-[#8E95A5]">
+                {totalItems} {totalItems === 1 ? "item" : "items"}
+              </span>
+            )}
           </div>
 
           {cart.length > 0 && (
-            <div className="flex items-center gap-4">
-              <span className="text-xs font-mono text-white/60">
-                {totalItems} {totalItems === 1 ? "Item" : "Items"} in Cart
-              </span>
-              <button
-                onClick={clearCart}
-                className="text-xs text-red-400 hover:text-red-300 font-mono underline uppercase tracking-wider"
-              >
-                Clear Cart
-              </button>
-            </div>
+            <button
+              onClick={clearCart}
+              className="text-xs font-mono text-[#8E95A5] hover:text-red-400 uppercase tracking-wider transition-colors"
+            >
+              Clear Cart
+            </button>
           )}
         </div>
 
         {!isCartReady ? (
-          <div className="bg-[#0D0D0D] border border-[#1a1a1a] p-12 text-center text-xs font-mono text-white/50">
+          <div className="bg-[#0E1015] border border-[#1E232B] p-12 text-center text-xs font-mono text-[#8E95A5]">
             Restoring your cart…
           </div>
         ) : cart.length === 0 ? (
           /* Empty Cart State */
-          <div className="bg-[#0D0D0D] border border-[#1a1a1a] p-12 sm:p-20 text-center space-y-6">
-            <div className="w-16 h-16 mx-auto rounded-full bg-[#141414] border border-[#2a2a2a] flex items-center justify-center text-2xl text-[#C5A059]">
+          <div className="bg-[#0E1015] border border-[#1E232B] rounded-xl p-12 sm:p-20 text-center space-y-6">
+            <div className="w-16 h-16 mx-auto rounded-full bg-[#15181F] border border-[#282E38] flex items-center justify-center text-2xl text-[#C5A059]">
               🛒
             </div>
             <div className="space-y-2 max-w-md mx-auto">
               <h2 className="text-xl font-bold uppercase tracking-tight text-white">
                 Your Cart is Empty
               </h2>
-              <p className="text-xs text-white/50 font-mono leading-relaxed">
-                You have not added any watches to your shopping cart yet. Explore our collection to find your watch.
+              <p className="text-xs text-[#8E95A5] font-mono leading-relaxed">
+                You have not added any watches to your shopping cart yet. Explore our curated calibres to begin.
               </p>
             </div>
             <div className="pt-2">
               <Link
                 href="/catalog"
-                className="inline-block px-8 py-3.5 bg-[#C5A059] text-black text-xs font-mono font-bold tracking-widest uppercase hover:bg-[#b08d48] transition-colors"
+                className="inline-block px-8 py-3.5 bg-[#C5A059] text-black text-xs font-mono font-bold tracking-widest uppercase hover:bg-[#b08d48] transition-colors rounded-lg"
               >
-                Shop Watches
+                Browse Catalogue
               </Link>
             </div>
           </div>
         ) : (
-          /* Cart Table & Checkout Summary */
+          /* Wireframe 2-Column Structure: Items List on Left, Order Summary Box on Right */
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Items Table */}
-            <div className="lg:col-span-8 bg-[#0D0D0D] border border-[#1a1a1a]">
-              <div className="p-4 border-b border-[#1a1a1a] flex justify-between items-center text-xs font-mono uppercase text-white/50">
-                <span>Product</span>
-                <span>Subtotal</span>
-              </div>
-
-              <div className="divide-y divide-[#1a1a1a]">
+            {/* Left Column: Cart Items List */}
+            <div className="lg:col-span-8 space-y-4">
+              <div className="bg-[#0E1015] border border-[#1E232B] rounded-xl divide-y divide-[#181B22] overflow-hidden">
                 {cart.map((item) => {
                   const resolvedImg = getProductImage(item.product.id, item.product.image_url);
                   const itemSubtotal = item.product.price * item.quantity;
-                  const isSaved = isInWishlist(item.product.id);
+                  const caseSize = item.product.case_size || "41mm";
+                  const movement = item.product.movement || "Automatic";
+                  const brandSpaced = (item.product.brand || "KRONO")
+                    .toUpperCase()
+                    .split("")
+                    .join(" ");
 
                   return (
                     <div
                       key={item.product.id}
-                      className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                      className="p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-5 transition-colors hover:bg-[#12141B]/50"
                     >
-                      <div className="flex items-center gap-4">
-                        <div className="w-20 h-20 bg-black border border-white/10 relative overflow-hidden flex-shrink-0">
+                      {/* Left: Image & Product Details */}
+                      <div className="flex items-center gap-5 min-w-0">
+                        {/* Square Image Container */}
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#14161C] border border-[#262A33] rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center p-1">
                           <SmoothImage
                             src={resolvedImg}
                             alt={item.product.name}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
                           />
                         </div>
 
-                        <div className="space-y-1">
-                          <div className="text-[10px] font-mono uppercase text-[#C5A059] font-bold">
-                            {item.product.brand}
+                        {/* Title, Brand & Specs */}
+                        <div className="space-y-1 min-w-0">
+                          <div className="text-[10px] font-mono tracking-[0.2em] uppercase text-[#C5A059] font-bold">
+                            {brandSpaced}
                           </div>
                           <Link
                             href={`/products/${item.product.id}`}
-                            className="block text-sm font-semibold text-white hover:text-[#C5A059] transition-colors"
+                            className="block text-sm sm:text-base font-semibold text-white hover:text-[#C5A059] transition-colors truncate"
                           >
                             {item.product.name}
                           </Link>
-                          <div className="text-xs font-mono text-white/50">
-                            Unit Price: {formatCurrency(item.product.price)}
-                          </div>
-                          <div className="flex items-center gap-3 pt-1 text-[11px] font-mono">
-                            <button
-                              onClick={() => {
-                                if (!isSaved) toggleWishlist(item.product);
-                                removeFromCart(item.product.id);
-                                showToast(`Moved to wishlist.`);
-                              }}
-                              className="text-white/40 hover:text-white underline"
-                            >
-                              Save for Later
-                            </button>
-                            <span>•</span>
-                            <button
-                              onClick={() => removeFromCart(item.product.id)}
-                              className="text-red-400 hover:text-red-300 underline"
-                            >
-                              Remove
-                            </button>
+                          <div className="text-xs font-mono text-[#8E95A5]">
+                            {caseSize} · {movement}
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-0 border-[#1a1a1a]">
-                        <div className="flex items-center border border-[#2a2a2a] bg-[#111]">
+                      {/* Right: Quantity Stepper, Total Price, Remove Link */}
+                      <div className="flex items-center justify-between sm:justify-end gap-6 pt-3 sm:pt-0 border-t sm:border-0 border-[#1A1D24]">
+                        {/* Stepper matching wireframe: – qty + */}
+                        <div className="flex items-center bg-[#14161C] border border-[#262A33] rounded-lg">
                           <button
+                            type="button"
                             onClick={() => updateQuantity(item.product.id, -1)}
-                            className="px-2.5 py-1 text-white/70 hover:text-white"
+                            className="w-8 h-8 flex items-center justify-center text-[#8E95A5] hover:text-white transition-colors text-sm font-mono cursor-pointer"
+                            aria-label="Decrease quantity"
                           >
-                            -
+                            –
                           </button>
-                          <span className="px-3 py-1 font-mono text-xs font-bold">{item.quantity}</span>
+                          <span className="w-8 text-center text-xs font-mono font-bold text-white">
+                            {item.quantity}
+                          </span>
                           <button
+                            type="button"
                             onClick={() => updateQuantity(item.product.id, 1)}
-                            className="px-2.5 py-1 text-white/70 hover:text-white"
+                            className="w-8 h-8 flex items-center justify-center text-[#8E95A5] hover:text-white transition-colors text-sm font-mono cursor-pointer"
+                            aria-label="Increase quantity"
                           >
                             +
                           </button>
                         </div>
 
-                        <div className="text-sm font-mono font-bold text-[#C5A059]">
+                        {/* Line Subtotal */}
+                        <div className="text-sm sm:text-base font-mono font-bold text-white min-w-[110px] text-right">
                           {formatCurrency(itemSubtotal)}
                         </div>
+
+                        {/* Remove Action */}
+                        <button
+                          type="button"
+                          onClick={() => removeFromCart(item.product.id)}
+                          className="text-xs font-mono text-[#8E95A5] hover:text-red-400 transition-colors cursor-pointer"
+                        >
+                          Remove
+                        </button>
                       </div>
                     </div>
                   );
                 })}
               </div>
+
+              {/* Continue Shopping Link matching Wireframe 1 */}
+              <div className="pt-2">
+                <Link
+                  href="/catalog"
+                  className="inline-flex items-center gap-2 text-xs font-mono text-[#8E95A5] hover:text-[#C5A059] transition-colors"
+                >
+                  <span>←</span>
+                  <span>Continue shopping</span>
+                </Link>
+              </div>
             </div>
 
-            {/* Order Summary Sidebar */}
-            <div className="lg:col-span-4 space-y-6">
-              <div className="bg-[#0D0D0D] border border-[#1a1a1a] p-6 space-y-5">
-                <h3 className="text-sm font-mono uppercase font-bold text-white tracking-widest border-b border-[#1a1a1a] pb-3">
-                  Order Summary
-                </h3>
+            {/* Right Column: ORDER SUMMARY matching Wireframe 1 */}
+            <div className="lg:col-span-4">
+              <div className="bg-[#0E1015] border border-[#282E38] rounded-xl p-6 sm:p-7 space-y-6 shadow-xl">
+                {/* Header */}
+                <h2 className="text-xs font-mono uppercase font-bold text-[#C5A059] tracking-[0.2em] border-b border-[#1E232B] pb-3">
+                  ORDER SUMMARY
+                </h2>
 
-                <div className="space-y-2.5 text-xs font-mono">
-                  <div className="flex justify-between text-white/60">
-                    <span>Subtotal:</span>
-                    <span>{formatCurrency(subtotal)}</span>
-                  </div>
-                  {discountAmount > 0 && (
-                    <div className="flex justify-between text-emerald-400">
-                      <span>Discount ({appliedCoupon}):</span>
-                      <span>- {formatCurrency(discountAmount)}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between text-white/60">
-                    <span>Insured Delivery:</span>
-                    <span className="text-emerald-400 uppercase">Free</span>
-                  </div>
-                  <div className="pt-3 border-t border-[#1a1a1a] flex justify-between text-base font-bold text-[#C5A059]">
-                    <span>Total:</span>
-                    <span>{formatCurrency(grandTotal)}</span>
-                  </div>
-                </div>
-
-                {/* Coupon Code Form */}
-                <form onSubmit={handleCouponSubmit} className="pt-2 border-t border-[#1a1a1a] space-y-2">
-                  <span className="block text-[10px] font-mono uppercase text-white/50">
-                    Coupon Code
-                  </span>
-                  <div className="flex gap-2">
+                {/* Promo Code Input matching wireframe: Promo code [ Apply ] */}
+                <form onSubmit={handleCouponSubmit} className="space-y-2">
+                  <div className="flex bg-[#14161C] border border-[#282E38] rounded-lg overflow-hidden focus-within:border-[#C5A059] transition-colors">
                     <input
                       type="text"
-                      placeholder="e.g. MONO20"
+                      placeholder="Promo code"
                       value={couponInput}
                       onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                      className="flex-1 bg-black border border-[#2a2a2a] px-3 py-2 text-xs text-white uppercase font-mono focus:outline-none focus:border-[#C5A059]"
+                      className="flex-1 bg-transparent px-3 py-2.5 text-xs text-white font-mono uppercase focus:outline-none placeholder:text-[#5E6573]"
                     />
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-white hover:bg-[#C5A059] text-black font-semibold text-xs font-mono uppercase transition-colors"
+                      className="px-4 py-2.5 bg-[#1C2028] hover:bg-[#282E38] text-[#C5A059] font-mono font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer border-l border-[#282E38]"
                     >
-                      Apply
+                      [ Apply ]
                     </button>
                   </div>
                   {couponError && (
                     <p className="text-[11px] text-red-400 font-mono">{couponError}</p>
                   )}
+                  {appliedCoupon && (
+                    <p className="text-[11px] text-emerald-400 font-mono">
+                      ✓ Promo code {appliedCoupon} applied (20% off)
+                    </p>
+                  )}
                 </form>
 
-                <div className="pt-2 space-y-2">
+                {/* Subtotal, Shipping, Total */}
+                <div className="space-y-3 text-xs font-mono">
+                  <div className="flex justify-between text-[#8E95A5]">
+                    <span>Subtotal</span>
+                    <span className="text-white font-semibold">{formatCurrency(subtotal)}</span>
+                  </div>
+
+                  {discountAmount > 0 && (
+                    <div className="flex justify-between text-emerald-400">
+                      <span>Discount ({appliedCoupon})</span>
+                      <span>- {formatCurrency(discountAmount)}</span>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between text-[#8E95A5]">
+                    <span>Shipping</span>
+                    <span className="text-white">Calculated at checkout</span>
+                  </div>
+
+                  <div className="pt-4 border-t border-[#1E232B] flex justify-between items-baseline text-sm font-bold text-white">
+                    <span>Total</span>
+                    <span className="text-base text-[#C5A059] font-mono">{formatCurrency(grandTotal)}</span>
+                  </div>
+                </div>
+
+                {/* PROCEED TO CHECKOUT Button */}
+                <div className="space-y-3 pt-2">
                   <Link
                     href="/checkout"
-                    className="block w-full py-3.5 bg-[#C5A059] hover:bg-[#b08d48] text-black text-center font-bold text-xs font-mono tracking-widest uppercase transition-all shadow-lg hover:shadow-[#C5A059]/20"
+                    className="block w-full py-3.5 bg-[#C5A059] hover:bg-[#D4AF37] text-black text-center font-bold text-xs uppercase tracking-[0.15em] transition-all rounded-lg shadow-lg hover:shadow-[#C5A059]/20"
                   >
-                    Proceed to Checkout →
+                    PROCEED TO CHECKOUT
                   </Link>
-                  <div className="flex items-center justify-center gap-1.5 text-[10px] font-mono text-white/50 pt-1">
-                    <span>💳 PayHere Gateway</span>
-                    <span>•</span>
-                    <span>LKR Cards &amp; Wallets</span>
+
+                  {/* Trust Notes matching Wireframe 1 */}
+                  <div className="text-center text-[10px] font-mono text-[#6E7585] tracking-wider">
+                    Secure payment · Warranty · Easy returns
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
 
-              {/* Guarantees note */}
-              <div className="bg-[#0D0D0D] border border-[#1a1a1a] p-4 text-[11px] font-mono text-white/50 space-y-1.5">
-                <div className="flex items-center gap-2 text-[#C5A059] font-bold">
-                  <span>✦</span>
-                  <span className="uppercase tracking-wider">Krono Guarantee</span>
-                </div>
-                <p>Every watch includes manufacturer international warranty, certified serial authenticity, and full transit insurance.</p>
-              </div>
+        {/* Wireframe 1: YOU MAY ALSO LIKE Section */}
+        {recommendedWatches.length > 0 && (
+          <div className="pt-8 border-t border-[#1A1D24] space-y-6">
+            <h3 className="text-xs font-mono uppercase font-bold text-[#C5A059] tracking-[0.25em]">
+              YOU MAY ALSO LIKE
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {recommendedWatches.map((rec) => {
+                const img = getProductImage(rec.id, rec.image_url);
+                return (
+                  <Link
+                    key={rec.id}
+                    href={`/products/${rec.id}`}
+                    className="group bg-[#0E1015] border border-[#1E232B] hover:border-[#C5A059]/50 rounded-xl p-5 space-y-4 transition-all"
+                  >
+                    {/* Square Image Box */}
+                    <div className="aspect-square w-full bg-[#14161C] border border-[#262A33] rounded-lg overflow-hidden p-4 flex items-center justify-center">
+                      <SmoothImage
+                        src={img}
+                        alt={rec.name}
+                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="text-sm font-semibold text-white group-hover:text-[#C5A059] transition-colors truncate">
+                        {rec.name}
+                      </div>
+                      <div className="text-xs font-mono font-bold text-[#C5A059]">
+                        {formatCurrency(rec.price)}
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         )}

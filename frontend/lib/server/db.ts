@@ -40,13 +40,14 @@ export function readLocalDb(): any {
 
     // Ensure default admin and customer user exists (Milestone 4 - Slide 8)
     const adminEmail = (process.env.ADMIN_EMAIL || 'admin@krono.luxury').toLowerCase();
-    const hasAdmin = data.users.some((u: any) => u.email.toLowerCase() === adminEmail || u.role === 'admin');
+    const hasAdmin = data.users.some((u: any) => u.email?.toLowerCase() === adminEmail || u.role === 'admin' || u.username === 'admin');
     if (!hasAdmin) {
       data.users.unshift({
         id: 'usr-admin-01',
         user_id: 'usr-admin-01',
         name: 'Krono Atelier Director',
         full_name: 'Krono Atelier Director',
+        username: 'admin',
         email: adminEmail,
         password_hash: '$2b$10$fpvtcCOaApIIBbj98vzDDOwCRpnj2n7FUhYlzUi77plgpVo2unDaG', // Admin@1234
         role: 'admin',
@@ -56,6 +57,13 @@ export function readLocalDb(): any {
         created_at: new Date().toISOString(),
       });
       mutated = true;
+    } else {
+      for (const u of data.users) {
+        if (u.role === 'admin' && !u.username) {
+          u.username = 'admin';
+          mutated = true;
+        }
+      }
     }
 
     const hasCustomer = data.users.some((u: any) => u.email === 'customer@krono.luxury');
@@ -696,6 +704,30 @@ export async function getUserByEmail(email: string) {
   return (db.users || []).find((u: any) => u.email === email) || null;
 }
 
+export async function getUserByEmailOrUsername(identity: string) {
+  const clean = identity.trim().toLowerCase();
+  const db = readLocalDb();
+  const found = (db.users || []).find(
+    (u: any) =>
+      u.email?.toLowerCase() === clean ||
+      u.username?.toLowerCase() === clean ||
+      (clean === 'admin' && u.role === 'admin')
+  );
+  if (found) return found;
+
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .or(`email.eq.${clean},username.eq.${clean}`)
+        .maybeSingle();
+      if (!error && data) return data;
+    } catch {}
+  }
+  return null;
+}
+
 export async function getUserById(id: string) {
   if (supabase) {
     try {
@@ -711,25 +743,37 @@ export async function createUser({
   name,
   email,
   hashedPw,
+  password_hash,
   role = 'customer',
+  username,
+  phone,
+  address,
+  status,
 }: {
   name: string;
   email: string;
-  hashedPw: string;
+  hashedPw?: string;
+  password_hash?: string;
   role?: string;
+  username?: string;
+  phone?: string;
+  address?: string;
+  status?: string;
 }) {
   const userId = `user-${Date.now()}`;
+  const finalHash = hashedPw || password_hash || '';
   const newUser = {
     id: userId,
     user_id: userId,
     name,
     full_name: name,
+    username: username || email.split('@')[0],
     email,
-    password_hash: hashedPw,
+    password_hash: finalHash,
     role: role || 'customer',
-    phone: null,
-    address: null,
-    status: 'Active Member',
+    phone: phone || null,
+    address: address || null,
+    status: status || 'Active Member',
     created_at: new Date().toISOString(),
   };
 
@@ -739,9 +783,9 @@ export async function createUser({
         id: newUser.id,
         name,
         email,
-        password_hash: hashedPw,
+        password_hash: finalHash,
         role: newUser.role,
-        status: 'Active Member',
+        status: newUser.status,
         created_at: newUser.created_at,
       }]).select().single();
       if (!error && data) return data;
@@ -770,4 +814,46 @@ export async function updateUser(id: string, fields: any) {
   db.users[idx] = { ...db.users[idx], ...fields };
   writeLocalDb(db);
   return db.users[idx];
+}
+
+export async function getAllUsers(query?: string) {
+  const db = readLocalDb();
+  let users = (db.users || []).map((u: any) => {
+    const { password_hash, ...safeUser } = u;
+    return safeUser;
+  });
+
+  if (query && query.trim()) {
+    const q = query.trim().toLowerCase();
+    users = users.filter((u: any) =>
+      u.name?.toLowerCase().includes(q) ||
+      u.email?.toLowerCase().includes(q) ||
+      u.username?.toLowerCase().includes(q) ||
+      u.role?.toLowerCase().includes(q) ||
+      u.phone?.toLowerCase().includes(q)
+    );
+  }
+
+  return users;
+}
+
+export async function deleteUser(id: string) {
+  const db = readLocalDb();
+  db.users = db.users || [];
+  const idx = db.users.findIndex((u: any) => u.id === id);
+  if (idx === -1) throw new Error('User not found');
+  const target = db.users[idx];
+  if (target.role === 'admin' && (target.email === 'admin@krono.luxury' || target.username === 'admin')) {
+    throw new Error('Primary system administrator cannot be deleted');
+  }
+
+  if (supabase) {
+    try {
+      await supabase.from('users').delete().eq('id', id);
+    } catch {}
+  }
+
+  const [removed] = db.users.splice(idx, 1);
+  writeLocalDb(db);
+  return { success: true, user: removed };
 }

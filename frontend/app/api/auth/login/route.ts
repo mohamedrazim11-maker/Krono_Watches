@@ -4,21 +4,24 @@ import {
   comparePassword,
   generateToken,
 } from '@/lib/server/auth';
-import { getUserByEmail } from '@/lib/server/db';
+import { getUserByEmailOrUsername } from '@/lib/server/db';
 import * as sessionManager from '@/lib/server/sessionManager';
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password, rememberMe = false } = await req.json();
+    const body = await req.json();
+    const identity = String(body.username || body.email || '').trim();
+    const { password, rememberMe = false } = body;
 
-    if (!email || !password) {
+    if (!identity || !password) {
       return NextResponse.json(
-        { success: false, message: 'Email and password are required.' },
+        { success: false, message: 'Username/email and password are required.' },
         { status: 400 }
       );
     }
 
-    if (!EMAIL_REGEX.test(email.trim())) {
+    // Only enforce email regex format if the user explicitly provided an '@'
+    if (identity.includes('@') && !EMAIL_REGEX.test(identity)) {
       return NextResponse.json(
         { success: false, message: 'Invalid email address format.' },
         { status: 400 }
@@ -26,15 +29,24 @@ export async function POST(req: NextRequest) {
     }
 
     const envAdminEmail = (process.env.ADMIN_EMAIL || 'admin@krono.luxury').toLowerCase();
+    const envAdminUsername = (process.env.ADMIN_USERNAME || 'admin').toLowerCase();
     const envAdminPassword = process.env.ADMIN_PASSWORD || 'Admin@1234';
 
-    let user = await getUserByEmail(email.trim().toLowerCase());
-    
+    const cleanIdentity = identity.toLowerCase();
+    const isAdminIdentity =
+      cleanIdentity === 'admin' ||
+      cleanIdentity === 'administrator' ||
+      cleanIdentity === envAdminUsername ||
+      cleanIdentity === envAdminEmail;
+
+    let user = await getUserByEmailOrUsername(cleanIdentity);
+
     // Auto-provision admin user if logging in with valid environment admin credentials
-    if (!user && email.trim().toLowerCase() === envAdminEmail && password === envAdminPassword) {
+    if (!user && isAdminIdentity && password === envAdminPassword) {
       user = {
         id: 'usr-admin-01',
         name: 'Krono Atelier Director',
+        username: 'admin',
         email: envAdminEmail,
         role: 'admin',
         status: 'Active Administrator',
@@ -46,14 +58,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Invalid credentials. Please verify your email and password.',
+          message: 'Invalid credentials. Please verify your username/email and password.',
         },
         { status: 401 }
       );
     }
 
     let isMatch = false;
-    if ((user.role === 'admin' || email.trim().toLowerCase() === envAdminEmail) && password === envAdminPassword) {
+    if ((user.role === 'admin' || isAdminIdentity) && password === envAdminPassword) {
       isMatch = true;
     } else if (user.password_hash) {
       isMatch = await comparePassword(password, user.password_hash);

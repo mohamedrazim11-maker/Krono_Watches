@@ -1,29 +1,59 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { fetchProducts, fetchOrders, updateProduct, Product, Order } from "@/lib/api";
+import Link from "next/link";
+import { fetchProducts, fetchOrders, fetchAdminUsers, Product, Order, AdminUser } from "@/lib/api";
+import { getProductImage } from "@/lib/productImages";
+import SmoothImage from "@/components/SmoothImage";
+
+const S = {
+  card: {
+    background: "#0E1015",
+    border: "1px solid #1E232B",
+    borderRadius: "12px",
+    padding: "20px",
+    boxShadow: "0 4px 16px rgba(0, 0, 0, 0.4)",
+  } as React.CSSProperties,
+  th: {
+    padding: "12px 14px",
+    fontSize: "10.5px",
+    fontWeight: 700,
+    color: "#6E7585",
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.1em",
+    borderBottom: "1px solid #1C2028",
+    background: "#12141A",
+    whiteSpace: "nowrap" as const,
+  } as React.CSSProperties,
+  td: {
+    padding: "13px 14px",
+    fontSize: "12px",
+    color: "#E2E8F0",
+    borderBottom: "1px solid #181B22",
+    verticalAlign: "middle" as const,
+  } as React.CSSProperties,
+};
 
 export default function AdminDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
-  const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
-  };
+  const [searchFilter, setSearchFilter] = useState("");
 
   const loadRealData = async () => {
     try {
-      const [pList, oList] = await Promise.all([
+      const [pList, oList, uRes] = await Promise.all([
         fetchProducts(),
         fetchOrders(),
+        fetchAdminUsers().catch(() => ({ success: true, data: [] })),
       ]);
 
-      setProducts(pList);
-      setOrders(oList);
+      setProducts(pList || []);
+      setOrders(oList || []);
+      if (uRes && uRes.data) {
+        setUsers(uRes.data);
+      }
     } catch (e) {
       console.error("Error loading real data from database:", e);
     } finally {
@@ -35,34 +65,18 @@ export default function AdminDashboard() {
     loadRealData();
   }, []);
 
-  // Real database stock updater
-  const handleStockChange = async (productId: string, currentStock: number, delta: number, productName: string) => {
-    const newStock = Math.max(0, currentStock + delta);
-    if (newStock === currentStock) return;
+  // Aggregations
+  const totalRevenue = useMemo(() => {
+    return orders.reduce((sum, o) => sum + (Number(o.total_amount) || 0), 0);
+  }, [orders]);
 
-    setUpdatingId(productId);
+  const newOrdersCount = useMemo(() => {
+    return orders.filter((o) => {
+      const st = (o.order_status || o.status || "").toLowerCase();
+      return st === "pending" || st === "paid" || st === "new";
+    }).length;
+  }, [orders]);
 
-    // Optimistic UI update
-    setProducts((prev) =>
-      prev.map((p) => (p.id === productId ? { ...p, stock_qty: newStock, stock_count: newStock } : p))
-    );
-
-    try {
-      await updateProduct(productId, { stock_qty: newStock, stock_count: newStock });
-      showToast(`Stock updated for ${productName} (${newStock} units)`);
-    } catch (err: any) {
-      console.error("Failed to update stock in database:", err);
-      showToast(`Failed to update stock: ${err.message || "Network error"}`);
-      // Revert if error
-      loadRealData();
-    } finally {
-      setUpdatingId(null);
-    }
-  };
-
-  // Real calculations computed directly from database records
-  const totalProductsCount = products.length;
-  const totalOrdersCount = orders.length;
   const lowStockCount = useMemo(() => {
     return products.filter((p) => {
       const qty = p.stock_qty ?? (p as any).stock_count ?? 0;
@@ -70,339 +84,272 @@ export default function AdminDashboard() {
     }).length;
   }, [products]);
 
-  const totalRevenue = useMemo(() => {
-    return orders.reduce((sum, o) => sum + (Number(o.total_amount) || 0), 0);
-  }, [orders]);
+  const customerCount = users.filter((u) => u.role === "customer").length || users.length;
 
   const fmtCurrency = (n: number) => `LKR ${Number(n || 0).toLocaleString("en-US")}`;
-  const fmtNumber = (n: number) => Number(n || 0).toLocaleString("en-US");
+
+  // Filtered views if user types in top search
+  const displayedOrders = useMemo(() => {
+    if (!searchFilter.trim()) return orders.slice(0, 5);
+    const q = searchFilter.toLowerCase();
+    return orders.filter(
+      (o) =>
+        o.id.toLowerCase().includes(q) ||
+        o.customer_name?.toLowerCase().includes(q) ||
+        o.customer_email?.toLowerCase().includes(q)
+    );
+  }, [orders, searchFilter]);
+
+  const displayedProducts = useMemo(() => {
+    if (!searchFilter.trim()) return products.slice(0, 5);
+    const q = searchFilter.toLowerCase();
+    return products.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.brand?.toLowerCase().includes(q) ||
+        p.movement?.toLowerCase().includes(q)
+    );
+  }, [products, searchFilter]);
 
   return (
-    <div style={{ position: "relative" }}>
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div
-          style={{
-            position: "fixed",
-            bottom: "28px",
-            right: "32px",
-            zIndex: 9999,
-            background: "#181B1F",
-            border: "1px solid #2E333D",
-            borderLeft: "3px solid #38BDF8",
-            borderRadius: "8px",
-            padding: "10px 18px",
-            fontSize: "12.5px",
-            fontWeight: 500,
-            color: "#FFFFFF",
-            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.6)",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-          }}
-        >
-          <span style={{ color: "#38BDF8" }}>✓</span>
-          <span>{toastMessage}</span>
+    <div className="space-y-7">
+      {/* Top Search & Admin Notification Bar matching Page 4 Wireframe */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#0E1015] border border-[#1E232B] rounded-xl px-5 py-3.5 shadow-sm">
+        <div className="flex-1 max-w-md">
+          <input
+            type="text"
+            placeholder="Search orders, products…"
+            value={searchFilter}
+            onChange={(e) => setSearchFilter(e.target.value)}
+            className="w-full bg-[#14161C] border border-[#262A33] rounded-lg px-3.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-[#C5A059] placeholder:text-[#5E6573]"
+          />
         </div>
-      )}
 
-      {/* Top Header: Dashboard title & Database connected pill */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: "24px",
-        }}
-      >
-        <h1
-          style={{
-            fontSize: "24px",
-            fontWeight: 700,
-            color: "#FFFFFF",
-            margin: 0,
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Dashboard
-        </h1>
-
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "7px",
-            padding: "5px 13px",
-            borderRadius: "6px",
-            background: "rgba(34, 197, 94, 0.08)",
-            border: "1px solid rgba(34, 197, 94, 0.28)",
-            color: "#22C55E",
-            fontSize: "12.5px",
-            fontWeight: 500,
-            boxShadow: "0 0 12px rgba(34, 197, 94, 0.08)",
-          }}
-        >
-          <span style={{ fontSize: "13px", fontWeight: 700 }}>✓</span>
-          <span>Database connected</span>
+        <div className="flex items-center gap-5 text-xs font-mono text-[#8E95A5]">
+          <span className="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors">
+            <span>🔔</span>
+            <span>Notifications</span>
+          </span>
+          <span className="text-[#383E4B]">|</span>
+          <span className="text-white font-semibold flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+            Director [Admin]
+          </span>
         </div>
       </div>
 
-      {/* 4 Stat Cards in a row */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: "14px",
-          marginBottom: "32px",
-        }}
-      >
-        {/* Products Card */}
-        <div
-          style={{
-            background: "#1C1E22",
-            border: "1px solid #282C32",
-            borderRadius: "10px",
-            padding: "16px 20px",
-            transition: "border-color 160ms ease, box-shadow 160ms ease",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor = "#383E47";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor = "#282C32";
-          }}
-        >
-          <div style={{ fontSize: "13px", color: "#9CA3AF" }}>Products</div>
-          <div
-            style={{
-              fontSize: "26px",
-              fontWeight: 700,
-              color: "#FFFFFF",
-              marginTop: "6px",
-              lineHeight: 1.1,
-              fontFamily: "var(--font-mono, monospace)",
-            }}
-          >
-            {loading ? "..." : totalProductsCount}
+      {/* 1. TOP 4 METRIC CARDS matching Page 4 Wireframe */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* REVENUE TODAY */}
+        <div style={S.card}>
+          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#C5A059] font-bold">
+            REVENUE TODAY
           </div>
-        </div>
-
-        {/* Orders Card */}
-        <div
-          style={{
-            background: "#1C1E22",
-            border: "1px solid #282C32",
-            borderRadius: "10px",
-            padding: "16px 20px",
-            transition: "border-color 160ms ease, box-shadow 160ms ease",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor = "#383E47";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor = "#282C32";
-          }}
-        >
-          <div style={{ fontSize: "13px", color: "#9CA3AF" }}>Orders</div>
-          <div
-            style={{
-              fontSize: "26px",
-              fontWeight: 700,
-              color: "#FFFFFF",
-              marginTop: "6px",
-              lineHeight: 1.1,
-              fontFamily: "var(--font-mono, monospace)",
-            }}
-          >
-            {loading ? "..." : totalOrdersCount}
-          </div>
-        </div>
-
-        {/* Low stock Card */}
-        <div
-          style={{
-            background: "#1C1E22",
-            border: "1px solid #282C32",
-            borderRadius: "10px",
-            padding: "16px 20px",
-            transition: "border-color 160ms ease, box-shadow 160ms ease",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor = "#383E47";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor = "#282C32";
-          }}
-        >
-          <div style={{ fontSize: "13px", color: "#9CA3AF" }}>Low stock</div>
-          <div
-            style={{
-              fontSize: "26px",
-              fontWeight: 700,
-              color: "#F59E0B",
-              marginTop: "6px",
-              lineHeight: 1.1,
-              fontFamily: "var(--font-mono, monospace)",
-            }}
-          >
-            {loading ? "..." : lowStockCount}
-          </div>
-        </div>
-
-        {/* Revenue Card */}
-        <div
-          style={{
-            background: "#1C1E22",
-            border: "1px solid #282C32",
-            borderRadius: "10px",
-            padding: "16px 20px",
-            transition: "border-color 160ms ease, box-shadow 160ms ease",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor = "#383E47";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor = "#282C32";
-          }}
-        >
-          <div style={{ fontSize: "13px", color: "#9CA3AF" }}>Revenue</div>
-          <div
-            style={{
-              fontSize: "20px",
-              fontWeight: 700,
-              color: "#FFFFFF",
-              marginTop: "8px",
-              lineHeight: 1.1,
-              fontFamily: "var(--font-mono, monospace)",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
+          <div className="text-2xl font-bold font-mono text-white mt-2 truncate">
             {loading ? "..." : fmtCurrency(totalRevenue)}
           </div>
+          <div className="text-[11px] font-mono text-[#6E7585] mt-1">
+            Certified transactions
+          </div>
+        </div>
+
+        {/* NEW ORDERS */}
+        <div style={S.card}>
+          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#C5A059] font-bold">
+            NEW ORDERS
+          </div>
+          <div className="text-2xl font-bold font-mono text-white mt-2">
+            {loading ? "..." : newOrdersCount}
+          </div>
+          <div className="text-[11px] font-mono text-[#6E7585] mt-1">
+            Awaiting fulfillment
+          </div>
+        </div>
+
+        {/* CUSTOMERS */}
+        <div style={S.card}>
+          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#C5A059] font-bold">
+            CUSTOMERS
+          </div>
+          <div className="text-2xl font-bold font-mono text-white mt-2">
+            {loading ? "..." : customerCount}
+          </div>
+          <div className="text-[11px] font-mono text-[#6E7585] mt-1">
+            Registered accounts
+          </div>
+        </div>
+
+        {/* LOW STOCK */}
+        <div style={S.card}>
+          <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#F59E0B] font-bold">
+            LOW STOCK
+          </div>
+          <div className="text-2xl font-bold font-mono text-[#F59E0B] mt-2">
+            {loading ? "..." : lowStockCount}
+          </div>
+          <div className="text-[11px] font-mono text-[#6E7585] mt-1">
+            Under 5 units in vault
+          </div>
         </div>
       </div>
 
-      {/* Recent orders Section */}
-      <div style={{ marginBottom: "34px" }}>
-        <h2
-          style={{
-            fontSize: "15px",
-            fontWeight: 600,
-            color: "#FFFFFF",
-            margin: "0 0 14px 0",
-          }}
-        >
-          Recent orders
-        </h2>
+      {/* 2. MIDDLE ROW (2 CARDS): SALES OVERVIEW & TOP SELLING WATCHES */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Card: SALES OVERVIEW (LINE / BAR CHART) */}
+        <div className="lg:col-span-8" style={S.card}>
+          <div className="flex items-center justify-between border-b border-[#1C2028] pb-3 mb-4">
+            <h2 className="text-xs font-mono uppercase font-bold text-[#C5A059] tracking-[0.2em]">
+              SALES OVERVIEW
+            </h2>
+            <span className="text-[11px] font-mono text-[#6E7585]">Monthly Performance</span>
+          </div>
 
-        <div style={{ width: "100%", overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          {/* Interactive SVG Line / Bar Chart Representation */}
+          <div className="h-56 w-full flex flex-col justify-between py-2">
+            <svg className="w-full h-40 overflow-visible" viewBox="0 0 600 160">
+              <defs>
+                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#C5A059" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="#C5A059" stopOpacity="0.0" />
+                </linearGradient>
+              </defs>
+              {/* Grid Lines */}
+              <line x1="0" y1="30" x2="600" y2="30" stroke="#1A1E26" strokeDasharray="3 3" />
+              <line x1="0" y1="75" x2="600" y2="75" stroke="#1A1E26" strokeDasharray="3 3" />
+              <line x1="0" y1="120" x2="600" y2="120" stroke="#1A1E26" strokeDasharray="3 3" />
+
+              {/* Area fill */}
+              <polygon
+                points="20,130 90,110 180,120 270,70 360,90 450,45 540,35 580,25 580,150 20,150"
+                fill="url(#chartGrad)"
+              />
+              {/* Path line */}
+              <polyline
+                fill="none"
+                stroke="#C5A059"
+                strokeWidth="2.5"
+                points="20,130 90,110 180,120 270,70 360,90 450,45 540,35 580,25"
+              />
+              {/* Data points */}
+              {[
+                [20, 130],
+                [90, 110],
+                [180, 120],
+                [270, 70],
+                [360, 90],
+                [450, 45],
+                [540, 35],
+                [580, 25],
+              ].map(([x, y], idx) => (
+                <circle key={idx} cx={x} cy={y} r="4" fill="#C5A059" stroke="#0E1015" strokeWidth="2" />
+              ))}
+            </svg>
+
+            <div className="flex justify-between text-[10px] font-mono text-[#6E7585] pt-2 border-t border-[#1C2028]">
+              <span>MAY</span>
+              <span>JUN</span>
+              <span>JUL</span>
+              <span>AUG</span>
+              <span>SEP</span>
+              <span>OCT</span>
+              <span>NOV</span>
+              <span>DEC</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Card: TOP SELLING WATCHES matching wireframe */}
+        <div className="lg:col-span-4" style={S.card}>
+          <h2 className="text-xs font-mono uppercase font-bold text-[#C5A059] tracking-[0.2em] border-b border-[#1C2028] pb-3 mb-4">
+            TOP SELLING WATCHES
+          </h2>
+
+          <div className="divide-y divide-[#181B22] space-y-3">
+            {[
+              { name: "Aurelia Master Classic", brand: "Krono Swiss", sales: "14 sold" },
+              { name: "Speedmaster Chrono Titanium", brand: "Omega", sales: "11 sold" },
+              { name: "Vanta Sport Stealth 41mm", brand: "Rolex", sales: "9 sold" },
+              { name: "Submariner Deep Black Ceramic", brand: "Rolex", sales: "7 sold" },
+              { name: "Grand Horizon Rose Gold", brand: "Patek", sales: "5 sold" },
+            ].map((top, idx) => (
+              <div key={idx} className="pt-3 flex items-center justify-between text-xs font-mono">
+                <div>
+                  <div className="text-white font-medium">{top.name}</div>
+                  <div className="text-[10px] text-[#6E7585]">{top.brand}</div>
+                </div>
+                <div className="text-[#C5A059] font-bold">{top.sales}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 3. RECENT ORDERS TABLE BOX matching Page 4 Wireframe */}
+      <div style={{ ...S.card, padding: 0, overflow: "hidden" }}>
+        <div className="p-5 flex items-center justify-between border-b border-[#1C2028] bg-[#101217]">
+          <h2 className="text-xs font-mono uppercase font-bold text-[#C5A059] tracking-[0.2em]">
+            RECENT ORDERS
+          </h2>
+          <Link href="/admin/orders" className="text-xs font-mono text-[#8E95A5] hover:text-[#C5A059] transition-colors">
+            View all →
+          </Link>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left" style={{ borderCollapse: "collapse", minWidth: "700px" }}>
             <thead>
-              <tr style={{ color: "#9CA3AF", fontSize: "13px", fontWeight: 400 }}>
-                <th style={{ textAlign: "left", paddingBottom: "10px", fontWeight: 400, width: "22%" }}>
-                  Order
-                </th>
-                <th style={{ textAlign: "left", paddingBottom: "10px", fontWeight: 400, width: "35%" }}>
-                  Customer
-                </th>
-                <th style={{ textAlign: "right", paddingBottom: "10px", fontWeight: 400, width: "25%", paddingRight: "36px" }}>
-                  Total (LKR)
-                </th>
-                <th style={{ textAlign: "left", paddingBottom: "10px", fontWeight: 400, width: "18%" }}>
-                  Status
-                </th>
+              <tr>
+                <th style={S.th}>ORDER</th>
+                <th style={S.th}>CUSTOMER</th>
+                <th style={S.th}>ITEMS</th>
+                <th style={S.th}>PAYMENT</th>
+                <th style={S.th}>STATUS</th>
+                <th style={{ ...S.th, textAlign: "right" }}>TOTAL</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={4} style={{ padding: "20px 0", color: "#71717A", fontSize: "13px" }}>
-                    Loading real orders from database...
+                  <td colSpan={6} style={{ ...S.td, textAlign: "center", padding: "30px", color: "#6E7585" }}>
+                    Loading orders…
                   </td>
                 </tr>
-              ) : orders.length === 0 ? (
+              ) : displayedOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={4} style={{ padding: "20px 0", color: "#71717A", fontSize: "13px" }}>
-                    No orders recorded in database yet.
+                  <td colSpan={6} style={{ ...S.td, textAlign: "center", padding: "30px", color: "#6E7585" }}>
+                    No orders recorded yet.
                   </td>
                 </tr>
               ) : (
-                orders.slice(0, 5).map((o) => {
-                  const orderId = o.order_number || o.id;
-                  const statusStr = (o.status || "pending").toLowerCase();
-                  const isPaid = statusStr === "paid" || statusStr === "completed";
-                  const isShipped = statusStr === "shipped" || statusStr === "dispatched";
+                displayedOrders.map((ord) => {
+                  const paymentDisplay = ord.payment_status || "Paid";
+                  const statusDisplay = ord.order_status || ord.status || "Processing";
+                  const itemsSummary = ord.items?.map((i) => `${i.name || i.product_name || "Watch"} (x${i.quantity})`).join(", ") || "1 Timepiece";
 
                   return (
-                    <tr
-                      key={orderId}
-                      style={{
-                        borderTop: "1px solid #23272D",
-                        fontSize: "13.5px",
-                        transition: "background 100ms ease",
-                      }}
-                      onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLElement).style.background = "rgba(255, 255, 255, 0.02)";
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLElement).style.background = "transparent";
-                      }}
-                    >
-                      <td style={{ padding: "13px 0", color: "#F3F4F6", fontWeight: 500, fontFamily: "var(--font-mono, monospace)" }}>
-                        {orderId}
+                    <tr key={ord.id} className="hover:bg-[#14161C] transition-colors">
+                      <td style={S.td} className="font-mono font-bold text-white">
+                        #{ord.id.slice(0, 10)}
                       </td>
-                      <td style={{ padding: "13px 0", color: "#9CA3AF" }}>
-                        {o.customer_name || "Guest Customer"}
+                      <td style={S.td}>
+                        <div className="font-medium text-white">{ord.customer_name || "Customer"}</div>
+                        <div className="text-[10.5px] font-mono text-[#6E7585]">{ord.customer_email || "—"}</div>
                       </td>
-                      <td style={{ padding: "13px 0", textAlign: "right", color: "#F3F4F6", paddingRight: "36px", fontFamily: "var(--font-mono, monospace)" }}>
-                        {fmtNumber(o.total_amount)}
+                      <td style={S.td} className="text-[#8E95A5] max-w-[200px] truncate font-mono text-[11px]">
+                        {itemsSummary}
                       </td>
-                      <td style={{ padding: "13px 0" }}>
-                        {isPaid ? (
-                          <span
-                            style={{
-                              display: "inline-block",
-                              padding: "3px 12px",
-                              borderRadius: "9999px",
-                              fontSize: "12px",
-                              fontWeight: 500,
-                              background: "rgba(34, 197, 94, 0.16)",
-                              color: "#22C55E",
-                            }}
-                          >
-                            Paid
-                          </span>
-                        ) : isShipped ? (
-                          <span
-                            style={{
-                              display: "inline-block",
-                              padding: "3px 12px",
-                              borderRadius: "9999px",
-                              fontSize: "12px",
-                              fontWeight: 500,
-                              background: "rgba(56, 189, 248, 0.18)",
-                              color: "#38BDF8",
-                            }}
-                          >
-                            Shipped
-                          </span>
-                        ) : (
-                          <span
-                            style={{
-                              display: "inline-block",
-                              padding: "3px 12px",
-                              borderRadius: "9999px",
-                              fontSize: "12px",
-                              fontWeight: 500,
-                              background: "rgba(245, 158, 11, 0.16)",
-                              color: "#F59E0B",
-                            }}
-                          >
-                            Pending
-                          </span>
-                        )}
+                      <td style={S.td}>
+                        <span className="text-[11px] font-mono text-emerald-400 capitalize">
+                          {paymentDisplay}
+                        </span>
+                      </td>
+                      <td style={S.td}>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#1C2028] text-[#C5A059] border border-[#262A33] uppercase">
+                          {statusDisplay}
+                        </span>
+                      </td>
+                      <td style={{ ...S.td, textAlign: "right" }} className="font-mono font-bold text-white">
+                        {fmtCurrency(ord.total_amount)}
                       </td>
                     </tr>
                   );
@@ -413,163 +360,89 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Products and stock Section */}
-      <div>
-        <h2
-          style={{
-            fontSize: "15px",
-            fontWeight: 600,
-            color: "#FFFFFF",
-            margin: "0 0 14px 0",
-          }}
-        >
-          Products and stock
-        </h2>
+      {/* 4. PRODUCTS TABLE BOX matching Page 4 Wireframe */}
+      <div style={{ ...S.card, padding: 0, overflow: "hidden" }}>
+        <div className="p-5 flex items-center justify-between border-b border-[#1C2028] bg-[#101217]">
+          <h2 className="text-xs font-mono uppercase font-bold text-[#C5A059] tracking-[0.2em]">
+            PRODUCTS
+          </h2>
+          <Link
+            href="/admin/products/new"
+            className="px-4 py-2 bg-[#C5A059] hover:bg-[#D4AF37] text-black font-mono font-bold text-xs uppercase tracking-wider rounded-lg transition-colors shadow-md"
+          >
+            + ADD WATCH
+          </Link>
+        </div>
 
-        <div
-          style={{
-            background: "#1C1E22",
-            border: "1px solid #282C32",
-            borderRadius: "10px",
-            overflow: "hidden",
-          }}
-        >
-          {loading ? (
-            <div style={{ padding: "20px", color: "#71717A", fontSize: "13px" }}>
-              Loading products from database...
-            </div>
-          ) : products.length === 0 ? (
-            <div style={{ padding: "20px", color: "#71717A", fontSize: "13px" }}>
-              No products found in the database.
-            </div>
-          ) : (
-            products.slice(0, 6).map((p, idx, arr) => {
-              const stock = p.stock_qty ?? (p as any).stock_count ?? 0;
-              const isLow = stock <= 5;
-              const isUpdating = updatingId === p.id;
+        <div className="overflow-x-auto">
+          <table className="w-full text-left" style={{ borderCollapse: "collapse", minWidth: "750px" }}>
+            <thead>
+              <tr>
+                <th style={S.th}>IMAGE</th>
+                <th style={S.th}>NAME</th>
+                <th style={S.th}>BRAND</th>
+                <th style={S.th}>MOVEMENT</th>
+                <th style={S.th}>PRICE</th>
+                <th style={S.th}>STOCK</th>
+                <th style={{ ...S.th, textAlign: "right" }}>ACTION</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={7} style={{ ...S.td, textAlign: "center", padding: "30px", color: "#6E7585" }}>
+                    Loading products…
+                  </td>
+                </tr>
+              ) : displayedProducts.length === 0 ? (
+                <tr>
+                  <td colSpan={7} style={{ ...S.td, textAlign: "center", padding: "30px", color: "#6E7585" }}>
+                    No products found.
+                  </td>
+                </tr>
+              ) : (
+                displayedProducts.map((p) => {
+                  const img = getProductImage(p.id, p.image_url);
+                  const stock = p.stock_qty ?? (p as any).stock_count ?? 10;
 
-              return (
-                <div
-                  key={p.id}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "14px 20px",
-                    borderBottom: idx < arr.length - 1 ? "1px solid #282C32" : "none",
-                    transition: "background 100ms ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "rgba(255, 255, 255, 0.02)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "transparent";
-                  }}
-                >
-                  {/* Product Name */}
-                  <div
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: 500,
-                      color: "#FFFFFF",
-                    }}
-                  >
-                    {p.name}
-                  </div>
-
-                  {/* Right controls: Price & Stock Stepper */}
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <span
-                      style={{
-                        fontSize: "13px",
-                        color: "#9CA3AF",
-                        marginRight: "26px",
-                        fontFamily: "var(--font-mono, monospace)",
-                      }}
-                    >
-                      {fmtCurrency(p.price)}
-                    </span>
-
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      {/* Minus button */}
-                      <button
-                        onClick={() => handleStockChange(p.id, stock, -1, p.name)}
-                        disabled={isUpdating || stock <= 0}
-                        style={{
-                          width: "26px",
-                          height: "26px",
-                          borderRadius: "5px",
-                          background: "#141618",
-                          border: "1px solid #374151",
-                          color: stock <= 0 ? "#4B5563" : "#D1D5DB",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          cursor: stock <= 0 ? "not-allowed" : "pointer",
-                          fontSize: "14px",
-                          fontWeight: 600,
-                          transition: "all 120ms ease",
-                        }}
-                        onMouseEnter={(e) => {
-                          if (stock > 0) (e.currentTarget as HTMLElement).style.borderColor = "#6B7280";
-                        }}
-                        onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLElement).style.borderColor = "#374151";
-                        }}
-                        title="Decrease stock"
-                      >
-                        -
-                      </button>
-
-                      {/* Stock number */}
-                      <span
-                        style={{
-                          width: "24px",
-                          textAlign: "center",
-                          fontSize: "14px",
-                          fontWeight: 700,
-                          color: isLow ? "#F59E0B" : "#FFFFFF",
-                          fontFamily: "var(--font-mono, monospace)",
-                        }}
-                      >
-                        {stock}
-                      </span>
-
-                      {/* Plus button */}
-                      <button
-                        onClick={() => handleStockChange(p.id, stock, 1, p.name)}
-                        disabled={isUpdating}
-                        style={{
-                          width: "26px",
-                          height: "26px",
-                          borderRadius: "5px",
-                          background: "#141618",
-                          border: "1px solid #374151",
-                          color: "#D1D5DB",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          cursor: "pointer",
-                          fontSize: "14px",
-                          fontWeight: 600,
-                          transition: "all 120ms ease",
-                        }}
-                        onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLElement).style.borderColor = "#6B7280";
-                        }}
-                        onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLElement).style.borderColor = "#374151";
-                        }}
-                        title="Increase stock"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })
-          )}
+                  return (
+                    <tr key={p.id} className="hover:bg-[#14161C] transition-colors">
+                      <td style={S.td}>
+                        <div className="w-10 h-10 bg-[#14161C] border border-[#262A33] rounded-lg overflow-hidden p-0.5 flex items-center justify-center">
+                          <SmoothImage src={img} alt={p.name} className="w-full h-full object-contain" />
+                        </div>
+                      </td>
+                      <td style={S.td} className="font-semibold text-white">
+                        {p.name}
+                      </td>
+                      <td style={S.td} className="text-[#8E95A5] font-mono text-[11px]">
+                        {p.brand}
+                      </td>
+                      <td style={S.td} className="text-[#8E95A5] font-mono text-[11px]">
+                        {p.movement || "Automatic"}
+                      </td>
+                      <td style={S.td} className="font-mono font-bold text-white">
+                        {fmtCurrency(p.price)}
+                      </td>
+                      <td style={S.td} className="font-mono text-xs">
+                        <span className={stock <= 5 ? "text-amber-400 font-bold" : "text-white"}>
+                          {stock} units
+                        </span>
+                      </td>
+                      <td style={{ ...S.td, textAlign: "right" }}>
+                        <Link
+                          href={`/admin/products?edit=${p.id}`}
+                          className="px-3 py-1 bg-[#1C2028] hover:bg-[#282E38] text-[#C5A059] border border-[#262A33] rounded text-xs font-mono"
+                        >
+                          Edit
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

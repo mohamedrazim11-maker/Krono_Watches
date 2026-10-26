@@ -20,10 +20,10 @@ export default function Footer() {
   return (
     <footer style={{ background: "#050505", borderTop: "1px solid #1a1a1a", color: "#666", fontFamily: "inherit" }}>
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "64px 24px 32px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "48px", marginBottom: "48px" }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 mb-12">
 
           {/* Brand */}
-          <div>
+          <div className="sm:col-span-2 lg:col-span-2">
             <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none", marginBottom: "16px" }}>
               <img src="/icon.jpg" alt="Krono" style={{ height: "32px", width: "32px", borderRadius: "4px", objectFit: "cover" }} />
               <div>
@@ -112,7 +112,7 @@ export default function Footer() {
           <div style={{ fontSize: "11px", color: "#444" }}>
             © {new Date().getFullYear()} KRONO WATCHES. All rights reserved.
           </div>
-          <div style={{ display: "flex", gap: "20px", fontSize: "10px", color: "#444", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "monospace" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", fontSize: "10px", color: "#444", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "monospace" }}>
             <span style={{ color: "#C5A059" }}>Certified Chronometer</span>
             <span>•</span>
             <span>Secure Checkout</span>

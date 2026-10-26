@@ -25,8 +25,13 @@ export function middleware(request: NextRequest) {
 
   // 1. Role-Based Protection for /admin routes (Milestone 4 - Slide 8)
   if (pathname.startsWith("/admin")) {
+    // Permit access to the dedicated Admin Login portal
+    if (pathname === "/admin/login") {
+      return NextResponse.next();
+    }
+
     if (!token) {
-      const loginUrl = new URL("/login", request.url);
+      const loginUrl = new URL("/admin/login", request.url);
       loginUrl.searchParams.set("returnUrl", pathname);
       loginUrl.searchParams.set("unauthorized", "true");
       loginUrl.searchParams.set("role_required", "admin");
@@ -37,18 +42,19 @@ export function middleware(request: NextRequest) {
     const nowInSeconds = Math.floor(Date.now() / 1000);
 
     if (!payload || (payload.exp && payload.exp < nowInSeconds)) {
-      const loginUrl = new URL("/login", request.url);
+      const loginUrl = new URL("/admin/login", request.url);
       loginUrl.searchParams.set("returnUrl", pathname);
       loginUrl.searchParams.set("session_expired", "true");
       return NextResponse.redirect(loginUrl);
     }
 
     if (payload.role !== "admin") {
-      // Non-admin user detected: redirect with unauthorized message
-      const homeUrl = new URL("/", request.url);
-      homeUrl.searchParams.set("error", "admin_forbidden");
-      homeUrl.searchParams.set("message", "Access Denied: Administrator credentials required");
-      return NextResponse.redirect(homeUrl);
+      // Non-admin user detected: redirect to admin login with unauthorized message
+      const loginUrl = new URL("/admin/login", request.url);
+      loginUrl.searchParams.set("returnUrl", pathname);
+      loginUrl.searchParams.set("error", "admin_forbidden");
+      loginUrl.searchParams.set("message", "Access Denied: Administrator credentials required");
+      return NextResponse.redirect(loginUrl);
     }
 
     return NextResponse.next();

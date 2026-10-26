@@ -30,7 +30,7 @@ interface AuthContextType {
   isLoading: boolean;
   mergedGuestCount: number;
   expiryWarningMinutes: number | null;
-  login: (email: string, password: string, rememberMe?: boolean) => Promise<AuthResponse>;
+  login: (identifier: string, password: string, rememberMe?: boolean) => Promise<AuthResponse>;
   register: (data: {
     name: string;
     email: string;
@@ -281,10 +281,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const login = async (email: string, password: string, rememberMe: boolean = false): Promise<AuthResponse> => {
+  const login = async (identifier: string, password: string, rememberMe: boolean = false): Promise<AuthResponse> => {
     setIsLoading(true);
     try {
-      const res = await apiLogin({ email, password, rememberMe });
+      const res = await apiLogin({ email: identifier, username: identifier, password, rememberMe });
       if (res.success && res.token && res.user) {
         setToken(res.token);
         setUser(res.user);

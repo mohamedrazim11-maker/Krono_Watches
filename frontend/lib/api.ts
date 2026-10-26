@@ -63,7 +63,9 @@ export interface Category {
 export interface OrderItem {
   product_id: string;
   product_name: string;
+  name?: string;
   unit_price: number;
+  price?: number;
   quantity: number;
   subtotal: number;
   image_url?: string;
@@ -73,6 +75,7 @@ export interface Order {
   id: string;
   order_id?: string;
   order_number: string;
+  order_status?: string;
   user_id?: string | null;
   customer_name: string;
   customer_email: string;
@@ -1174,7 +1177,12 @@ export async function apiRegister(data: { name: string; email: string; password:
   return res.json();
 }
 
-export async function apiLogin(data: { email: string; password: string; rememberMe?: boolean }): Promise<AuthResponse> {
+export async function apiLogin(data: {
+  email?: string;
+  username?: string;
+  password: string;
+  rememberMe?: boolean;
+}): Promise<AuthResponse> {
   const res = await fetch(`${API_BASE_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -1264,6 +1272,78 @@ export async function apiRevokeOtherSessions(): Promise<{ success: boolean; mess
     method: 'POST',
     headers: authHeaders(),
     credentials: 'include',
+  });
+  return res.json();
+}
+
+export async function apiResetPassword(data: {
+  email: string;
+  newPassword?: string;
+  confirmNewPassword?: string;
+}): Promise<{ success: boolean; message: string; exists?: boolean; email?: string; name?: string }> {
+  const res = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  username?: string;
+  role: 'admin' | 'customer';
+  status?: string;
+  phone?: string;
+  address?: string;
+  secondary_address?: string;
+  created_at: string;
+}
+
+export async function fetchAdminUsers(query?: string): Promise<{ success: boolean; data: AdminUser[] }> {
+  const q = query ? `?q=${encodeURIComponent(query)}` : '';
+  const res = await fetch(`${API_BASE_URL}/admin/users${q}`, {
+    headers: authHeaders(),
+    credentials: 'include',
+  });
+  return res.json();
+}
+
+export async function updateAdminUser(id: string, fields: Partial<AdminUser>): Promise<{ success: boolean; data?: AdminUser; message?: string }> {
+  const res = await fetch(`${API_BASE_URL}/admin/users/${id}`, {
+    method: 'PATCH',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(fields),
+  });
+  return res.json();
+}
+
+export async function deleteAdminUser(id: string): Promise<{ success: boolean; message: string }> {
+  const res = await fetch(`${API_BASE_URL}/admin/users/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+    credentials: 'include',
+  });
+  return res.json();
+}
+
+export async function createAdminUser(data: {
+  name: string;
+  email: string;
+  username?: string;
+  password: string;
+  role: 'admin' | 'customer';
+  phone?: string;
+  address?: string;
+}): Promise<{ success: boolean; data?: AdminUser; message?: string }> {
+  const res = await fetch(`${API_BASE_URL}/admin/users`, {
+    method: 'POST',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(data),
   });
   return res.json();
 }
