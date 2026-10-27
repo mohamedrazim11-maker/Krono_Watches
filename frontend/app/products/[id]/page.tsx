@@ -660,58 +660,6 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              {/* Custom Caseback Engraving */}
-              <div className="bg-[#171717] rounded-lg border border-[#2B2B2B] p-3.5">
-                <details className="group cursor-pointer">
-                  <summary className="flex items-center justify-between list-none text-neutral-300 hover:text-white transition-colors">
-                    <div className="flex items-center gap-2 font-mono text-xs">
-                      <span className="text-[#E88C30]">✒</span>
-                      <span className="font-bold uppercase tracking-wider">
-                        Free Custom Engraving (Optional)
-                      </span>
-                      <span className="px-1.5 py-0.5 bg-[#262626] text-[#E88C30] text-[9px] uppercase font-bold rounded">
-                        Free
-                      </span>
-                    </div>
-                    <span className="text-xs transition-transform group-open:rotate-180">▼</span>
-                  </summary>
-                  <div className="mt-3 pt-3 border-t border-[#2B2B2B] flex flex-col gap-2 font-mono text-xs">
-                    <label className="text-[10px] text-neutral-400">
-                      Enter up to 14 characters to engrave on the caseback:
-                    </label>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        maxLength={14}
-                        value={engravingText}
-                        onChange={(e) => {
-                          setEngravingText(e.target.value);
-                          setEngravingSaved(false);
-                        }}
-                        placeholder="e.g. M.V. · 2026"
-                        className="bg-black border border-[#333333] px-3 py-1.5 text-xs text-white rounded focus:outline-none focus:border-[#E88C30] flex-1 font-mono uppercase"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleSaveEngraving}
-                        className="px-3 py-1.5 bg-[#2B2B2B] hover:bg-[#E88C30] hover:text-black text-white text-xs font-bold uppercase rounded transition-colors"
-                      >
-                        {engravingSaved ? "✓ Saved" : "Save"}
-                      </button>
-                    </div>
-                  </div>
-                </details>
-              </div>
-
-              {/* Customer Support Desk */}
-              <button
-                onClick={() => setIsSupportOpen(true)}
-                className="w-full py-2.5 border border-dashed border-[#333333] hover:border-[#E88C30] text-neutral-400 hover:text-[#E88C30] text-xs font-mono uppercase tracking-wider rounded-lg transition-colors flex items-center justify-center gap-2"
-              >
-                <span>✦</span>
-                <span>Need Assistance? Contact Customer Support</span>
-              </button>
-
             </div>
 
           </div>
@@ -723,7 +671,7 @@ export default function ProductDetailPage() {
             <div className="flex items-center justify-between border-b border-[#222222] pb-4">
               <div>
                 <span className="text-[10px] font-mono text-[#E88C30] uppercase tracking-widest font-bold">
-                  Recommended Timepieces
+                  Recommended Watches
                 </span>
                 <h2 className="text-xl font-bold text-white uppercase mt-1">
                   You May Also Like
