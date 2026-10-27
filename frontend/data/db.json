@@ -48,13 +48,14 @@
       "case_material": "Grade 5 Satin Titanium",
       "water_resistance": "150m (15 ATM)",
       "in_stock": true,
-      "stock_count": 8,
+      "stock_count": 7,
       "is_featured": true,
-      "stock_qty": 8,
+      "stock_qty": 7,
       "is_active": true,
       "images": [
         "/images/watches/speedmaster_chrono_titanium.jpg"
-      ]
+      ],
+      "updated_at": "2026-10-26T20:01:14.178Z"
     },
     {
       "id": "prod-3",
@@ -384,13 +385,14 @@
       "case_material": "316L Stainless Steel (Tonneau Case)",
       "water_resistance": "100m (10 ATM)",
       "in_stock": true,
-      "stock_count": 12,
+      "stock_count": 11,
       "is_featured": true,
-      "stock_qty": 12,
+      "stock_qty": 11,
       "is_active": true,
       "images": [
         "/images/watches/seastar_1000_powermatic.jpg"
-      ]
+      ],
+      "updated_at": "2026-10-27T02:38:42.832Z"
     },
     {
       "id": "prod-casio-g-shock-ga-2100",
@@ -1058,8 +1060,106 @@
       "created_at": "2026-10-26T09:39:15.682Z"
     }
   ],
-  "orders": [],
-  "order_items": [],
+  "orders": [
+    {
+      "id": "KR-901675",
+      "order_id": "KR-901675",
+      "order_number": "KR-901675",
+      "user_id": "usr-admin-01",
+      "customer_name": "admin@krono.luxury",
+      "customer_email": "admin@krono.luxury",
+      "customer_phone": "0776867969",
+      "delivery_address": "czvz, czvzcv, zvxvxvc czvzv",
+      "city": "czvzcv",
+      "postal_code": "czvzv",
+      "country": "Sri Lanka",
+      "payment_method": "payhere",
+      "payment_status": "pending",
+      "payment_id": null,
+      "subtotal": 245000,
+      "discount_amount": 0,
+      "total_amount": 245000,
+      "coupon_code": null,
+      "wrist_size": "Standard (19cm)",
+      "gift_packaging": true,
+      "special_instructions": "",
+      "items": [
+        {
+          "product_id": "prod-tissot-prx-powermatic-80",
+          "product_name": "PRX Steel",
+          "brand": "Tissot",
+          "quantity": 1,
+          "unit_price": 245000,
+          "subtotal": 245000,
+          "image_url": "/images/watches/seastar_1000_powermatic.jpg"
+        }
+      ],
+      "status": "Completed",
+      "created_at": "2026-10-27T02:38:42.832Z",
+      "updated_at": "2026-10-27T02:45:32.600Z"
+    },
+    {
+      "id": "KR-773277",
+      "order_id": "KR-773277",
+      "order_number": "KR-773277",
+      "user_id": "usr-admin-01",
+      "customer_name": "razim@gmail.com",
+      "customer_email": "razim@gmail.com",
+      "customer_phone": "0776867969",
+      "delivery_address": "140, kegalle, kegalle ",
+      "city": "kegalle",
+      "postal_code": "00100",
+      "country": "Sri Lanka",
+      "payment_method": "payhere",
+      "payment_status": "pending",
+      "payment_id": null,
+      "subtotal": 295000,
+      "discount_amount": 0,
+      "total_amount": 295000,
+      "coupon_code": null,
+      "wrist_size": "Standard (19cm)",
+      "gift_packaging": true,
+      "special_instructions": "",
+      "items": [
+        {
+          "product_id": "prod-2",
+          "product_name": "Speed Master",
+          "brand": "Omega",
+          "quantity": 1,
+          "unit_price": 295000,
+          "subtotal": 295000,
+          "image_url": "/images/watches/speedmaster_chrono_titanium.jpg"
+        }
+      ],
+      "status": "Pending",
+      "created_at": "2026-10-26T20:01:14.177Z",
+      "updated_at": "2026-10-26T20:01:14.177Z"
+    }
+  ],
+  "order_items": [
+    {
+      "id": "item-1793068722832-0-412",
+      "order_item_id": "item-1793068722832-0-53",
+      "order_id": "KR-901675",
+      "product_id": "prod-tissot-prx-powermatic-80",
+      "product_name": "PRX Steel",
+      "quantity": 1,
+      "unit_price": 245000,
+      "subtotal": 245000,
+      "created_at": "2026-10-27T02:38:42.832Z"
+    },
+    {
+      "id": "item-1793044874178-0-846",
+      "order_item_id": "item-1793044874178-0-878",
+      "order_id": "KR-773277",
+      "product_id": "prod-2",
+      "product_name": "Speed Master",
+      "quantity": 1,
+      "unit_price": 295000,
+      "subtotal": 295000,
+      "created_at": "2026-10-26T20:01:14.177Z"
+    }
+  ],
   "categories": [
     {
       "id": "cat-1",

@@ -133,7 +133,7 @@ export default function UploadProductPage() {
 
   const handleRemoveImage = (idx: number) => {
     if (images.length === 1) {
-      alert("At least one timepiece image is required.");
+      alert("At least one watch image is required.");
       return;
     }
     setImages((prev) => prev.filter((_, i) => i !== idx));
@@ -173,10 +173,10 @@ export default function UploadProductPage() {
         description: formData.description,
         is_featured: formData.is_featured,
       });
-      setMessage({ type: "success", text: "Timepiece registered successfully in vault and live on storefront!" });
+      setMessage({ type: "success", text: "Watch added successfully to the catalog!" });
       setTimeout(() => router.push("/admin/products"), 1500);
     } catch (err: any) {
-      setMessage({ type: "error", text: err.message || "Failed to create timepiece." });
+      setMessage({ type: "error", text: err.message || "Failed to add watch." });
     } finally {
       setIsSubmitting(false);
     }
@@ -190,7 +190,7 @@ export default function UploadProductPage() {
       <div style={{ marginBottom: "24px", display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <div style={{ fontSize: "11px", fontWeight: 700, color: "#A1A1AA", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "5px" }}>
-            Catalogue / Acquisition
+            Products / Add New
           </div>
           <h1
             style={{
@@ -202,10 +202,10 @@ export default function UploadProductPage() {
               letterSpacing: "0.02em",
             }}
           >
-            Register Certified Timepiece
+            Add New Watch
           </h1>
           <p style={{ fontSize: "12.5px", color: "#71717A", marginTop: "4px" }}>
-            Add an authentic luxury horological model to the storefront inventory.
+            Add a new watch to your store inventory.
           </p>
         </div>
         <Link
@@ -224,7 +224,7 @@ export default function UploadProductPage() {
             textDecoration: "none",
           }}
         >
-          ← Return to Vault Catalogue
+          ← Return to Watches
         </Link>
       </div>
 
@@ -262,11 +262,11 @@ export default function UploadProductPage() {
               letterSpacing: "0.08em",
             }}
           >
-            1 · Horological Identity & Classification
+            1 · Watch Information
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
             <div style={{ gridColumn: "span 2" }}>
-              <LabeledField label="Timepiece Model Name" required>
+              <LabeledField label="Watch Model Name" required>
                 <input
                   required
                   type="text"
@@ -299,7 +299,7 @@ export default function UploadProductPage() {
               </select>
             </LabeledField>
 
-            <LabeledField label="Horological Category">
+            <LabeledField label="Category">
               <select
                 name="category"
                 value={formData.category}
@@ -314,10 +314,10 @@ export default function UploadProductPage() {
               </select>
             </LabeledField>
 
-            <LabeledField label="Gender / Allocation">
+            <LabeledField label="Gender">
               <select name="gender" value={formData.gender} onChange={handleChange} style={inputSt}>
-                <option value="Men" style={{ background: "#141414", color: "#FFF" }}>Men&apos;s Horology</option>
-                <option value="Women" style={{ background: "#141414", color: "#FFF" }}>Women&apos;s Horology</option>
+                <option value="Men" style={{ background: "#141414", color: "#FFF" }}>Men</option>
+                <option value="Women" style={{ background: "#141414", color: "#FFF" }}>Women</option>
                 <option value="Unisex" style={{ background: "#141414", color: "#FFF" }}>Unisex</option>
               </select>
             </LabeledField>
@@ -410,13 +410,13 @@ export default function UploadProductPage() {
             </div>
 
             <div style={{ gridColumn: "span 2" }}>
-              <LabeledField label="Horological Description">
+              <LabeledField label="Description">
                 <textarea
                   rows={3}
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
-                  placeholder="Provide historical context, movement specifications, sapphire crystal details, and strap finishing..."
+                  placeholder="Provide watch details, specifications, and features..."
                   style={{ ...inputSt, resize: "vertical" }}
                 />
               </LabeledField>
@@ -464,7 +464,7 @@ export default function UploadProductPage() {
               />
             </LabeledField>
 
-            <LabeledField label="Vault Stock Units">
+            <LabeledField label="Stock Quantity">
               <input
                 type="number"
                 name="stock_count"
@@ -511,7 +511,7 @@ export default function UploadProductPage() {
 
           {/* Quick Presets */}
           <div style={{ marginBottom: "14px", display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-            <span style={{ fontSize: "11px", color: "#71717A" }}>Use Horological Presets:</span>
+            <span style={{ fontSize: "11px", color: "#71717A" }}>Use Image Presets:</span>
             {PRESET_GALLERY_SETS.map((preset) => (
               <button
                 key={preset.name}
@@ -654,7 +654,7 @@ export default function UploadProductPage() {
               boxShadow: "0 2px 10px rgba(255, 255, 255, 0.15)",
             }}
           >
-            {isSubmitting ? "Registering in Vault..." : "Publish Timepiece to Storefront ↗"}
+            {isSubmitting ? "Saving Watch..." : "Add Watch to Store ↗"}
           </button>
         </div>
       </form>

@@ -34,7 +34,7 @@ export default function ForgotPasswordPage() {
     try {
       const res = await apiResetPassword({ email: email.trim() });
       if (res.success && res.exists) {
-        setVerifiedName(res.name || "Valued Client");
+        setVerifiedName(res.name || "Customer");
         setStep("reset");
       } else {
         setError(res.message || "No account found with this email.");

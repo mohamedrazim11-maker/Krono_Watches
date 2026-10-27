@@ -161,7 +161,7 @@ export default function AdminDashboard() {
       if (Array.isArray(ord.items)) {
         for (const item of ord.items) {
           const pid = item.product_id || (item as any).id;
-          const name = item.product_name || (item as any).name || "Timepiece";
+          const name = item.product_name || (item as any).name || "Watch";
           if (!soldMap[pid]) {
             const prod = products.find((p) => p.id === pid);
             soldMap[pid] = {

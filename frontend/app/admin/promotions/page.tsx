@@ -87,7 +87,7 @@ export default function AdminPromotionsPage() {
   const [heroData, setHeroData] = useState<Partial<Poster>>({
     section_id: "hero_drop",
     badge: "2026 Season Collection",
-    title: "Mastery in horology. Crafted for eternity.",
+    title: "Mastery in watchmaking. Crafted for eternity.",
     subtitle: "Discover master-crafted Swiss mechanical wristwatches designed for visionaries.",
     featured_product_name: "Aurelia Master Classic",
     featured_product_price: "LKR 385,000",
@@ -99,7 +99,7 @@ export default function AdminPromotionsPage() {
   const [saleData, setSaleData] = useState<Partial<Poster>>({
     section_id: "weekend_sale",
     badge: "Exclusive Flash Promotion",
-    title: "Up to 50% off iconic luxury timepieces.",
+    title: "Up to 50% off iconic luxury watches.",
     subtitle: "Limited-edition collectors pieces with verified international warranty.",
     coupon_code: "FLASH50",
     discount_text: "Up to 50% OFF",
@@ -286,7 +286,7 @@ export default function AdminPromotionsPage() {
                 {heroData.badge || "2026 Collection"}
               </div>
               <div style={{ fontSize: "16px", fontWeight: 700, color: "#FFF", fontFamily: "'Cormorant Garamond', Georgia, serif", marginTop: "2px" }}>
-                {heroData.title || "Mastery in horology."}
+                {heroData.title || "Mastery in watchmaking."}
               </div>
               <div style={{ fontSize: "11px", color: "#71717A", marginTop: "4px" }}>
                 {heroData.subtitle}

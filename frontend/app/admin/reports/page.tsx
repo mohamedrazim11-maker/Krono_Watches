@@ -428,7 +428,7 @@ export default function AdminReportsPage() {
       {metrics.topProducts.length > 0 && (
         <div className="bg-[#0E1015] border border-[#1E232B] rounded-2xl p-6 shadow-md print:bg-transparent print:border-neutral-300 print:p-4">
           <div className="text-xs font-mono uppercase tracking-widest text-[#C5A059] font-bold mb-4 print:text-black">
-            ✦ Best-Performing Timepieces in Period
+            ✦ Best-Selling Watches in Period
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 print:grid-cols-4">
             {metrics.topProducts.map(([name, data]) => (
@@ -519,11 +519,13 @@ export default function AdminReportsPage() {
                       </td>
                       <td className="py-3.5 px-4">
                         <div className="font-semibold text-white print:text-black">
-                          {order.customer_name || "Valued Client"}
+                          {order.customer_email || (order.customer_name && order.customer_name !== "Valued Client" ? order.customer_name : "Customer")}
                         </div>
-                        <div className="text-[11px] text-white/40 print:text-neutral-500">
-                          {order.customer_email || "—"}
-                        </div>
+                        {order.customer_phone && (
+                          <div className="text-[11px] text-white/40 print:text-neutral-500">
+                            {order.customer_phone}
+                          </div>
+                        )}
                       </td>
                       <td className="py-3.5 px-4 max-w-xs">
                         {itemsList.length > 0 ? (
@@ -533,7 +535,7 @@ export default function AdminReportsPage() {
                                 <span className="text-white/40 print:text-neutral-500 font-bold mr-1">
                                   {it.quantity}×
                                 </span>
-                                <span>{it.product_name || it.name || "Timepiece"}</span>
+                                <span>{it.product_name || it.name || "Watch"}</span>
                               </div>
                             ))}
                           </div>

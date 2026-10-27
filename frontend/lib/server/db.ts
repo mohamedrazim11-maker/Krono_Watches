@@ -489,8 +489,11 @@ export async function createOrder(orderData: any) {
     order_id: orderId,
     order_number: orderId,
     user_id: orderData.user_id || orderData.userId || null,
-    customer_name: orderData.customer_name || orderData.fullName || 'Valued Client',
-    customer_email: orderData.customer_email || orderData.email || 'client@krono.luxury',
+    customer_name:
+      orderData.customer_name && orderData.customer_name !== 'Valued Client'
+        ? orderData.customer_name
+        : (orderData.customer_email || orderData.email || 'Customer'),
+    customer_email: orderData.customer_email || orderData.email || '',
     customer_phone: orderData.customer_phone || orderData.phone || '',
     delivery_address: orderData.shipping_address || orderData.delivery_address || orderData.address || '',
     city: orderData.city || 'Colombo',

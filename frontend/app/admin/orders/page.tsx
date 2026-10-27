@@ -164,7 +164,7 @@ export default function AdminOrdersPage() {
       <div style={{ marginBottom: "28px", display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <div style={{ fontSize: "11px", fontWeight: 700, color: "#A1A1AA", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "6px" }}>
-            Storefront Allocations & Sales
+            Orders
           </div>
           <h1
             style={{
@@ -176,10 +176,10 @@ export default function AdminOrdersPage() {
               letterSpacing: "0.02em",
             }}
           >
-            Client Orders & Fulfilment
+            Orders &amp; Fulfillment
           </h1>
           <p style={{ fontSize: "12.5px", color: "#71717A", marginTop: "4px" }}>
-            Manage client checkouts, authenticated deliveries, wrist sizing requests, and PayHere transactions.
+            View and manage customer orders and payment statuses.
           </p>
         </div>
 
@@ -205,25 +205,6 @@ export default function AdminOrdersPage() {
             </svg>
             Refresh Orders
           </button>
-          <Link
-            href="/checkout"
-            target="_blank"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "6px",
-              padding: "9px 18px",
-              borderRadius: "8px",
-              background: "#FFFFFF",
-              color: "#050505",
-              fontSize: "12px",
-              fontWeight: 800,
-              textDecoration: "none",
-              boxShadow: "0 2px 10px rgba(255, 255, 255, 0.15)",
-            }}
-          >
-            <span>Simulate Store Checkout ↗</span>
-          </Link>
         </div>
       </div>
 
@@ -237,7 +218,7 @@ export default function AdminOrdersPage() {
             {orders.length}
           </div>
           <div style={{ fontSize: "11.5px", color: "#A1A1AA", marginTop: "4px" }}>
-            Storefront client checkouts
+            Total customer orders
           </div>
         </div>
 
@@ -249,7 +230,7 @@ export default function AdminOrdersPage() {
             {fmt(totalRevenue)}
           </div>
           <div style={{ fontSize: "11.5px", color: "#A1A1AA", marginTop: "4px" }}>
-            Cumulated sales across all timepieces
+            Total sales across all orders
           </div>
         </div>
 
@@ -270,10 +251,10 @@ export default function AdminOrdersPage() {
             Delivery Mode
           </div>
           <div style={{ fontSize: "17px", fontWeight: 800, color: "#34D399", marginTop: "10px" }}>
-            Insured Armored Courier
+            Courier Delivery
           </div>
           <div style={{ fontSize: "11.5px", color: "#71717A", marginTop: "4px" }}>
-            Worldwide & Colombo Direct Delivery
+            Standard &amp; Express Shipping
           </div>
         </div>
       </div>
@@ -295,7 +276,7 @@ export default function AdminOrdersPage() {
         <div style={{ position: "relative", minWidth: "280px", flex: 1 }}>
           <input
             type="text"
-            placeholder="Search by client, order #, phone, watch model..."
+            placeholder="Search by customer email, order #, phone, watch..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{
@@ -325,7 +306,7 @@ export default function AdminOrdersPage() {
           {[
             { id: "all", label: "All Orders" },
             { id: "pending", label: "Pending" },
-            { id: "authenticated", label: "Authenticated" },
+            { id: "authenticated", label: "Verified" },
             { id: "dispatched", label: "Dispatched" },
             { id: "delivered", label: "Delivered" },
           ].map((tab) => {
@@ -360,9 +341,9 @@ export default function AdminOrdersPage() {
             <thead>
               <tr>
                 <th style={S.th}>Order Reference</th>
-                <th style={S.th}>Client</th>
-                <th style={S.th}>Timepiece(s)</th>
-                <th style={S.th}>Sizing & Gift</th>
+                <th style={S.th}>Customer</th>
+                <th style={S.th}>Watch(es)</th>
+                <th style={S.th}>Sizing &amp; Gift</th>
                 <th style={S.th}>Amount (LKR)</th>
                 <th style={S.th}>Payment</th>
                 <th style={S.th}>Fulfillment Status</th>
@@ -384,7 +365,7 @@ export default function AdminOrdersPage() {
                     <div style={{ fontSize: "28px", color: "#A1A1AA", marginBottom: "8px" }}>⌚</div>
                     <div style={{ fontSize: "15px", fontWeight: 700, color: "#F8FAFC" }}>No watch orders found</div>
                     <div style={{ fontSize: "12px", color: "#71717A", marginTop: "4px" }}>
-                      Checkouts made from the storefront will appear here in real-time.
+                      Orders placed on the storefront will appear here in real-time.
                     </div>
                   </td>
                 </tr>
@@ -415,10 +396,11 @@ export default function AdminOrdersPage() {
                         </div>
                       </td>
 
-                      {/* Client */}
+                      {/* Customer */}
                       <td style={S.td}>
-                        <div style={{ fontWeight: 700, color: "#F8FAFC" }}>{o.customer_name}</div>
-                        <div style={{ fontSize: "11px", color: "#A1A1AA" }}>{o.customer_email}</div>
+                        <div style={{ fontWeight: 700, color: "#F8FAFC" }}>
+                          {o.customer_email || (o.customer_name && o.customer_name !== "Valued Client" ? o.customer_name : "Customer")}
+                        </div>
                         {o.customer_phone && (
                           <div style={{ fontSize: "10.5px", color: "#71717A", fontFamily: "var(--font-mono, monospace)" }}>
                             {o.customer_phone}
@@ -604,7 +586,7 @@ export default function AdminOrdersPage() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
               <div>
                 <div style={{ fontSize: "11px", color: "#A1A1AA", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em" }}>
-                  Client Allocation Dossier
+                  Order Details
                 </div>
                 <h2 style={{ fontSize: "22px", fontWeight: 800, color: "#F8FAFC", margin: "4px 0 0 0", fontFamily: "var(--font-mono, monospace)" }}>
                   {selectedOrder.order_number || selectedOrder.id}
@@ -624,15 +606,17 @@ export default function AdminOrdersPage() {
               </button>
             </div>
 
-            {/* Client Info */}
+            {/* Customer Info */}
             <div style={{ background: "#141414", border: "1px solid #222222", borderRadius: "10px", padding: "18px", marginBottom: "16px" }}>
               <div style={{ fontSize: "11px", fontWeight: 800, color: "#FFFFFF", textTransform: "uppercase", marginBottom: "10px" }}>
-                Client Details
+                Customer Details
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", fontSize: "12px" }}>
                 <div>
-                  <div style={{ color: "#71717A", fontSize: "10px" }}>NAME</div>
-                  <div style={{ fontWeight: 700, color: "#F8FAFC" }}>{selectedOrder.customer_name}</div>
+                  <div style={{ color: "#71717A", fontSize: "10px" }}>CUSTOMER</div>
+                  <div style={{ fontWeight: 700, color: "#F8FAFC" }}>
+                    {selectedOrder.customer_email || (selectedOrder.customer_name && selectedOrder.customer_name !== "Valued Client" ? selectedOrder.customer_name : "Customer")}
+                  </div>
                 </div>
                 <div>
                   <div style={{ color: "#71717A", fontSize: "10px" }}>EMAIL</div>
@@ -650,7 +634,7 @@ export default function AdminOrdersPage() {
               <div style={{ marginTop: "12px", borderTop: "1px solid #222222", paddingTop: "10px" }}>
                 <div style={{ color: "#71717A", fontSize: "10px" }}>DELIVERY ADDRESS</div>
                 <div style={{ color: "#F8FAFC", fontSize: "12px", marginTop: "2px" }}>
-                  {selectedOrder.delivery_address || selectedOrder.shipping_address || "Boutique Pickup / Colombo"}
+                  {selectedOrder.delivery_address || selectedOrder.shipping_address || "Standard Delivery / Colombo"}
                 </div>
               </div>
             </div>
@@ -658,7 +642,7 @@ export default function AdminOrdersPage() {
             {/* Items */}
             <div style={{ background: "#141414", border: "1px solid #222222", borderRadius: "10px", padding: "18px", marginBottom: "16px" }}>
               <div style={{ fontSize: "11px", fontWeight: 800, color: "#FFFFFF", textTransform: "uppercase", marginBottom: "10px" }}>
-                Acquired Timepiece(s)
+                Ordered Watch(es)
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                 {(selectedOrder.items || []).map((it, idx) => (
@@ -686,7 +670,7 @@ export default function AdminOrdersPage() {
             {selectedOrder.special_instructions && (
               <div style={{ background: "#141414", border: "1px solid #222222", borderRadius: "10px", padding: "14px 18px", marginBottom: "16px" }}>
                 <div style={{ fontSize: "10px", color: "#A1A1AA", fontWeight: 800, textTransform: "uppercase" }}>
-                  Engraving / Horological Note
+                  Special Instructions
                 </div>
                 <div style={{ fontSize: "12px", color: "#F8FAFC", marginTop: "4px", fontStyle: "italic" }}>
                   &ldquo;{selectedOrder.special_instructions}&rdquo;
@@ -697,7 +681,7 @@ export default function AdminOrdersPage() {
             {/* Total and Close */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: "14px", borderTop: "1px solid #222222" }}>
               <div>
-                <div style={{ fontSize: "11px", color: "#71717A" }}>TOTAL INVOICE (LKR)</div>
+                <div style={{ fontSize: "11px", color: "#71717A" }}>TOTAL (LKR)</div>
                 <div style={{ fontSize: "22px", fontWeight: 800, color: "#F8FAFC", fontFamily: "var(--font-mono, monospace)" }}>
                   {fmt(selectedOrder.total_amount)}
                 </div>
@@ -716,7 +700,7 @@ export default function AdminOrdersPage() {
                   boxShadow: "0 2px 10px rgba(255, 255, 255, 0.15)",
                 }}
               >
-                Close Dossier
+                Close
               </button>
             </div>
           </div>

@@ -297,7 +297,7 @@ export default function AdminProductsPage() {
             <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
             </svg>
-            Register Timepiece
+            Add Watch
           </Link>
         </div>
       </div>
@@ -318,7 +318,7 @@ export default function AdminProductsPage() {
         <div style={{ position: "relative", minWidth: "240px", flex: 1 }}>
           <input
             type="text"
-            placeholder="Search timepiece by model, brand, calibre..."
+            placeholder="Search watches by model, brand..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{
@@ -623,7 +623,7 @@ export default function AdminProductsPage() {
                               fontWeight: 700,
                               cursor: "pointer",
                             }}
-                            title="Safely deactivate or reactivate this timepiece"
+                            title="Safely deactivate or reactivate this watch"
                           >
                             {isActive ? "Deactivate" : "Activate"}
                           </button>
@@ -639,7 +639,7 @@ export default function AdminProductsPage() {
                               fontSize: "11px",
                               textDecoration: "none",
                             }}
-                            title="Inspect timepiece on live customer storefront"
+                            title="View watch on live customer storefront"
                           >
                             ↗
                           </Link>
@@ -701,7 +701,7 @@ export default function AdminProductsPage() {
                   Database Update · Ref: {editingProduct.id}
                 </span>
                 <h2 style={{ margin: "2px 0 0 0", fontSize: "18px", color: "#F8FAFC" }}>
-                  Edit Timepiece Specification
+                  Edit Watch Details
                 </h2>
               </div>
               <button
@@ -721,7 +721,7 @@ export default function AdminProductsPage() {
             <form onSubmit={handleSaveEdit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               <div>
                 <label style={{ display: "block", fontSize: "11px", color: "#71717A", marginBottom: "4px" }}>
-                  Timepiece Title / Name
+                  Watch Title / Name
                 </label>
                 <input
                   type="text"
