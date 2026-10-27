@@ -287,9 +287,16 @@ export default function ProductDetailPage() {
 
       {/* Global Toast */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#161616] border border-[#E88C30] text-[#E88C30] px-5 py-3 text-xs font-bold font-mono uppercase tracking-wider flex items-center gap-2 shadow-2xl animate-fade-in">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#161616] border border-[#E88C30] text-[#E88C30] px-5 py-3 text-xs font-bold font-mono uppercase tracking-wider flex items-center gap-3 shadow-2xl animate-fade-in">
           <span>✦</span>
           <span>{toastMessage}</span>
+          <button
+            type="button"
+            onClick={() => setIsCartOpen(true)}
+            className="ml-1 px-2.5 py-1 bg-[#E88C30] text-black font-bold text-[10px] uppercase rounded hover:bg-[#d47b24] transition-colors cursor-pointer"
+          >
+            View Cart →
+          </button>
         </div>
       )}
 

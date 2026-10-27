@@ -195,8 +195,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                 ? Math.min(prevCart[existingIndex].quantity + safeQuantity, product.stock_count)
                 : prevCart[existingIndex].quantity + safeQuantity,
           };
-          // Move the updated product to the top so it is immediately visible
-          return [updatedItem, ...prevCart.filter((_, index) => index !== existingIndex)];
+          // Keep existing item in its position in the list so it does not abruptly jump
+          return prevCart.map((item, index) => (index === existingIndex ? updatedItem : item));
         } else {
           // Prepend new item to the top of the cart
           return [
@@ -208,6 +208,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           ];
         }
       });
+
+      // Automatically open the cart drawer so the user immediately views the added item right in their viewport
+      setIsCartOpen(true);
 
       showToast(`Added ${safeQuantity > 1 ? `${safeQuantity} × ` : ""}"${product.name}" to Cart`);
     },

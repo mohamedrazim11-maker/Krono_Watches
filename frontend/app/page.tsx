@@ -468,8 +468,19 @@ export default function Home() {
           fontSize: "12px", fontWeight: 600, color: "#C5A059",
           boxShadow: "0 4px 24px rgba(0,0,0,0.8)",
           animation: "fadeInUp 0.3s ease",
+          display: "flex", alignItems: "center", gap: "12px",
         }}>
-          ✦ {toastMessage}
+          <span>✦ {toastMessage}</span>
+          <button
+            onClick={() => setIsCartOpen(true)}
+            style={{
+              padding: "4px 10px", background: "#C5A059", color: "#000",
+              fontWeight: 700, fontSize: "10px", textTransform: "uppercase",
+              border: "none", cursor: "pointer", letterSpacing: "0.08em",
+            }}
+          >
+            View Cart →
+          </button>
         </div>
       )}
 
