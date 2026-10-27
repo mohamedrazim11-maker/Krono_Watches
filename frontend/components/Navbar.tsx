@@ -608,16 +608,6 @@ export default function Navbar({
                           <span>My Profile &amp; Orders</span>
                           <span className="text-[#C5A059]">→</span>
                         </Link>
-                        {user.role === "admin" && (
-                          <Link
-                            href="/admin"
-                            onClick={() => setAccountDropdownOpen(false)}
-                            className="flex items-center justify-between px-3 py-2 rounded-lg text-xs text-[#38BDF8] hover:bg-white/5 transition"
-                          >
-                            <span>Admin Portal</span>
-                            <span>⚡</span>
-                          </Link>
-                        )}
                         <button
                           type="button"
                           onClick={() => {
