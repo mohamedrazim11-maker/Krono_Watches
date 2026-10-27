@@ -96,7 +96,16 @@ export interface Order {
   gift_packaging?: boolean;
   special_instructions?: string;
   items: OrderItem[];
-  status: "pending_payment" | "processing" | "authenticated" | "dispatched" | "delivered" | "cancelled" | string;
+  status: "pending_payment" | "processing" | "authenticated" | "dispatched" | "delivered" | "cancelled" | "refund_requested" | "refunded" | string;
+  tracking_number?: string;
+  courier_name?: string;
+  refund_status?: "requested" | "approved" | "rejected" | "refunded" | string;
+  refund_reason?: string;
+  refund_notes?: string;
+  refund_method?: string;
+  refund_bank_details?: any;
+  refund_requested_at?: string;
+  refund_processed_at?: string;
   notes?: string;
   created_at: string;
   updated_at?: string;
@@ -1057,6 +1066,22 @@ export async function updateOrderStatus(
   const json = await res.json();
   if (!res.ok || !json.success) {
     throw new Error(json.message || 'Failed to update order status');
+  }
+  return json.data;
+}
+
+export async function requestOrderRefund(
+  orderId: string,
+  data: { reason: string; notes?: string; method?: string; bank_details?: any }
+): Promise<Order> {
+  const res = await fetch(`${API_BASE_URL}/orders/${orderId}/refund`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  const json = await res.json();
+  if (!res.ok || !json.success) {
+    throw new Error(json.message || 'Failed to request refund');
   }
   return json.data;
 }

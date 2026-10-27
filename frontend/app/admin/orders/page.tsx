@@ -44,6 +44,8 @@ const STATUS_OPTIONS = [
   { value: "authenticated", label: "Verified", bg: "rgba(255, 255, 255, 0.08)", text: "#E4E4E7", border: "rgba(255, 255, 255, 0.2)" },
   { value: "dispatched", label: "Dispatched", bg: "rgba(168, 85, 247, 0.12)", text: "#C084FC", border: "rgba(168, 85, 247, 0.25)" },
   { value: "delivered", label: "Delivered", bg: "rgba(16, 185, 129, 0.15)", text: "#10B981", border: "rgba(16, 185, 129, 0.3)" },
+  { value: "refund_requested", label: "Refund Requested", bg: "rgba(249, 115, 22, 0.15)", text: "#FB923C", border: "rgba(249, 115, 22, 0.3)" },
+  { value: "refunded", label: "Refunded", bg: "rgba(239, 68, 68, 0.15)", text: "#F87171", border: "rgba(239, 68, 68, 0.3)" },
   { value: "cancelled", label: "Cancelled", bg: "rgba(239, 68, 68, 0.12)", text: "#F87171", border: "rgba(239, 68, 68, 0.25)" },
 ];
 
@@ -605,6 +607,35 @@ export default function AdminOrdersPage() {
                 ✕
               </button>
             </div>
+
+            {/* Refund Alert if customer requested refund */}
+            {(selectedOrder.refund_status === "requested" || selectedOrder.status === "refund_requested") && (
+              <div style={{ background: "rgba(249, 115, 22, 0.1)", border: "1px solid rgba(249, 115, 22, 0.3)", borderRadius: "10px", padding: "16px", marginBottom: "16px" }}>
+                <div style={{ fontSize: "11px", fontWeight: 800, color: "#FB923C", textTransform: "uppercase", marginBottom: "8px", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span>↺</span> Customer Return / Refund Request
+                </div>
+                <div style={{ fontSize: "12px", color: "#F8FAFC", marginBottom: "4px" }}>
+                  <strong>Reason:</strong> {selectedOrder.refund_reason || "Not specified"}
+                </div>
+                {selectedOrder.refund_notes && (
+                  <div style={{ fontSize: "12px", color: "#A1A1AA", marginBottom: "6px" }}>
+                    <strong>Customer Notes:</strong> {selectedOrder.refund_notes}
+                  </div>
+                )}
+                {selectedOrder.refund_method && (
+                  <div style={{ fontSize: "11px", color: "#FBBF24" }}>
+                    <strong>Method:</strong> {selectedOrder.refund_method === "bank_transfer" ? "Direct Bank Transfer" : "Original Payment Method"}
+                  </div>
+                )}
+                {selectedOrder.refund_bank_details && (
+                  <div style={{ marginTop: "6px", fontSize: "11px", color: "#E4E4E7", background: "#0A0A0A", padding: "8px", borderRadius: "6px" }}>
+                    <div><strong>Bank:</strong> {selectedOrder.refund_bank_details.bank_name} ({selectedOrder.refund_bank_details.branch})</div>
+                    <div><strong>Account #:</strong> {selectedOrder.refund_bank_details.account_number}</div>
+                    <div><strong>Account Name:</strong> {selectedOrder.refund_bank_details.account_name}</div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Customer Info */}
             <div style={{ background: "#141414", border: "1px solid #222222", borderRadius: "10px", padding: "18px", marginBottom: "16px" }}>
