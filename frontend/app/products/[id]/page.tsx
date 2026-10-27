@@ -293,36 +293,6 @@ export default function ProductDetailPage() {
         </div>
       )}
 
-      {/* Top Status Banner in Normal English */}
-      <section className="w-full bg-[#111111] border-b border-[#222222] py-2 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono">
-          <div className="flex items-center gap-2.5">
-            <span className="inline-block w-2 h-2 rounded-full bg-[#22C55E] shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse" />
-            <span className="text-[#E88C30] uppercase tracking-wider font-semibold">
-              In Stock • 100% Genuine Guaranteed
-            </span>
-            <span className="text-white/30">/</span>
-            <span className="text-white/60">
-              Ref: <span className="text-white">{product.id.replace(/^prod-/, "").toUpperCase()}</span>
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3 bg-[#1A1A1A] px-3 py-0.5 rounded border border-[#2B2B2B]">
-            <span className="text-[#E88C30] text-xs">⏱</span>
-            <span className="text-white/70 uppercase tracking-wider text-[10px]">Cart Hold:</span>
-            <span className={`font-mono font-bold text-xs ${timerSeconds === 0 ? "text-red-500" : "text-[#E88C30]"}`}>
-              {formatTimer(timerSeconds)}
-            </span>
-            <button
-              onClick={handleExtendTimer}
-              className="text-[9px] uppercase font-bold text-white/50 hover:text-[#E88C30] ml-1 transition-colors"
-            >
-              Extend
-            </button>
-          </div>
-        </div>
-      </section>
-
       {/* Main Container */}
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12">
         <div className="bg-[#121212] rounded-2xl border border-[#242424] shadow-2xl p-6 sm:p-8 lg:p-10">
