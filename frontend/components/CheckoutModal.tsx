@@ -441,10 +441,10 @@ export default function CheckoutModal({
                 </div>
               </div>
 
-              {/* Payment Architecture Choice */}
+              {/* Payment Method */}
               <div className="space-y-2 pt-2 border-t border-[#222]">
                 <label className="block text-[10px] uppercase font-mono tracking-wider text-[#C5A059] font-bold">
-                  Select Settlement Gateway
+                  Payment Method
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   <div
@@ -455,15 +455,9 @@ export default function CheckoutModal({
                         : "bg-[#111] border-[#2a2a2a] text-white/60 hover:text-white"
                     }`}
                   >
-                    <div className="font-bold flex items-center justify-between mb-1">
-                      <span>💳 PayHere Gateway</span>
-                      <span className="text-[9px] px-1 py-0.2 bg-emerald-500/20 text-emerald-400 rounded">
-                        Active
-                      </span>
+                    <div className="font-bold mb-1">
+                      <span>Pay with PayHere</span>
                     </div>
-                    <p className="text-[10px] text-white/50 leading-tight">
-                      LKR Cards, Genie, eZ Cash &amp; MD5 Hash
-                    </p>
                   </div>
 
                   <div
@@ -475,11 +469,8 @@ export default function CheckoutModal({
                     }`}
                   >
                     <div className="font-bold mb-1">
-                      <span>🏛️ Instant Vault Order</span>
+                      <span>Cash on Delivery</span>
                     </div>
-                    <p className="text-[10px] text-white/50 leading-tight">
-                      Direct courier verification &amp; certified docket
-                    </p>
                   </div>
                 </div>
               </div>
@@ -497,7 +488,7 @@ export default function CheckoutModal({
                   </div>
                 )}
                 <div className="flex justify-between text-white/60">
-                  <span>Insured Delivery:</span>
+                  <span>Delivery:</span>
                   <span className="text-emerald-400 uppercase">Free</span>
                 </div>
                 <div className="pt-2 border-t border-[#222] flex justify-between text-sm font-bold text-[#C5A059]">
@@ -514,7 +505,7 @@ export default function CheckoutModal({
                 {submitting
                   ? "Processing Order..."
                   : paymentMethod === "payhere"
-                  ? `Proceed to PayHere Gateway • ${formatCurrency(grandTotal)}`
+                  ? "Pay with PayHere"
                   : `Confirm Order • ${formatCurrency(grandTotal)}`}
               </button>
             </form>

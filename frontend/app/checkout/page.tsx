@@ -592,64 +592,22 @@ function CheckoutContent() {
                   PAYMENT
                 </h2>
                 <div className="space-y-3">
-                  {/* PayHere Payment Gateway (Sandbox) */}
-                  <div
+                  {/* Pay with PayHere */}
+                  <label
                     onClick={() => setPaymentMethod("payhere")}
-                    className={`block p-4 sm:p-5 rounded-xl border cursor-pointer transition-all ${
+                    className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-all ${
                       paymentMethod === "payhere"
-                        ? "bg-[#14161C] border-[#C5A059] shadow-lg shadow-[#C5A059]/10"
+                        ? "bg-[#14161C] border-[#C5A059]"
                         : "bg-[#101217] border-[#262A33] hover:border-[#383E4B]"
                     }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <span className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] ${paymentMethod === "payhere" ? "border-[#C5A059] text-[#C5A059]" : "border-[#5E6573]"}`}>
-                          {paymentMethod === "payhere" && "●"}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-mono text-white font-bold">PayHere Payment Gateway</span>
-                          <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                            Sandbox Mode
-                          </span>
-                        </div>
-                      </div>
-                      <span className="text-[11px] font-mono text-[#8E95A5]">Visa • Mastercard • Amex</span>
+                    <div className="flex items-center gap-3">
+                      <span className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] ${paymentMethod === "payhere" ? "border-[#C5A059] text-[#C5A059]" : "border-[#5E6573]"}`}>
+                        {paymentMethod === "payhere" && "●"}
+                      </span>
+                      <span className="text-xs font-mono text-white">Pay with PayHere</span>
                     </div>
-
-                    {paymentMethod === "payhere" && (
-                      <div className="mt-4 pt-4 border-t border-[#262A33] space-y-3">
-                        <p className="text-xs text-[#8E95A5] leading-relaxed">
-                          Transactions are safely processed via the official <strong className="text-white">PayHere Sandbox</strong> payment portal. Card numbers are entered securely on PayHere&apos;s hosted page.
-                        </p>
-
-                        {/* Sandbox Test Card Credentials Helper */}
-                        <div className="bg-[#0A0B0E] border border-amber-500/30 rounded-lg p-3 space-y-2 text-xs font-mono">
-                          <div className="flex items-center justify-between text-amber-300 font-bold text-[11px]">
-                            <span>💳 PayHere Sandbox Test Credentials</span>
-                            <span className="text-[10px] uppercase text-white/50">TEST MODE</span>
-                          </div>
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] text-[#A0A6B5]">
-                            <div>
-                              <span className="text-white/40 block text-[9px] uppercase">Card Number</span>
-                              <span className="text-white font-mono font-bold select-all">4111 1111 1111 1111</span>
-                            </div>
-                            <div>
-                              <span className="text-white/40 block text-[9px] uppercase">Expiry</span>
-                              <span className="text-white font-mono select-all">12 / 28</span>
-                            </div>
-                            <div>
-                              <span className="text-white/40 block text-[9px] uppercase">CVV</span>
-                              <span className="text-white font-mono select-all">123</span>
-                            </div>
-                            <div>
-                              <span className="text-white/40 block text-[9px] uppercase">SMS OTP</span>
-                              <span className="text-white font-mono select-all">123456</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  </label>
 
                   {/* Bank Transfer */}
                   <label
@@ -763,24 +721,19 @@ function CheckoutContent() {
                 {/* Action Button & Terms Checkbox matching Wireframe 2 */}
                 <div className="space-y-4 pt-2">
                   {orderId && paymentMethod === "payhere" ? (
-                    <div className="space-y-3">
-                      <div className="p-3 bg-emerald-950/40 border border-emerald-500/30 rounded-lg text-[11px] text-emerald-300 font-mono text-center">
-                        Order registered: <span className="font-bold text-white">{orderId}</span>. Click below to proceed to PayHere sandbox payment.
-                      </div>
-                      <PayHereForm
-                        orderId={orderId}
-                        amount={finalTotal}
-                        itemsDescription={cart.map((i) => `${i.product.name} (x${i.quantity})`).join(", ")}
-                        customer={{
-                          fullName: `${formData.firstName} ${formData.lastName}`.trim(),
-                          email: formData.email,
-                          phone: formData.phone,
-                          address: formData.address,
-                          city: formData.city,
-                          country: "Sri Lanka",
-                        }}
-                      />
-                    </div>
+                    <PayHereForm
+                      orderId={orderId}
+                      amount={finalTotal}
+                      itemsDescription={cart.map((i) => `${i.product.name} (x${i.quantity})`).join(", ")}
+                      customer={{
+                        fullName: `${formData.firstName} ${formData.lastName}`.trim(),
+                        email: formData.email,
+                        phone: formData.phone,
+                        address: formData.address,
+                        city: formData.city,
+                        country: "Sri Lanka",
+                      }}
+                    />
                   ) : (
                     <button
                       type="submit"
@@ -790,7 +743,7 @@ function CheckoutContent() {
                       {submitting
                         ? "PROCESSING ORDER..."
                         : paymentMethod === "payhere"
-                        ? "PLACE ORDER & PAY WITH PAYHERE"
+                        ? "PAY WITH PAYHERE"
                         : "PLACE ORDER"}
                     </button>
                   )}

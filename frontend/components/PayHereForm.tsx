@@ -182,160 +182,47 @@ export default function PayHereForm({
   }, [paymentFields, autoLaunch, hasAutoLaunched]);
 
   return (
-    <div className="bg-[#0A0A0A] border border-[#C5A059]/40 rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
-      {/* Top Gateway Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-5">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#003B95] to-[#001D4A] border border-blue-400/40 flex items-center justify-center font-bold text-white text-base shadow-lg">
-            💳
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-base font-serif font-bold text-white">
-                PayHere Payment Gateway
-              </h3>
-              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                Sandbox Mode
-              </span>
-            </div>
-            <p className="text-xs text-white/50 font-mono">
-              Central Bank of Sri Lanka (CBSL) Approved Payment Service
-            </p>
-          </div>
-        </div>
-
-        {/* Accepted Payment Cards */}
-        <div className="flex items-center gap-1.5 flex-wrap">
-          {["VISA", "Mastercard", "AMEX", "eZ Cash", "Genie", "FriMi"].map((badge) => (
-            <span
-              key={badge}
-              className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] font-mono text-white/70"
-            >
-              {badge}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Dynamic Order & Customer Details (No Hardcoding) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-black/60 border border-white/10 rounded-xl p-4 text-xs font-mono">
-        <div>
-          <span className="text-white/40 block text-[10px] uppercase">Order Reference</span>
-          <span className="text-[#C5A059] font-bold text-sm">{orderId}</span>
-        </div>
-        <div>
-          <span className="text-white/40 block text-[10px] uppercase">Payable Total</span>
-          <span className="text-emerald-400 font-bold text-sm">
-            {currency} {formattedAmount}
-          </span>
-        </div>
-        <div>
-          <span className="text-white/40 block text-[10px] uppercase">Customer / Client</span>
-          <span className="text-white/90 truncate block">{customer.fullName} ({customer.email})</span>
-        </div>
-        <div>
-          <span className="text-white/40 block text-[10px] uppercase">Security Hash Status</span>
-          <span className="text-blue-400 flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
-            {paymentFields ? "Server hash verified" : hashError ? "Hash error" : "Generating security hash..."}
-          </span>
-        </div>
-      </div>
-
-      {/* Manual Sandbox Card Entry Guide for PayHere UI */}
-      <div className="bg-[#12141A] border border-amber-500/30 rounded-xl p-4 space-y-2.5 text-xs font-mono">
-        <div className="flex items-center justify-between text-amber-300 font-bold text-[11px]">
-          <span>💳 Enter Card Details Manually in PayHere Sandbox</span>
-          <span className="text-[10px] uppercase px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-200">
-            TEST CREDENTIALS
-          </span>
-        </div>
-        <p className="text-[11px] text-white/60 leading-relaxed font-sans">
-          In the PayHere checkout popup, click <strong className="text-white">VISA</strong> or <strong className="text-white">Mastercard</strong> and manually enter these test card numbers:
-        </p>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] bg-black/60 p-2.5 rounded-lg border border-white/5">
-          <div>
-            <span className="text-white/40 block text-[9px] uppercase">Card Number</span>
-            <span className="text-white font-mono font-bold select-all">4111 1111 1111 1111</span>
-          </div>
-          <div>
-            <span className="text-white/40 block text-[9px] uppercase">Expiry</span>
-            <span className="text-white font-mono select-all">12 / 28</span>
-          </div>
-          <div>
-            <span className="text-white/40 block text-[9px] uppercase">CVV</span>
-            <span className="text-white font-mono select-all">123</span>
-          </div>
-          <div>
-            <span className="text-white/40 block text-[9px] uppercase">SMS OTP</span>
-            <span className="text-white font-mono select-all">123456</span>
-          </div>
-        </div>
-      </div>
-
+    <div className="space-y-3">
       {hashError && (
-        <div className="p-3 bg-red-950/40 border border-red-500/40 rounded-lg text-xs text-red-300 font-mono">
+        <div className="p-3 bg-red-950/40 border border-red-500/40 rounded-lg text-xs text-red-300 font-mono text-center">
           {hashError}
         </div>
       )}
 
-      {/* Primary Action Button: Opens the Original PayHere UI Modal */}
-      <div className="space-y-3 pt-1">
-        <button
-          type="button"
-          onClick={openOfficialPayHereModal}
-          disabled={isSubmitting || modalLoading || !paymentFields}
-          className="w-full py-4 bg-gradient-to-r from-[#C5A059] to-[#d4af37] hover:from-[#b08d48] hover:to-[#c5a059] text-black font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-xl hover:shadow-[#C5A059]/30 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
-        >
-          {modalLoading ? (
-            <span>Opening PayHere Gateway...</span>
-          ) : (
-            <>
-              <span>Pay with PayHere (Original Gateway) →</span>
-              <span className="font-mono text-xs">({paymentCurrency} {paymentAmount})</span>
-            </>
-          )}
-        </button>
+      <button
+        type="button"
+        onClick={openOfficialPayHereModal}
+        disabled={isSubmitting || modalLoading || !paymentFields}
+        className="w-full py-4 bg-[#C5A059] hover:bg-[#D4AF37] text-black font-bold text-xs uppercase tracking-[0.18em] rounded-lg transition-all shadow-lg hover:shadow-[#C5A059]/20 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+      >
+        {modalLoading ? "Opening PayHere..." : "Pay with PayHere"}
+      </button>
 
-        {/* Fallback direct submission form if popups are blocked */}
-        <form
-          id="payhere_form"
-          ref={formRef}
-          method="POST"
-          action={PAYHERE_SANDBOX_URL}
-          className="text-center"
-        >
-          <input type="hidden" name="merchant_id" value={paymentFields?.merchant_id || ""} />
-          <input type="hidden" name="return_url" value={typeof window !== "undefined" ? `${window.location.origin}/checkout?payment=success&order_id=${encodeURIComponent(orderId)}` : ""} />
-          <input type="hidden" name="cancel_url" value={typeof window !== "undefined" ? `${window.location.origin}/checkout?payment=cancelled&order_id=${encodeURIComponent(orderId)}` : ""} />
-          <input type="hidden" name="notify_url" value={typeof window !== "undefined" ? `${window.location.origin}/api/orders/payhere-notify` : ""} />
-          <input type="hidden" name="first_name" value={firstName} />
-          <input type="hidden" name="last_name" value={lastName} />
-          <input type="hidden" name="email" value={customer.email} />
-          <input type="hidden" name="phone" value={customer.phone} />
-          <input type="hidden" name="address" value={customer.address} />
-          <input type="hidden" name="city" value={customer.city} />
-          <input type="hidden" name="country" value={customer.country || "Sri Lanka"} />
-          <input type="hidden" name="order_id" value={paymentFields?.order_id || ""} />
-          <input type="hidden" name="items" value={itemsDescription || "Krono Order"} />
-          <input type="hidden" name="currency" value={paymentCurrency} />
-          <input type="hidden" name="amount" value={paymentAmount} />
-          <input type="hidden" name="hash" value={paymentFields?.hash || ""} />
-
-          <button
-            type="submit"
-            disabled={!paymentFields}
-            className="text-[11px] font-mono text-[#8E95A5] hover:text-[#C5A059] underline mt-1 transition-colors cursor-pointer"
-          >
-            Popup not opening? Click here to continue on full page PayHere
-          </button>
-        </form>
-      </div>
-
-      {/* Footer Info */}
-      <div className="text-[10px] font-mono text-white/40 text-center leading-relaxed">
-        Encrypted TLS 1.3 cryptographic transaction. Card details are entered directly on PayHere&apos;s secured payment system.
-      </div>
+      {/* Fallback direct submission form if popups are blocked */}
+      <form
+        id="payhere_form"
+        ref={formRef}
+        method="POST"
+        action={PAYHERE_SANDBOX_URL}
+        className="hidden"
+      >
+        <input type="hidden" name="merchant_id" value={paymentFields?.merchant_id || ""} />
+        <input type="hidden" name="return_url" value={typeof window !== "undefined" ? `${window.location.origin}/checkout?payment=success&order_id=${encodeURIComponent(orderId)}` : ""} />
+        <input type="hidden" name="cancel_url" value={typeof window !== "undefined" ? `${window.location.origin}/checkout?payment=cancelled&order_id=${encodeURIComponent(orderId)}` : ""} />
+        <input type="hidden" name="notify_url" value={typeof window !== "undefined" ? `${window.location.origin}/api/orders/payhere-notify` : ""} />
+        <input type="hidden" name="first_name" value={firstName} />
+        <input type="hidden" name="last_name" value={lastName} />
+        <input type="hidden" name="email" value={customer.email} />
+        <input type="hidden" name="phone" value={customer.phone} />
+        <input type="hidden" name="address" value={customer.address} />
+        <input type="hidden" name="city" value={customer.city} />
+        <input type="hidden" name="country" value={customer.country || "Sri Lanka"} />
+        <input type="hidden" name="order_id" value={paymentFields?.order_id || ""} />
+        <input type="hidden" name="items" value={itemsDescription || "Krono Order"} />
+        <input type="hidden" name="currency" value={paymentCurrency} />
+        <input type="hidden" name="amount" value={paymentAmount} />
+        <input type="hidden" name="hash" value={paymentFields?.hash || ""} />
+      </form>
     </div>
   );
 }
