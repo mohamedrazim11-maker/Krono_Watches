@@ -24,8 +24,8 @@ export default function WishlistDrawer({
   const cartContext = useCart();
   const wishlist = propWishlist ?? cartContext.wishlist;
   const toggleWishlist = cartContext.toggleWishlist;
-  const addToCart = cartContext.addToCart;
-  const showToast = cartContext.showToast;
+  const moveToCart = cartContext.moveToCart;
+  const moveAllWishlistToCart = cartContext.moveAllWishlistToCart;
 
   if (!isOpen) return null;
 
@@ -41,12 +41,11 @@ export default function WishlistDrawer({
     }
   };
 
-  const handleAcquire = (product: Product) => {
+  const handleMove = (product: Product) => {
     if (propMoveToCart) {
       propMoveToCart(product);
     } else {
-      addToCart(product, 1);
-      showToast(`Added ${product.name} to cart.`);
+      moveToCart(product);
     }
   };
 
@@ -69,12 +68,22 @@ export default function WishlistDrawer({
             </h2>
           </div>
 
-          <button
-            onClick={onClose}
-            className="p-2 text-white/60 hover:text-white transition font-bold text-sm"
-          >
-            ✕
-          </button>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/wishlist"
+              onClick={onClose}
+              className="text-xs font-mono text-[#C5A059] hover:underline uppercase tracking-wider"
+            >
+              Full Page ↗
+            </Link>
+            <button
+              onClick={onClose}
+              className="p-1 text-white/60 hover:text-white transition font-bold text-sm leading-none"
+              aria-label="Close wishlist"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         {/* Wishlist Items */}
@@ -87,13 +96,13 @@ export default function WishlistDrawer({
                   No Saved Watches
                 </h3>
                 <p className="text-xs text-white/50 max-w-xs font-mono">
-                  Save your favorite watches here to view or buy later.
+                  Save your favorite watches here with 1 click to view or move to cart later.
                 </p>
               </div>
               <Link
                 href="/catalog"
                 onClick={onClose}
-                className="px-6 py-2.5 bg-[#C5A059] text-black text-xs font-mono font-bold uppercase tracking-wider hover:bg-[#b08d48]"
+                className="px-6 py-2.5 bg-[#C5A059] text-black text-xs font-mono font-bold uppercase tracking-wider hover:bg-[#b08d48] rounded-lg"
               >
                 Browse Watches
               </Link>
@@ -104,38 +113,50 @@ export default function WishlistDrawer({
               return (
                 <div
                   key={product.id}
-                  className="bg-[#0D0D0D] border border-[#1a1a1a] p-3.5 flex gap-3.5 items-center justify-between"
+                  className="bg-[#0D0D0D] border border-[#1a1a1a] rounded-xl p-3.5 flex gap-3.5 items-center justify-between hover:border-[#262A33] transition-colors"
                 >
-                  <div className="h-16 w-16 bg-black border border-white/10 overflow-hidden flex-shrink-0">
+                  <Link
+                    href={`/products/${product.id}`}
+                    onClick={onClose}
+                    className="h-16 w-16 bg-black border border-white/10 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center p-1"
+                  >
                     <SmoothImage
                       src={img}
                       alt={product.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
-                  </div>
+                  </Link>
 
                   <div className="flex-1 min-w-0 space-y-1">
                     <div className="text-[9px] font-mono uppercase text-[#C5A059] font-bold truncate">
-                      {product.brand}
+                      {product.brand || "KRONO"}
                     </div>
-                    <div className="text-xs font-semibold text-white truncate">
+                    <Link
+                      href={`/products/${product.id}`}
+                      onClick={onClose}
+                      className="block text-xs font-semibold text-white truncate hover:text-[#C5A059] transition-colors"
+                    >
                       {product.name}
-                    </div>
+                    </Link>
                     <div className="text-xs font-mono font-bold text-[#C5A059]">
                       {formatCurrency(product.price)}
                     </div>
                   </div>
 
-                  <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                  <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                    {/* Baymard UX: Move wishlist product to cart */}
                     <button
-                      onClick={() => handleAcquire(product)}
-                      className="px-3 py-1 bg-white hover:bg-[#C5A059] text-black text-[11px] font-mono font-bold uppercase"
+                      type="button"
+                      onClick={() => handleMove(product)}
+                      className="px-3 py-1.5 bg-[#C5A059] hover:bg-[#D4AF37] text-black text-[10px] font-mono font-bold uppercase tracking-wider rounded transition-colors cursor-pointer"
+                      title="Move product directly to Cart"
                     >
-                      Add to Cart
+                      Move to Cart
                     </button>
                     <button
+                      type="button"
                       onClick={() => handleRemove(product)}
-                      className="text-[10px] text-red-400 hover:text-red-300 font-mono underline"
+                      className="text-[10px] text-[#8E95A5] hover:text-red-400 font-mono transition-colors cursor-pointer"
                     >
                       Remove
                     </button>
@@ -145,6 +166,26 @@ export default function WishlistDrawer({
             })
           )}
         </div>
+
+        {/* Footer with Move All to Cart */}
+        {wishlist.length > 0 && (
+          <div className="p-4 bg-[#0D0D0D] border-t border-[#1a1a1a] space-y-2">
+            <button
+              type="button"
+              onClick={() => {
+                moveAllWishlistToCart();
+                onClose();
+              }}
+              className="w-full py-3 bg-white hover:bg-[#C5A059] text-black font-bold text-xs font-mono uppercase tracking-wider rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-2"
+            >
+              <span>🛒</span>
+              <span>Move All to Cart ({wishlist.length})</span>
+            </button>
+            <p className="text-[10px] font-mono text-center text-[#8E95A5]">
+              Items will be transferred directly to your shopping cart.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

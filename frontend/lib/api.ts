@@ -136,8 +136,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Dive Watches",
     gender: "Men",
     case_size: "41mm",
-    price: 3100000,
-    old_price: 3450000,
+    price: 4000,
+    old_price: 2750,
     badge: "Iconic Diver",
     warranty: "5 Years Certified Rolex International Guarantee",
     promotion_period: "VIP Allocation",
@@ -165,8 +165,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Sports Watches",
     gender: "Men",
     case_size: "40mm",
-    price: 4850000,
-    old_price: 5400000,
+    price: 3050,
+    old_price: 2600,
     badge: "Dual Time Icon",
     warranty: "5 Years Certified Rolex International Guarantee",
     promotion_period: "VIP Registry",
@@ -194,8 +194,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Chronograph",
     gender: "Men",
     case_size: "40mm",
-    price: 5200000,
-    old_price: 5800000,
+    price: 4450,
+    old_price: 4200,
     badge: "Motorsport Legend",
     warranty: "5 Years Certified Rolex International Guarantee",
     promotion_period: "VIP Allocation",
@@ -223,8 +223,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Dress Watches",
     gender: "Men",
     case_size: "40mm",
-    price: 15400000,
-    old_price: 16800000,
+    price: 2850,
+    old_price: 3150,
     badge: "The Presidents' Watch",
     warranty: "5 Years Certified Rolex International Guarantee",
     promotion_period: "Exclusive Vault",
@@ -252,8 +252,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Dress Watches",
     gender: "Men",
     case_size: "42mm",
-    price: 16300000,
-    old_price: 17800000,
+    price: 3800,
+    old_price: 4500,
     badge: "Grand Complication",
     warranty: "5 Years Certified Rolex International Guarantee",
     promotion_period: "VIP Allocation",
@@ -283,8 +283,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Chronograph",
     gender: "Men",
     case_size: "42mm",
-    price: 2450000,
-    old_price: 2750000,
+    price: 4050,
+    old_price: 2600,
     badge: "Space Certified",
     warranty: "5 Years Master Chronometer International Warranty",
     promotion_period: "Collector Series",
@@ -312,8 +312,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Dive Watches",
     gender: "Men",
     case_size: "42mm",
-    price: 1850000,
-    old_price: 2100000,
+    price: 4300,
+    old_price: 2650,
     badge: "007 Heritage",
     warranty: "5 Years Master Chronometer International Warranty",
     promotion_period: "VIP Offer",
@@ -341,8 +341,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Sports Watches",
     gender: "Men",
     case_size: "41mm",
-    price: 2050000,
-    old_price: 2350000,
+    price: 2450,
+    old_price: 3650,
     badge: "Maritime Luxury",
     warranty: "5 Years Master Chronometer International Warranty",
     promotion_period: "Valid Sep 2026",
@@ -370,8 +370,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Dress Watches",
     gender: "Unisex",
     case_size: "39mm",
-    price: 2300000,
-    old_price: 2600000,
+    price: 3450,
+    old_price: 4650,
     badge: "Geneva Observatory",
     warranty: "5 Years Master Chronometer International Warranty",
     promotion_period: "VIP Allocation",
@@ -399,8 +399,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Dress Watches",
     gender: "Men",
     case_size: "40mm",
-    price: 1680000,
-    old_price: 1950000,
+    price: 4150,
+    old_price: 4700,
     badge: "Pure Elegance",
     warranty: "5 Years Master Chronometer International Warranty",
     promotion_period: "Classic Edition",
@@ -430,8 +430,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Sports Watches",
     gender: "Men",
     case_size: "49.8mm",
-    price: 1100000,
-    old_price: 1250000,
+    price: 3950,
+    old_price: 4550,
     badge: "Flagship MR-G",
     warranty: "3 Years Casio International Premium Guarantee",
     promotion_period: "Yamagata Masterpiece",
@@ -459,8 +459,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Sports Watches",
     gender: "Men",
     case_size: "50.9mm",
-    price: 420000,
-    old_price: 480000,
+    price: 3350,
+    old_price: 4650,
     badge: "Carbon Core Guard",
     warranty: "2 Years Casio International Warranty",
     promotion_period: "Slim Structure Innovation",
@@ -488,8 +488,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Digital",
     gender: "Unisex",
     case_size: "43.2mm",
-    price: 240000,
-    old_price: 280000,
+    price: 4750,
+    old_price: 3850,
     badge: "Origin Heritage",
     warranty: "2 Years Casio International Warranty",
     promotion_period: "Heritage Classic",
@@ -517,8 +517,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Digital",
     gender: "Men",
     case_size: "54mm",
-    price: 275000,
-    old_price: 320000,
+    price: 3300,
+    old_price: 2950,
     badge: "Extreme Survival",
     warranty: "2 Years Casio International Warranty",
     promotion_period: "Land Master Series",
@@ -546,8 +546,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Dress Watches",
     gender: "Men",
     case_size: "42.8mm",
-    price: 490000,
-    old_price: 560000,
+    price: 3100,
+    old_price: 2850,
     badge: "Elegance & Technology",
     warranty: "3 Years Casio Premium International Warranty",
     promotion_period: "Japan Domestic Masterpiece",
@@ -577,8 +577,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Automatic",
     gender: "Men",
     case_size: "41mm",
-    price: 2150000,
-    old_price: 2400000,
+    price: 2850,
+    old_price: 3850,
     badge: "Shinshu Snowflake",
     warranty: "5 Years Grand Seiko International Warranty",
     promotion_period: "Spring Drive Master",
@@ -606,8 +606,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Dress Watches",
     gender: "Unisex",
     case_size: "40mm",
-    price: 2350000,
-    old_price: 2650000,
+    price: 3650,
+    old_price: 2200,
     badge: "Sakura Blossom Dial",
     warranty: "5 Years Grand Seiko International Warranty",
     promotion_period: "Four Seasons 24 Sekki",
@@ -635,8 +635,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Dress Watches",
     gender: "Men",
     case_size: "38.5mm",
-    price: 2750000,
-    old_price: 3100000,
+    price: 2600,
+    old_price: 4000,
     badge: "Omiwatari Glacier Dial",
     warranty: "5 Years Grand Seiko International Warranty",
     promotion_period: "Manual Wind Master",
@@ -664,8 +664,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Dive Watches",
     gender: "Men",
     case_size: "44.8mm",
-    price: 1800000,
-    old_price: 2050000,
+    price: 4100,
+    old_price: 2450,
     badge: "Ken Okuyama Design",
     warranty: "3 Years Seiko International Warranty",
     promotion_period: "Professional Diver",
@@ -693,8 +693,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Automatic",
     gender: "Men",
     case_size: "40.2mm",
-    price: 360000,
-    old_price: 410000,
+    price: 4700,
+    old_price: 2250,
     badge: "Handcrafted Enamel",
     warranty: "3 Years Seiko International Warranty",
     promotion_period: "Artisan Dial Edition",
@@ -724,8 +724,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Automatic",
     gender: "Unisex",
     case_size: "40mm",
-    price: 245000,
-    old_price: 285000,
+    price: 2650,
+    old_price: 4400,
     badge: "Integrated Bracelet Icon",
     warranty: "2 Years International Tissot Warranty",
     promotion_period: "Hot Trending Reference",
@@ -753,8 +753,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Dress Watches",
     gender: "Men",
     case_size: "40mm",
-    price: 265000,
-    old_price: 310000,
+    price: 2200,
+    old_price: 4500,
     badge: "Silicium Hairspring",
     warranty: "2 Years International Tissot Warranty",
     promotion_period: "Executive Standard",
@@ -782,8 +782,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Dive Watches",
     gender: "Men",
     case_size: "43mm",
-    price: 260000,
-    old_price: 295000,
+    price: 4300,
+    old_price: 2850,
     badge: "300m Diver",
     warranty: "2 Years International Tissot Warranty",
     promotion_period: "Watersport Edition",
@@ -811,8 +811,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Dress Watches",
     gender: "Men",
     case_size: "39.3mm",
-    price: 235000,
-    old_price: 270000,
+    price: 4200,
+    old_price: 2750,
     badge: "Cradle of Horology",
     warranty: "2 Years International Tissot Warranty",
     promotion_period: "Swiss Heritage",
@@ -840,8 +840,8 @@ export const FALLBACK_PRODUCTS: Product[] = [
     category: "Dress Watches",
     gender: "Unisex",
     case_size: "41mm",
-    price: 280000,
-    old_price: 325000,
+    price: 3850,
+    old_price: 3500,
     badge: "COSC Chronometer Certified",
     warranty: "3 Years International Tissot Warranty",
     promotion_period: "Chronometer Standard",
@@ -879,7 +879,7 @@ export const FALLBACK_POSTERS: Poster[] = [
     coupon_code: "MONO20",
     image_url: "/images/watches/submariner_deep_black_ceramic.jpg",
     featured_product_name: "Rolex Submariner Date 41mm",
-    featured_product_price: "LKR 3,100,000",
+    featured_product_price: "LKR 3,850",
     days: "04",
     hours: "18",
     mins: "45",
@@ -895,35 +895,63 @@ export const FALLBACK_POSTERS: Poster[] = [
     coupon_code: "MONO20",
     image_url: "/images/watches/watch_1548036328-c9fa8.jpg",
     featured_product_name: "Rolex GMT-Master II Pepsi",
-    featured_product_price: "LKR 4,850,000",
+    featured_product_price: "LKR 3,850",
     is_active: true
   }
 ];
 
-export async function fetchProducts(params?: { category?: string; featured?: boolean | string; search?: string }): Promise<Product[]> {
-  try {
-    const query = new URLSearchParams();
-    if (params?.category && params.category !== 'All') query.append('category', params.category);
-    if (params?.featured !== undefined) query.append('featured', String(params.featured));
-    if (params?.search) query.append('search', params.search);
+let _productsCache: Product[] | null = null;
+let _categoriesCache: Category[] | null = null;
+let _productsPromise: Promise<Product[]> | null = null;
+let _categoriesPromise: Promise<Category[]> | null = null;
 
-    const url = `${API_BASE_URL}/products${query.toString() ? `?${query.toString()}` : ''}`;
-    const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) throw new Error(`Failed to fetch products: ${res.statusText}`);
-    const json = await res.json();
-    if (json.data && Array.isArray(json.data) && json.data.length > 0) {
-      return json.data;
-    }
-    return FALLBACK_PRODUCTS;
-  } catch (error) {
-    console.error('API fetchProducts falling back to curated dataset:', error);
-    return FALLBACK_PRODUCTS;
+export async function fetchProducts(params?: { category?: string; featured?: boolean | string; search?: string }): Promise<Product[]> {
+  const isDefaultFetch = !params || (!params.category && params.featured === undefined && !params.search);
+
+  if (isDefaultFetch && _productsCache && _productsCache.length > 0) {
+    return _productsCache;
   }
+  if (isDefaultFetch && _productsPromise) {
+    return _productsPromise;
+  }
+
+  const p = (async () => {
+    try {
+      const query = new URLSearchParams();
+      if (params?.category && params.category !== 'All') query.append('category', params.category);
+      if (params?.featured !== undefined) query.append('featured', String(params.featured));
+      if (params?.search) query.append('search', params.search);
+
+      const url = `${API_BASE_URL}/products${query.toString() ? `?${query.toString()}` : ''}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Failed to fetch products: ${res.statusText}`);
+      const json = await res.json();
+      if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+        if (isDefaultFetch) _productsCache = json.data;
+        return json.data;
+      }
+      if (isDefaultFetch) _productsCache = FALLBACK_PRODUCTS;
+      return FALLBACK_PRODUCTS;
+    } catch (error) {
+      console.error('API fetchProducts falling back to curated dataset:', error);
+      if (isDefaultFetch) _productsCache = FALLBACK_PRODUCTS;
+      return FALLBACK_PRODUCTS;
+    } finally {
+      if (isDefaultFetch) _productsPromise = null;
+    }
+  })();
+
+  if (isDefaultFetch) _productsPromise = p;
+  return p;
 }
 
 export async function fetchProductById(id: string): Promise<Product | null> {
+  if (_productsCache) {
+    const cached = _productsCache.find((p) => p.id === id);
+    if (cached) return cached;
+  }
   try {
-    const res = await fetch(`${API_BASE_URL}/products/${id}`, { cache: 'no-store' });
+    const res = await fetch(`${API_BASE_URL}/products/${id}`);
     if (!res.ok) throw new Error(`Failed to fetch product ${id}`);
     const json = await res.json();
     if (json.data) return json.data;
@@ -937,22 +965,39 @@ export async function fetchProductById(id: string): Promise<Product | null> {
 }
 
 export async function fetchCategories(): Promise<Category[]> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/products/categories`, { cache: 'no-store' });
-    if (!res.ok) throw new Error(`Failed to fetch categories: ${res.statusText}`);
-    const json = await res.json();
-    return json.data || [];
-  } catch (error) {
-    console.error('API fetchCategories error:', error);
-    return [
-      { id: "cat-dive", name: "Dive Watches", slug: "Dive Watches", description: "Deep water resistance & ceramic bezels" },
-      { id: "cat-dress", name: "Dress Watches", slug: "Dress Watches", description: "Fluted bezels, precious metals & guilloché" },
-      { id: "cat-chronograph", name: "Chronograph", slug: "Chronograph", description: "High-precision timing & tachymetric scales" },
-      { id: "cat-automatic", name: "Automatic", slug: "Automatic", description: "Swiss & Japanese self-winding movements" },
-      { id: "cat-digital", name: "Digital", slug: "Digital", description: "Multi-band atomic & Tough Solar modules" },
-      { id: "cat-sports", name: "Sports Watches", slug: "Sports Watches", description: "Toughness, dual-time & extreme resilience" }
-    ];
+  if (_categoriesCache && _categoriesCache.length > 0) {
+    return _categoriesCache;
   }
+  if (_categoriesPromise) {
+    return _categoriesPromise;
+  }
+
+  _categoriesPromise = (async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/products/categories`);
+      if (!res.ok) throw new Error(`Failed to fetch categories: ${res.statusText}`);
+      const json = await res.json();
+      const list = json.data || [];
+      _categoriesCache = list;
+      return list;
+    } catch (error) {
+      console.error('API fetchCategories error:', error);
+      const fallbackCats: Category[] = [
+        { id: 'cat-dive', name: 'Dive Watches', slug: 'Dive Watches', description: 'Deep water resistance & ceramic bezels' },
+        { id: 'cat-dress', name: 'Dress Watches', slug: 'Dress Watches', description: 'Fluted bezels, precious metals & guilloché' },
+        { id: 'cat-chronograph', name: 'Chronograph', slug: 'Chronograph', description: 'High-precision timing & tachymetric scales' },
+        { id: 'cat-automatic', name: 'Automatic', slug: 'Automatic', description: 'Swiss & Japanese self-winding movements' },
+        { id: 'cat-digital', name: 'Digital', slug: 'Digital', description: 'Multi-band atomic & Tough Solar modules' },
+        { id: 'cat-sports', name: 'Sports Watches', slug: 'Sports Watches', description: 'Toughness, dual-time & extreme resilience' }
+      ];
+      _categoriesCache = fallbackCats;
+      return fallbackCats;
+    } finally {
+      _categoriesPromise = null;
+    }
+  })();
+
+  return _categoriesPromise;
 }
 
 export async function createProduct(productData: Partial<Product>): Promise<Product> {

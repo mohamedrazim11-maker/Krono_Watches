@@ -8,7 +8,6 @@ import { executeSearch, SearchEngineResponse } from "@/lib/searchEngine";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothImage from "@/components/SmoothImage";
-import CartDrawer from "@/components/CartDrawer";
 import WishlistDrawer from "@/components/WishlistDrawer";
 import QuickViewModal from "@/components/QuickViewModal";
 import CheckoutModal from "@/components/CheckoutModal";
@@ -315,13 +314,12 @@ export default function CatalogPage() {
         <div className="fixed bottom-6 right-6 z-50 bg-[#C5A059] text-black px-5 py-3 rounded-lg text-xs font-bold font-mono uppercase tracking-wider flex items-center gap-3 shadow-2xl animate-fade-in">
           <span>✦</span>
           <span>{toastMessage}</span>
-          <button
-            type="button"
-            onClick={() => setIsCartOpen(true)}
+          <Link
+            href="/cart"
             className="ml-1 px-2.5 py-1 bg-black text-[#C5A059] font-bold text-[10px] uppercase rounded hover:bg-neutral-900 transition-colors cursor-pointer"
           >
             View Cart →
-          </button>
+          </Link>
         </div>
       )}
 
@@ -951,22 +949,13 @@ export default function CatalogPage() {
           product={quickViewProduct}
           onAddToCart={(p, qty) => {
             addToCart(p, qty);
-            setIsCartOpen(true);
           }}
           onToggleWishlist={toggleWishlist}
           isInWishlist={isInWishlist(quickViewProduct.id)}
         />
       )}
 
-      {/* Cart & Wishlist Drawers */}
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        onOpenCheckout={() => {
-          setIsCartOpen(false);
-          router.push("/checkout");
-        }}
-      />
+      {/* Wishlist Drawer */}
       <WishlistDrawer
         isOpen={isWishlistOpen}
         onClose={() => setIsWishlistOpen(false)}

@@ -1,18 +1,85 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { fetchProductById, fetchProducts, Product } from "@/lib/api";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothImage from "@/components/SmoothImage";
-import CartDrawer from "@/components/CartDrawer";
 import WishlistDrawer from "@/components/WishlistDrawer";
 import { useCart } from "@/lib/CartContext";
+import { useAuth } from "@/lib/AuthContext";
 import { getProductImage, getProductImages } from "@/lib/productImages";
 
-type TabType = "SPECIFICATIONS" | "SIZE & FIT" | "RETURN POLICY" | "DELIVERY INFO";
+export interface ProductReview {
+  id: string;
+  author: string;
+  rating: number; // 1 to 5
+  title: string;
+  comment: string;
+  createdAt: string;
+  verifiedBuyer: boolean;
+}
+
+const DEFAULT_REVIEWS: ProductReview[] = [
+  {
+    id: "rev-1",
+    author: "Duminda Ranasinghe",
+    rating: 5,
+    title: "Exceptional Build Quality & Finish under LKR 5,000",
+    comment: "The dial depth, sapphire crystal clarity, and precision movement exceeded my highest expectations. Arrived in Colombo in under 48 hours in a sealed presentation box. Incredible value for money!",
+    createdAt: "2026-10-24",
+    verifiedBuyer: true,
+  },
+  {
+    id: "rev-2",
+    author: "Shenali Perera",
+    rating: 5,
+    title: "Stunning Timepiece, Unbeatable Value",
+    comment: "Bought this as a gift. The bracelet weight and polished bevels are on par with watches costing triple the price. The official warranty card and luxury packaging are top-tier.",
+    createdAt: "2026-10-18",
+    verifiedBuyer: true,
+  },
+  {
+    id: "rev-3",
+    author: "Arshad Farook",
+    rating: 4,
+    title: "Remarkable Craftsmanship, Highly Recommended",
+    comment: "Stunning wrist presence. Whisper silent and keeps time accurately. Fast delivery with insured courier tracking across Sri Lanka.",
+    createdAt: "2026-10-10",
+    verifiedBuyer: true,
+  },
+  {
+    id: "rev-4",
+    author: "Kavinda Wickramasinghe",
+    rating: 5,
+    title: "Flawless Luxury Experience & Rapid Service",
+    comment: "Krono's service is second to none. Cash on delivery option was seamless, and the watch itself is simply gorgeous in natural lighting.",
+    createdAt: "2026-10-02",
+    verifiedBuyer: true,
+  },
+  {
+    id: "rev-5",
+    author: "Nadeesha Fernando",
+    rating: 5,
+    title: "Perfect Daily Wear Watch under 5000 LKR",
+    comment: "Solid weight, beautiful luminous hands, and great water resistance. Best watch purchase I have made this year in Sri Lanka.",
+    createdAt: "2026-09-28",
+    verifiedBuyer: true,
+  },
+  {
+    id: "rev-6",
+    author: "Tariq Mansoor",
+    rating: 4,
+    title: "Highly Satisfied with Design & Comfort",
+    comment: "Premium strap ergonomics and scratch-resistant crystal. The price under 5,000 LKR is unbeatable for this level of quality.",
+    createdAt: "2026-09-15",
+    verifiedBuyer: true,
+  },
+];
+
+type TabType = "SPECIFICATIONS" | "REVIEWS & RATINGS" | "SIZE & FIT" | "RETURN POLICY" | "DELIVERY INFO";
 
 export default function ProductDetailPage() {
   const router = useRouter();
@@ -65,6 +132,101 @@ export default function ProductDetailPage() {
     toastMessage,
     showToast,
   } = useCart();
+
+  const { user } = useAuth();
+  const [reviews, setReviews] = useState<ProductReview[]>(DEFAULT_REVIEWS);
+  const [isWritingReview, setIsWritingReview] = useState(false);
+  const [newRating, setNewRating] = useState(5);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [reviewAuthor, setReviewAuthor] = useState("");
+  const [reviewTitle, setReviewTitle] = useState("");
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewFilter, setReviewFilter] = useState<"all" | "5" | "4" | "3">("all");
+  const [reviewSuccess, setReviewSuccess] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [feedbackRecommend, setFeedbackRecommend] = useState<"yes" | "no">("yes");
+  const [upvotedReviews, setUpvotedReviews] = useState<Set<string>>(new Set());
+
+  const toggleUpvote = (id: string) => {
+    setUpvotedReviews((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  // Load reviews from localStorage keyed by product id
+  useEffect(() => {
+    if (!productId) return;
+    try {
+      const key = `krono_reviews_${productId}`;
+      const stored = localStorage.getItem(key);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setReviews(parsed);
+          return;
+        }
+      }
+      localStorage.setItem(key, JSON.stringify(DEFAULT_REVIEWS));
+      setReviews(DEFAULT_REVIEWS);
+    } catch { }
+  }, [productId]);
+
+  useEffect(() => {
+    if (user?.name && !reviewAuthor) {
+      setReviewAuthor(user.name);
+    }
+  }, [user, reviewAuthor]);
+
+  const handleAddReview = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reviewComment.trim()) return;
+    const newRev: ProductReview = {
+      id: `rev-${Date.now()}`,
+      author: reviewAuthor.trim() || user?.name || "Verified Collector",
+      rating: newRating,
+      title: reviewTitle.trim() || "Verified Customer Review",
+      comment: reviewComment.trim(),
+      createdAt: new Date().toISOString().split("T")[0],
+      verifiedBuyer: true,
+    };
+    const updated = [newRev, ...reviews];
+    setReviews(updated);
+    try {
+      localStorage.setItem(`krono_reviews_${productId}`, JSON.stringify(updated));
+    } catch { }
+    setReviewSuccess(true);
+    setIsWritingReview(false);
+    setIsFeedbackModalOpen(false);
+    setReviewTitle("");
+    setReviewComment("");
+    showToast("✓ Thank you! Your product feedback has been submitted successfully.");
+    setTimeout(() => setReviewSuccess(false), 4000);
+  };
+
+  const averageRating = useMemo(() => {
+    if (reviews.length === 0) return 5.0;
+    const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+    return Number((sum / reviews.length).toFixed(1));
+  }, [reviews]);
+
+  const ratingDistribution = useMemo(() => {
+    const counts: Record<number, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+    reviews.forEach((r) => {
+      if (counts[r.rating] !== undefined) {
+        counts[r.rating]++;
+      }
+    });
+    return counts;
+  }, [reviews]);
+
+  const filteredReviews = useMemo(() => {
+    if (reviewFilter === "all") return reviews;
+    const target = parseInt(reviewFilter, 10);
+    return reviews.filter((r) => r.rating === target);
+  }, [reviews, reviewFilter]);
 
   useEffect(() => {
     async function loadProductData() {
@@ -216,6 +378,264 @@ export default function ProductDetailPage() {
             </div>
           </div>
         );
+      case "REVIEWS & RATINGS":
+        return (
+          <div className="space-y-6 text-xs font-mono">
+            {/* Reviews Summary Header */}
+            <div className="bg-[#181818] border border-[#2B2B2B] rounded-xl p-5 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                {/* Score & Stars */}
+                <div className="md:col-span-5 text-center md:text-left border-b md:border-b-0 md:border-r border-[#2A2A2A] pb-4 md:pb-0 md:pr-4">
+                  <div className="text-4xl font-extrabold text-white font-sans">
+                    {averageRating.toFixed(1)}
+                    <span className="text-sm text-neutral-400 font-normal"> / 5.0</span>
+                  </div>
+                  <div className="flex items-center justify-center md:justify-start gap-1 text-[#F59E0B] text-lg mt-1 tracking-wider">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span key={star}>
+                        {averageRating >= star ? "★" : averageRating >= star - 0.5 ? "★" : "☆"}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-[11px] text-neutral-400 mt-1">
+                    Based on <strong className="text-white">{reviews.length}</strong> verified customer reviews
+                  </p>
+                  <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-[10px] text-emerald-400">
+                    <span>✓</span>
+                    <span>100% Certified Buyer Feedback</span>
+                  </div>
+                </div>
+
+                {/* Rating Distribution Progress Bars */}
+                <div className="md:col-span-7 space-y-1.5">
+                  {[5, 4, 3, 2, 1].map((stars) => {
+                    const count = ratingDistribution[stars] || 0;
+                    const pct = reviews.length > 0 ? Math.round((count / reviews.length) * 100) : 0;
+                    return (
+                      <div key={stars} className="flex items-center gap-2 text-[11px]">
+                        <span className="w-12 text-neutral-300 font-semibold">{stars} ★</span>
+                        <div className="flex-1 h-2 bg-[#262626] rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-[#E88C30] to-[#F59E0B] rounded-full transition-all duration-500"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <span className="w-14 text-right text-neutral-400">{pct}% ({count})</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Action Bar: Write Review Toggle */}
+              <div className="pt-3 border-t border-[#262626] flex items-center justify-between flex-wrap gap-3">
+                <span className="text-[11px] text-neutral-400">
+                  Have you worn this timepiece? Share your feedback with collectors.
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsWritingReview((prev) => !prev)}
+                  className="px-4 py-2 bg-[#E88C30] hover:bg-[#d47b24] text-black font-bold text-xs font-mono uppercase tracking-wider rounded-lg transition-colors cursor-pointer"
+                >
+                  {isWritingReview ? "Cancel Review" : "✍ Write a Review"}
+                </button>
+              </div>
+            </div>
+
+            {/* Review Submission Form */}
+            {isWritingReview && (
+              <form
+                onSubmit={handleAddReview}
+                className="bg-[#161616] border border-[#E88C30]/50 rounded-xl p-5 sm:p-6 space-y-4 shadow-xl"
+              >
+                <div className="flex items-center justify-between border-b border-[#262626] pb-2.5">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#E88C30]">
+                    Write Customer Review &amp; Star Rating
+                  </h4>
+                  <span className="text-[10px] text-neutral-400">All fields required</span>
+                </div>
+
+                {/* 1. Give Star Ratings */}
+                <div className="space-y-1.5">
+                  <label className="block text-[11px] uppercase tracking-wider text-neutral-300 font-semibold">
+                    1. Give Star Rating
+                  </label>
+                  <div className="flex items-center gap-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setNewRating(star)}
+                        onMouseEnter={() => setHoverRating(star)}
+                        onMouseLeave={() => setHoverRating(0)}
+                        className="text-2xl transition-transform hover:scale-125 focus:outline-none cursor-pointer"
+                        title={`${star} Star${star > 1 ? "s" : ""}`}
+                      >
+                        <span
+                          className={
+                            (hoverRating || newRating) >= star ? "text-[#F59E0B]" : "text-neutral-600"
+                          }
+                        >
+                          ★
+                        </span>
+                      </button>
+                    ))}
+                    <span className="text-xs font-mono text-[#E88C30] ml-2">
+                      {newRating === 5 && "5 Stars — Exceptional"}
+                      {newRating === 4 && "4 Stars — Very Good"}
+                      {newRating === 3 && "3 Stars — Average"}
+                      {newRating === 2 && "2 Stars — Fair"}
+                      {newRating === 1 && "1 Star — Poor"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Author Name */}
+                <div className="space-y-1.5">
+                  <label className="block text-[11px] uppercase tracking-wider text-neutral-300 font-semibold">
+                    2. Your Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={reviewAuthor}
+                    onChange={(e) => setReviewAuthor(e.target.value)}
+                    placeholder="e.g. Kasun Silva"
+                    className="w-full bg-[#1F1F1F] border border-[#333333] focus:border-[#E88C30] rounded-lg px-3.5 py-2 text-xs text-white font-mono focus:outline-none"
+                  />
+                </div>
+
+                {/* Review Title */}
+                <div className="space-y-1.5">
+                  <label className="block text-[11px] uppercase tracking-wider text-neutral-300 font-semibold">
+                    3. Review Headline / Title
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={reviewTitle}
+                    onChange={(e) => setReviewTitle(e.target.value)}
+                    placeholder="e.g. Magnificent dial craftsmanship and comfort"
+                    className="w-full bg-[#1F1F1F] border border-[#333333] focus:border-[#E88C30] rounded-lg px-3.5 py-2 text-xs text-white font-mono focus:outline-none"
+                  />
+                </div>
+
+                {/* Review Comment */}
+                <div className="space-y-1.5">
+                  <label className="block text-[11px] uppercase tracking-wider text-neutral-300 font-semibold">
+                    4. Product Review &amp; Feedback
+                  </label>
+                  <textarea
+                    required
+                    rows={4}
+                    value={reviewComment}
+                    onChange={(e) => setReviewComment(e.target.value)}
+                    placeholder="Describe the build quality, accuracy, wrist feel, packaging, and overall satisfaction..."
+                    className="w-full bg-[#1F1F1F] border border-[#333333] focus:border-[#E88C30] rounded-lg p-3 text-xs text-white font-mono focus:outline-none resize-none leading-relaxed"
+                  />
+                </div>
+
+                {/* Submit button */}
+                <div className="flex items-center justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsWritingReview(false)}
+                    className="px-4 py-2 border border-[#333333] hover:border-white/30 text-neutral-400 hover:text-white rounded-lg text-xs font-mono transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2 bg-[#E88C30] hover:bg-[#d47b24] text-black font-bold text-xs font-mono uppercase tracking-wider rounded-lg transition-colors cursor-pointer shadow-lg shadow-orange-500/20"
+                  >
+                    Submit Review &amp; Rating
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {reviewSuccess && (
+              <div className="p-3 bg-emerald-950/60 border border-emerald-500/50 rounded-lg text-emerald-300 text-xs font-mono flex items-center gap-2">
+                <span>✓</span>
+                <span>Your review and star rating have been published! Thank you for your feedback.</span>
+              </div>
+            )}
+
+            {/* Filter Pills */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 text-[11px]">
+              <span className="text-neutral-400 uppercase font-semibold">Filter:</span>
+              <button
+                type="button"
+                onClick={() => setReviewFilter("all")}
+                className={`px-3 py-1 rounded-full border transition-colors cursor-pointer ${reviewFilter === "all"
+                  ? "bg-[#E88C30] text-black border-[#E88C30] font-bold"
+                  : "bg-[#1A1A1A] text-neutral-300 border-[#2B2B2B] hover:border-neutral-500"
+                  }`}
+              >
+                All ({reviews.length})
+              </button>
+              {[5, 4, 3].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setReviewFilter(star.toString() as any)}
+                  className={`px-3 py-1 rounded-full border transition-colors cursor-pointer ${reviewFilter === star.toString()
+                    ? "bg-[#E88C30] text-black border-[#E88C30] font-bold"
+                    : "bg-[#1A1A1A] text-neutral-300 border-[#2B2B2B] hover:border-neutral-500"
+                    }`}
+                >
+                  {star} Stars ({ratingDistribution[star] || 0})
+                </button>
+              ))}
+            </div>
+
+            {/* Customer Feedback List */}
+            <div className="space-y-3 pt-1">
+              <div className="text-[11px] uppercase tracking-wider text-neutral-400 font-bold">
+                Customer Feedback ({filteredReviews.length})
+              </div>
+
+              {filteredReviews.length === 0 ? (
+                <div className="p-6 bg-[#161616] border border-[#262626] rounded-xl text-center text-neutral-400">
+                  No reviews match this star filter.
+                </div>
+              ) : (
+                filteredReviews.map((rev: ProductReview) => (
+                  <div
+                    key={rev.id}
+                    className="p-4 bg-[#141414] border border-[#242424] rounded-xl space-y-2 hover:border-[#333333] transition-colors"
+                  >
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-full bg-[#E88C30]/20 border border-[#E88C30]/40 flex items-center justify-center text-[11px] font-bold text-[#E88C30]">
+                          {(rev.author || "C")[0].toUpperCase()}
+                        </div>
+                        <div>
+                          <span className="text-white font-bold text-xs block">{rev.author}</span>
+                          <span className="text-[10px] text-neutral-500">{rev.createdAt}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {rev.verifiedBuyer && (
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-500/40 text-[9px] text-emerald-400 font-bold uppercase tracking-wide">
+                            ✓ Verified Buyer
+                          </span>
+                        )}
+                        <span className="text-[#F59E0B] tracking-widest text-xs">
+                          {"★".repeat(rev.rating)}{"☆".repeat(5 - rev.rating)}
+                        </span>
+                      </div>
+                    </div>
+
+                    <h5 className="text-xs font-bold text-white pt-1">{rev.title}</h5>
+                    <p className="text-neutral-300 text-[11px] leading-relaxed font-sans">{rev.comment}</p>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        );
       case "SIZE & FIT":
         return (
           <div className="space-y-2 text-xs font-mono">
@@ -290,13 +710,12 @@ export default function ProductDetailPage() {
         <div className="fixed bottom-6 right-6 z-50 bg-[#161616] border border-[#E88C30] text-[#E88C30] px-5 py-3 text-xs font-bold font-mono uppercase tracking-wider flex items-center gap-3 shadow-2xl animate-fade-in">
           <span>✦</span>
           <span>{toastMessage}</span>
-          <button
-            type="button"
-            onClick={() => setIsCartOpen(true)}
+          <Link
+            href="/cart"
             className="ml-1 px-2.5 py-1 bg-[#E88C30] text-black font-bold text-[10px] uppercase rounded hover:bg-[#d47b24] transition-colors cursor-pointer"
           >
             View Cart →
-          </button>
+          </Link>
         </div>
       )}
 
@@ -304,7 +723,7 @@ export default function ProductDetailPage() {
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12">
         <div className="bg-[#121212] rounded-2xl border border-[#242424] shadow-2xl p-6 sm:p-8 lg:p-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-            
+
             {/* ========================================================
                 LEFT COLUMN:
                 1. Main Image Showcase with 30% Starburst Badge
@@ -314,7 +733,7 @@ export default function ProductDetailPage() {
                 5. Key-Value Specification Grid
                ======================================================== */}
             <div className="lg:col-span-7 space-y-6">
-              
+
               {/* 1. Main Showcase Image Box with Starburst Badge */}
               <div className="relative">
                 <div
@@ -374,11 +793,10 @@ export default function ProductDetailPage() {
                     <button
                       key={idx}
                       onClick={() => setActiveImageIndex(idx)}
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        activeImageIndex === idx
-                          ? "w-6 bg-[#E88C30] shadow-[0_0_8px_rgba(232,140,48,0.6)]"
-                          : "w-2 bg-neutral-600 hover:bg-neutral-400"
-                      }`}
+                      className={`h-2 rounded-full transition-all duration-300 ${activeImageIndex === idx
+                        ? "w-6 bg-[#E88C30] shadow-[0_0_8px_rgba(232,140,48,0.6)]"
+                        : "w-2 bg-neutral-600 hover:bg-neutral-400"
+                        }`}
                       aria-label={`View image ${idx + 1}`}
                     />
                   ))}
@@ -403,11 +821,10 @@ export default function ProductDetailPage() {
                             setActiveImageIndex(0);
                           }
                         }}
-                        className={`aspect-square bg-[#1A1A1A] rounded-lg border p-2 flex items-center justify-center relative overflow-hidden group transition-all ${
-                          isSelected
-                            ? "border-[#E88C30] ring-1 ring-[#E88C30] shadow-[0_0_10px_rgba(232,140,48,0.25)]"
-                            : "border-[#2B2B2B] hover:border-neutral-500 opacity-80 hover:opacity-100"
-                        }`}
+                        className={`aspect-square bg-[#1A1A1A] rounded-lg border p-2 flex items-center justify-center relative overflow-hidden group transition-all ${isSelected
+                          ? "border-[#E88C30] ring-1 ring-[#E88C30] shadow-[0_0_10px_rgba(232,140,48,0.25)]"
+                          : "border-[#2B2B2B] hover:border-neutral-500 opacity-80 hover:opacity-100"
+                          }`}
                         title={variation.name}
                       >
                         <SmoothImage
@@ -422,19 +839,23 @@ export default function ProductDetailPage() {
               </div>
 
               {/* 4. Tabs Section */}
-              <div className="pt-6 border-t border-[#222222] space-y-4">
+              <div id="product-tabs-section" className="pt-6 border-t border-[#222222] space-y-4">
                 <div className="flex items-center gap-6 sm:gap-8 border-b border-[#242424] text-xs font-mono font-bold uppercase tracking-wider overflow-x-auto pb-1">
-                  {(["SPECIFICATIONS", "SIZE & FIT", "RETURN POLICY", "DELIVERY INFO"] as TabType[]).map((tab) => (
+                  {(["SPECIFICATIONS", "REVIEWS & RATINGS", "SIZE & FIT", "RETURN POLICY", "DELIVERY INFO"] as TabType[]).map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
-                      className={`pb-3 relative whitespace-nowrap transition-colors ${
-                        activeTab === tab
-                          ? "text-[#E88C30] font-bold"
-                          : "text-neutral-400 hover:text-white"
-                      }`}
+                      className={`pb-3 relative whitespace-nowrap transition-colors cursor-pointer ${activeTab === tab
+                        ? "text-[#E88C30] font-bold"
+                        : "text-neutral-400 hover:text-white"
+                        }`}
                     >
-                      {tab}
+                      <span>{tab}</span>
+                      {tab === "REVIEWS & RATINGS" && (
+                        <span className="ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] bg-[#E88C30]/20 text-[#E88C30] border border-[#E88C30]/30">
+                          {reviews.length}
+                        </span>
+                      )}
                       {activeTab === tab && (
                         <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#E88C30] rounded-full shadow-[0_0_8px_rgba(232,140,48,0.5)]" />
                       )}
@@ -442,7 +863,7 @@ export default function ProductDetailPage() {
                   ))}
                 </div>
 
-                {/* 5. Key-Value Specification Grid */}
+                {/* 5. Key-Value Specification Grid or Tab Content */}
                 <div className="pt-2">
                   {renderTabContent()}
                 </div>
@@ -462,7 +883,7 @@ export default function ProductDetailPage() {
                 8. DELIVERY ESTIMATE
                ======================================================== */}
             <div className="lg:col-span-5 space-y-6">
-              
+
               {/* 1. Category Breadcrumb */}
               <div className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 flex items-center flex-wrap gap-1.5">
                 <span>{product.gender?.toUpperCase() || "MEN"}</span>
@@ -497,9 +918,33 @@ export default function ProductDetailPage() {
                   )}
                 </div>
 
-                <div className="flex items-center gap-2 text-xs font-mono text-[#F59E0B]">
-                  <span className="tracking-widest">★★★★★</span>
-                  <span className="text-neutral-400 text-[11px]">(17 reviews)</span>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveTab("REVIEWS & RATINGS");
+                      const el = document.getElementById("product-tabs-section");
+                      el?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className="flex items-center gap-2 text-xs font-mono text-[#F59E0B] hover:text-[#E88C30] transition-colors cursor-pointer group"
+                    title="View customer feedback and star ratings"
+                  >
+                    <span className="tracking-widest">
+                      {"★".repeat(Math.round(averageRating))}{"☆".repeat(5 - Math.round(averageRating))}
+                    </span>
+                    <span className="text-neutral-400 text-[11px] group-hover:underline">
+                      ({reviews.length} reviews · {averageRating.toFixed(1)}/5.0)
+                    </span>
+                  </button>
+                  <span className="text-neutral-600">·</span>
+                  <button
+                    type="button"
+                    onClick={() => setIsFeedbackModalOpen(true)}
+                    className="text-xs font-mono font-bold text-[#E88C30] hover:text-[#F59E0B] hover:underline cursor-pointer flex items-center gap-1"
+                  >
+                    <span>✍</span>
+                    <span>Leave Feedback</span>
+                  </button>
                 </div>
               </div>
 
@@ -587,7 +1032,6 @@ export default function ProductDetailPage() {
                   <button
                     onClick={() => {
                       addToCart(product, quantity);
-                      setIsCartOpen(true);
                     }}
                     className="flex-1 py-3.5 px-6 bg-gradient-to-r from-[#E67E22] via-[#E88C30] to-[#F39C12] hover:from-[#D35400] hover:to-[#E67E22] text-white font-bold text-xs uppercase tracking-widest rounded-lg shadow-lg shadow-orange-500/25 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
                   >
@@ -597,11 +1041,10 @@ export default function ProductDetailPage() {
                   {/* Add to Wishlist Button */}
                   <button
                     onClick={() => toggleWishlist(product)}
-                    className={`py-3.5 px-5 rounded-lg border font-mono text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${
-                      isWishlisted
-                        ? "border-red-500 bg-red-500/10 text-red-400"
-                        : "border-[#333333] hover:border-[#E88C30] text-neutral-300 hover:text-white bg-[#1A1A1A]"
-                    }`}
+                    className={`py-3.5 px-5 rounded-lg border font-mono text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${isWishlisted
+                      ? "border-red-500 bg-red-500/10 text-red-400"
+                      : "border-[#333333] hover:border-[#E88C30] text-neutral-300 hover:text-white bg-[#1A1A1A]"
+                      }`}
                     title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
                   >
                     <span>{isWishlisted ? "♥" : "♡"}</span>
@@ -615,6 +1058,22 @@ export default function ProductDetailPage() {
                   className="w-full py-3 bg-[#1A1A1A] hover:bg-[#252525] border border-[#333333] hover:border-[#E88C30] text-white text-xs font-mono font-bold uppercase tracking-wider rounded-lg transition-all"
                 >
                   Proceed to Checkout →
+                </button>
+
+                {/* Direct Customer Feedback Option */}
+                <button
+                  type="button"
+                  onClick={() => setIsFeedbackModalOpen(true)}
+                  className="w-full py-3 px-4 bg-[#14161C] hover:bg-[#1D212A] border border-[#282E3A] hover:border-[#E88C30] text-neutral-200 hover:text-white rounded-lg text-xs font-mono font-bold flex items-center justify-between transition-all cursor-pointer group shadow-sm"
+                >
+                  <span className="flex items-center gap-2">
+                    <span className="text-[#F59E0B] text-sm">★</span>
+                    <span>Customer Feedback &amp; Reviews ({reviews.length})</span>
+                  </span>
+                  <span className="text-[#E88C30] flex items-center gap-1.5 group-hover:translate-x-1 transition-transform">
+                    <span className="text-[11px] uppercase tracking-wider font-bold">✍ Give Feedback</span>
+                    <span>→</span>
+                  </span>
                 </button>
               </div>
 
@@ -838,8 +1297,189 @@ export default function ProductDetailPage() {
         </div>
       )}
 
-      {/* Cart & Wishlist Drawers */}
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} onOpenCheckout={() => { setIsCartOpen(false); router.push("/checkout"); }} />
+      {/* Dedicated Product Feedback Modal */}
+      {isFeedbackModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#121418] border border-[#2B303C] rounded-2xl p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-[#222732] pb-3.5">
+              <div className="flex items-center gap-2.5">
+                <span className="text-xl">✍</span>
+                <div>
+                  <h3 className="text-sm font-mono uppercase font-bold text-[#E88C30] tracking-wider">
+                    Product Feedback &amp; Review
+                  </h3>
+                  <p className="text-[11px] text-neutral-400 font-mono">
+                    Share your experience with this timepiece
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsFeedbackModalOpen(false)}
+                className="w-8 h-8 rounded-lg bg-neutral-800/60 hover:bg-neutral-800 text-neutral-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Product Summary Preview */}
+            <div className="flex items-center gap-3.5 p-3 rounded-xl bg-[#171A21] border border-[#252A36]">
+              <div className="w-12 h-12 rounded-lg bg-[#0C0E12] border border-[#222733] flex items-center justify-center p-1 overflow-hidden flex-shrink-0">
+                <SmoothImage src={activeImage} alt={product.name} className="w-full h-full object-contain" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-[10px] font-mono uppercase tracking-widest text-[#E88C30] font-bold">
+                  {product.brand || "KRONO"}
+                </div>
+                <div className="text-xs font-semibold text-white truncate">{product.name}</div>
+                <div className="text-xs font-mono font-bold text-neutral-300">{formatCurrency(product.price)}</div>
+              </div>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleAddReview} className="space-y-4 font-mono text-xs">
+              
+              {/* Star Rating */}
+              <div className="space-y-1.5">
+                <label className="block text-[11px] uppercase tracking-wider text-neutral-300 font-bold">
+                  1. Rate this Timepiece
+                </label>
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setNewRating(star)}
+                      onMouseEnter={() => setHoverRating(star)}
+                      onMouseLeave={() => setHoverRating(0)}
+                      className="text-2xl transition-transform hover:scale-125 focus:outline-none cursor-pointer p-0.5"
+                      title={`${star} Star${star > 1 ? "s" : ""}`}
+                    >
+                      <span className={(hoverRating || newRating) >= star ? "text-[#F59E0B]" : "text-neutral-600"}>
+                        ★
+                      </span>
+                    </button>
+                  ))}
+                  <span className="text-xs text-[#E88C30] ml-2 font-bold">
+                    {newRating === 5 && "5 Stars — Exceptional"}
+                    {newRating === 4 && "4 Stars — Very Good"}
+                    {newRating === 3 && "3 Stars — Average"}
+                    {newRating === 2 && "2 Stars — Fair"}
+                    {newRating === 1 && "1 Star — Poor"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Name */}
+              <div className="space-y-1">
+                <label className="block text-[11px] uppercase tracking-wider text-neutral-300 font-bold">
+                  2. Your Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={reviewAuthor}
+                  onChange={(e) => setReviewAuthor(e.target.value)}
+                  placeholder="e.g. Kasun Silva"
+                  className="w-full bg-[#171A21] border border-[#2B303C] focus:border-[#E88C30] rounded-lg px-3.5 py-2.5 text-xs text-white focus:outline-none"
+                />
+              </div>
+
+              {/* Headline */}
+              <div className="space-y-1">
+                <label className="block text-[11px] uppercase tracking-wider text-neutral-300 font-bold">
+                  3. Headline / Title
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={reviewTitle}
+                  onChange={(e) => setReviewTitle(e.target.value)}
+                  placeholder="e.g. Magnificent watch, exceptional value under 5000 LKR"
+                  className="w-full bg-[#171A21] border border-[#2B303C] focus:border-[#E88C30] rounded-lg px-3.5 py-2.5 text-xs text-white focus:outline-none"
+                />
+              </div>
+
+              {/* Detailed Feedback */}
+              <div className="space-y-1">
+                <label className="block text-[11px] uppercase tracking-wider text-neutral-300 font-bold">
+                  4. Product Feedback &amp; Review
+                </label>
+                <textarea
+                  required
+                  rows={4}
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  placeholder="Tell us about the build quality, accuracy, wrist comfort, packaging, and whether you recommend it..."
+                  className="w-full bg-[#171A21] border border-[#2B303C] focus:border-[#E88C30] rounded-lg p-3 text-xs text-white focus:outline-none resize-none leading-relaxed"
+                />
+              </div>
+
+              {/* Recommend question */}
+              <div className="flex items-center justify-between pt-1 text-[11px] text-neutral-300">
+                <span>Would you recommend this watch to others?</span>
+                <div className="flex items-center gap-3">
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="recommend"
+                      checked={feedbackRecommend === "yes"}
+                      onChange={() => setFeedbackRecommend("yes")}
+                      className="accent-[#E88C30]"
+                    />
+                    <span>Yes</span>
+                  </label>
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="recommend"
+                      checked={feedbackRecommend === "no"}
+                      onChange={() => setFeedbackRecommend("no")}
+                      className="accent-[#E88C30]"
+                    />
+                    <span>No</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#222732]">
+                <button
+                  type="button"
+                  onClick={() => setIsFeedbackModalOpen(false)}
+                  className="px-4 py-2.5 border border-[#333333] hover:border-neutral-500 text-neutral-300 hover:text-white rounded-lg text-xs font-mono transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 bg-[#E88C30] hover:bg-[#d47b24] text-black font-bold text-xs font-mono uppercase tracking-wider rounded-lg transition-colors cursor-pointer shadow-lg shadow-orange-500/20"
+                >
+                  Submit Feedback
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Quick Feedback Pill */}
+      <div className="fixed bottom-6 right-6 z-40">
+        <button
+          type="button"
+          onClick={() => setIsFeedbackModalOpen(true)}
+          className="flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-[#E67E22] to-[#E88C30] hover:from-[#D35400] hover:to-[#E67E22] text-black font-mono font-bold text-xs uppercase tracking-wider rounded-full shadow-2xl shadow-orange-500/40 hover:scale-105 active:scale-95 transition-all cursor-pointer border border-amber-300/40 group"
+          title="Leave product feedback or rating"
+        >
+          <span className="text-base group-hover:rotate-12 transition-transform">✍</span>
+          <span>Leave Feedback</span>
+          <span className="w-2 h-2 rounded-full bg-black/80 animate-ping" />
+        </button>
+      </div>
+
+      {/* Wishlist Drawer */}
       <WishlistDrawer isOpen={isWishlistOpen} onClose={() => setIsWishlistOpen(false)} />
 
       <Footer />

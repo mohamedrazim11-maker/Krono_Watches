@@ -288,8 +288,8 @@ export default function CartDrawer({
             {/* Bottom Divider */}
             <div className="border-t border-neutral-300 my-4" />
 
-            {/* Actions Row (Clear Cart Trash Can on Left, CHECKOUT on Right) */}
-            <div className="flex items-center justify-between gap-4">
+            {/* Actions Row (Clear Cart Trash Can, VIEW CART, CHECKOUT) */}
+            <div className="flex items-center justify-between gap-2.5">
               {/* Clear Cart Button */}
               <button
                 type="button"
@@ -312,11 +312,19 @@ export default function CartDrawer({
                 </svg>
               </button>
 
+              <Link
+                href="/cart"
+                onClick={onClose}
+                className="px-3.5 py-3.5 border border-neutral-300 hover:border-black text-neutral-800 hover:bg-neutral-100 text-xs font-mono font-bold uppercase tracking-wider rounded-lg transition-colors text-center"
+              >
+                View Cart
+              </Link>
+
               {/* Checkout Link / Button */}
               <Link
                 href="/checkout"
                 onClick={handleProceed}
-                className="bg-[#18181B] hover:bg-black text-white font-bold text-xs tracking-wider uppercase px-8 py-3.5 rounded-lg shadow-md transition-all active:scale-[0.98] cursor-pointer flex-1 text-center flex items-center justify-center gap-2"
+                className="bg-[#18181B] hover:bg-black text-white font-bold text-xs tracking-wider uppercase px-5 py-3.5 rounded-lg shadow-md transition-all active:scale-[0.98] cursor-pointer flex-1 text-center flex items-center justify-center gap-2"
               >
                 <span>CHECKOUT</span>
                 <span>→</span>

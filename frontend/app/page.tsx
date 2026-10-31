@@ -8,7 +8,6 @@ import { executeSearch, SearchEngineResponse } from "@/lib/searchEngine";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
-import CartDrawer from "@/components/CartDrawer";
 import WishlistDrawer from "@/components/WishlistDrawer";
 import QuickViewModal from "@/components/QuickViewModal";
 import CheckoutModal from "@/components/CheckoutModal";
@@ -452,7 +451,9 @@ export default function Home() {
       }
     }
     load();
-  }, []);
+    setIsCartOpen(false);
+    setIsWishlistOpen(false);
+  }, [setIsCartOpen, setIsWishlistOpen]);
 
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -471,16 +472,16 @@ export default function Home() {
           display: "flex", alignItems: "center", gap: "12px",
         }}>
           <span>✦ {toastMessage}</span>
-          <button
-            onClick={() => setIsCartOpen(true)}
+          <Link
+            href="/cart"
             style={{
               padding: "4px 10px", background: "#C5A059", color: "#000",
               fontWeight: 700, fontSize: "10px", textTransform: "uppercase",
-              border: "none", cursor: "pointer", letterSpacing: "0.08em",
+              textDecoration: "none", display: "inline-block", letterSpacing: "0.08em",
             }}
           >
             View Cart →
-          </button>
+          </Link>
         </div>
       )}
 
@@ -488,8 +489,6 @@ export default function Home() {
       <Navbar
         cartCount={totalCartCount}
         wishlistCount={wishlist.length}
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenWishlist={() => setIsWishlistOpen(true)}
       />
 
       {/* Hero */}
@@ -497,7 +496,6 @@ export default function Home() {
         products={products}
         onAddToCart={(p) => {
           addToCart(p, 1);
-          setIsCartOpen(true);
         }}
       />
 
@@ -525,7 +523,6 @@ export default function Home() {
         wishlist={wishlist}
         onAddToCart={(p) => {
           addToCart(p, 1);
-          setIsCartOpen(true);
         }}
         onToggleWishlist={toggleWishlist}
         onQuickView={setQuickViewProduct}
@@ -535,28 +532,12 @@ export default function Home() {
       <Footer />
 
       {/* Drawers & Modals */}
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cart={cart}
-        onUpdateQuantity={updateQuantity}
-        onRemoveItem={removeFromCart}
-        onClearCart={clearCart}
-        onProceedToCheckout={() => {
-          setIsCartOpen(false);
-          router.push("/checkout");
-        }}
-        appliedCoupon={appliedCoupon}
-        onApplyCoupon={applyCoupon}
-        couponDiscountPercent={couponDiscountPercent}
-      />
-
       <WishlistDrawer
         isOpen={isWishlistOpen}
         onClose={() => setIsWishlistOpen(false)}
         wishlist={wishlist}
         onRemoveFromWishlist={(id) => toggleWishlist({ id } as any)}
-        onMoveToCart={(prod) => { addToCart(prod, 1); toggleWishlist(prod); setIsCartOpen(true); }}
+        onMoveToCart={(prod) => { addToCart(prod, 1); toggleWishlist(prod); }}
       />
 
       <QuickViewModal
@@ -564,7 +545,6 @@ export default function Home() {
         onClose={() => setQuickViewProduct(null)}
         onAddToCart={(prod, qty) => {
           addToCart(prod, qty);
-          setIsCartOpen(true);
         }}
       />
 

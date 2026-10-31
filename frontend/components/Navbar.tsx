@@ -36,8 +36,6 @@ export default function Navbar({
 
   const effectiveCartCount = cartCount !== undefined ? cartCount : cartContext.totalItems;
   const effectiveWishlistCount = wishlistCount !== undefined ? wishlistCount : cartContext.wishlist.length;
-  const effectiveOpenCart = onOpenCart || (() => cartContext.setIsCartOpen(true));
-  const effectiveOpenWishlist = onOpenWishlist || (() => cartContext.setIsWishlistOpen(true));
 
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -58,10 +56,10 @@ export default function Navbar({
   const navLinks = [
     { label: "Watches", href: "/" },
     { label: "Catalogue", href: "/catalog" },
+    { label: "Track Order", href: "/orders/track" },
     { label: "About", href: "/about" },
   ];
 
-  // Sticky navbar shadow and backdrop trigger on scroll
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -608,6 +606,14 @@ export default function Navbar({
                           <span>My Profile &amp; Orders</span>
                           <span className="text-[#C5A059]">→</span>
                         </Link>
+                        <Link
+                          href="/orders/track"
+                          onClick={() => setAccountDropdownOpen(false)}
+                          className="flex items-center justify-between px-3 py-2 rounded-lg text-xs text-white/80 hover:text-white hover:bg-white/5 transition"
+                        >
+                          <span>Track Shipment</span>
+                          <span className="text-[#C5A059]">📦</span>
+                        </Link>
                         <button
                           type="button"
                           onClick={() => {
@@ -643,6 +649,13 @@ export default function Navbar({
                         >
                           Register
                         </Link>
+                        <Link
+                          href="/orders/track"
+                          onClick={() => setAccountDropdownOpen(false)}
+                          className="block w-full py-1.5 text-center text-[11px] font-mono text-[#C5A059] hover:underline transition"
+                        >
+                          Track an Order →
+                        </Link>
                       </div>
                     </div>
                   )}
@@ -650,10 +663,9 @@ export default function Navbar({
               )}
             </div>
 
-            {/* 2. Wishlist Icon (Heart with badge) */}
-            <button
-              type="button"
-              onClick={effectiveOpenWishlist}
+            {/* 2. Wishlist Icon (Navigates directly to /wishlist from ANY page) */}
+            <Link
+              href="/wishlist"
               className="relative p-2 rounded-full text-white/80 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
               title="Saved Wishlist"
               aria-label="Wishlist"
@@ -671,15 +683,14 @@ export default function Navbar({
                   {effectiveWishlistCount}
                 </span>
               )}
-            </button>
+            </Link>
 
-            {/* 3. Bag Icon (Cart & Checkout with badge) */}
-            <button
-              type="button"
-              onClick={effectiveOpenCart}
+            {/* 3. Bag Icon (Navigates directly to /cart from ANY page) */}
+            <Link
+              href="/cart"
               className="relative p-2 rounded-full text-white/80 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
-              title="Shopping Bag &amp; Checkout"
-              aria-label="Shopping Bag and Checkout"
+              title="Shopping Cart"
+              aria-label="Shopping Cart"
             >
               <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -694,7 +705,7 @@ export default function Navbar({
                   {effectiveCartCount}
                 </span>
               )}
-            </button>
+            </Link>
 
             {/* Mobile Hamburger Button */}
             <button
@@ -844,13 +855,12 @@ export default function Navbar({
         )}
       </header>
 
-      {/* Floating Cart Button when scrolled down so user never needs to scroll up to access cart */}
-      {scrolled && effectiveCartCount > 0 && (
-        <button
-          type="button"
-          onClick={effectiveOpenCart}
+      {/* Floating Cart Button when scrolled down so user can access cart from any page */}
+      {scrolled && effectiveCartCount > 0 && pathname !== "/cart" && pathname !== "/checkout" && (
+        <Link
+          href="/cart"
           className="fixed bottom-6 right-6 z-[998] flex items-center gap-2.5 px-4 py-3 bg-[#C5A059] hover:bg-[#d4af66] text-black font-mono font-bold text-xs uppercase tracking-wider rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all cursor-pointer"
-          title="Shopping Bag & Checkout"
+          title="Shopping Cart"
           aria-label="View Shopping Cart"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -862,7 +872,7 @@ export default function Navbar({
             />
           </svg>
           <span>Cart ({effectiveCartCount})</span>
-        </button>
+        </Link>
       )}
     </>
   );

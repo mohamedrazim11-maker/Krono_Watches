@@ -25,8 +25,17 @@ function CheckoutContent() {
     subtotal,
     discountAmount,
     appliedCoupon,
+    couponType,
+    couponValue,
+    specialOffers,
+    applyCoupon,
+    removeCoupon,
     clearCart,
   } = useCart();
+
+  const [checkoutCoupon, setCheckoutCoupon] = useState("");
+  const [checkoutCouponError, setCheckoutCouponError] = useState("");
+  const [showCheckoutOffers, setShowCheckoutOffers] = useState(false);
 
   const [deliveryMethod, setDeliveryMethod] = useState<"standard" | "express">("standard");
   const [paymentMethod, setPaymentMethod] = useState<"payhere" | "bank" | "cod">("payhere");
@@ -53,6 +62,38 @@ function CheckoutContent() {
     cardExpiry: "",
     cardCvv: "",
   });
+
+  const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (user?.id) {
+      try {
+        const stored = localStorage.getItem(`krono_saved_addresses_${user.id}`);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setSavedAddresses(parsed);
+          }
+        }
+      } catch {}
+    }
+  }, [user]);
+
+  const handleSelectSavedAddress = (addr: any) => {
+    const parts = (addr.recipientName || "").trim().split(" ");
+    const fName = parts[0] || "";
+    const lName = parts.slice(1).join(" ") || "";
+
+    setFormData((prev) => ({
+      ...prev,
+      firstName: fName || prev.firstName,
+      lastName: lName || prev.lastName,
+      phone: addr.phone || prev.phone,
+      address: addr.streetAddress || prev.address,
+      city: addr.city || prev.city,
+      postalCode: addr.postalCode || prev.postalCode,
+    }));
+  };
 
   // Pre-fill user data upon auth load
   useEffect(() => {
@@ -148,7 +189,7 @@ function CheckoutContent() {
     setErrorMsg("");
   };
 
-  const shippingCost = deliveryMethod === "express" ? 2500 : 0;
+  const shippingCost = deliveryMethod === "express" ? 650 : 0;
   const finalTotal = grandTotal + shippingCost;
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
@@ -425,16 +466,22 @@ function CheckoutContent() {
               <span className="text-white">{formData.email}</span>.
             </p>
 
-            <div className="pt-4 flex flex-col sm:flex-row justify-center gap-4">
+            <div className="pt-4 flex flex-col sm:flex-row justify-center gap-3">
+              <Link
+                href={`/orders/track?orderId=${encodeURIComponent(orderId)}`}
+                className="px-6 py-3 bg-[#C5A059] hover:bg-[#D4AF37] text-black text-xs font-mono font-bold uppercase tracking-wider rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-[#C5A059]/20"
+              >
+                <span>📦 Track Shipment Now →</span>
+              </Link>
               <Link
                 href="/profile"
-                className="px-6 py-3 bg-[#1C2028] hover:bg-[#282E38] text-white text-xs font-mono uppercase tracking-wider rounded-lg transition-colors"
+                className="px-6 py-3 bg-[#1C2028] hover:bg-[#282E38] text-white text-xs font-mono uppercase tracking-wider rounded-lg transition-colors flex items-center justify-center"
               >
                 View Order in Account
               </Link>
               <Link
                 href="/catalog"
-                className="px-6 py-3 bg-[#C5A059] hover:bg-[#D4AF37] text-black text-xs font-mono font-bold uppercase tracking-wider rounded-lg transition-colors"
+                className="px-5 py-3 border border-[#282E38] hover:border-white/40 text-neutral-300 hover:text-white text-xs font-mono uppercase tracking-wider rounded-lg transition-colors flex items-center justify-center"
               >
                 Continue Shopping
               </Link>
@@ -478,9 +525,27 @@ function CheckoutContent() {
 
               {/* Box 2: SHIPPING ADDRESS */}
               <div className="bg-[#0E1015] border border-[#1E232B] rounded-xl p-6 space-y-4 shadow-md">
-                <h2 className="text-xs font-mono uppercase font-bold text-[#C5A059] tracking-[0.2em]">
-                  SHIPPING ADDRESS
-                </h2>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <h2 className="text-xs font-mono uppercase font-bold text-[#C5A059] tracking-[0.2em]">
+                    SHIPPING ADDRESS
+                  </h2>
+                  {savedAddresses.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-mono">
+                      <span className="text-[#8E95A5]">Use Saved:</span>
+                      {savedAddresses.map((a) => (
+                        <button
+                          key={a.id}
+                          type="button"
+                          onClick={() => handleSelectSavedAddress(a)}
+                          className="px-2 py-0.5 rounded bg-[#14161C] border border-[#2E3440] hover:border-[#C5A059] text-white hover:text-[#C5A059] transition-colors cursor-pointer"
+                          title={`${a.recipientName} - ${a.streetAddress}`}
+                        >
+                          {a.isDefault ? "★ " : ""}{a.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <div className="space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input
@@ -689,6 +754,96 @@ function CheckoutContent() {
                   })}
                 </div>
 
+                {/* Promo Code & Special Offers */}
+                <div className="pt-2 border-t border-[#1E232B] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-mono text-[#8E95A5] uppercase tracking-wider">
+                      Promotional Voucher
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setShowCheckoutOffers((prev) => !prev)}
+                      className="text-[11px] font-mono text-[#C5A059] hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>Special Offers ({specialOffers.length})</span>
+                      <span>{showCheckoutOffers ? "▲" : "▼"}</span>
+                    </button>
+                  </div>
+
+                  <div className="flex rounded-lg border border-[#262A33] overflow-hidden focus-within:border-[#C5A059] bg-[#14161C]">
+                    <input
+                      type="text"
+                      placeholder="Enter promo code (e.g. ROYAL20)"
+                      value={checkoutCoupon}
+                      onChange={(e) => setCheckoutCoupon(e.target.value.toUpperCase())}
+                      className="flex-1 bg-transparent px-3 py-2 text-xs font-mono uppercase text-white focus:outline-none placeholder:text-[#5E6573]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCheckoutCouponError("");
+                        if (!checkoutCoupon.trim()) return;
+                        const ok = applyCoupon(checkoutCoupon.trim());
+                        if (!ok) {
+                          setCheckoutCouponError("Invalid code. Try ROYAL20 or check special offers.");
+                        } else {
+                          setCheckoutCoupon("");
+                        }
+                      }}
+                      className="px-3.5 py-2 bg-[#1C2028] hover:bg-[#282E38] text-[#C5A059] text-xs font-mono font-bold uppercase tracking-wider border-l border-[#262A33] transition-colors cursor-pointer"
+                    >
+                      Apply
+                    </button>
+                  </div>
+
+                  {checkoutCouponError && (
+                    <p className="text-[10px] text-red-400 font-mono">{checkoutCouponError}</p>
+                  )}
+
+                  {appliedCoupon && (
+                    <div className="p-2 rounded bg-emerald-950/40 border border-emerald-500/40 flex items-center justify-between text-[11px] font-mono text-emerald-300">
+                      <span>✓ {appliedCoupon} ({couponType === "fixed" ? `Fixed LKR ${couponValue.toLocaleString()} OFF` : `${couponValue}% OFF`})</span>
+                      <button
+                        type="button"
+                        onClick={removeCoupon}
+                        className="text-red-400 hover:text-red-300 uppercase text-[9px] font-bold"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+
+                  {showCheckoutOffers && (
+                    <div className="p-2.5 bg-[#12141A] border border-[#262A33] rounded-lg space-y-1.5 max-h-48 overflow-y-auto">
+                      {specialOffers.map((offer) => {
+                        const isApplied = appliedCoupon === offer.code;
+                        return (
+                          <div
+                            key={offer.code}
+                            className={`p-2 rounded border text-[11px] font-mono flex items-center justify-between gap-2 ${
+                              isApplied ? "bg-emerald-950/30 border-emerald-500/50" : "bg-[#14161C] border-[#222730]"
+                            }`}
+                          >
+                            <div className="min-w-0">
+                              <span className="font-bold text-white uppercase">{offer.code}</span>
+                              <div className="text-[10px] text-[#8E95A5] truncate">{offer.description}</div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => (isApplied ? removeCoupon() : applyCoupon(offer.code))}
+                              className={`px-2 py-0.5 text-[9px] font-bold uppercase rounded ${
+                                isApplied ? "bg-emerald-500 text-black" : "bg-[#C5A059] text-black"
+                              }`}
+                            >
+                              {isApplied ? "Applied" : "Apply"}
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
                 {/* Subtotal, Shipping, Total */}
                 <div className="space-y-3 pt-3 border-t border-[#1E232B] text-xs font-mono">
                   <div className="flex justify-between text-[#8E95A5]">
@@ -698,7 +853,9 @@ function CheckoutContent() {
 
                   {discountAmount > 0 && (
                     <div className="flex justify-between text-emerald-400">
-                      <span>Discount ({appliedCoupon})</span>
+                      <span>
+                        Discount ({appliedCoupon} · {couponType === "fixed" ? `Fixed LKR ${couponValue.toLocaleString()}` : `${couponValue}%`})
+                      </span>
                       <span>- {formatPrice(discountAmount)}</span>
                     </div>
                   )}
