@@ -14,6 +14,38 @@ const FREE_SHIPPING_THRESHOLD = 5000; // Free shipping on orders over LKR 5,000
 const STANDARD_SHIPPING_FEE = 350;
 const EXPRESS_SHIPPING_FEE = 650;
 
+// Professional Vector SVG Micro-Icons
+const IconTrash = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+  </svg>
+);
+
+const IconCart = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+  </svg>
+);
+
+const IconTruck = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+  </svg>
+);
+
+const IconLock = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+  </svg>
+);
+
+const IconShield = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+  </svg>
+);
+
 export default function CartPage() {
   const router = useRouter();
   const { theme } = useTheme();
@@ -197,7 +229,7 @@ export default function CartPage() {
             } space-y-4`}
           >
             <div className="w-12 h-12 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center mx-auto text-xl">
-              🗑️
+              <IconTrash className="w-6 h-6" />
             </div>
             <div className="text-center space-y-1">
               <h3 className="font-bold text-base">Clear entire shopping cart?</h3>
@@ -293,7 +325,7 @@ export default function CartPage() {
                 isDark ? "bg-[#15181F] text-[#C5A059] border border-[#282E38]" : "bg-amber-50 text-amber-600 border border-amber-200"
               }`}
             >
-              🛒
+              <IconCart className="w-8 h-8" />
             </div>
             <div className="space-y-2 max-w-md mx-auto">
               <h2 className="text-xl font-bold uppercase tracking-tight">
@@ -344,9 +376,9 @@ export default function CartPage() {
                   <button
                     type="button"
                     onClick={handleRemoveSelected}
-                    className="text-xs font-mono text-red-400 hover:text-red-300 transition-colors cursor-pointer flex items-center gap-1"
+                    className="text-xs font-mono text-red-400 hover:text-red-300 transition-colors cursor-pointer flex items-center gap-1.5"
                   >
-                    <span>🗑️</span>
+                    <IconTrash className="w-3.5 h-3.5" />
                     <span>Remove Selected ({selectedCount})</span>
                   </button>
                 )}
@@ -524,7 +556,7 @@ export default function CartPage() {
               >
                 <div className="flex items-center justify-between text-xs font-mono">
                   <span className="font-semibold flex items-center gap-1.5">
-                    <span>🚚</span>
+                    <span className="text-[#C5A059]"><IconTruck className="w-4 h-4" /></span>
                     <span>
                       {isFreeShipping
                         ? "You unlocked FREE Worldwide Insured Shipping!"
@@ -817,9 +849,15 @@ export default function CartPage() {
                   </div>
 
                   {/* Trust Guarantees */}
-                  <div className="text-center text-[10px] font-mono text-neutral-500 space-y-1 pt-1">
-                    <div>🔒 256-bit SSL Encrypted & Secure Checkout</div>
-                    <div>🛡️ 2-Year Official Brand Warranty · 30-Day Returns</div>
+                  <div className="text-center text-[10px] font-mono text-neutral-500 space-y-1.5 pt-1">
+                    <div className="flex items-center justify-center gap-1.5">
+                      <IconLock className="w-3 h-3 text-[#C5A059]" />
+                      <span>256-bit SSL Encrypted &amp; Secure Checkout</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-1.5">
+                      <IconShield className="w-3 h-3 text-[#C5A059]" />
+                      <span>2-Year Official Brand Warranty · 30-Day Returns</span>
+                    </div>
                   </div>
                 </div>
               </div>

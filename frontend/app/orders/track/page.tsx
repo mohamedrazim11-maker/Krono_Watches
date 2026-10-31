@@ -379,14 +379,6 @@ function TrackOrderContent() {
     };
   }, [selectedOrder, user, carrierWaybill]);
 
-  const DEMO_PRESETS: { label: string; stage: OrderTrackingStage; orderId: string }[] = [
-    { label: "1. Order confirmed", stage: "Order confirmed", orderId: "ORD-CONF-101" },
-    { label: "2. Processing", stage: "Processing", orderId: "ORD-PROC-202" },
-    { label: "3. Shipped", stage: "Shipped", orderId: "ORD-SHIP-303" },
-    { label: "4. Out for delivery", stage: "Out for delivery", orderId: "ORD-OFD-404" },
-    { label: "5. Delivered", stage: "Delivered", orderId: "ORD-DLV-505" },
-  ];
-
   return (
     <div className="min-h-screen flex flex-col bg-[#07080A] text-white selection:bg-[#C5A059] selection:text-black font-sans">
       <Navbar cartCount={cart.reduce((s, i) => s + i.quantity, 0)} wishlistCount={wishlist.length} />
@@ -644,31 +636,6 @@ function TrackOrderContent() {
               <span>{lookupLoading ? "Looking up..." : "Track Order"}</span>
             </button>
           </form>
-
-          {/* Quick Preset Selector for Testing All 5 Stages */}
-          <div className="pt-2 border-t border-[#1C2028] flex items-center flex-wrap gap-2 text-xs font-mono">
-            <span className="text-[#8E95A5] text-[11px] uppercase tracking-wider font-semibold">
-              Preview Stages:
-            </span>
-            {DEMO_PRESETS.map((p) => (
-              <button
-                key={p.stage}
-                type="button"
-                onClick={() => {
-                  setOrderIdInput(p.orderId);
-                  setSearchedOrderId(p.orderId);
-                  setActiveStage(p.stage);
-                }}
-                className={`px-3 py-1 rounded-lg border text-[11px] font-mono transition-all cursor-pointer ${
-                  activeStage === p.stage
-                    ? "bg-[#C5A059] text-black border-[#C5A059] font-bold shadow-sm"
-                    : "bg-[#14161C] text-neutral-300 border-[#262A33] hover:border-neutral-500"
-                }`}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
         </div>
 
         {/* SECTION 3: ORDER TRACKING DETAILS FOR SELECTED ORDER */}
@@ -745,20 +712,13 @@ function TrackOrderContent() {
                 </p>
               </div>
 
-              {/* Stage Selector Dropdown */}
+              {/* Live Status Badge */}
               <div className="flex items-center gap-2 text-xs font-mono">
-                <span className="text-neutral-400 hidden sm:inline">Current Stage:</span>
-                <select
-                  value={activeStage}
-                  onChange={(e) => setActiveStage(e.target.value as OrderTrackingStage)}
-                  className="bg-[#14161C] border border-[#282E38] text-white px-3 py-1.5 rounded-lg text-xs font-mono focus:outline-none focus:border-[#C5A059] cursor-pointer"
-                >
-                  {STAGES.map((st) => (
-                    <option key={st} value={st}>
-                      {st}
-                    </option>
-                  ))}
-                </select>
+                <span className="text-neutral-400">Milestone:</span>
+                <span className="px-2.5 py-1 rounded-lg bg-[#C5A059]/10 border border-[#C5A059]/30 text-[#C5A059] font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-pulse" />
+                  <span>{activeStage}</span>
+                </span>
               </div>
             </div>
 

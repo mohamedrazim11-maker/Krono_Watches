@@ -16,7 +16,7 @@ import { useCart } from "@/lib/CartContext";
 import { useAuth } from "@/lib/AuthContext";
 import { getProductImage } from "@/lib/productImages";
 
-type PriceFilterType = "all" | "under500k" | "500k-2m" | "2m-5m" | "over5m";
+type PriceFilterType = "all" | "under3k" | "3k-4k" | "4k-5k";
 
 
 
@@ -291,10 +291,9 @@ function ProductsSection({
         const q = searchQuery.toLowerCase();
         if (!p.name?.toLowerCase().includes(q) && !p.brand?.toLowerCase().includes(q) && !p.category?.toLowerCase().includes(q)) return false;
       }
-      if (priceFilter === "under500k" && p.price >= 500000) return false;
-      if (priceFilter === "500k-2m" && (p.price < 500000 || p.price > 2000000)) return false;
-      if (priceFilter === "2m-5m" && (p.price < 2000000 || p.price > 5000000)) return false;
-      if (priceFilter === "over5m" && p.price <= 5000000) return false;
+      if (priceFilter === "under3k" && p.price >= 3000) return false;
+      if (priceFilter === "3k-4k" && (p.price < 3000 || p.price > 4000)) return false;
+      if (priceFilter === "4k-5k" && (p.price < 4000 || p.price > 5000)) return false;
       return true;
     }).sort((a, b) => {
       if (sortBy === "price-asc") return a.price - b.price;
@@ -363,11 +362,10 @@ function ProductsSection({
             )}
           </div>
           <select value={priceFilter} onChange={(e) => setPriceFilter(e.target.value as PriceFilterType)} style={sel}>
-            <option value="all">All Price Ranges</option>
-            <option value="under500k">Under LKR 500,000</option>
-            <option value="500k-2m">LKR 500K – 2M</option>
-            <option value="2m-5m">LKR 2M – 5M</option>
-            <option value="over5m">Over LKR 5M</option>
+            <option value="all">All Prices (Under 5,000 LKR)</option>
+            <option value="under3k">Under LKR 3,000</option>
+            <option value="3k-4k">LKR 3,000 – 4,000</option>
+            <option value="4k-5k">LKR 4,000 – 5,000</option>
           </select>
           <select value={sortBy} onChange={(e) => setSortBy(e.target.value as any)} style={sel}>
             <option value="featured">Featured First</option>
@@ -503,12 +501,36 @@ export default function Home() {
       <div style={{ background: "#0a0a0a", borderTop: "1px solid #1a1a1a", padding: "20px 0" }}>
         <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 24px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px", textAlign: "center" }}>
           {[
-            { icon: "🕐", label: "Certified Watches", sub: "100% Authentic" },
-            { icon: "📦", label: "Free Shipping", sub: "Worldwide delivery" },
-            { icon: "✦", label: "5-Year Warranty", sub: "Full coverage" },
+            {
+              icon: (
+                <svg className="w-5 h-5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              ),
+              label: "Certified Watches",
+              sub: "100% Authentic",
+            },
+            {
+              icon: (
+                <svg className="w-5 h-5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              ),
+              label: "Free Shipping",
+              sub: "Islandwide Delivery",
+            },
+            {
+              icon: (
+                <svg className="w-5 h-5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              ),
+              label: "5-Year Warranty",
+              sub: "Full Coverage",
+            },
           ].map((item) => (
             <div key={item.label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", padding: "16px 0" }}>
-              <span style={{ fontSize: "20px" }}>{item.icon}</span>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "24px" }}>{item.icon}</div>
               <div style={{ fontSize: "11px", fontWeight: 700, color: "#ccc", letterSpacing: "0.1em", textTransform: "uppercase" }}>{item.label}</div>
               <div style={{ fontSize: "10px", color: "#666" }}>{item.sub}</div>
             </div>

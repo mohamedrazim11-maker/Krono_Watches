@@ -61,20 +61,20 @@ export default function Footer() {
             )}
           </div>
 
-          {/* Boutiques */}
+          {/* Boutique & Concierge */}
           <div>
-            <div style={S.heading}>Boutiques</div>
+            <div style={S.heading}>Boutique &amp; Support</div>
             <div style={{ fontSize: "12px", marginBottom: "12px" }}>
-              <div style={{ color: "#bbb", fontWeight: 600, marginBottom: "2px" }}>Geneva Boutique</div>
-              <div style={{ color: "#555", fontSize: "11px" }}>42 Rue du Rhone, Geneva, Switzerland</div>
+              <div style={{ color: "#bbb", fontWeight: 600, marginBottom: "2px" }}>Colombo Flagship</div>
+              <div style={{ color: "#555", fontSize: "11px" }}>Galle Road, Colombo 03, Sri Lanka</div>
             </div>
             <div style={{ fontSize: "12px", marginBottom: "12px" }}>
-              <div style={{ color: "#bbb", fontWeight: 600, marginBottom: "2px" }}>London Boutique</div>
-              <div style={{ color: "#555", fontSize: "11px" }}>14 New Bond Street, London, UK</div>
+              <div style={{ color: "#bbb", fontWeight: 600, marginBottom: "2px" }}>Customer Concierge</div>
+              <div style={{ color: "#555", fontSize: "11px" }}>Mon – Sat, 09:00 AM – 07:00 PM</div>
             </div>
             <div style={{ fontSize: "12px" }}>
-              <div style={{ color: "#bbb", fontWeight: 600, marginBottom: "2px" }}>New York Boutique</div>
-              <div style={{ color: "#555", fontSize: "11px" }}>745 Fifth Avenue, New York, USA</div>
+              <div style={{ color: "#bbb", fontWeight: 600, marginBottom: "2px" }}>Direct Contact</div>
+              <div style={{ color: "#555", fontSize: "11px" }}>support@krono.luxury · +94 77 123 4567</div>
             </div>
           </div>
 

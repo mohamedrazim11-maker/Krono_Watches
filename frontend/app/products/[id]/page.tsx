@@ -20,6 +20,12 @@ const IconCamera = () => (
   </svg>
 );
 
+const IconPencil = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+  </svg>
+);
+
 export interface ProductReview {
   id: string;
   author: string;
@@ -485,9 +491,16 @@ export default function ProductDetailPage() {
                 <button
                   type="button"
                   onClick={() => setIsWritingReview((prev) => !prev)}
-                  className="px-4 py-2 bg-[#E88C30] hover:bg-[#d47b24] text-black font-bold text-xs font-mono uppercase tracking-wider rounded-lg transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-[#E88C30] hover:bg-[#d47b24] text-black font-bold text-xs font-mono uppercase tracking-wider rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
                 >
-                  {isWritingReview ? "Cancel Review" : "✍ Write a Review"}
+                  {isWritingReview ? (
+                    "Cancel Review"
+                  ) : (
+                    <>
+                      <IconPencil />
+                      <span>Write a Review</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -798,13 +811,13 @@ export default function ProductDetailPage() {
         return (
           <div className="space-y-3 text-xs font-mono text-neutral-300 leading-relaxed">
             <p>
-              📦 <strong className="text-white">Fast Islandwide Delivery:</strong> Orders dispatched within 24 hours. Delivered across Sri Lanka in 1 to 3 business days.
+              ✦ <strong className="text-white">Fast Islandwide Delivery:</strong> Orders dispatched within 24 hours. Delivered across Sri Lanka in 1 to 3 business days.
             </p>
             <p>
-              🛡️ <strong className="text-white">Insured Shipping:</strong> Every shipment is fully insured against damage or loss during transit.
+              ✦ <strong className="text-white">Insured Shipping:</strong> Every shipment is fully insured against damage or loss during transit.
             </p>
             <p>
-              💳 <strong className="text-white">Payment Options:</strong> Secure online payment with Visa, MasterCard, Koko, or Cash on Delivery.
+              ✦ <strong className="text-white">Payment Options:</strong> Secure online payment with Visa, MasterCard, Koko, or Cash on Delivery.
             </p>
           </div>
         );
@@ -1059,9 +1072,9 @@ export default function ProductDetailPage() {
                   <button
                     type="button"
                     onClick={() => setIsFeedbackModalOpen(true)}
-                    className="text-xs font-mono font-bold text-[#E88C30] hover:text-[#F59E0B] hover:underline cursor-pointer flex items-center gap-1"
+                    className="text-xs font-mono font-bold text-[#E88C30] hover:text-[#F59E0B] hover:underline cursor-pointer flex items-center gap-1.5"
                   >
-                    <span>✍</span>
+                    <IconPencil />
                     <span>Leave Feedback</span>
                   </button>
                 </div>
@@ -1190,7 +1203,7 @@ export default function ProductDetailPage() {
                     <span>Customer Feedback &amp; Reviews ({reviews.length})</span>
                   </span>
                   <span className="text-[#E88C30] flex items-center gap-1.5 group-hover:translate-x-1 transition-transform">
-                    <span className="text-[11px] uppercase tracking-wider font-bold">✍ Give Feedback</span>
+                    <span className="text-[11px] uppercase tracking-wider font-bold flex items-center gap-1"><IconPencil /> Give Feedback</span>
                     <span>→</span>
                   </span>
                 </button>
@@ -1424,7 +1437,7 @@ export default function ProductDetailPage() {
             {/* Header */}
             <div className="flex items-center justify-between border-b border-[#222732] pb-3.5">
               <div className="flex items-center gap-2.5">
-                <span className="text-xl">✍</span>
+                <span className="text-[#E88C30]"><IconPencil className="w-5 h-5" /></span>
                 <div>
                   <h3 className="text-sm font-mono uppercase font-bold text-[#E88C30] tracking-wider">
                     Product Feedback &amp; Review
@@ -1668,7 +1681,7 @@ export default function ProductDetailPage() {
           className="flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-[#E67E22] to-[#E88C30] hover:from-[#D35400] hover:to-[#E67E22] text-black font-mono font-bold text-xs uppercase tracking-wider rounded-full shadow-2xl shadow-orange-500/40 hover:scale-105 active:scale-95 transition-all cursor-pointer border border-amber-300/40 group"
           title="Leave product feedback or rating"
         >
-          <span className="text-base group-hover:rotate-12 transition-transform">✍</span>
+          <IconPencil className="w-4 h-4 text-black group-hover:rotate-12 transition-transform" />
           <span>Leave Feedback</span>
           <span className="w-2 h-2 rounded-full bg-black/80 animate-ping" />
         </button>

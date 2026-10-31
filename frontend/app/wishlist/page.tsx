@@ -8,6 +8,12 @@ import { useCart } from "@/lib/CartContext";
 import { useTheme } from "@/lib/ThemeContext";
 import { getProductImage } from "@/lib/productImages";
 
+const IconCart = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+  </svg>
+);
+
 export default function WishlistPage() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
@@ -69,7 +75,7 @@ export default function WishlistPage() {
               onClick={moveAllWishlistToCart}
               className="px-6 py-3 bg-[#C5A059] hover:bg-[#D4AF37] text-black font-bold text-xs font-mono uppercase tracking-wider rounded-xl transition-all shadow-md hover:shadow-[#C5A059]/20 flex items-center gap-2 cursor-pointer self-start sm:self-center"
             >
-              <span>🛒</span>
+              <IconCart className="w-4 h-4 text-black" />
               <span>Move All to Cart ({wishlist.length})</span>
             </button>
           )}
@@ -169,7 +175,7 @@ export default function WishlistPage() {
                       onClick={() => moveToCart(item)}
                       className="w-full py-2.5 bg-[#C5A059] hover:bg-[#D4AF37] text-black text-xs font-mono font-bold uppercase tracking-wider rounded-lg transition-all shadow cursor-pointer flex items-center justify-center gap-2"
                     >
-                      <span>🛒</span>
+                      <IconCart className="w-4 h-4 text-black" />
                       <span>Move to Cart</span>
                     </button>
 
