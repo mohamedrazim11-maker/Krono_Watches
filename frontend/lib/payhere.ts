@@ -97,67 +97,61 @@ export function loadPayHereScript(): Promise<void> {
 }
 
 /**
- * Triggers the official PayHere UI modal popup
+ * Direct Form Redirect to PayHere Sandbox / Live Hosted Checkout
+ * This avoids iframe cookie blocking and modal spinner freezing in modern browsers.
+ */
+export function redirectToPayHereCheckout(params: PayHerePaymentParams): void {
+  if (typeof document === "undefined") return;
+
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = params.sandbox !== false ? PAYHERE_SANDBOX_URL : PAYHERE_LIVE_URL;
+  form.target = "_self";
+  form.style.display = "none";
+
+  const payload: Record<string, string> = {
+    merchant_id: String(params.merchant_id || ""),
+    return_url: params.return_url || "",
+    cancel_url: params.cancel_url || "",
+    notify_url: params.notify_url || "",
+    order_id: String(params.order_id || ""),
+    items: params.items || "Krono Order",
+    currency: params.currency || "LKR",
+    amount: typeof params.amount === "number" ? params.amount.toFixed(2) : String(params.amount || "0.00"),
+    hash: params.hash || "",
+    first_name: params.first_name || "Customer",
+    last_name: params.last_name || "Client",
+    email: params.email || "",
+    phone: params.phone || "",
+    address: params.address || "",
+    city: params.city || "",
+    country: params.country || "Sri Lanka",
+    delivery_address: params.delivery_address || params.address || "",
+    delivery_city: params.delivery_city || params.city || "",
+    delivery_country: params.delivery_country || params.country || "Sri Lanka",
+  };
+
+  Object.entries(payload).forEach(([k, v]) => {
+    if (v !== undefined && v !== null) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = k;
+      input.value = String(v);
+      form.appendChild(input);
+    }
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+}
+
+/**
+ * Triggers PayHere payment via direct hosted redirect.
+ * Uses top-level navigation to prevent iframe cookie blocking and spinner freezing.
  */
 export async function launchPayHerePayment(
   params: PayHerePaymentParams,
   callbacks?: PayHereCallbacks
 ): Promise<void> {
-  await loadPayHereScript();
-
-  if (window.payhere) {
-    window.payhere.onCompleted = (orderId: string) => {
-      callbacks?.onCompleted?.(orderId);
-    };
-    window.payhere.onDismissed = () => {
-      callbacks?.onDismissed?.();
-    };
-    window.payhere.onError = (error: string) => {
-      callbacks?.onError?.(error);
-    };
-
-    const payment = {
-      sandbox: params.sandbox !== false,
-      merchant_id: params.merchant_id,
-      return_url: params.return_url,
-      cancel_url: params.cancel_url,
-      notify_url: params.notify_url,
-      order_id: params.order_id,
-      items: params.items,
-      amount: typeof params.amount === "number" ? params.amount.toFixed(2) : params.amount,
-      currency: params.currency || "LKR",
-      hash: params.hash,
-      first_name: params.first_name,
-      last_name: params.last_name,
-      email: params.email,
-      phone: params.phone,
-      address: params.address,
-      city: params.city,
-      country: params.country || "Sri Lanka",
-      delivery_address: params.delivery_address || params.address,
-      delivery_city: params.delivery_city || params.city,
-      delivery_country: params.delivery_country || params.country || "Sri Lanka",
-    };
-
-    window.payhere.startPayment(payment);
-  } else {
-    // Fallback: Submit standard PayHere form to sandbox URL
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = PAYHERE_SANDBOX_URL;
-    form.target = "_self";
-
-    Object.entries(params).forEach(([key, val]) => {
-      if (val !== undefined && val !== null) {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = key;
-        input.value = String(val);
-        form.appendChild(input);
-      }
-    });
-
-    document.body.appendChild(form);
-    form.submit();
-  }
+  redirectToPayHereCheckout(params);
 }

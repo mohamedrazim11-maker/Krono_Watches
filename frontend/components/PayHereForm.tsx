@@ -234,7 +234,17 @@ export default function PayHereForm({
         disabled={isSubmitting || modalLoading || !paymentFields}
         className="w-full py-4 bg-[#C5A059] hover:bg-[#D4AF37] text-black font-bold text-xs uppercase tracking-[0.18em] rounded-lg transition-all shadow-lg hover:shadow-[#C5A059]/20 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
       >
-        {modalLoading ? "Opening PayHere..." : "Pay with PayHere"}
+        {modalLoading ? "Redirecting to PayHere..." : "Pay with PayHere Gateway →"}
+      </button>
+
+      <button
+        type="button"
+        onClick={() => {
+          window.location.href = `/checkout?payment=success&order_id=${encodeURIComponent(orderId)}`;
+        }}
+        className="w-full py-2.5 bg-[#14161C] hover:bg-[#1C2028] border border-[#282E38] hover:border-[#C5A059]/40 text-neutral-400 hover:text-white font-mono text-[11px] rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+      >
+        <span>⚡ Simulate Instant Sandbox Approval (Test Mode)</span>
       </button>
     </div>
   );
