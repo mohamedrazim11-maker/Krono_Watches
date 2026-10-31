@@ -12,6 +12,14 @@ import { useCart } from "@/lib/CartContext";
 import { useAuth } from "@/lib/AuthContext";
 import { getProductImage, getProductImages } from "@/lib/productImages";
 
+// Professional SVG Vector Micro-Icons
+const IconCamera = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+  </svg>
+);
+
 export interface ProductReview {
   id: string;
   author: string;
@@ -20,6 +28,7 @@ export interface ProductReview {
   comment: string;
   createdAt: string;
   verifiedBuyer: boolean;
+  imageUrl?: string;
 }
 
 const DEFAULT_REVIEWS: ProductReview[] = [
@@ -31,15 +40,17 @@ const DEFAULT_REVIEWS: ProductReview[] = [
     comment: "The dial depth, sapphire crystal clarity, and precision movement exceeded my highest expectations. Arrived in Colombo in under 48 hours in a sealed presentation box. Incredible value for money!",
     createdAt: "2026-10-24",
     verifiedBuyer: true,
+    imageUrl: "/images/watches/submariner_deep_black_ceramic.jpg",
   },
   {
     id: "rev-2",
     author: "Shenali Perera",
     rating: 5,
-    title: "Stunning Timepiece, Unbeatable Value",
+    title: "Stunning Quality, Unbeatable Value",
     comment: "Bought this as a gift. The bracelet weight and polished bevels are on par with watches costing triple the price. The official warranty card and luxury packaging are top-tier.",
     createdAt: "2026-10-18",
     verifiedBuyer: true,
+    imageUrl: "/images/watches/speedmaster_chrono_titanium.jpg",
   },
   {
     id: "rev-3",
@@ -141,11 +152,40 @@ export default function ProductDetailPage() {
   const [reviewAuthor, setReviewAuthor] = useState("");
   const [reviewTitle, setReviewTitle] = useState("");
   const [reviewComment, setReviewComment] = useState("");
+  const [reviewImage, setReviewImage] = useState<string | null>(null);
+  const [viewingPhoto, setViewingPhoto] = useState<string | null>(null);
+  const modalFileInputRef = useRef<HTMLInputElement>(null);
+  const inlineFileInputRef = useRef<HTMLInputElement>(null);
   const [reviewFilter, setReviewFilter] = useState<"all" | "5" | "4" | "3">("all");
   const [reviewSuccess, setReviewSuccess] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [feedbackRecommend, setFeedbackRecommend] = useState<"yes" | "no">("yes");
   const [upvotedReviews, setUpvotedReviews] = useState<Set<string>>(new Set());
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast("Picture must be under 5MB in size.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setReviewImage(reader.result);
+        showToast("✓ Photo attached successfully (Optional).");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveImage = () => {
+    setReviewImage(null);
+    if (modalFileInputRef.current) modalFileInputRef.current.value = "";
+    if (inlineFileInputRef.current) inlineFileInputRef.current.value = "";
+  };
 
   const toggleUpvote = (id: string) => {
     setUpvotedReviews((prev) => {
@@ -165,7 +205,13 @@ export default function ProductDetailPage() {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          setReviews(parsed);
+          // Remove any legacy "timepiece" text from cached reviews
+          const sanitized = parsed.map((r: any) => ({
+            ...r,
+            title: (r.title || "").replace(/Timepiece/gi, "Quality"),
+            comment: (r.comment || "").replace(/timepiece/gi, "watch"),
+          }));
+          setReviews(sanitized);
           return;
         }
       }
@@ -191,6 +237,7 @@ export default function ProductDetailPage() {
       comment: reviewComment.trim(),
       createdAt: new Date().toISOString().split("T")[0],
       verifiedBuyer: true,
+      imageUrl: reviewImage || undefined,
     };
     const updated = [newRev, ...reviews];
     setReviews(updated);
@@ -202,6 +249,9 @@ export default function ProductDetailPage() {
     setIsFeedbackModalOpen(false);
     setReviewTitle("");
     setReviewComment("");
+    setReviewImage(null);
+    if (modalFileInputRef.current) modalFileInputRef.current.value = "";
+    if (inlineFileInputRef.current) inlineFileInputRef.current.value = "";
     showToast("✓ Thank you! Your product feedback has been submitted successfully.");
     setTimeout(() => setReviewSuccess(false), 4000);
   };
@@ -430,7 +480,7 @@ export default function ProductDetailPage() {
               {/* Action Bar: Write Review Toggle */}
               <div className="pt-3 border-t border-[#262626] flex items-center justify-between flex-wrap gap-3">
                 <span className="text-[11px] text-neutral-400">
-                  Have you worn this timepiece? Share your feedback with collectors.
+                  Share your verified feedback and experience with collectors.
                 </span>
                 <button
                   type="button"
@@ -452,7 +502,7 @@ export default function ProductDetailPage() {
                   <h4 className="text-xs font-bold uppercase tracking-wider text-[#E88C30]">
                     Write Customer Review &amp; Star Rating
                   </h4>
-                  <span className="text-[10px] text-neutral-400">All fields required</span>
+                  <span className="text-[10px] text-neutral-400">All fields required except photo</span>
                 </div>
 
                 {/* 1. Give Star Ratings */}
@@ -533,6 +583,53 @@ export default function ProductDetailPage() {
                     placeholder="Describe the build quality, accuracy, wrist feel, packaging, and overall satisfaction..."
                     className="w-full bg-[#1F1F1F] border border-[#333333] focus:border-[#E88C30] rounded-lg p-3 text-xs text-white font-mono focus:outline-none resize-none leading-relaxed"
                   />
+                </div>
+
+                {/* 5. Optional Picture Attachment */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-[11px] uppercase tracking-wider text-neutral-300 font-semibold">
+                      5. Attach a Picture (Optional)
+                    </label>
+                    <span className="text-[10px] text-[#E88C30] font-mono font-bold">Optional</span>
+                  </div>
+
+                  {!reviewImage ? (
+                    <div
+                      onClick={() => inlineFileInputRef.current?.click()}
+                      className="border border-dashed border-[#333333] hover:border-[#E88C30] rounded-xl p-4 text-center cursor-pointer transition-colors bg-[#1F1F1F]/60 hover:bg-[#1F1F1F] flex flex-col items-center justify-center gap-1.5 group"
+                    >
+                      <input
+                        type="file"
+                        ref={inlineFileInputRef}
+                        onChange={handleImageChange}
+                        accept="image/*"
+                        className="hidden"
+                      />
+                      <div className="w-8 h-8 rounded-full bg-[#262626] group-hover:bg-[#E88C30]/20 text-neutral-400 group-hover:text-[#E88C30] flex items-center justify-center transition-colors">
+                        <IconCamera />
+                      </div>
+                      <div className="text-xs text-white font-medium">Click to choose a photo</div>
+                      <div className="text-[10px] text-neutral-400">PNG, JPG, WebP up to 5MB (Optional)</div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3 p-3 bg-[#1F1F1F] border border-[#333333] rounded-xl">
+                      <div className="w-16 h-16 rounded-lg bg-[#141414] border border-[#333333] overflow-hidden shrink-0 relative">
+                        <SmoothImage src={reviewImage} alt="Feedback preview" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs font-semibold text-white">Picture attached</div>
+                        <div className="text-[10px] text-emerald-400 font-mono mt-0.5">✓ Ready to submit with feedback (Optional)</div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleRemoveImage}
+                        className="px-2.5 py-1.5 rounded-lg bg-red-950/40 border border-red-500/30 text-red-300 hover:bg-red-950/70 text-[10px] font-mono transition-colors cursor-pointer"
+                      >
+                        ✕ Remove
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Submit button */}
@@ -630,6 +727,28 @@ export default function ProductDetailPage() {
 
                     <h5 className="text-xs font-bold text-white pt-1">{rev.title}</h5>
                     <p className="text-neutral-300 text-[11px] leading-relaxed font-sans">{rev.comment}</p>
+
+                    {/* Customer Photo (Optional) */}
+                    {rev.imageUrl && (
+                      <div className="pt-2">
+                        <div
+                          className="relative inline-block group cursor-pointer"
+                          onClick={() => setViewingPhoto(rev.imageUrl!)}
+                          title="Click to view full picture"
+                        >
+                          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden border border-[#2B303C] group-hover:border-[#E88C30] transition-all bg-[#0B0C0E]">
+                            <SmoothImage
+                              src={rev.imageUrl}
+                              alt={rev.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                          <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-[9px] bg-black/80 text-white font-mono flex items-center gap-1 border border-white/10">
+                            <IconCamera /> Photo
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))
               )}
@@ -1311,7 +1430,7 @@ export default function ProductDetailPage() {
                     Product Feedback &amp; Review
                   </h3>
                   <p className="text-[11px] text-neutral-400 font-mono">
-                    Share your experience with this timepiece
+                    Share your experience and review
                   </p>
                 </div>
               </div>
@@ -1344,7 +1463,7 @@ export default function ProductDetailPage() {
               {/* Star Rating */}
               <div className="space-y-1.5">
                 <label className="block text-[11px] uppercase tracking-wider text-neutral-300 font-bold">
-                  1. Rate this Timepiece
+                  1. Rate this Product
                 </label>
                 <div className="flex items-center gap-2">
                   {[1, 2, 3, 4, 5].map((star) => (
@@ -1417,6 +1536,53 @@ export default function ProductDetailPage() {
                 />
               </div>
 
+              {/* 5. Optional Picture Attachment */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="block text-[11px] uppercase tracking-wider text-neutral-300 font-bold">
+                    5. Attach a Picture (Optional)
+                  </label>
+                  <span className="text-[10px] text-[#E88C30] font-mono font-bold">Optional</span>
+                </div>
+
+                {!reviewImage ? (
+                  <div
+                    onClick={() => modalFileInputRef.current?.click()}
+                    className="border border-dashed border-[#2B303C] hover:border-[#E88C30] rounded-xl p-4 text-center cursor-pointer transition-colors bg-[#171A21]/60 hover:bg-[#171A21] flex flex-col items-center justify-center gap-1.5 group"
+                  >
+                    <input
+                      type="file"
+                      ref={modalFileInputRef}
+                      onChange={handleImageChange}
+                      accept="image/*"
+                      className="hidden"
+                    />
+                    <div className="w-8 h-8 rounded-full bg-[#222733] group-hover:bg-[#E88C30]/20 text-[#8E95A5] group-hover:text-[#E88C30] flex items-center justify-center transition-colors">
+                      <IconCamera />
+                    </div>
+                    <div className="text-xs text-white font-medium">Click to choose a photo</div>
+                    <div className="text-[10px] text-neutral-400">PNG, JPG, WebP up to 5MB (Optional)</div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3 p-3 bg-[#171A21] border border-[#2B303C] rounded-xl">
+                    <div className="w-16 h-16 rounded-lg bg-[#0C0E12] border border-[#2B303C] overflow-hidden shrink-0 relative">
+                      <SmoothImage src={reviewImage} alt="Feedback preview" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-semibold text-white">Picture attached</div>
+                      <div className="text-[10px] text-emerald-400 font-mono mt-0.5">✓ Ready to submit with feedback (Optional)</div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="px-2.5 py-1.5 rounded-lg bg-red-950/40 border border-red-500/30 text-red-300 hover:bg-red-950/70 text-[10px] font-mono transition-colors cursor-pointer"
+                    >
+                      ✕ Remove
+                    </button>
+                  </div>
+                )}
+              </div>
+
               {/* Recommend question */}
               <div className="flex items-center justify-between pt-1 text-[11px] text-neutral-300">
                 <span>Would you recommend this watch to others?</span>
@@ -1461,6 +1627,35 @@ export default function ProductDetailPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Customer Feedback Photo Lightbox */}
+      {viewingPhoto && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 cursor-pointer"
+          onClick={() => setViewingPhoto(null)}
+        >
+          <div
+            className="relative max-w-2xl max-h-[85vh] bg-[#121418] border border-[#2B303C] rounded-2xl overflow-hidden shadow-2xl p-2 cursor-default"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setViewingPhoto(null)}
+              className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-black/70 hover:bg-black text-white flex items-center justify-center cursor-pointer border border-white/20 transition-colors"
+            >
+              ✕
+            </button>
+            <img
+              src={viewingPhoto}
+              alt="Customer Feedback Photo"
+              className="max-w-full max-h-[80vh] object-contain rounded-xl mx-auto"
+            />
+            <div className="p-3 text-center text-xs font-mono text-neutral-300">
+              Verified Customer Feedback Photo
+            </div>
           </div>
         </div>
       )}
