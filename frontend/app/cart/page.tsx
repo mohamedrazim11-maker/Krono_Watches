@@ -834,7 +834,9 @@ export default function CartPage() {
                     href="/checkout?step=payment"
                     className="flex items-center justify-center gap-2 w-full py-3 bg-neutral-900 hover:bg-neutral-800 text-white border border-neutral-700 hover:border-[#C5A059] text-center font-mono font-bold text-xs uppercase tracking-wider transition-all rounded-xl group"
                   >
-                    <span className="text-[#C5A059]">⚡</span>
+                    <svg className="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
                     <span>Direct Payment Checkout</span>
                     <span className="text-[#C5A059] group-hover:translate-x-1 transition-transform">→</span>
                   </Link>
@@ -843,9 +845,7 @@ export default function CartPage() {
                   <div className="flex flex-wrap items-center justify-center gap-1.5 pt-2 text-[10px] font-mono text-neutral-400">
                     <span className="px-2 py-0.5 bg-neutral-900 border border-neutral-800 rounded">VISA</span>
                     <span className="px-2 py-0.5 bg-neutral-900 border border-neutral-800 rounded">Mastercard</span>
-                    <span className="px-2 py-0.5 bg-neutral-900 border border-neutral-800 rounded text-[#C5A059]">PayHere</span>
-                    <span className="px-2 py-0.5 bg-neutral-900 border border-neutral-800 rounded">Bank Wire</span>
-                    <span className="px-2 py-0.5 bg-neutral-900 border border-neutral-800 rounded">Cash on Delivery</span>
+                    <span className="px-2 py-0.5 bg-neutral-900 border border-[#C5A059]/40 rounded text-[#C5A059] font-bold">PayHere Secured</span>
                   </div>
 
                   {/* Trust Guarantees */}

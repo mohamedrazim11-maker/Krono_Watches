@@ -281,7 +281,7 @@ export default function CartDrawer({
                 <span>{formatPrice(grandTotal)}</span>
               </div>
               <p className="text-[11px] text-neutral-500 leading-relaxed">
-                Cash price. Or pay {formatPrice(kokoInstallment)} × 3 with KOKO. See all payment options at checkout.
+                Secured payment with PayHere at checkout (Cards, FriMi, Genie &amp; Online Banking).
               </p>
             </div>
 

@@ -36,7 +36,7 @@ export default function CheckoutModal({
   const { isCartReady } = useCart();
   const router = useRouter();
 
-  const [paymentMethod, setPaymentMethod] = useState<"payhere" | "direct">("payhere");
+  const [paymentMethod] = useState<"payhere">("payhere");
   const [modalStep, setModalStep] = useState<"form" | "payhere">("form");
   const [submitting, setSubmitting] = useState(false);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
@@ -443,35 +443,24 @@ export default function CheckoutModal({
 
               {/* Payment Method */}
               <div className="space-y-2 pt-2 border-t border-[#222]">
-                <label className="block text-[10px] uppercase font-mono tracking-wider text-[#C5A059] font-bold">
-                  Payment Method
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <div
-                    onClick={() => setPaymentMethod("payhere")}
-                    className={`p-3 rounded-lg border cursor-pointer text-xs font-mono transition-all ${
-                      paymentMethod === "payhere"
-                        ? "bg-[#C5A059]/15 border-[#C5A059] text-white"
-                        : "bg-[#111] border-[#2a2a2a] text-white/60 hover:text-white"
-                    }`}
-                  >
-                    <div className="font-bold mb-1">
-                      <span>Pay with PayHere</span>
-                    </div>
+                <div className="flex items-center justify-between">
+                  <label className="block text-[10px] uppercase font-mono tracking-wider text-[#C5A059] font-bold">
+                    Payment Method
+                  </label>
+                  <span className="text-[10px] font-mono text-[#8E95A5] uppercase tracking-wider">
+                    Secured by PayHere
+                  </span>
+                </div>
+                <div className="p-3.5 rounded-lg border border-[#C5A059] bg-[#C5A059]/10 text-xs font-mono text-white flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-3.5 h-3.5 rounded-full border border-[#C5A059] flex items-center justify-center text-[9px] text-[#C5A059]">
+                      ●
+                    </span>
+                    <span className="font-bold text-white">Pay with PayHere</span>
                   </div>
-
-                  <div
-                    onClick={() => setPaymentMethod("direct")}
-                    className={`p-3 rounded-lg border cursor-pointer text-xs font-mono transition-all ${
-                      paymentMethod === "direct"
-                        ? "bg-[#C5A059]/15 border-[#C5A059] text-white"
-                        : "bg-[#111] border-[#2a2a2a] text-white/60 hover:text-white"
-                    }`}
-                  >
-                    <div className="font-bold mb-1">
-                      <span>Cash on Delivery</span>
-                    </div>
-                  </div>
+                  <span className="text-[10px] text-[#C5A059] font-mono uppercase tracking-wider">
+                    Cards · Genie · FriMi
+                  </span>
                 </div>
               </div>
 
@@ -502,11 +491,7 @@ export default function CheckoutModal({
                 disabled={submitting || cart.length === 0}
                 className="w-full py-3.5 bg-[#C5A059] hover:bg-[#b08d48] text-black font-bold text-xs tracking-widest uppercase transition-all shadow-lg hover:shadow-[#C5A059]/20 disabled:opacity-50"
               >
-                {submitting
-                  ? "Processing Order..."
-                  : paymentMethod === "payhere"
-                  ? "Pay with PayHere"
-                  : `Confirm Order • ${formatCurrency(grandTotal)}`}
+                {submitting ? "Processing Order..." : "Proceed to PayHere"}
               </button>
             </form>
           ) : (

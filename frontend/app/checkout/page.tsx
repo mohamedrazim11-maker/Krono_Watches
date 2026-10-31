@@ -38,7 +38,7 @@ function CheckoutContent() {
   const [showCheckoutOffers, setShowCheckoutOffers] = useState(false);
 
   const [deliveryMethod, setDeliveryMethod] = useState<"standard" | "express">("standard");
-  const [paymentMethod, setPaymentMethod] = useState<"payhere" | "bank" | "cod">("payhere");
+  const [paymentMethod] = useState<"payhere">("payhere");
   const [termsAgreed, setTermsAgreed] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
@@ -324,7 +324,7 @@ function CheckoutContent() {
         city: formData.city,
         postal_code: formData.postalCode,
         country: "Sri Lanka",
-        payment_method: paymentMethod === "payhere" ? "payhere" : paymentMethod === "bank" ? "wire" : "cod",
+        payment_method: "payhere",
         items: cart.map((i) => ({
           product_id: i.product.id,
           name: i.product.name,
@@ -825,62 +825,37 @@ function CheckoutContent() {
 
               {/* Box 4: PAYMENT */}
               <div id="payment-section" className="bg-[#0E1015] border border-[#1E232B] rounded-xl p-6 space-y-4 shadow-md scroll-mt-24">
-                <h2 className="text-xs font-mono uppercase font-bold text-[#C5A059] tracking-[0.2em]">
-                  PAYMENT
-                </h2>
-                <div className="space-y-3">
-                  {/* Pay with PayHere */}
-                  <label
-                    onClick={() => setPaymentMethod("payhere")}
-                    className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-all ${
-                      paymentMethod === "payhere"
-                        ? "bg-[#14161C] border-[#C5A059]"
-                        : "bg-[#101217] border-[#262A33] hover:border-[#383E4B]"
-                    }`}
-                  >
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xs font-mono uppercase font-bold text-[#C5A059] tracking-[0.2em]">
+                    PAYMENT METHOD
+                  </h2>
+                  <span className="text-[10px] font-mono text-[#8E95A5] uppercase tracking-wider">
+                    Secured by PayHere
+                  </span>
+                </div>
+                <div className="p-4 rounded-lg border border-[#C5A059] bg-[#14161C] space-y-3">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] ${paymentMethod === "payhere" ? "border-[#C5A059] text-[#C5A059]" : "border-[#5E6573]"}`}>
-                        {paymentMethod === "payhere" && "●"}
+                      <span className="w-4 h-4 rounded-full border border-[#C5A059] flex items-center justify-center text-[10px] text-[#C5A059]">
+                        ●
                       </span>
-                      <span className="text-xs font-mono text-white">Pay with PayHere</span>
-                    </div>
-                  </label>
-
-                  {/* Bank Transfer */}
-                  <label
-                    onClick={() => setPaymentMethod("bank")}
-                    className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-all ${
-                      paymentMethod === "bank"
-                        ? "bg-[#14161C] border-[#C5A059]"
-                        : "bg-[#101217] border-[#262A33] hover:border-[#383E4B]"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] ${paymentMethod === "bank" ? "border-[#C5A059] text-[#C5A059]" : "border-[#5E6573]"}`}>
-                        {paymentMethod === "bank" && "●"}
+                      <span className="text-xs font-mono font-bold text-white tracking-wide">
+                        Pay with PayHere
                       </span>
-                      <span className="text-xs font-mono text-white">Bank transfer</span>
                     </div>
-                    <span className="text-[11px] font-mono text-[#8E95A5]">Direct Wire</span>
-                  </label>
-
-                  {/* Cash on Delivery */}
-                  <label
-                    onClick={() => setPaymentMethod("cod")}
-                    className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-all ${
-                      paymentMethod === "cod"
-                        ? "bg-[#14161C] border-[#C5A059]"
-                        : "bg-[#101217] border-[#262A33] hover:border-[#383E4B]"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] ${paymentMethod === "cod" ? "border-[#C5A059] text-[#C5A059]" : "border-[#5E6573]"}`}>
-                        {paymentMethod === "cod" && "●"}
-                      </span>
-                      <span className="text-xs font-mono text-white">Cash on delivery</span>
-                    </div>
-                    <span className="text-[11px] font-mono text-[#8E95A5]">Courier COD</span>
-                  </label>
+                    <span className="px-2 py-0.5 bg-[#C5A059]/10 border border-[#C5A059]/30 rounded text-[10px] font-mono text-[#C5A059] uppercase tracking-wider">
+                      Official Gateway
+                    </span>
+                  </div>
+                  <p className="text-[11px] font-mono text-[#8E95A5] pl-7 leading-relaxed">
+                    Credit/Debit Card (Visa, MasterCard), Genie, FriMi, and Sri Lankan Internet Banking.
+                  </p>
+                  <div className="pl-7 pt-1 flex items-center gap-2 text-[10px] font-mono text-neutral-400">
+                    <svg className="w-3.5 h-3.5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span>256-bit encrypted SSL transaction</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1069,11 +1044,7 @@ function CheckoutContent() {
                       disabled={submitting || cart.length === 0}
                       className="w-full py-4 bg-[#C5A059] hover:bg-[#D4AF37] text-black font-bold text-xs uppercase tracking-[0.18em] transition-all rounded-lg shadow-lg hover:shadow-[#C5A059]/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     >
-                      {submitting
-                        ? "PROCESSING ORDER..."
-                        : paymentMethod === "payhere"
-                        ? "PAY WITH PAYHERE"
-                        : "PLACE ORDER"}
+                      {submitting ? "PROCESSING ORDER..." : "PAY WITH PAYHERE"}
                     </button>
                   )}
 
