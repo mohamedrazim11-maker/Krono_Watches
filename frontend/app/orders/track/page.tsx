@@ -58,12 +58,6 @@ const IconShield = () => (
   </svg>
 );
 
-const IconSearch = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-  </svg>
-);
-
 const IconCopy = () => (
   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -135,11 +129,9 @@ function TrackOrderContent() {
   const [ordersLoading, setOrdersLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
-  const [orderIdInput, setOrderIdInput] = useState(queryOrderId || "");
   const [searchedOrderId, setSearchedOrderId] = useState(queryOrderId || "");
   const [activeStage, setActiveStage] = useState<OrderTrackingStage>("Shipped");
   const [copiedTracking, setCopiedTracking] = useState(false);
-  const [lookupLoading, setLookupLoading] = useState(false);
 
   // Load user placed orders
   useEffect(() => {
@@ -212,43 +204,31 @@ function TrackOrderContent() {
       if (matched) {
         setSelectedOrder(matched);
         setSearchedOrderId(matched.order_number || matched.id);
-        setOrderIdInput(matched.order_number || matched.id);
         setActiveStage(mapStatusToStage(matched.status || (matched as any).order_status));
         return;
       }
 
       // If not in user's direct list, attempt fetching order by ID from API
-      setLookupLoading(true);
       fetchOrderById(queryOrderId)
         .then((data) => {
           const ord = data?.order || data;
           if (ord && ord.id) {
             setSelectedOrder(ord);
             setSearchedOrderId(ord.order_number || ord.id);
-            setOrderIdInput(ord.order_number || ord.id);
             setActiveStage(mapStatusToStage(ord.status || ord.order_status));
           } else {
             setSearchedOrderId(queryOrderId);
-            setOrderIdInput(queryOrderId);
           }
         })
         .catch(() => {
           setSearchedOrderId(queryOrderId);
-          setOrderIdInput(queryOrderId);
-        })
-        .finally(() => {
-          setLookupLoading(false);
         });
     } else if (userOrders.length > 0 && !selectedOrder) {
       // Default to the most recent placed order
       const first = userOrders[0];
       setSelectedOrder(first);
       setSearchedOrderId(first.order_number || first.id);
-      setOrderIdInput(first.order_number || first.id);
       setActiveStage(mapStatusToStage(first.status || (first as any).order_status));
-    } else if (!searchedOrderId) {
-      setSearchedOrderId("ORD-KRN-78429");
-      setOrderIdInput("ORD-KRN-78429");
     }
   }, [ordersLoading, queryOrderId, userOrders]);
 
@@ -257,7 +237,6 @@ function TrackOrderContent() {
     setSelectedOrder(order);
     const orderRef = order.order_number || order.id;
     setSearchedOrderId(orderRef);
-    setOrderIdInput(orderRef);
     setActiveStage(mapStatusToStage(order.status || (order as any).order_status));
     router.replace(`/orders/track?orderId=${encodeURIComponent(order.id)}`);
 
@@ -267,45 +246,6 @@ function TrackOrderContent() {
       if (detailsEl) {
         detailsEl.scrollIntoView({ behavior: "smooth", block: "start" });
       }
-    }
-  };
-
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const query = orderIdInput.trim();
-    if (!query) return;
-
-    setSearchedOrderId(query);
-    router.replace(`/orders/track?orderId=${encodeURIComponent(query)}`);
-
-    // Check if it matches an order in userOrders
-    const localMatch = userOrders.find(
-      (o) =>
-        o.id.toLowerCase() === query.toLowerCase() ||
-        (o.order_number && o.order_number.toLowerCase() === query.toLowerCase())
-    );
-
-    if (localMatch) {
-      setSelectedOrder(localMatch);
-      setActiveStage(mapStatusToStage(localMatch.status || (localMatch as any).order_status));
-      return;
-    }
-
-    // Try fetching from API
-    setLookupLoading(true);
-    try {
-      const data = await fetchOrderById(query);
-      const ord = data?.order || data;
-      if (ord && ord.id) {
-        setSelectedOrder(ord);
-        setActiveStage(mapStatusToStage(ord.status || ord.order_status));
-      } else {
-        setSelectedOrder(null);
-      }
-    } catch {
-      setSelectedOrder(null);
-    } finally {
-      setLookupLoading(false);
     }
   };
 
@@ -612,115 +552,52 @@ function TrackOrderContent() {
           )}
         </div>
 
-        {/* SECTION 2: MANUAL SEARCH & STAGE SIMULATOR */}
-        <div className="bg-[#0E1015] border border-[#282E38] rounded-2xl p-6 sm:p-7 shadow-xl space-y-4">
-          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
-            <div className="flex-1 relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500 font-mono text-xs">
-                ORD #
-              </span>
-              <input
-                type="text"
-                value={orderIdInput}
-                onChange={(e) => setOrderIdInput(e.target.value)}
-                placeholder="Search any Order Reference (e.g. KR-223413, KR-901675 or ORD-...)"
-                className="w-full bg-[#14161C] border border-[#282E38] focus:border-[#C5A059] rounded-xl pl-16 pr-4 py-3 text-xs sm:text-sm text-white font-mono uppercase tracking-wider focus:outline-none transition-colors"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={lookupLoading}
-              className="px-7 py-3 bg-[#C5A059] hover:bg-[#D4AF37] text-black font-bold text-xs uppercase font-mono tracking-wider rounded-xl transition-colors cursor-pointer shrink-0 shadow-lg shadow-[#C5A059]/20 disabled:opacity-50 flex items-center justify-center gap-2"
-            >
-              <IconSearch />
-              <span>{lookupLoading ? "Looking up..." : "Track Order"}</span>
-            </button>
-          </form>
-        </div>
-
-        {/* SECTION 3: ORDER TRACKING DETAILS FOR SELECTED ORDER */}
-        <div id="order-tracking-details" className="space-y-8 scroll-mt-24">
-          
-          {/* Order Meta Bar */}
-          <div className="bg-[#0E1015] border border-[#1E232B] rounded-2xl p-6 shadow-xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-xs font-mono">
-            <div>
-              <span className="text-[#8E95A5] text-[10px] uppercase tracking-widest block font-bold">
-                TRACKED ORDER REFERENCE
-              </span>
-              <span className="text-white font-bold text-sm mt-1 block truncate">
-                {searchedOrderId || "ORD-KRN-78429"}
-              </span>
-              {selectedOrder && (
-                <span className="text-[10px] text-[#8E95A5] block mt-0.5">
-                  Placed on {formatDate(selectedOrder.created_at)}
-                </span>
-              )}
-            </div>
-
-            <div>
-              <span className="text-[#8E95A5] text-[10px] uppercase tracking-widest block font-bold">
-                CURRENT MILESTONE
-              </span>
-              <div className="inline-flex items-center gap-2 mt-1 px-2.5 py-1 rounded-full bg-[#C5A059]/10 border border-[#C5A059]/30 text-[#C5A059] font-bold uppercase tracking-wider text-[11px]">
-                <span className="w-2 h-2 rounded-full bg-[#C5A059] animate-pulse" />
-                <span>{activeStage}</span>
-              </div>
-            </div>
-
-            <div>
-              <span className="text-[#8E95A5] text-[10px] uppercase tracking-widest block font-bold">
-                ESTIMATED ARRIVAL
-              </span>
-              <span className="text-emerald-400 font-bold text-sm mt-1 block">
-                {activeStage === "Delivered"
-                  ? "Delivered & Signed"
-                  : activeStage === "Out for delivery"
-                  ? "Arriving Today"
-                  : "Within 1 - 2 Business Days"}
-              </span>
-            </div>
-
-            <div>
-              <span className="text-[#8E95A5] text-[10px] uppercase tracking-widest block font-bold">
-                INSURED WAYBILL CODE
-              </span>
-              <button
-                type="button"
-                onClick={handleCopyTracking}
-                className="text-[#C5A059] hover:underline font-bold text-xs mt-1 flex items-center gap-1.5 cursor-pointer"
-                title="Click to copy tracking waybill"
-              >
-                <IconCopy />
-                <span>{carrierWaybill}</span>
-                <span className="text-[10px] text-neutral-400">
-                  ({copiedTracking ? "Copied!" : "Copy"})
-                </span>
-              </button>
-            </div>
-          </div>
-
-          {/* 5-STAGE TRACKING TIMELINE */}
-          <div className="bg-[#0E1015] border border-[#282E38] rounded-2xl p-6 sm:p-10 shadow-2xl space-y-8">
+        {/* SECTION 2: ORDER TRACKING DETAILS FOR SELECTED ORDER */}
+        {selectedOrder && (
+          <div id="order-tracking-details" className="space-y-8 scroll-mt-24">
             
-            <div className="flex items-center justify-between border-b border-[#1E232B] pb-4 flex-wrap gap-2">
-              <div>
-                <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-[#C5A059] font-bold">
-                  SHIPMENT LIFECYCLE
-                </h2>
-                <p className="text-xs text-neutral-400 font-mono mt-0.5">
-                  5-Stage Insured Horological Delivery Pipeline
-                </p>
-              </div>
+            {/* 5-STAGE TRACKING TIMELINE */}
+            <div className="bg-[#0E1015] border border-[#282E38] rounded-2xl p-6 sm:p-10 shadow-2xl space-y-8">
+              
+              <div className="flex items-center justify-between border-b border-[#1E232B] pb-4 flex-wrap gap-4">
+                <div>
+                  <div className="flex items-center gap-3">
+                    <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-[#C5A059] font-bold">
+                      SHIPMENT LIFECYCLE
+                    </h2>
+                    <span className="text-white font-mono font-bold text-xs bg-[#14161C] border border-[#282E38] px-2.5 py-1 rounded-md">
+                      {selectedOrder.order_number || selectedOrder.id}
+                    </span>
+                  </div>
+                  <p className="text-xs text-neutral-400 font-mono mt-1">
+                    5-Stage Insured Horological Delivery Pipeline{selectedOrder.created_at ? ` · Placed on ${formatDate(selectedOrder.created_at)}` : ""}
+                  </p>
+                </div>
 
-              {/* Live Status Badge */}
-              <div className="flex items-center gap-2 text-xs font-mono">
-                <span className="text-neutral-400">Milestone:</span>
-                <span className="px-2.5 py-1 rounded-lg bg-[#C5A059]/10 border border-[#C5A059]/30 text-[#C5A059] font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-pulse" />
-                  <span>{activeStage}</span>
-                </span>
+                {/* Waybill & Live Milestone Badges */}
+                <div className="flex items-center gap-3 text-xs font-mono flex-wrap">
+                  <button
+                    type="button"
+                    onClick={handleCopyTracking}
+                    className="px-2.5 py-1 rounded-lg bg-[#14161C] border border-[#282E38] hover:border-[#C5A059] text-neutral-300 hover:text-white font-mono text-[11px] flex items-center gap-1.5 transition-colors cursor-pointer"
+                    title="Click to copy tracking waybill"
+                  >
+                    <IconCopy />
+                    <span className="text-[#C5A059] font-bold">{carrierWaybill}</span>
+                    <span className="text-[10px] text-neutral-400">
+                      ({copiedTracking ? "Copied!" : "Copy"})
+                    </span>
+                  </button>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-neutral-400 text-[11px]">Milestone:</span>
+                    <span className="px-2.5 py-1 rounded-lg bg-[#C5A059]/10 border border-[#C5A059]/30 text-[#C5A059] font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059] animate-pulse" />
+                      <span>{activeStage}</span>
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
 
             {/* Desktop Horizontal Milestone Stepper */}
             <div className="hidden lg:block relative py-6">
@@ -1033,6 +910,7 @@ function TrackOrderContent() {
           </div>
 
         </div>
+        )}
 
       </main>
 
