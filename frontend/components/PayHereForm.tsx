@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { PAYHERE_SANDBOX_URL, launchPayHerePayment } from "@/lib/payhere";
 
 export interface PayHereCustomer {
@@ -41,7 +41,6 @@ export default function PayHereForm({
   onSuccess,
   autoLaunch = true,
 }: PayHereFormProps) {
-  const formRef = useRef<HTMLFormElement>(null);
   const [modalLoading, setModalLoading] = useState(false);
   const [hasAutoLaunched, setHasAutoLaunched] = useState(false);
   const [paymentResult, setPaymentResult] = useState<{
@@ -166,11 +165,51 @@ export default function PayHereForm({
         }
       );
     } catch (e: any) {
-      console.error("Failed to launch PayHere in-page modal, falling back to form submit:", e);
-      formRef.current?.submit();
+      console.error("Failed to launch PayHere in-page modal, falling back to direct submit:", e);
+      submitDirectFallback();
     } finally {
       setModalLoading(false);
     }
+  };
+
+  // Fallback direct browser form submission if in-page modal encounters an issue
+  const submitDirectFallback = () => {
+    if (typeof document === "undefined" || !paymentFields) return;
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = PAYHERE_SANDBOX_URL;
+    form.style.display = "none";
+
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const params: Record<string, string> = {
+      merchant_id: paymentFields.merchant_id || "",
+      return_url: `${origin}/checkout?payment=success&order_id=${encodeURIComponent(orderId)}`,
+      cancel_url: `${origin}/checkout?payment=cancelled&order_id=${encodeURIComponent(orderId)}`,
+      notify_url: `${origin}/api/orders/payhere-notify`,
+      first_name: firstName,
+      last_name: lastName,
+      email: customer.email,
+      phone: customer.phone,
+      address: customer.address,
+      city: customer.city,
+      country: customer.country || "Sri Lanka",
+      order_id: paymentFields.order_id || "",
+      items: itemsDescription || "Krono Order",
+      currency: paymentCurrency,
+      amount: paymentAmount,
+      hash: paymentFields.hash || "",
+    };
+
+    Object.entries(params).forEach(([k, v]) => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = k;
+      input.value = v;
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
   };
 
   // Automatically launch original PayHere UI when hash is ready
@@ -197,32 +236,6 @@ export default function PayHereForm({
       >
         {modalLoading ? "Opening PayHere..." : "Pay with PayHere"}
       </button>
-
-      {/* Fallback direct submission form if popups are blocked */}
-      <form
-        id="payhere_form"
-        ref={formRef}
-        method="POST"
-        action={PAYHERE_SANDBOX_URL}
-        className="hidden"
-      >
-        <input type="hidden" name="merchant_id" value={paymentFields?.merchant_id || ""} />
-        <input type="hidden" name="return_url" value={typeof window !== "undefined" ? `${window.location.origin}/checkout?payment=success&order_id=${encodeURIComponent(orderId)}` : ""} />
-        <input type="hidden" name="cancel_url" value={typeof window !== "undefined" ? `${window.location.origin}/checkout?payment=cancelled&order_id=${encodeURIComponent(orderId)}` : ""} />
-        <input type="hidden" name="notify_url" value={typeof window !== "undefined" ? `${window.location.origin}/api/orders/payhere-notify` : ""} />
-        <input type="hidden" name="first_name" value={firstName} />
-        <input type="hidden" name="last_name" value={lastName} />
-        <input type="hidden" name="email" value={customer.email} />
-        <input type="hidden" name="phone" value={customer.phone} />
-        <input type="hidden" name="address" value={customer.address} />
-        <input type="hidden" name="city" value={customer.city} />
-        <input type="hidden" name="country" value={customer.country || "Sri Lanka"} />
-        <input type="hidden" name="order_id" value={paymentFields?.order_id || ""} />
-        <input type="hidden" name="items" value={itemsDescription || "Krono Order"} />
-        <input type="hidden" name="currency" value={paymentCurrency} />
-        <input type="hidden" name="amount" value={paymentAmount} />
-        <input type="hidden" name="hash" value={paymentFields?.hash || ""} />
-      </form>
     </div>
   );
 }

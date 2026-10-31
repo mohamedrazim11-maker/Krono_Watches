@@ -340,7 +340,7 @@ export default function ProfilePage() {
       }
     } catch {}
 
-    // Sync default address to user profile
+    // Sync default address to user profile and checkout auto-fill
     const defaultAddr = updatedList.find((a) => a.isDefault);
     if (defaultAddr) {
       setEditAddress(defaultAddr.streetAddress);
@@ -348,6 +348,22 @@ export default function ProfilePage() {
         address: defaultAddr.streetAddress,
         phone: defaultAddr.phone || editPhone,
       }).catch(() => {});
+
+      try {
+        const parts = (defaultAddr.recipientName || "").trim().split(" ");
+        const autoAddr = {
+          firstName: parts[0] || "",
+          lastName: parts.slice(1).join(" ") || "",
+          phone: defaultAddr.phone,
+          address: defaultAddr.streetAddress,
+          city: defaultAddr.city,
+          postalCode: defaultAddr.postalCode,
+        };
+        localStorage.setItem("krono_auto_saved_address", JSON.stringify(autoAddr));
+        if (user?.id) {
+          localStorage.setItem(`krono_saved_address_${user.id}`, JSON.stringify(autoAddr));
+        }
+      } catch {}
     }
 
     setIsAddressModalOpen(false);

@@ -48,14 +48,14 @@
       "case_material": "Grade 5 Satin Titanium",
       "water_resistance": "150m (15 ATM)",
       "in_stock": true,
-      "stock_count": 7,
+      "stock_count": 6,
       "is_featured": true,
-      "stock_qty": 7,
+      "stock_qty": 6,
       "is_active": true,
       "images": [
         "/images/watches/speedmaster_chrono_titanium.jpg"
       ],
-      "updated_at": "2026-10-26T20:01:14.178Z"
+      "updated_at": "2026-10-31T17:08:57.568Z"
     },
     {
       "id": "prod-3",
@@ -1076,6 +1076,43 @@
   ],
   "orders": [
     {
+      "id": "KR-223413",
+      "order_id": "KR-223413",
+      "order_number": "KR-223413",
+      "user_id": "user-1793465914884",
+      "customer_name": "razim1@gmail.com",
+      "customer_email": "razim1@gmail.com",
+      "customer_phone": "0776867969",
+      "delivery_address": "no,10.ma, kegalle, kegalle 140",
+      "city": "kegalle",
+      "postal_code": "140",
+      "country": "Sri Lanka",
+      "payment_method": "payhere",
+      "payment_status": "pending",
+      "payment_id": null,
+      "subtotal": 3890,
+      "discount_amount": 0,
+      "total_amount": 3890,
+      "coupon_code": null,
+      "wrist_size": "Standard (19cm)",
+      "gift_packaging": true,
+      "special_instructions": "",
+      "items": [
+        {
+          "product_id": "prod-2",
+          "product_name": "Speed Master",
+          "brand": "Omega",
+          "quantity": 1,
+          "unit_price": 3890,
+          "subtotal": 3890,
+          "image_url": "/images/watches/speedmaster_chrono_titanium.jpg"
+        }
+      ],
+      "status": "Pending",
+      "created_at": "2026-10-31T17:08:57.567Z",
+      "updated_at": "2026-10-31T17:08:57.567Z"
+    },
+    {
       "id": "KR-901675",
       "order_id": "KR-901675",
       "order_number": "KR-901675",
@@ -1151,6 +1188,17 @@
     }
   ],
   "order_items": [
+    {
+      "id": "item-1793466537567-0-909",
+      "order_item_id": "item-1793466537568-0-25",
+      "order_id": "KR-223413",
+      "product_id": "prod-2",
+      "product_name": "Speed Master",
+      "quantity": 1,
+      "unit_price": 3890,
+      "subtotal": 3890,
+      "created_at": "2026-10-31T17:08:57.567Z"
+    },
     {
       "id": "item-1793068722832-0-412",
       "order_item_id": "item-1793068722832-0-53",

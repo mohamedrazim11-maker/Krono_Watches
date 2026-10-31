@@ -17,7 +17,7 @@ function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const paymentWasCancelled = searchParams.get("payment") === "cancelled";
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading, updateProfile } = useAuth();
   const {
     cart,
     isCartReady,
@@ -64,7 +64,34 @@ function CheckoutContent() {
   });
 
   const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
+  const [isAddressAutoFilled, setIsAddressAutoFilled] = useState(false);
 
+  // 1. Automatically load and set the previously saved address on initial mount
+  useEffect(() => {
+    try {
+      const userKey = user?.id ? `krono_saved_address_${user.id}` : "krono_auto_saved_address";
+      const raw = localStorage.getItem(userKey) || localStorage.getItem("krono_auto_saved_address");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === "object" && (parsed.address || parsed.city)) {
+          setFormData((prev) => ({
+            ...prev,
+            firstName: parsed.firstName || prev.firstName,
+            lastName: parsed.lastName || prev.lastName,
+            email: parsed.email || prev.email,
+            phone: parsed.phone || prev.phone,
+            address: parsed.address || prev.address,
+            city: parsed.city || prev.city,
+            district: parsed.district || prev.district,
+            postalCode: parsed.postalCode || prev.postalCode,
+          }));
+          setIsAddressAutoFilled(true);
+        }
+      }
+    } catch {}
+  }, [user]);
+
+  // 2. Load user's saved addresses list from profile & auto-set default
   useEffect(() => {
     if (user?.id) {
       try {
@@ -73,29 +100,29 @@ function CheckoutContent() {
           const parsed = JSON.parse(stored);
           if (Array.isArray(parsed) && parsed.length > 0) {
             setSavedAddresses(parsed);
+            setFormData((prev) => {
+              if (prev.address) return prev; // Keep restored address if already populated
+              const def = parsed.find((a: any) => a.isDefault) || parsed[0];
+              if (!def) return prev;
+              const parts = (def.recipientName || "").trim().split(" ");
+              setIsAddressAutoFilled(true);
+              return {
+                ...prev,
+                firstName: parts[0] || prev.firstName,
+                lastName: parts.slice(1).join(" ") || prev.lastName,
+                phone: def.phone || prev.phone,
+                address: def.streetAddress || prev.address,
+                city: def.city || prev.city || "Colombo",
+                postalCode: def.postalCode || prev.postalCode,
+              };
+            });
           }
         }
       } catch {}
     }
   }, [user]);
 
-  const handleSelectSavedAddress = (addr: any) => {
-    const parts = (addr.recipientName || "").trim().split(" ");
-    const fName = parts[0] || "";
-    const lName = parts.slice(1).join(" ") || "";
-
-    setFormData((prev) => ({
-      ...prev,
-      firstName: fName || prev.firstName,
-      lastName: lName || prev.lastName,
-      phone: addr.phone || prev.phone,
-      address: addr.streetAddress || prev.address,
-      city: addr.city || prev.city,
-      postalCode: addr.postalCode || prev.postalCode,
-    }));
-  };
-
-  // Pre-fill user data upon auth load
+  // 3. Pre-fill user data upon auth load if not already filled
   useEffect(() => {
     if (user) {
       const parts = (user.name || "").trim().split(" ");
@@ -112,6 +139,34 @@ function CheckoutContent() {
       }));
     }
   }, [user]);
+
+  const handleSelectSavedAddress = (addr: any) => {
+    const parts = (addr.recipientName || "").trim().split(" ");
+    const fName = parts[0] || "";
+    const lName = parts.slice(1).join(" ") || "";
+
+    const updated = {
+      firstName: fName,
+      lastName: lName,
+      phone: addr.phone || formData.phone,
+      address: addr.streetAddress || "",
+      city: addr.city || "",
+      postalCode: addr.postalCode || "",
+    };
+
+    setFormData((prev) => ({
+      ...prev,
+      ...updated,
+    }));
+
+    try {
+      localStorage.setItem("krono_auto_saved_address", JSON.stringify(updated));
+      if (user?.id) {
+        localStorage.setItem(`krono_saved_address_${user.id}`, JSON.stringify(updated));
+      }
+    } catch {}
+    setIsAddressAutoFilled(true);
+  };
 
   // Payment confirmation verification from PayHere redirect
   useEffect(() => {
@@ -185,7 +240,30 @@ function CheckoutContent() {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      const next = { ...prev, [name]: value };
+
+      // Automatically remember and set address for next time as user enters or edits it
+      if (["firstName", "lastName", "address", "city", "district", "postalCode", "phone"].includes(name)) {
+        try {
+          const toSave = {
+            firstName: next.firstName,
+            lastName: next.lastName,
+            email: next.email,
+            phone: next.phone,
+            address: next.address,
+            city: next.city,
+            district: next.district,
+            postalCode: next.postalCode,
+          };
+          localStorage.setItem("krono_auto_saved_address", JSON.stringify(toSave));
+          if (user?.id) {
+            localStorage.setItem(`krono_saved_address_${user.id}`, JSON.stringify(toSave));
+          }
+        } catch {}
+      }
+      return next;
+    });
     setErrorMsg("");
   };
 
@@ -262,6 +340,64 @@ function CheckoutContent() {
 
       const result = await createOrder(orderPayload);
       const generatedOrderId = result.order?.id || result.order_id || `ORD-${Date.now()}`;
+
+      // Automatically persist address so it is automatically set next time
+      try {
+        const addressToSave = {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          district: formData.district,
+          postalCode: formData.postalCode,
+        };
+        localStorage.setItem("krono_auto_saved_address", JSON.stringify(addressToSave));
+
+        if (user?.id) {
+          localStorage.setItem(`krono_saved_address_${user.id}`, JSON.stringify(addressToSave));
+
+          const raw = localStorage.getItem(`krono_saved_addresses_${user.id}`);
+          const list = raw ? JSON.parse(raw) : [];
+          const existingIdx = list.findIndex(
+            (a: any) => (a.streetAddress || "").toLowerCase() === formData.address.toLowerCase()
+          );
+
+          if (existingIdx >= 0) {
+            list[existingIdx] = {
+              ...list[existingIdx],
+              recipientName: fullName,
+              phone: formData.phone,
+              streetAddress: formData.address,
+              city: formData.city,
+              postalCode: formData.postalCode,
+              isDefault: true,
+            };
+          } else {
+            list.forEach((a: any) => { a.isDefault = false; });
+            list.unshift({
+              id: `addr-${Date.now()}`,
+              label: "Home",
+              recipientName: fullName,
+              phone: formData.phone,
+              streetAddress: formData.address,
+              city: formData.city,
+              postalCode: formData.postalCode,
+              isDefault: true,
+            });
+          }
+          localStorage.setItem(`krono_saved_addresses_${user.id}`, JSON.stringify(list));
+
+          if (updateProfile) {
+            updateProfile({
+              name: fullName,
+              phone: formData.phone,
+              address: `${formData.address}, ${formData.city}`,
+            }).catch(() => {});
+          }
+        }
+      } catch {}
       setOrderId(generatedOrderId);
       setConfirmedPaymentMethod(paymentMethod);
 
@@ -526,12 +662,19 @@ function CheckoutContent() {
               {/* Box 2: SHIPPING ADDRESS */}
               <div className="bg-[#0E1015] border border-[#1E232B] rounded-xl p-6 space-y-4 shadow-md">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <h2 className="text-xs font-mono uppercase font-bold text-[#C5A059] tracking-[0.2em]">
-                    SHIPPING ADDRESS
-                  </h2>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-xs font-mono uppercase font-bold text-[#C5A059] tracking-[0.2em]">
+                      SHIPPING ADDRESS
+                    </h2>
+                    {formData.address && (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 font-bold">
+                        Auto-Saved
+                      </span>
+                    )}
+                  </div>
                   {savedAddresses.length > 0 && (
                     <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-mono">
-                      <span className="text-[#8E95A5]">Use Saved:</span>
+                      <span className="text-[#8E95A5]">Saved:</span>
                       {savedAddresses.map((a) => (
                         <button
                           key={a.id}
@@ -546,6 +689,30 @@ function CheckoutContent() {
                     </div>
                   )}
                 </div>
+
+                {formData.address && (
+                  <div className="flex items-center justify-between px-3.5 py-2 rounded-lg bg-[#14161C] border border-[#262A33] text-[11px] font-mono">
+                    <span className="text-neutral-300 flex items-center gap-1.5">
+                      <span className="text-emerald-400 font-bold">✓</span>
+                      <span>Address automatically remembered for your next order. You can edit any field anytime.</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          address: "",
+                          city: "",
+                          district: "",
+                          postalCode: "",
+                        }));
+                      }}
+                      className="text-[#C5A059] hover:underline text-[10px] font-bold uppercase cursor-pointer"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                )}
                 <div className="space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input
@@ -646,7 +813,7 @@ function CheckoutContent() {
                       </span>
                       <span className="text-xs font-mono text-white">Express · 1–2 days</span>
                     </div>
-                    <span className="text-xs font-mono text-[#C5A059]">LKR 2,500</span>
+                    <span className="text-xs font-mono text-[#C5A059]">LKR 650</span>
                   </label>
                 </div>
               </div>
