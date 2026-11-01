@@ -615,11 +615,6 @@ function CheckoutContent() {
               </p>
             </div>
 
-            <p className="text-xs text-[#8E95A5] font-mono leading-relaxed max-w-md mx-auto">
-              A certified confirmation email with full horological credentials and tracking details has been sent to{" "}
-              <span className="text-white">{formData.email}</span>.
-            </p>
-
             <div className="pt-4 flex flex-col sm:flex-row justify-center gap-3">
               <Link
                 href={`/orders/track?orderId=${encodeURIComponent(orderId)}`}
