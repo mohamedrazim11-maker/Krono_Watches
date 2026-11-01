@@ -21,6 +21,7 @@ function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const rawParam =
     searchParams.get("returnUrl") ||
@@ -29,11 +30,18 @@ function RegisterForm() {
     searchParams.get("next");
   const returnUrl = rawParam || (cart && cart.length > 0 ? "/checkout" : "/profile");
 
+  // Pre-warm login and destination route
   useEffect(() => {
-    if (isAuthenticated) {
-      router.push(returnUrl);
+    const loginTarget = `/login?registered=true&returnUrl=${encodeURIComponent(returnUrl)}`;
+    router.prefetch(loginTarget);
+  }, [returnUrl, router]);
+
+  useEffect(() => {
+    if (isAuthenticated && !isRedirecting && !loading) {
+      setIsRedirecting(true);
+      window.location.assign(returnUrl);
     }
-  }, [isAuthenticated, returnUrl, router]);
+  }, [isAuthenticated, returnUrl, isRedirecting, loading]);
 
   // Regex patterns
   const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -55,6 +63,7 @@ function RegisterForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading || isRedirecting) return;
     setError(null);
     setSuccess(null);
 
@@ -74,16 +83,18 @@ function RegisterForm() {
       });
 
       if (res.success) {
+        setIsRedirecting(true);
         setSuccess("Registration successful! Redirecting to login...");
         setTimeout(() => {
-          router.push(`/login?registered=true&returnUrl=${encodeURIComponent(returnUrl)}`);
-        }, 1200);
+          window.location.assign(`/login?registered=true&returnUrl=${encodeURIComponent(returnUrl)}`);
+        }, 800);
+        return;
       } else {
         setError(res.message || "Registration failed. Please try again.");
+        setLoading(false);
       }
     } catch (err: any) {
       setError(err.message || "An error occurred during registration.");
-    } finally {
       setLoading(false);
     }
   };
@@ -172,10 +183,28 @@ function RegisterForm() {
 
         <button
           type="submit"
-          disabled={loading}
-          className="w-full mt-4 py-3 bg-[#C5A059] hover:bg-[#b08d48] text-black font-semibold text-xs tracking-widest uppercase rounded-lg transition-all shadow-lg hover:shadow-[#C5A059]/20 disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={loading || isRedirecting}
+          className="w-full mt-4 py-3 bg-[#C5A059] hover:bg-[#b08d48] text-black font-semibold text-xs tracking-widest uppercase rounded-lg transition-all shadow-lg hover:shadow-[#C5A059]/20 disabled:opacity-75 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {loading ? "Registering..." : "Create Account"}
+          {isRedirecting ? (
+            <>
+              <svg className="w-4 h-4 animate-spin text-black" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              <span>Account Created • Redirecting...</span>
+            </>
+          ) : loading ? (
+            <>
+              <svg className="w-4 h-4 animate-spin text-black" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              <span>Registering...</span>
+            </>
+          ) : (
+            "Create Account"
+          )}
         </button>
       </form>
 

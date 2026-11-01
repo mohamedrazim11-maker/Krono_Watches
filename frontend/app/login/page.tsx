@@ -20,6 +20,7 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const rawParam =
     searchParams.get("returnUrl") ||
@@ -28,6 +29,13 @@ function LoginForm() {
     searchParams.get("next");
   const returnUrl = rawParam || (cart && cart.length > 0 ? "/checkout" : "/profile");
   const registered = searchParams.get("registered");
+
+  // Pre-warm / prefetch destination route for instant navigation
+  useEffect(() => {
+    if (returnUrl) {
+      router.prefetch(returnUrl);
+    }
+  }, [returnUrl, router]);
 
   useEffect(() => {
     if (registered) {
@@ -38,14 +46,17 @@ function LoginForm() {
     }
   }, [registered, searchParams]);
 
+  // If already authenticated, redirect immediately
   useEffect(() => {
-    if (isAuthenticated) {
-      router.push(returnUrl);
+    if (isAuthenticated && !isRedirecting && !loading) {
+      setIsRedirecting(true);
+      window.location.assign(returnUrl);
     }
-  }, [isAuthenticated, returnUrl, router]);
+  }, [isAuthenticated, returnUrl, isRedirecting, loading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading || isRedirecting) return;
     setError(null);
     setNotice(null);
 
@@ -58,13 +69,16 @@ function LoginForm() {
     try {
       const res = await login(email.trim(), password, rememberMe);
       if (res.success) {
-        router.push(returnUrl);
+        setIsRedirecting(true);
+        // Instant top-level redirect: flushes cookies to HTTP headers and navigates immediately
+        window.location.assign(returnUrl);
+        return; // Retain redirect state so button cannot be double-clicked or flicker back
       } else {
         setError(res.message || "Invalid credentials.");
+        setLoading(false);
       }
     } catch (err: any) {
       setError(err.message || "An error occurred during sign in.");
-    } finally {
       setLoading(false);
     }
   };
@@ -151,10 +165,28 @@ function LoginForm() {
 
         <button
           type="submit"
-          disabled={loading}
-          className="w-full mt-4 py-3 bg-[#C5A059] hover:bg-[#b08d48] text-black font-semibold text-xs tracking-widest uppercase rounded-lg transition-all shadow-lg hover:shadow-[#C5A059]/20 disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={loading || isRedirecting}
+          className="w-full mt-4 py-3 bg-[#C5A059] hover:bg-[#b08d48] text-black font-semibold text-xs tracking-widest uppercase rounded-lg transition-all shadow-lg hover:shadow-[#C5A059]/20 disabled:opacity-75 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {loading ? "Verifying Credentials..." : "Authenticate & Enter"}
+          {isRedirecting ? (
+            <>
+              <svg className="w-4 h-4 animate-spin text-black" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              <span>Authenticated • Entering...</span>
+            </>
+          ) : loading ? (
+            <>
+              <svg className="w-4 h-4 animate-spin text-black" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              <span>Verifying Credentials...</span>
+            </>
+          ) : (
+            "Authenticate & Enter"
+          )}
         </button>
       </form>
 

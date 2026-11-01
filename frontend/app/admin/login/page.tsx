@@ -15,18 +15,28 @@ function AdminLoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const returnUrl = searchParams.get("returnUrl") || "/admin";
 
-  // If already authenticated as admin, redirect to admin dashboard
+  // Pre-warm admin destination route for fast navigation
   useEffect(() => {
-    if (!isLoading && isAuthenticated && user?.role === "admin") {
-      router.push(returnUrl);
+    if (returnUrl) {
+      router.prefetch(returnUrl);
     }
-  }, [isAuthenticated, isLoading, user, returnUrl, router]);
+  }, [returnUrl, router]);
+
+  // If already authenticated as admin, redirect to admin dashboard immediately
+  useEffect(() => {
+    if (!isLoading && isAuthenticated && user?.role === "admin" && !isRedirecting) {
+      setIsRedirecting(true);
+      window.location.assign(returnUrl);
+    }
+  }, [isAuthenticated, isLoading, user, returnUrl, isRedirecting]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading || isRedirecting) return;
     setError(null);
 
     const cleanUsername = username.trim();
@@ -40,17 +50,20 @@ function AdminLoginForm() {
       const res = await login(cleanUsername, password, true);
       if (res.success && res.user) {
         if (res.user.role === "admin") {
-          router.push(returnUrl);
+          setIsRedirecting(true);
+          window.location.assign(returnUrl);
+          return;
         } else {
           logout();
           setError("Access Denied: This account does not possess administrator privileges.");
+          setLoading(false);
         }
       } else {
         setError(res.message || "Invalid credentials.");
+        setLoading(false);
       }
     } catch (err: any) {
       setError(err?.message || "Authentication error occurred.");
-    } finally {
       setLoading(false);
     }
   };
@@ -154,10 +167,28 @@ function AdminLoginForm() {
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={loading}
-          className="w-full py-3 bg-[#C5A059] hover:bg-[#d4af37] text-black font-bold text-xs uppercase tracking-widest rounded-lg transition-all shadow-lg hover:shadow-[#C5A059]/20 disabled:opacity-50 cursor-pointer pt-3 mt-2"
+          disabled={loading || isRedirecting}
+          className="w-full py-3 bg-[#C5A059] hover:bg-[#d4af37] text-black font-bold text-xs uppercase tracking-widest rounded-lg transition-all shadow-lg hover:shadow-[#C5A059]/20 disabled:opacity-75 cursor-pointer pt-3 mt-2 flex items-center justify-center gap-2"
         >
-          {loading ? "Signing In..." : "Sign In"}
+          {isRedirecting ? (
+            <>
+              <svg className="w-4 h-4 animate-spin text-black" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              <span>Authenticated • Entering Portal...</span>
+            </>
+          ) : loading ? (
+            <>
+              <svg className="w-4 h-4 animate-spin text-black" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              <span>Verifying Credentials...</span>
+            </>
+          ) : (
+            "Sign In"
+          )}
         </button>
       </form>
 
