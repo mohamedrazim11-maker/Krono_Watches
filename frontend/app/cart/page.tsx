@@ -197,10 +197,10 @@ export default function CartPage() {
     updateQuantity(productId, delta);
   };
 
-  // 5. Proceed to Checkout
-  const handleProceedToCheckout = () => {
+  // 5. Proceed to Payment
+  const handleProceedToPayment = () => {
     if (selectedCartItems.length === 0) {
-      showToast("Please select at least one item to proceed to checkout.");
+      showToast("Please select at least one item to proceed to payment.");
       return;
     }
     if (!isAuthenticated) {
@@ -825,39 +825,16 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                {/* 5. Proceed to checkout CTA */}
+                {/* 5. Proceed to Payment CTA */}
                 <div className="space-y-3">
                   <button
                     type="button"
-                    onClick={handleProceedToCheckout}
+                    onClick={handleProceedToPayment}
                     disabled={selectedCartItems.length === 0}
                     className="w-full py-4 bg-[#C5A059] hover:bg-[#D4AF37] disabled:opacity-40 disabled:cursor-not-allowed text-black text-center font-bold text-xs uppercase tracking-[0.18em] transition-all rounded-xl shadow-lg hover:shadow-[#C5A059]/20 cursor-pointer flex items-center justify-center gap-2"
                   >
-                    <span>Proceed to Checkout</span>
+                    <span>Proceed to Payment</span>
                     <span>→</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (selectedCartItems.length === 0) {
-                        showToast("Please select at least one item to proceed to checkout.");
-                        return;
-                      }
-                      if (!isAuthenticated) {
-                        showToast("Please sign in to complete your checkout.");
-                        router.push("/login?returnUrl=/checkout");
-                        return;
-                      }
-                      router.push("/checkout?step=payment");
-                    }}
-                    className="flex items-center justify-center gap-2 w-full py-3 bg-neutral-900 hover:bg-neutral-800 text-white border border-neutral-700 hover:border-[#C5A059] text-center font-mono font-bold text-xs uppercase tracking-wider transition-all rounded-xl group cursor-pointer"
-                  >
-                    <svg className="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    <span>Direct Payment Checkout</span>
-                    <span className="text-[#C5A059] group-hover:translate-x-1 transition-transform">→</span>
                   </button>
 
                   {/* Payment Badges */}
