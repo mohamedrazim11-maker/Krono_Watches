@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { fetchProducts, deleteProduct, updateProduct, Product } from "@/lib/api";
 import { getProductImage } from "@/lib/productImages";
@@ -70,6 +70,36 @@ export default function AdminProductsPage() {
     is_active: true,
   });
   const [savingEdit, setSavingEdit] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const editFileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleEditImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingImage(true);
+    try {
+      const data = new FormData();
+      data.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: data });
+      const resJson = await res.json();
+      if (res.ok && resJson.success && resJson.url) {
+        setEditFormData((prev) => ({ ...prev, image_url: resJson.url }));
+        setUploadingImage(false);
+        return;
+      }
+    } catch (err) {
+      console.warn("Direct upload fallback to base64:", err);
+    }
+
+    // Fallback: Base64
+    const reader = new FileReader();
+    reader.onload = () => {
+      setEditFormData((prev) => ({ ...prev, image_url: reader.result as string }));
+      setUploadingImage(false);
+    };
+    reader.onerror = () => setUploadingImage(false);
+    reader.readAsDataURL(file);
+  };
 
   const toast = (msg: string) => {
     setFeedback(msg);
@@ -833,10 +863,63 @@ export default function AdminProductsPage() {
 
               <div>
                 <label style={{ display: "block", fontSize: "11px", color: "#71717A", marginBottom: "4px" }}>
-                  Image URL
+                  Watch Photography / Image
                 </label>
+
+                <input
+                  type="file"
+                  ref={editFileInputRef}
+                  accept="image/*"
+                  onChange={handleEditImageUpload}
+                  style={{ display: "none" }}
+                />
+
+                <div style={{ display: "flex", gap: "12px", alignItems: "center", marginBottom: "8px" }}>
+                  {editFormData.image_url ? (
+                    <div
+                      style={{
+                        width: "56px",
+                        height: "56px",
+                        borderRadius: "8px",
+                        overflow: "hidden",
+                        border: "1px solid #333333",
+                        background: "#050505",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <img
+                        src={getProductImage(editingProduct?.id, editFormData.image_url)}
+                        alt="Watch preview"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    </div>
+                  ) : null}
+
+                  <button
+                    type="button"
+                    onClick={() => editFileInputRef.current?.click()}
+                    disabled={uploadingImage}
+                    style={{
+                      padding: "8px 14px",
+                      borderRadius: "6px",
+                      background: "#1E1E1E",
+                      border: "1px solid #3F3F46",
+                      color: "#FFFFFF",
+                      fontSize: "12px",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                    }}
+                  >
+                    <span>📁</span> {uploadingImage ? "Uploading Photo..." : "Upload New Image from Device"}
+                  </button>
+                </div>
+
                 <input
                   type="text"
+                  placeholder="Or enter image URL (/images/watches/... or https://...)"
                   value={editFormData.image_url}
                   onChange={(e) => setEditFormData({ ...editFormData, image_url: e.target.value })}
                   style={{
@@ -846,7 +929,7 @@ export default function AdminProductsPage() {
                     background: "#141414",
                     border: "1px solid #222222",
                     color: "#FFF",
-                    fontSize: "13px",
+                    fontSize: "12px",
                     boxSizing: "border-box",
                   }}
                 />

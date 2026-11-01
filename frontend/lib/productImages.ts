@@ -94,13 +94,29 @@ export const PRODUCT_IMAGE_MAP: Record<string, string> = {
  * Returns the ultra-fast local verified image path for any given product ID or fallback.
  */
 export function getProductImage(productId?: string, fallbackUrl?: string): string {
-  if (productId && PRODUCT_IMAGE_MAP[productId]) {
-    return PRODUCT_IMAGE_MAP[productId];
+  // If fallbackUrl is provided and valid (custom uploaded image, data URI, local upload, or direct path)
+  if (fallbackUrl && typeof fallbackUrl === "string") {
+    const trimmed = fallbackUrl.trim();
+    if (
+      trimmed.startsWith("data:image/") ||
+      trimmed.startsWith("/uploads/") ||
+      trimmed.startsWith("blob:") ||
+      trimmed.startsWith("/images/")
+    ) {
+      return trimmed;
+    }
+    // Also support external URLs (e.g. imgur, cloudinary, custom cdn)
+    if (
+      (trimmed.startsWith("http://") || trimmed.startsWith("https://")) &&
+      !trimmed.includes("images.unsplash.com")
+    ) {
+      return trimmed;
+    }
   }
 
-  // If already a local image, return it
-  if (fallbackUrl && fallbackUrl.startsWith("/images/")) {
-    return fallbackUrl;
+  // Pre-configured map for initial demo products
+  if (productId && PRODUCT_IMAGE_MAP[productId]) {
+    return PRODUCT_IMAGE_MAP[productId];
   }
 
   // Deterministic local watch image selection based on ID
@@ -125,6 +141,16 @@ export function getProductImages(
   apiImages?: string[],
   fallbackUrl?: string
 ): string[] {
+  // If product has user-uploaded or specified gallery images, honor them!
+  if (Array.isArray(apiImages) && apiImages.length > 0) {
+    const customList = apiImages
+      .map((img) => (typeof img === "string" ? img.trim() : ""))
+      .filter((img) => img.length > 0 && !img.includes("images.unsplash.com"));
+    if (customList.length > 0) {
+      return customList;
+    }
+  }
+
   const primary = getProductImage(productId, fallbackUrl);
   
   // Pick 3 complementary local gallery angles

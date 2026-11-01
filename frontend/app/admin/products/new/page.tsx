@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createProduct } from "@/lib/api";
 import Link from "next/link";
@@ -109,6 +109,9 @@ export default function UploadProductPage() {
     "/images/watches/watch_1547996160-81dfa.jpg",
   ]);
   const [newImageUrl, setNewImageUrl] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -120,6 +123,55 @@ export default function UploadProductPage() {
     }
   };
 
+  const handleFiles = async (fileList: FileList | File[]) => {
+    const files = Array.from(fileList).filter((f) => f.type.startsWith("image/"));
+    if (files.length === 0) return;
+
+    setIsUploading(true);
+    try {
+      const uploadedUrls: string[] = [];
+
+      for (const file of files) {
+        try {
+          const data = new FormData();
+          data.append("file", file);
+          const res = await fetch("/api/upload", {
+            method: "POST",
+            body: data,
+          });
+          const resJson = await res.json();
+          if (res.ok && resJson.success && resJson.url) {
+            uploadedUrls.push(resJson.url);
+            continue;
+          }
+        } catch (uploadErr) {
+          console.warn("Direct upload fallback to base64:", uploadErr);
+        }
+
+        // Fallback: Read as Base64 data URL
+        const base64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        uploadedUrls.push(base64);
+      }
+
+      setImages((prev) => {
+        const isDefaultOnly =
+          prev.length === 1 && prev[0] === "/images/watches/watch_1547996160-81dfa.jpg";
+        const base = isDefaultOnly ? [] : prev;
+        const combined = [...base, ...uploadedUrls];
+        return Array.from(new Set(combined));
+      });
+    } catch (err: any) {
+      alert("Error uploading image: " + (err.message || "Unknown error"));
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleAddImage = () => {
     const t = newImageUrl.trim();
     if (!t) return;
@@ -127,15 +179,25 @@ export default function UploadProductPage() {
       alert("URL already added.");
       return;
     }
-    setImages((prev) => [...prev, t]);
+    setImages((prev) => {
+      const isDefaultOnly =
+        prev.length === 1 && prev[0] === "/images/watches/watch_1547996160-81dfa.jpg";
+      const base = isDefaultOnly ? [] : prev;
+      return [...base, t];
+    });
     setNewImageUrl("");
   };
 
+  const handleSetPrimary = (idx: number) => {
+    if (idx === 0) return;
+    setImages((prev) => {
+      const next = [...prev];
+      const [selected] = next.splice(idx, 1);
+      return [selected, ...next];
+    });
+  };
+
   const handleRemoveImage = (idx: number) => {
-    if (images.length === 1) {
-      alert("At least one watch image is required.");
-      return;
-    }
     setImages((prev) => prev.filter((_, i) => i !== idx));
   };
 
@@ -143,6 +205,13 @@ export default function UploadProductPage() {
     e.preventDefault();
     setIsSubmitting(true);
     setMessage(null);
+
+    if (images.length === 0) {
+      setMessage({ type: "error", text: "Please add or upload at least one watch image." });
+      setIsSubmitting(false);
+      return;
+    }
+
     const priceNum = parseFloat(formData.price);
     const oldPriceNum = formData.old_price ? parseFloat(formData.old_price) : undefined;
     const stockNum = parseInt(formData.stock_count, 10) || 0;
@@ -504,40 +573,174 @@ export default function UploadProductPage() {
               borderBottom: "1px solid #1E1E1E",
               textTransform: "uppercase",
               letterSpacing: "0.08em",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            4 · High-Resolution Photography
+            <span>4 · High-Resolution Photography & Media</span>
+            <span style={{ fontSize: "10px", color: "#A1A1AA", fontWeight: 400 }}>
+              {images.length} {images.length === 1 ? "Image" : "Images"} Attached
+            </span>
           </div>
 
-          {/* Quick Presets */}
-          <div style={{ marginBottom: "14px", display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-            <span style={{ fontSize: "11px", color: "#71717A" }}>Use Image Presets:</span>
-            {PRESET_GALLERY_SETS.map((preset) => (
-              <button
-                key={preset.name}
-                type="button"
-                onClick={() => setImages(preset.images)}
+          {/* Hidden File Input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={(e) => {
+              if (e.target.files && e.target.files.length > 0) {
+                handleFiles(e.target.files);
+                e.target.value = "";
+              }
+            }}
+            style={{ display: "none" }}
+          />
+
+          {/* Drag & Drop File Upload Area */}
+          <div
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDragOver(true);
+            }}
+            onDragLeave={() => setIsDragOver(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setIsDragOver(false);
+              if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                handleFiles(e.dataTransfer.files);
+              }
+            }}
+            onClick={() => fileInputRef.current?.click()}
+            style={{
+              border: `2px dashed ${isDragOver ? "#C5A059" : "#2A2A2A"}`,
+              borderRadius: "12px",
+              padding: "28px 20px",
+              textAlign: "center",
+              background: isDragOver ? "rgba(197, 160, 89, 0.05)" : "#111111",
+              cursor: "pointer",
+              transition: "all 200ms ease",
+              marginBottom: "18px",
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+              <div
                 style={{
-                  padding: "5px 12px",
-                  borderRadius: "6px",
-                  background: "#141414",
-                  border: "1px solid #222222",
-                  color: "#FFFFFF",
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  cursor: "pointer",
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "50%",
+                  background: "#18181B",
+                  border: "1px solid #27272A",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#C5A059",
                 }}
               >
-                {preset.name}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+
+              <div>
+                <p style={{ margin: "0 0 4px", fontSize: "14px", fontWeight: 700, color: "#F8FAFC" }}>
+                  {isUploading ? "Uploading & Processing Timepiece Image..." : "Click or Drag & Drop Watch Images Here"}
+                </p>
+                <p style={{ margin: 0, fontSize: "11px", color: "#71717A" }}>
+                  Supports PNG, JPG, WEBP, AVIF from your device (Multiple files supported)
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  fileInputRef.current?.click();
+                }}
+                disabled={isUploading}
+                style={{
+                  marginTop: "6px",
+                  padding: "8px 18px",
+                  background: "#1C1C1E",
+                  border: "1px solid #3F3F46",
+                  borderRadius: "6px",
+                  color: "#FFFFFF",
+                  fontSize: "11.5px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                }}
+              >
+                <span>📁</span> {isUploading ? "Processing..." : "Browse Files from Computer"}
               </button>
-            ))}
+            </div>
+          </div>
+
+          {/* Quick Presets & Manual URL toggle */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "10px",
+              marginBottom: "16px",
+              padding: "10px 14px",
+              background: "#141414",
+              borderRadius: "8px",
+              border: "1px solid #222222",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+              <span style={{ fontSize: "11px", color: "#71717A" }}>Quick Horology Presets:</span>
+              {PRESET_GALLERY_SETS.map((preset) => (
+                <button
+                  key={preset.name}
+                  type="button"
+                  onClick={() => setImages(preset.images)}
+                  style={{
+                    padding: "4px 10px",
+                    borderRadius: "5px",
+                    background: "#1E1E1E",
+                    border: "1px solid #2A2A2A",
+                    color: "#D4D4D8",
+                    fontSize: "11px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {preset.name}
+                </button>
+              ))}
+            </div>
+
+            {/* Clear all images button if multiple exist */}
+            {images.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setImages([])}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "#F87171",
+                  fontSize: "11px",
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                }}
+              >
+                Clear All
+              </button>
+            )}
           </div>
 
           {/* Add custom URL */}
-          <div style={{ display: "flex", gap: "10px", marginBottom: "16px" }}>
+          <div style={{ display: "flex", gap: "10px", marginBottom: "18px" }}>
             <input
               type="text"
-              placeholder="Paste watch image URL (/images/watches/... or https://...)"
+              placeholder="Or paste external image URL (https://... or /images/watches/...)"
               value={newImageUrl}
               onChange={(e) => setNewImageUrl(e.target.value)}
               style={{ ...inputSt, flex: 1 }}
@@ -548,77 +751,135 @@ export default function UploadProductPage() {
               style={{
                 padding: "9px 18px",
                 borderRadius: "8px",
-                background: "#FFFFFF",
-                border: "none",
-                color: "#050505",
+                background: "#27272A",
+                border: "1px solid #3F3F46",
+                color: "#FFFFFF",
                 fontSize: "12px",
-                fontWeight: 800,
+                fontWeight: 700,
                 cursor: "pointer",
-                boxShadow: "0 2px 10px rgba(255, 255, 255, 0.15)",
               }}
             >
-              Add Photo
+              Add URL
             </button>
           </div>
 
-          {/* Image Previews */}
-          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-            {images.map((img, i) => (
+          {/* Image Gallery Previews with Primary and Remove controls */}
+          <div>
+            <div style={{ fontSize: "11px", fontWeight: 700, color: "#A1A1AA", marginBottom: "10px" }}>
+              Current Gallery Images ({images.length}):
+            </div>
+
+            {images.length === 0 ? (
               <div
-                key={i}
                 style={{
-                  position: "relative",
-                  width: "92px",
-                  height: "92px",
-                  borderRadius: "10px",
-                  overflow: "hidden",
-                  border: i === 0 ? "2px solid #FFFFFF" : "1px solid #222222",
-                  boxShadow: i === 0 ? "0 0 12px rgba(255, 255, 255, 0.15)" : "none",
+                  padding: "24px",
+                  textAlign: "center",
+                  background: "#141414",
+                  borderRadius: "8px",
+                  border: "1px dashed #27272A",
+                  color: "#71717A",
+                  fontSize: "12px",
                 }}
               >
-                <img src={img} alt={`Preview ${i}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                {i === 0 && (
-                  <span
+                No images added yet. Click &quot;Browse Files from Computer&quot; or drop an image above.
+              </div>
+            ) : (
+              <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
+                {images.map((img, i) => (
+                  <div
+                    key={i}
                     style={{
-                      position: "absolute",
-                      bottom: "2px",
-                      left: "2px",
-                      right: "2px",
-                      textAlign: "center",
-                      background: "rgba(0,0,0,0.85)",
-                      color: "#FFFFFF",
-                      fontSize: "9px",
-                      fontWeight: 800,
-                      borderRadius: "3px",
+                      position: "relative",
+                      width: "110px",
+                      height: "110px",
+                      borderRadius: "10px",
+                      overflow: "hidden",
+                      background: "#18181B",
+                      border: i === 0 ? "2px solid #C5A059" : "1px solid #27272A",
+                      boxShadow: i === 0 ? "0 0 12px rgba(197, 160, 89, 0.25)" : "none",
+                      display: "flex",
+                      flexDirection: "column",
                     }}
                   >
-                    PRIMARY
-                  </span>
-                )}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveImage(i)}
-                  style={{
-                    position: "absolute",
-                    top: "3px",
-                    right: "3px",
-                    background: "rgba(0,0,0,0.85)",
-                    color: "#F87171",
-                    border: "none",
-                    borderRadius: "50%",
-                    width: "20px",
-                    height: "20px",
-                    fontSize: "11px",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  ✕
-                </button>
+                    <img
+                      src={img}
+                      alt={`Watch view ${i + 1}`}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+
+                    {/* Primary Badge or Set As Primary Button */}
+                    {i === 0 ? (
+                      <span
+                        style={{
+                          position: "absolute",
+                          bottom: "3px",
+                          left: "3px",
+                          right: "3px",
+                          textAlign: "center",
+                          background: "rgba(197, 160, 89, 0.95)",
+                          color: "#000000",
+                          fontSize: "8.5px",
+                          fontWeight: 800,
+                          borderRadius: "4px",
+                          padding: "2px 0",
+                          letterSpacing: "0.05em",
+                        }}
+                      >
+                        ★ PRIMARY
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => handleSetPrimary(i)}
+                        title="Set this image as primary storefront display"
+                        style={{
+                          position: "absolute",
+                          bottom: "3px",
+                          left: "3px",
+                          right: "3px",
+                          textAlign: "center",
+                          background: "rgba(0,0,0,0.8)",
+                          color: "#D4D4D8",
+                          border: "1px solid #3F3F46",
+                          fontSize: "8px",
+                          fontWeight: 700,
+                          borderRadius: "4px",
+                          padding: "2px 0",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Set Primary
+                      </button>
+                    )}
+
+                    {/* Remove Button */}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(i)}
+                      title="Remove this photo"
+                      style={{
+                        position: "absolute",
+                        top: "3px",
+                        right: "3px",
+                        background: "rgba(0,0,0,0.85)",
+                        color: "#F87171",
+                        border: "1px solid rgba(248, 113, 113, 0.4)",
+                        borderRadius: "50%",
+                        width: "20px",
+                        height: "20px",
+                        fontSize: "11px",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
         </div>
 
