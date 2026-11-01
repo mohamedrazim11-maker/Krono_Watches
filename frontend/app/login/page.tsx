@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext";
+import { useCart } from "@/lib/CartContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -11,6 +12,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login, isAuthenticated } = useAuth();
+  const { cart } = useCart();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,7 +21,12 @@ function LoginForm() {
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const returnUrl = searchParams.get("returnUrl") || "/profile";
+  const rawParam =
+    searchParams.get("returnUrl") ||
+    searchParams.get("redirect") ||
+    searchParams.get("return_url") ||
+    searchParams.get("next");
+  const returnUrl = rawParam || (cart && cart.length > 0 ? "/checkout" : "/profile");
   const registered = searchParams.get("registered");
 
   useEffect(() => {
@@ -155,7 +162,7 @@ function LoginForm() {
       <div className="mt-6 pt-6 border-t border-white/10 text-center text-xs text-white/50">
         New client?{" "}
         <Link
-          href="/register"
+          href={rawParam ? `/register?returnUrl=${encodeURIComponent(rawParam)}` : "/register"}
           className="text-[#C5A059] hover:underline font-medium"
         >
           Register an Account

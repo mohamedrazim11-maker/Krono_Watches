@@ -1,32 +1,33 @@
 {
   "products": [
     {
-      "id": "prod-1",
-      "name": "Master Classic",
-      "brand": "Krono Swiss",
+      "id": "prod-1793524556668",
+      "name": "SampleWatch",
+      "brand": "Rolex",
       "category": "Luxury",
       "gender": "Men",
       "case_size": "40mm",
-      "price": 3490,
-      "old_price": 3990,
-      "badge": "Best Seller",
-      "warranty": "5 Years Prestige International Warranty",
-      "promotion_period": "Valid until Sep 30, 2026",
+      "price": 3500,
+      "old_price": 4000,
+      "badge": "New Release",
+      "warranty": "5 Years Certified International Guarantee",
+      "promotion_period": "Active Season Privilege",
       "is_on_promotion": true,
       "promo_discount_percent": 13,
-      "image_url": "/images/watches/aurelia_master_classic.jpg",
-      "description": "Handcrafted luxury timepiece with Swiss automatic movement, anti-reflective sapphire crystal glass, and top-grain Italian leather strap.",
-      "movement": "Swiss Automatic ETA 2824-2",
-      "case_material": "316L Hand-Polished Stainless Steel",
-      "water_resistance": "100m (10 ATM)",
-      "in_stock": true,
-      "stock_count": 14,
-      "is_featured": true,
-      "stock_qty": 14,
-      "is_active": true,
+      "image_url": "/images/watches/watch_1542496658-e33a6.jpg",
       "images": [
-        "/images/watches/aurelia_master_classic.jpg"
-      ]
+        "/images/watches/watch_1542496658-e33a6.jpg"
+      ],
+      "description": "Precision engineered timepiece with premium materials and Swiss craftsmanship.",
+      "movement": "Rolex Perpetual Calibre 3235 Automatic",
+      "case_material": "Oystersteel (904L)",
+      "water_resistance": "300m (30 ATM)",
+      "in_stock": true,
+      "stock_count": 5,
+      "is_featured": true,
+      "created_at": "2026-11-01T09:15:56.668Z",
+      "stock_qty": 5,
+      "is_active": true
     },
     {
       "id": "prod-2",
@@ -48,14 +49,14 @@
       "case_material": "Grade 5 Satin Titanium",
       "water_resistance": "150m (15 ATM)",
       "in_stock": true,
-      "stock_count": 5,
+      "stock_count": 4,
       "is_featured": true,
-      "stock_qty": 5,
+      "stock_qty": 4,
       "is_active": true,
       "images": [
         "/images/watches/speedmaster_chrono_titanium.jpg"
       ],
-      "updated_at": "2026-10-31T18:17:18.909Z"
+      "updated_at": "2026-11-01T08:48:53.302Z"
     },
     {
       "id": "prod-3",
@@ -1076,6 +1077,43 @@
   ],
   "orders": [
     {
+      "id": "KR-425868",
+      "order_id": "KR-425868",
+      "order_number": "KR-425868",
+      "user_id": "user-1793465914884",
+      "customer_name": "razim1@gmail.com",
+      "customer_email": "razim1@gmail.com",
+      "customer_phone": "+94 77 123 4567",
+      "delivery_address": "No. 42, Galle Road, Kollupitiya, Colombo,  00300",
+      "city": "Colombo",
+      "postal_code": "00300",
+      "country": "Sri Lanka",
+      "payment_method": "payhere",
+      "payment_status": "paid",
+      "payment_id": "PH-PAYHERE-1793523191073",
+      "subtotal": 3890,
+      "discount_amount": 0,
+      "total_amount": 3890,
+      "coupon_code": null,
+      "wrist_size": "Standard (19cm)",
+      "gift_packaging": true,
+      "special_instructions": "",
+      "items": [
+        {
+          "product_id": "prod-2",
+          "product_name": "Speed Master",
+          "brand": "Omega",
+          "quantity": 1,
+          "unit_price": 3890,
+          "subtotal": 3890,
+          "image_url": "/images/watches/speedmaster_chrono_titanium.jpg"
+        }
+      ],
+      "status": "confirmed",
+      "created_at": "2026-11-01T08:48:53.301Z",
+      "updated_at": "2026-11-01T08:53:13.891Z"
+    },
+    {
       "id": "KR-700745",
       "order_id": "KR-700745",
       "order_number": "KR-700745",
@@ -1145,9 +1183,15 @@
           "image_url": "/images/watches/speedmaster_chrono_titanium.jpg"
         }
       ],
-      "status": "confirmed",
+      "status": "refund_requested",
       "created_at": "2026-10-31T17:08:57.567Z",
-      "updated_at": "2026-10-31T17:08:57.567Z"
+      "updated_at": "2026-11-01T08:41:26.401Z",
+      "refund_status": "requested",
+      "refund_reason": "Defective or mechanical issue upon arrival",
+      "refund_notes": "dfjfjfj",
+      "refund_method": "original_payment",
+      "refund_bank_details": null,
+      "refund_requested_at": "2026-11-01T08:41:26.397Z"
     },
     {
       "id": "KR-901675",
@@ -1225,6 +1269,17 @@
     }
   ],
   "order_items": [
+    {
+      "id": "item-1793522933302-0-838",
+      "order_item_id": "item-1793522933302-0-751",
+      "order_id": "KR-425868",
+      "product_id": "prod-2",
+      "product_name": "Speed Master",
+      "quantity": 1,
+      "unit_price": 3890,
+      "subtotal": 3890,
+      "created_at": "2026-11-01T08:48:53.301Z"
+    },
     {
       "id": "item-1793470638909-0-999",
       "order_item_id": "item-1793470638909-0-664",

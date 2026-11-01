@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext";
+import { useCart } from "@/lib/CartContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
-  const { register } = useAuth();
+  const searchParams = useSearchParams();
+  const { register, isAuthenticated } = useAuth();
+  const { cart } = useCart();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -18,6 +21,19 @@ export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const rawParam =
+    searchParams.get("returnUrl") ||
+    searchParams.get("redirect") ||
+    searchParams.get("return_url") ||
+    searchParams.get("next");
+  const returnUrl = rawParam || (cart && cart.length > 0 ? "/checkout" : "/profile");
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push(returnUrl);
+    }
+  }, [isAuthenticated, returnUrl, router]);
 
   // Regex patterns
   const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -60,8 +76,8 @@ export default function RegisterPage() {
       if (res.success) {
         setSuccess("Registration successful! Redirecting to login...");
         setTimeout(() => {
-          router.push("/login?registered=true");
-        }, 1500);
+          router.push(`/login?registered=true&returnUrl=${encodeURIComponent(returnUrl)}`);
+        }, 1200);
       } else {
         setError(res.message || "Registration failed. Please try again.");
       }
@@ -73,117 +89,119 @@ export default function RegisterPage() {
   };
 
   return (
+    <div className="w-full max-w-md p-8 bg-[#0a0a0a] border border-white/10 rounded-xl shadow-2xl backdrop-blur-md">
+      {/* Brand Header */}
+      <div className="text-center mb-8">
+        <h1 className="text-2xl font-serif tracking-widest text-[#C5A059] uppercase font-bold">
+          Krono
+        </h1>
+        <p className="text-xs uppercase tracking-[0.2em] text-white/50 mt-1">
+          Create Account
+        </p>
+      </div>
+
+      {/* Notifications */}
+      {error && (
+        <div className="mb-6 p-4 bg-red-950/40 border border-red-500/40 rounded-lg text-xs text-red-300 font-mono">
+          {error}
+        </div>
+      )}
+      {success && (
+        <div className="mb-6 p-4 bg-emerald-950/40 border border-emerald-500/40 rounded-lg text-xs text-emerald-300 font-mono">
+          {success}
+        </div>
+      )}
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-xs uppercase tracking-wider text-white/70 mb-2 font-mono">
+            Full Name
+          </label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="John Doe"
+            className="w-full px-4 py-2.5 bg-black/60 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs uppercase tracking-wider text-white/70 mb-2 font-mono">
+            Email Address
+          </label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="client@krono.luxury"
+            className="w-full px-4 py-2.5 bg-black/60 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs uppercase tracking-wider text-white/70 mb-2 font-mono">
+            Password
+          </label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            className="w-full px-4 py-2.5 bg-black/60 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs uppercase tracking-wider text-white/70 mb-2 font-mono">
+            Confirm Password
+          </label>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="••••••••"
+            className="w-full px-4 py-2.5 bg-black/60 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full mt-4 py-3 bg-[#C5A059] hover:bg-[#b08d48] text-black font-semibold text-xs tracking-widest uppercase rounded-lg transition-all shadow-lg hover:shadow-[#C5A059]/20 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? "Registering..." : "Create Account"}
+        </button>
+      </form>
+
+      {/* Footer Navigation */}
+      <div className="mt-6 pt-6 border-t border-white/10 text-center text-xs text-white/50">
+        Already a member?{" "}
+        <Link
+          href={rawParam ? `/login?returnUrl=${encodeURIComponent(rawParam)}` : "/login"}
+          className="text-[#C5A059] hover:underline font-medium"
+        >
+          Sign In
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
     <div className="min-h-screen flex flex-col bg-[#050505] text-white">
       <Navbar />
 
       <main className="flex-1 flex items-center justify-center px-4 py-16">
-        <div className="w-full max-w-md bg-[#0D0D0D] border border-white/10 rounded-xl p-8 shadow-2xl backdrop-blur-sm">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <span className="text-xs font-mono tracking-widest text-[#C5A059] uppercase">
-              New Customer
-            </span>
-            <h1 className="text-2xl font-serif tracking-tight mt-2 text-white">
-              Create Your Account
-            </h1>
-            <p className="text-xs text-white/50 mt-1">
-              Create an account to track orders and save your favorite watches.
-            </p>
-          </div>
-
-          {/* Feedback Alerts */}
-          {error && (
-            <div className="mb-6 p-3.5 bg-red-950/40 border border-red-500/40 rounded-lg text-xs text-red-300">
-              {error}
-            </div>
-          )}
-          {success && (
-            <div className="mb-6 p-3.5 bg-emerald-950/40 border border-emerald-500/40 rounded-lg text-xs text-emerald-300">
-              {success}
-            </div>
-          )}
-
-          {/* Registration Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs uppercase tracking-wider text-white/70 mb-1.5 font-mono">
-                Full Name
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="John Doe"
-                className="w-full px-4 py-2.5 bg-black/60 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs uppercase tracking-wider text-white/70 mb-1.5 font-mono">
-                Email Address
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="user@example.com"
-                className="w-full px-4 py-2.5 bg-black/60 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs uppercase tracking-wider text-white/70 mb-1.5 font-mono">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full px-4 py-2.5 bg-black/60 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors"
-                required
-              />
-              <p className="text-[10px] text-white/40 mt-1 font-mono">
-                Min 8 chars, uppercase, lowercase, number & special symbol
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-xs uppercase tracking-wider text-white/70 mb-1.5 font-mono">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full px-4 py-2.5 bg-black/60 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#C5A059] transition-colors"
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full mt-4 py-3 bg-[#C5A059] hover:bg-[#b08d48] text-black font-semibold text-xs tracking-widest uppercase rounded-lg transition-all shadow-lg hover:shadow-[#C5A059]/20 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? "Registering..." : "Create Account"}
-            </button>
-          </form>
-
-          {/* Footer Navigation */}
-          <div className="mt-6 pt-6 border-t border-white/10 text-center text-xs text-white/50">
-            Already a member?{" "}
-            <Link
-              href="/login"
-              className="text-[#C5A059] hover:underline font-medium"
-            >
-              Sign In
-            </Link>
-          </div>
-        </div>
+        <Suspense fallback={<div className="text-white text-xs font-mono">Loading registration...</div>}>
+          <RegisterForm />
+        </Suspense>
       </main>
 
       <Footer />

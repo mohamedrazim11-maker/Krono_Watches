@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Product } from "@/lib/api";
 import { useCart } from "@/lib/CartContext";
+import { useAuth } from "@/lib/AuthContext";
 
 export interface CartItem {
   product: Product;
@@ -37,6 +38,7 @@ export default function CartDrawer({
   couponDiscountPercent: propCouponDiscountPercent,
 }: CartDrawerProps) {
   const cartContext = useCart();
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -82,8 +84,13 @@ export default function CartDrawer({
 
   if (!isOpen) return null;
 
-  const handleProceed = () => {
+  const handleProceed = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     onClose();
+    if (!isAuthenticated) {
+      router.push("/login?returnUrl=/checkout");
+      return;
+    }
     if (propProceedToCheckout) {
       propProceedToCheckout();
     } else if (propOpenCheckout) {
@@ -145,13 +152,13 @@ export default function CartDrawer({
           </div>
           <div className="flex items-center gap-4">
             {cart.length > 0 && (
-              <Link
-                href="/checkout"
+              <button
+                type="button"
                 onClick={handleProceed}
-                className="text-xs font-bold text-[#C5A059] hover:text-black uppercase tracking-wider flex items-center gap-1 transition-colors underline decoration-[#C5A059]"
+                className="text-xs font-bold text-[#C5A059] hover:text-black uppercase tracking-wider flex items-center gap-1 transition-colors underline decoration-[#C5A059] cursor-pointer"
               >
                 Checkout →
-              </Link>
+              </button>
             )}
             <button
               onClick={onClose}
@@ -320,15 +327,15 @@ export default function CartDrawer({
                 View Cart
               </Link>
 
-              {/* Checkout Link / Button */}
-              <Link
-                href="/checkout"
+              {/* Checkout Button */}
+              <button
+                type="button"
                 onClick={handleProceed}
                 className="bg-[#18181B] hover:bg-black text-white font-bold text-xs tracking-wider uppercase px-5 py-3.5 rounded-lg shadow-md transition-all active:scale-[0.98] cursor-pointer flex-1 text-center flex items-center justify-center gap-2"
               >
                 <span>CHECKOUT</span>
                 <span>→</span>
-              </Link>
+              </button>
             </div>
           </div>
         )}

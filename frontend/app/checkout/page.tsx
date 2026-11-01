@@ -245,6 +245,13 @@ function CheckoutContent() {
     }
   }, [searchParams]);
 
+  // Redirect unauthenticated user directly to login with returnUrl
+  useEffect(() => {
+    if (!isLoading && isCartReady && !isAuthenticated) {
+      router.replace("/login?returnUrl=/checkout");
+    }
+  }, [isLoading, isCartReady, isAuthenticated, router]);
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -286,7 +293,7 @@ function CheckoutContent() {
     // Enforce login requirement before order creation
     if (!isAuthenticated) {
       setErrorMsg("You must be signed in to place an order. Redirecting to login...");
-      router.push("/login?redirect=/checkout");
+      router.push("/login?returnUrl=/checkout");
       return;
     }
 
@@ -520,13 +527,13 @@ function CheckoutContent() {
 
             <div className="space-y-3 pt-2">
               <Link
-                href="/login?redirect=/checkout"
+                href="/login?returnUrl=/checkout"
                 className="block w-full py-4 bg-[#C5A059] hover:bg-[#d4af37] text-black font-bold text-xs uppercase tracking-[0.18em] rounded-xl transition-all shadow-lg hover:shadow-[#C5A059]/20"
               >
                 Sign In to Place Order
               </Link>
               <Link
-                href="/register?redirect=/checkout"
+                href="/register?returnUrl=/checkout"
                 className="block w-full py-3.5 border border-[#282E38] hover:border-[#C5A059] text-white hover:text-[#C5A059] font-mono text-xs uppercase tracking-wider rounded-xl transition-colors bg-[#14161C]"
               >
                 Create New Account

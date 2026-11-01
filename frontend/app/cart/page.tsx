@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothImage from "@/components/SmoothImage";
 import { useCart } from "@/lib/CartContext";
+import { useAuth } from "@/lib/AuthContext";
 import { useTheme } from "@/lib/ThemeContext";
 import { getProductImage } from "@/lib/productImages";
 
@@ -70,6 +71,7 @@ export default function CartPage() {
     toastMessage,
     showToast,
   } = useCart();
+  const { isAuthenticated } = useAuth();
 
   const [couponInput, setCouponInput] = useState("");
   const [couponError, setCouponError] = useState("");
@@ -199,6 +201,11 @@ export default function CartPage() {
   const handleProceedToCheckout = () => {
     if (selectedCartItems.length === 0) {
       showToast("Please select at least one item to proceed to checkout.");
+      return;
+    }
+    if (!isAuthenticated) {
+      showToast("Please sign in to complete your checkout.");
+      router.push("/login?returnUrl=/checkout");
       return;
     }
     router.push("/checkout");
@@ -830,16 +837,28 @@ export default function CartPage() {
                     <span>→</span>
                   </button>
 
-                  <Link
-                    href="/checkout?step=payment"
-                    className="flex items-center justify-center gap-2 w-full py-3 bg-neutral-900 hover:bg-neutral-800 text-white border border-neutral-700 hover:border-[#C5A059] text-center font-mono font-bold text-xs uppercase tracking-wider transition-all rounded-xl group"
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (selectedCartItems.length === 0) {
+                        showToast("Please select at least one item to proceed to checkout.");
+                        return;
+                      }
+                      if (!isAuthenticated) {
+                        showToast("Please sign in to complete your checkout.");
+                        router.push("/login?returnUrl=/checkout");
+                        return;
+                      }
+                      router.push("/checkout?step=payment");
+                    }}
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-neutral-900 hover:bg-neutral-800 text-white border border-neutral-700 hover:border-[#C5A059] text-center font-mono font-bold text-xs uppercase tracking-wider transition-all rounded-xl group cursor-pointer"
                   >
                     <svg className="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                     <span>Direct Payment Checkout</span>
                     <span className="text-[#C5A059] group-hover:translate-x-1 transition-transform">→</span>
-                  </Link>
+                  </button>
 
                   {/* Payment Badges */}
                   <div className="flex flex-wrap items-center justify-center gap-1.5 pt-2 text-[10px] font-mono text-neutral-400">
