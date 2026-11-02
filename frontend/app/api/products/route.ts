@@ -7,13 +7,25 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get('category') || undefined;
     const featured = searchParams.get('featured') || undefined;
     const search = searchParams.get('search') || undefined;
+    const includeInactive =
+      searchParams.get('includeInactive') === 'true' ||
+      searchParams.get('all') === 'true';
 
-    const products = await getProducts({ category, featured, search });
-    return NextResponse.json({
-      success: true,
-      count: products.length,
-      data: products,
-    });
+    const products = await getProducts({ category, featured, search, includeInactive });
+    return NextResponse.json(
+      {
+        success: true,
+        count: products.length,
+        data: products,
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
+        },
+      }
+    );
   } catch (error: any) {
     return NextResponse.json(
       { success: false, message: error.message },

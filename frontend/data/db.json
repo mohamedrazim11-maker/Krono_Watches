@@ -1,36 +1,6 @@
 {
   "products": [
     {
-      "id": "prod-1793524556668",
-      "name": "SampleWatch",
-      "brand": "Rolex",
-      "category": "Luxury",
-      "gender": "Men",
-      "case_size": "40mm",
-      "price": 3500,
-      "old_price": 4000,
-      "badge": "New Release",
-      "warranty": "5 Years Certified International Guarantee",
-      "promotion_period": "Active Season Privilege",
-      "is_on_promotion": true,
-      "promo_discount_percent": 13,
-      "image_url": "/images/watches/watch_1542496658-e33a6.jpg",
-      "images": [
-        "/images/watches/watch_1542496658-e33a6.jpg"
-      ],
-      "description": "Precision engineered timepiece with premium materials and Swiss craftsmanship.",
-      "movement": "Rolex Perpetual Calibre 3235 Automatic",
-      "case_material": "Oystersteel (904L)",
-      "water_resistance": "300m (30 ATM)",
-      "in_stock": false,
-      "stock_count": 3,
-      "is_featured": true,
-      "created_at": "2026-11-01T09:15:56.668Z",
-      "stock_qty": 3,
-      "is_active": false,
-      "updated_at": "2026-11-02T12:37:26.914Z"
-    },
-    {
       "id": "prod-2",
       "name": "Speed Master",
       "brand": "Omega",

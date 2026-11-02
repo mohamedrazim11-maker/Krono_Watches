@@ -46,14 +46,20 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const result = await deleteProduct(id);
-    return NextResponse.json({
-      success: true,
-      message: (result as any)?.message || 'Product deleted successfully',
-      softDeleted: (result as any)?.softDeleted,
-      hardDeleted: (result as any)?.hardDeleted,
-      id,
-    });
+    const result = await deleteProduct(id, true);
+    return NextResponse.json(
+      {
+        success: true,
+        message: (result as any)?.message || 'Product deleted successfully',
+        hardDeleted: true,
+        id,
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+        },
+      }
+    );
   } catch (error: any) {
     return NextResponse.json(
       { success: false, message: error.message },

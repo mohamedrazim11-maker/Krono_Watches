@@ -148,9 +148,18 @@ export async function getProducts({
   category,
   featured,
   search,
-}: { category?: string; featured?: string | boolean; search?: string } = {}) {
+  includeInactive = false,
+}: {
+  category?: string;
+  featured?: string | boolean;
+  search?: string;
+  includeInactive?: boolean;
+} = {}) {
   const supabaseData = await trySupabase(async () => {
     let query = supabase!.from('products').select('*').order('created_at', { ascending: false });
+    if (!includeInactive) {
+      query = query.eq('is_active', true);
+    }
     if (category && category !== 'All') {
       query = query.eq('category', category);
     }
@@ -166,6 +175,11 @@ export async function getProducts({
 
   const db = readLocalDb();
   let list = [...(db.products || [])];
+
+  // Storefront always filters out deactivated/deleted products unless explicitly requested by admin
+  if (!includeInactive) {
+    list = list.filter((p: any) => p.is_active !== false);
+  }
 
   if (category && category !== 'All') {
     list = list.filter((p: any) => p.category?.toLowerCase() === category.toLowerCase());
@@ -200,7 +214,7 @@ export async function getCategories() {
   const db = readLocalDb();
   if (db.categories && db.categories.length > 0) return db.categories;
 
-  const products = db.products || [];
+  const products = (db.products || []).filter((p: any) => p.is_active !== false);
   const uniqueCategories = [...new Set(products.map((p: any) => p.category).filter(Boolean))];
   return uniqueCategories.map((cat: any, i) => ({
     id: `cat-${i + 1}`,
@@ -211,9 +225,13 @@ export async function getCategories() {
   }));
 }
 
-export async function getProductById(id: string) {
+export async function getProductById(id: string, includeInactive = false) {
   const supabaseData = await trySupabase(async () => {
-    const { data, error } = await supabase!.from('products').select('*').eq('id', id).single();
+    let query = supabase!.from('products').select('*').eq('id', id);
+    if (!includeInactive) {
+      query = query.eq('is_active', true);
+    }
+    const { data, error } = await query.single();
     if (!error && data) return data;
     return null;
   });
@@ -222,7 +240,9 @@ export async function getProductById(id: string) {
 
   const db = readLocalDb();
   const product = (db.products || []).find((p: any) => String(p.id) === String(id));
-  return product || null;
+  if (!product) return null;
+  if (!includeInactive && product.is_active === false) return null;
+  return product;
 }
 
 export async function createProduct(productData: any) {
@@ -332,49 +352,36 @@ export async function updateProduct(id: string, updates: any) {
   return db.products[index];
 }
 
-export async function deleteProduct(id: string, forceHardDelete = false) {
+export async function deleteProduct(id: string, forceHardDelete = true) {
   const db = readLocalDb();
   if (!db.products) db.products = [];
 
-  // Check if orders or order_items reference this product (Milestone 1 & Slide 10)
-  const isReferencedInOrders =
-    (db.order_items || []).some((item: any) => String(item.product_id) === String(id)) ||
-    (db.orders || []).some((o: any) =>
-      Array.isArray(o.items) && o.items.some((it: any) => String(it.product_id || it.id) === String(id))
-    );
-
-  if (isReferencedInOrders && !forceHardDelete) {
-    // Perform Safe Deactivation (Soft-Delete)
-    const pIdx = db.products.findIndex((p: any) => String(p.id) === String(id));
-    if (pIdx !== -1) {
-      db.products[pIdx].is_active = false;
-      db.products[pIdx].in_stock = false;
-      db.products[pIdx].updated_at = new Date().toISOString();
-      writeLocalDb(db);
-
-      if (supabase) {
-        try {
-          await supabase
-            .from('products')
-            .update({ is_active: false, in_stock: false })
-            .eq('id', id);
-        } catch {}
-      }
-      return { success: true, softDeleted: true, id, message: 'Timepiece deactivated safely (archived) to preserve order history.' };
-    }
-    return { success: true, softDeleted: true, id };
-  }
-
-  // If not referenced in any order, remove from products
   if (supabase) {
     try {
       await supabase.from('products').delete().eq('id', id);
-    } catch {}
+    } catch {
+      try {
+        await supabase
+          .from('products')
+          .update({ is_active: false, in_stock: false })
+          .eq('id', id);
+      } catch {}
+    }
   }
 
+  // Remove completely from product catalog so it vanishes immediately from storefront and admin
+  const beforeCount = db.products.length;
   db.products = db.products.filter((p: any) => String(p.id) !== String(id));
+  const removed = db.products.length < beforeCount;
   writeLocalDb(db);
-  return { success: true, hardDeleted: true, id };
+
+  return {
+    success: true,
+    deleted: removed,
+    hardDeleted: true,
+    id,
+    message: 'Timepiece deleted successfully from catalog and storefront.',
+  };
 }
 
 // ─── Posters ──────────────────────────────────────────────────────────────────

@@ -905,8 +905,25 @@ let _categoriesCache: Category[] | null = null;
 let _productsPromise: Promise<Product[]> | null = null;
 let _categoriesPromise: Promise<Category[]> | null = null;
 
-export async function fetchProducts(params?: { category?: string; featured?: boolean | string; search?: string }): Promise<Product[]> {
-  const isDefaultFetch = !params || (!params.category && params.featured === undefined && !params.search);
+export function invalidateProductsCache() {
+  _productsCache = null;
+  _productsPromise = null;
+}
+
+export async function fetchProducts(params?: {
+  category?: string;
+  featured?: boolean | string;
+  search?: string;
+  includeInactive?: boolean;
+  all?: boolean;
+}): Promise<Product[]> {
+  const isDefaultFetch =
+    !params ||
+    (!params.category &&
+      params.featured === undefined &&
+      !params.search &&
+      !params.includeInactive &&
+      !params.all);
 
   if (isDefaultFetch && _productsCache && _productsCache.length > 0) {
     return _productsCache;
@@ -921,9 +938,10 @@ export async function fetchProducts(params?: { category?: string; featured?: boo
       if (params?.category && params.category !== 'All') query.append('category', params.category);
       if (params?.featured !== undefined) query.append('featured', String(params.featured));
       if (params?.search) query.append('search', params.search);
+      if (params?.includeInactive || params?.all) query.append('includeInactive', 'true');
 
       const url = `${API_BASE_URL}/products${query.toString() ? `?${query.toString()}` : ''}`;
-      const res = await fetch(url);
+      const res = await fetch(url, { cache: 'no-store' });
       if (!res.ok) throw new Error(`Failed to fetch products: ${res.statusText}`);
       const json = await res.json();
       if (json.data && Array.isArray(json.data) && json.data.length > 0) {
@@ -1001,12 +1019,14 @@ export async function fetchCategories(): Promise<Category[]> {
 }
 
 export async function createProduct(productData: Partial<Product>): Promise<Product> {
+  invalidateProductsCache();
   const res = await fetch(`${API_BASE_URL}/products`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(productData),
   });
   const json = await res.json();
+  invalidateProductsCache();
   if (!res.ok || !json.success) {
     throw new Error(json.message || 'Failed to create product');
   }
@@ -1014,12 +1034,14 @@ export async function createProduct(productData: Partial<Product>): Promise<Prod
 }
 
 export async function updateProduct(id: string, productData: Partial<Product>): Promise<Product> {
+  invalidateProductsCache();
   const res = await fetch(`${API_BASE_URL}/products/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(productData),
   });
   const json = await res.json();
+  invalidateProductsCache();
   if (!res.ok || !json.success) {
     throw new Error(json.message || 'Failed to update product');
   }
@@ -1027,10 +1049,12 @@ export async function updateProduct(id: string, productData: Partial<Product>): 
 }
 
 export async function deleteProduct(id: string): Promise<{ success: boolean; softDeleted?: boolean; hardDeleted?: boolean; message?: string }> {
+  invalidateProductsCache();
   const res = await fetch(`${API_BASE_URL}/products/${id}`, {
     method: 'DELETE',
   });
   const json = await res.json();
+  invalidateProductsCache();
   if (!res.ok || !json.success) {
     throw new Error(json.message || 'Failed to delete product');
   }

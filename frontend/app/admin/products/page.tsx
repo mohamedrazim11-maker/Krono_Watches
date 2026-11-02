@@ -47,7 +47,7 @@ export default function AdminProductsPage() {
   const load = async () => {
     setLoading(true);
     try {
-      setProducts(await fetchProducts());
+      setProducts(await fetchProducts({ includeInactive: true }));
     } catch (e) {
       console.error(e);
     } finally {
@@ -190,19 +190,12 @@ export default function AdminProductsPage() {
   };
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Delete or safely deactivate "${name}"?`)) return;
+    if (!confirm(`Are you sure you want to permanently delete "${name}" from the store catalog?`)) return;
     setDeletingId(id);
     try {
-      const res = await deleteProduct(id);
-      if (res && res.softDeleted) {
-        setProducts((prev) =>
-          prev.map((p) => (p.id === id ? { ...p, is_active: false, in_stock: false } : p))
-        );
-        toast(`"${name}" deactivated safely.`);
-      } else {
-        setProducts((prev) => prev.filter((p) => p.id !== id));
-        toast(`"${name}" deleted successfully.`);
-      }
+      await deleteProduct(id);
+      setProducts((prev) => prev.filter((p) => p.id !== id));
+      toast(`"${name}" deleted successfully from catalog and storefront.`);
     } catch (err: any) {
       alert(err.message || "Failed to delete");
     } finally {
