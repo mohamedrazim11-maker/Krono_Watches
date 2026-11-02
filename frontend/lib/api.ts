@@ -1417,3 +1417,59 @@ export async function createAdminUser(data: {
   });
   return res.json();
 }
+
+
+// 🌟 Product Feedback & Reviews API 🌟
+export interface FeedbackItem {
+  id: string;
+  product_id: string;
+  user_id?: string | null;
+  author: string;
+  rating: number;
+  title: string;
+  comment: string;
+  image_url?: string | null;
+  recommend?: 'yes' | 'no';
+  verified_buyer?: boolean;
+  created_at: string;
+}
+
+export async function fetchProductFeedbacks(productId: string): Promise<FeedbackItem[]> {
+  try {
+    const res = await fetch(`/api/products/${encodeURIComponent(productId)}/feedback`, {
+      cache: 'no-store',
+    });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return json.feedbacks || json.data || [];
+  } catch (err) {
+    console.error('Failed to fetch feedbacks for product:', err);
+    return [];
+  }
+}
+
+export async function submitProductFeedback(
+  productId: string,
+  payload: {
+    author: string;
+    rating: number;
+    title?: string;
+    comment: string;
+    image_url?: string | null;
+    recommend?: 'yes' | 'no';
+    verified_buyer?: boolean;
+    user_id?: string;
+  }
+): Promise<{ success: boolean; feedback?: FeedbackItem; data?: FeedbackItem; message?: string }> {
+  try {
+    const res = await fetch(`/api/products/${encodeURIComponent(productId)}/feedback`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    return await res.json();
+  } catch (err: any) {
+    console.error('Failed to submit product feedback:', err);
+    return { success: false, message: err?.message || 'Failed to submit feedback.' };
+  }
+}

@@ -22,12 +22,13 @@
       "movement": "Rolex Perpetual Calibre 3235 Automatic",
       "case_material": "Oystersteel (904L)",
       "water_resistance": "300m (30 ATM)",
-      "in_stock": true,
-      "stock_count": 5,
+      "in_stock": false,
+      "stock_count": 3,
       "is_featured": true,
       "created_at": "2026-11-01T09:15:56.668Z",
-      "stock_qty": 5,
-      "is_active": true
+      "stock_qty": 3,
+      "is_active": false,
+      "updated_at": "2026-11-02T12:37:26.914Z"
     },
     {
       "id": "prod-2",
@@ -49,14 +50,14 @@
       "case_material": "Grade 5 Satin Titanium",
       "water_resistance": "150m (15 ATM)",
       "in_stock": true,
-      "stock_count": 4,
+      "stock_count": 2,
       "is_featured": true,
-      "stock_qty": 4,
+      "stock_qty": 2,
       "is_active": true,
       "images": [
         "/images/watches/speedmaster_chrono_titanium.jpg"
       ],
-      "updated_at": "2026-11-01T08:48:53.302Z"
+      "updated_at": "2026-11-02T12:24:52.387Z"
     },
     {
       "id": "prod-3",
@@ -1077,6 +1078,154 @@
   ],
   "orders": [
     {
+      "id": "KR-620208",
+      "order_id": "KR-620208",
+      "order_number": "KR-620208",
+      "user_id": "user-1793465914884",
+      "customer_name": "razim1@gmail.com",
+      "customer_email": "razim1@gmail.com",
+      "customer_phone": "+94 77 123 4567",
+      "delivery_address": "No. 42, Galle Road, Kollupitiya, Colombo,  00300",
+      "city": "Colombo",
+      "postal_code": "00300",
+      "country": "Sri Lanka",
+      "payment_method": "payhere",
+      "payment_status": "paid",
+      "payment_id": "PH-PAYHERE-1793622394390",
+      "subtotal": 3890,
+      "discount_amount": 0,
+      "total_amount": 3890,
+      "coupon_code": null,
+      "wrist_size": "Standard (19cm)",
+      "gift_packaging": true,
+      "special_instructions": "",
+      "items": [
+        {
+          "product_id": "prod-2",
+          "product_name": "Speed Master",
+          "brand": "Omega",
+          "quantity": 1,
+          "unit_price": 3890,
+          "subtotal": 3890,
+          "image_url": "/images/watches/speedmaster_chrono_titanium.jpg"
+        }
+      ],
+      "status": "confirmed",
+      "created_at": "2026-11-02T12:24:52.387Z",
+      "updated_at": "2026-11-02T12:26:37.055Z"
+    },
+    {
+      "id": "KR-719597",
+      "order_id": "KR-719597",
+      "order_number": "KR-719597",
+      "user_id": "user-1793465914884",
+      "customer_name": "razim1@gmail.com",
+      "customer_email": "razim1@gmail.com",
+      "customer_phone": "+94 77 123 4567",
+      "delivery_address": "No. 42, Galle Road, Kollupitiya, Colombo,  00300",
+      "city": "Colombo",
+      "postal_code": "00300",
+      "country": "Sri Lanka",
+      "payment_method": "payhere",
+      "payment_status": "pending",
+      "payment_id": null,
+      "subtotal": 3890,
+      "discount_amount": 0,
+      "total_amount": 3890,
+      "coupon_code": null,
+      "wrist_size": "Standard (19cm)",
+      "gift_packaging": true,
+      "special_instructions": "",
+      "items": [
+        {
+          "product_id": "prod-2",
+          "product_name": "Speed Master",
+          "brand": "Omega",
+          "quantity": 1,
+          "unit_price": 3890,
+          "subtotal": 3890,
+          "image_url": "/images/watches/speedmaster_chrono_titanium.jpg"
+        }
+      ],
+      "status": "Pending",
+      "created_at": "2026-11-01T14:52:54.674Z",
+      "updated_at": "2026-11-01T14:52:54.674Z"
+    },
+    {
+      "id": "KR-709389",
+      "order_id": "KR-709389",
+      "order_number": "KR-709389",
+      "user_id": "user-1793465914884",
+      "customer_name": "razim1@gmail.com",
+      "customer_email": "razim1@gmail.com",
+      "customer_phone": "+94 77 123 4567",
+      "delivery_address": "No. 42, Galle Road, Kollupitiya, Colombo,  00300",
+      "city": "Colombo",
+      "postal_code": "00300",
+      "country": "Sri Lanka",
+      "payment_method": "payhere",
+      "payment_status": "pending",
+      "payment_id": null,
+      "subtotal": 3500,
+      "discount_amount": 0,
+      "total_amount": 3500,
+      "coupon_code": null,
+      "wrist_size": "Standard (19cm)",
+      "gift_packaging": true,
+      "special_instructions": "",
+      "items": [
+        {
+          "product_id": "prod-1793524556668",
+          "product_name": "SampleWatch",
+          "brand": "Rolex",
+          "quantity": 1,
+          "unit_price": 3500,
+          "subtotal": 3500,
+          "image_url": "/images/watches/watch_1542496658-e33a6.jpg"
+        }
+      ],
+      "status": "Pending",
+      "created_at": "2026-11-01T13:19:39.035Z",
+      "updated_at": "2026-11-01T13:19:39.035Z"
+    },
+    {
+      "id": "KR-124529",
+      "order_id": "KR-124529",
+      "order_number": "KR-124529",
+      "user_id": "user-1793465914884",
+      "customer_name": "razim1@gmail.com",
+      "customer_email": "razim1@gmail.com",
+      "customer_phone": "+94 77 123 4567",
+      "delivery_address": "No. 42, Galle Road, Kollupitiya, Colombo,  00300",
+      "city": "Colombo",
+      "postal_code": "00300",
+      "country": "Sri Lanka",
+      "payment_method": "payhere",
+      "payment_status": "paid",
+      "payment_id": "PH-PAYHERE-1793539175096",
+      "subtotal": 3500,
+      "discount_amount": 0,
+      "total_amount": 3500,
+      "coupon_code": null,
+      "wrist_size": "Standard (19cm)",
+      "gift_packaging": true,
+      "special_instructions": "",
+      "items": [
+        {
+          "product_id": "prod-1793524556668",
+          "product_name": "SampleWatch",
+          "brand": "Rolex",
+          "quantity": 1,
+          "unit_price": 3500,
+          "subtotal": 3500,
+          "image_url": "/images/watches/watch_1542496658-e33a6.jpg"
+        }
+      ],
+      "status": "confirmed",
+      "created_at": "2026-11-01T13:19:28.333Z",
+      "updated_at": "2026-11-01T13:19:37.775Z"
+    },
+    {
       "id": "KR-425868",
       "order_id": "KR-425868",
       "order_number": "KR-425868",
@@ -1270,6 +1419,50 @@
   ],
   "order_items": [
     {
+      "id": "item-1793622292387-0-278",
+      "order_item_id": "item-1793622292387-0-337",
+      "order_id": "KR-620208",
+      "product_id": "prod-2",
+      "product_name": "Speed Master",
+      "quantity": 1,
+      "unit_price": 3890,
+      "subtotal": 3890,
+      "created_at": "2026-11-02T12:24:52.387Z"
+    },
+    {
+      "id": "item-1793544774674-0-126",
+      "order_item_id": "item-1793544774674-0-885",
+      "order_id": "KR-719597",
+      "product_id": "prod-2",
+      "product_name": "Speed Master",
+      "quantity": 1,
+      "unit_price": 3890,
+      "subtotal": 3890,
+      "created_at": "2026-11-01T14:52:54.674Z"
+    },
+    {
+      "id": "item-1793539179035-0-135",
+      "order_item_id": "item-1793539179035-0-651",
+      "order_id": "KR-709389",
+      "product_id": "prod-1793524556668",
+      "product_name": "SampleWatch",
+      "quantity": 1,
+      "unit_price": 3500,
+      "subtotal": 3500,
+      "created_at": "2026-11-01T13:19:39.035Z"
+    },
+    {
+      "id": "item-1793539168333-0-551",
+      "order_item_id": "item-1793539168333-0-95",
+      "order_id": "KR-124529",
+      "product_id": "prod-1793524556668",
+      "product_name": "SampleWatch",
+      "quantity": 1,
+      "unit_price": 3500,
+      "subtotal": 3500,
+      "created_at": "2026-11-01T13:19:28.333Z"
+    },
+    {
       "id": "item-1793522933302-0-838",
       "order_item_id": "item-1793522933302-0-751",
       "order_id": "KR-425868",
@@ -1388,6 +1581,21 @@
       "slug": "digital",
       "description": "Authentic Swiss Digital luxury collection",
       "is_active": true
+    }
+  ],
+  "feedbacks": [
+    {
+      "id": "fb-1793623439837-4q1iw",
+      "product_id": "prod-1793524556668",
+      "user_id": null,
+      "author": "Mohamed Razim",
+      "rating": 5,
+      "title": "Superb Horological Quality",
+      "comment": "Absolute masterpiece. Dial detailing and wrist comfort are world-class.",
+      "image_url": null,
+      "recommend": "yes",
+      "verified_buyer": true,
+      "created_at": "2026-11-02T12:43:59.837Z"
     }
   ]
 }

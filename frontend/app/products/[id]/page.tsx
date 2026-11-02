@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { fetchProductById, fetchProducts, Product } from "@/lib/api";
+import { fetchProductById, fetchProducts, fetchProductFeedbacks, submitProductFeedback, Product } from "@/lib/api";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothImage from "@/components/SmoothImage";
@@ -35,6 +35,21 @@ export interface ProductReview {
   createdAt: string;
   verifiedBuyer: boolean;
   imageUrl?: string;
+  recommend?: "yes" | "no";
+}
+
+function normalizeReview(r: any): ProductReview {
+  return {
+    id: r.id || `rev-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    author: r.author || "Verified Collector",
+    rating: Number(r.rating) || 5,
+    title: r.title || "Verified Customer Review",
+    comment: r.comment || "",
+    createdAt: (r.created_at || r.createdAt || new Date().toISOString()).split("T")[0],
+    verifiedBuyer: r.verified_buyer !== false && r.verifiedBuyer !== false,
+    imageUrl: r.image_url || r.imageUrl || undefined,
+    recommend: r.recommend || "yes",
+  };
 }
 
 const DEFAULT_REVIEWS: ProductReview[] = [
@@ -164,6 +179,7 @@ export default function ProductDetailPage() {
   const inlineFileInputRef = useRef<HTMLInputElement>(null);
   const [reviewFilter, setReviewFilter] = useState<"all" | "5" | "4" | "3">("all");
   const [reviewSuccess, setReviewSuccess] = useState(false);
+  const [submittingReview, setSubmittingReview] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [feedbackRecommend, setFeedbackRecommend] = useState<"yes" | "no">("yes");
   const [upvotedReviews, setUpvotedReviews] = useState<Set<string>>(new Set());
@@ -185,6 +201,20 @@ export default function ProductDetailPage() {
       }
     };
     reader.readAsDataURL(file);
+
+    // Also upload to persistent /api/upload storage in the background
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fetch("/api/upload", { method: "POST", body: fd })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.url) {
+            setReviewImage(data.url);
+          }
+        })
+        .catch(() => {});
+    } catch {}
   };
 
   const handleRemoveImage = () => {
@@ -202,28 +232,54 @@ export default function ProductDetailPage() {
     });
   };
 
-  // Load reviews from localStorage keyed by product id
+  // Load real reviews and feedback from backend database for this product
   useEffect(() => {
     if (!productId) return;
-    try {
-      const key = `krono_reviews_${productId}`;
-      const stored = localStorage.getItem(key);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          // Remove any legacy "timepiece" text from cached reviews
-          const sanitized = parsed.map((r: any) => ({
-            ...r,
-            title: (r.title || "").replace(/Timepiece/gi, "Quality"),
-            comment: (r.comment || "").replace(/timepiece/gi, "watch"),
-          }));
-          setReviews(sanitized);
+    let isMounted = true;
+
+    async function loadProductFeedback() {
+      try {
+        const dbFeedbacks = await fetchProductFeedbacks(productId);
+        if (!isMounted) return;
+
+        if (Array.isArray(dbFeedbacks) && dbFeedbacks.length > 0) {
+          const normalizedDb = dbFeedbacks.map(normalizeReview);
+          const dbIds = new Set(normalizedDb.map((r) => r.id));
+          const nonDupDefaults = DEFAULT_REVIEWS.filter((r) => !dbIds.has(r.id));
+          const combined = [...normalizedDb, ...nonDupDefaults];
+          setReviews(combined);
+          try {
+            localStorage.setItem(`krono_reviews_${productId}`, JSON.stringify(combined));
+          } catch {}
           return;
         }
+
+        // If no database reviews yet, check localStorage or default reviews
+        const key = `krono_reviews_${productId}`;
+        const stored = localStorage.getItem(key);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const sanitized = parsed.map((r: any) => ({
+              ...normalizeReview(r),
+              title: (r.title || "").replace(/Timepiece/gi, "Quality"),
+              comment: (r.comment || "").replace(/timepiece/gi, "watch"),
+            }));
+            setReviews(sanitized);
+            return;
+          }
+        }
+        setReviews(DEFAULT_REVIEWS);
+      } catch (err) {
+        console.error("Failed to fetch product feedback:", err);
+        setReviews(DEFAULT_REVIEWS);
       }
-      localStorage.setItem(key, JSON.stringify(DEFAULT_REVIEWS));
-      setReviews(DEFAULT_REVIEWS);
-    } catch { }
+    }
+
+    loadProductFeedback();
+    return () => {
+      isMounted = false;
+    };
   }, [productId]);
 
   useEffect(() => {
@@ -232,34 +288,66 @@ export default function ProductDetailPage() {
     }
   }, [user, reviewAuthor]);
 
-  const handleAddReview = (e: React.FormEvent) => {
+  const handleAddReview = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!reviewComment.trim()) return;
-    const newRev: ProductReview = {
-      id: `rev-${Date.now()}`,
-      author: reviewAuthor.trim() || user?.name || "Verified Collector",
-      rating: newRating,
-      title: reviewTitle.trim() || "Verified Customer Review",
-      comment: reviewComment.trim(),
-      createdAt: new Date().toISOString().split("T")[0],
-      verifiedBuyer: true,
-      imageUrl: reviewImage || undefined,
-    };
-    const updated = [newRev, ...reviews];
-    setReviews(updated);
+    if (!reviewComment.trim() || submittingReview) return;
+
+    setSubmittingReview(true);
     try {
-      localStorage.setItem(`krono_reviews_${productId}`, JSON.stringify(updated));
-    } catch { }
-    setReviewSuccess(true);
-    setIsWritingReview(false);
-    setIsFeedbackModalOpen(false);
-    setReviewTitle("");
-    setReviewComment("");
-    setReviewImage(null);
-    if (modalFileInputRef.current) modalFileInputRef.current.value = "";
-    if (inlineFileInputRef.current) inlineFileInputRef.current.value = "";
-    showToast("✓ Thank you! Your product feedback has been submitted successfully.");
-    setTimeout(() => setReviewSuccess(false), 4000);
+      const authorName = reviewAuthor.trim() || user?.name || "Verified Collector";
+      const payload = {
+        author: authorName,
+        rating: newRating,
+        title: reviewTitle.trim() || "Verified Customer Review",
+        comment: reviewComment.trim(),
+        image_url: reviewImage || undefined,
+        recommend: feedbackRecommend,
+        verified_buyer: true,
+        user_id: user?.id,
+      };
+
+      // Persist feedback into backend database for global visibility
+      const res = await submitProductFeedback(productId, payload);
+      if (res.success && (res.feedback || res.data)) {
+        const savedReview = normalizeReview(res.feedback || res.data);
+        const updated = [savedReview, ...reviews.filter((r) => r.id !== savedReview.id)];
+        setReviews(updated);
+        try {
+          localStorage.setItem(`krono_reviews_${productId}`, JSON.stringify(updated));
+        } catch {}
+      } else {
+        // Optimistic local state fallback
+        const fallbackRev: ProductReview = {
+          id: `rev-${Date.now()}`,
+          author: authorName,
+          rating: newRating,
+          title: reviewTitle.trim() || "Verified Customer Review",
+          comment: reviewComment.trim(),
+          createdAt: new Date().toISOString().split("T")[0],
+          verifiedBuyer: true,
+          imageUrl: reviewImage || undefined,
+          recommend: feedbackRecommend,
+        };
+        const updated = [fallbackRev, ...reviews];
+        setReviews(updated);
+      }
+
+      setReviewSuccess(true);
+      setIsWritingReview(false);
+      setIsFeedbackModalOpen(false);
+      setReviewTitle("");
+      setReviewComment("");
+      setReviewImage(null);
+      if (modalFileInputRef.current) modalFileInputRef.current.value = "";
+      if (inlineFileInputRef.current) inlineFileInputRef.current.value = "";
+      showToast("✓ Thank you! Your product feedback has been stored and published for all buyers.");
+      setTimeout(() => setReviewSuccess(false), 4000);
+    } catch (err) {
+      console.error("Failed to submit feedback:", err);
+      showToast("Failed to submit feedback. Please try again.");
+    } finally {
+      setSubmittingReview(false);
+    }
   };
 
   const averageRating = useMemo(() => {
@@ -656,9 +744,17 @@ export default function ProductDetailPage() {
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2 bg-[#E88C30] hover:bg-[#d47b24] text-black font-bold text-xs font-mono uppercase tracking-wider rounded-lg transition-colors cursor-pointer shadow-lg shadow-orange-500/20"
+                    disabled={submittingReview}
+                    className="px-6 py-2 bg-[#E88C30] hover:bg-[#d47b24] disabled:opacity-50 disabled:cursor-not-allowed text-black font-bold text-xs font-mono uppercase tracking-wider rounded-lg transition-colors cursor-pointer shadow-lg shadow-orange-500/20 flex items-center gap-1.5"
                   >
-                    Submit Review &amp; Rating
+                    {submittingReview ? (
+                      <>
+                        <span className="w-3 h-3 rounded-full border-2 border-black border-t-transparent animate-spin" />
+                        <span>Saving Feedback...</span>
+                      </>
+                    ) : (
+                      <span>Submit Review &amp; Rating</span>
+                    )}
                   </button>
                 </div>
               </form>
@@ -1634,9 +1730,17 @@ export default function ProductDetailPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-[#E88C30] hover:bg-[#d47b24] text-black font-bold text-xs font-mono uppercase tracking-wider rounded-lg transition-colors cursor-pointer shadow-lg shadow-orange-500/20"
+                  disabled={submittingReview}
+                  className="px-6 py-2.5 bg-[#E88C30] hover:bg-[#d47b24] disabled:opacity-50 disabled:cursor-not-allowed text-black font-bold text-xs font-mono uppercase tracking-wider rounded-lg transition-colors cursor-pointer shadow-lg shadow-orange-500/20 flex items-center gap-1.5"
                 >
-                  Submit Feedback
+                  {submittingReview ? (
+                    <>
+                      <span className="w-3 h-3 rounded-full border-2 border-black border-t-transparent animate-spin" />
+                      <span>Saving Feedback...</span>
+                    </>
+                  ) : (
+                    <span>Submit Feedback</span>
+                  )}
                 </button>
               </div>
             </form>

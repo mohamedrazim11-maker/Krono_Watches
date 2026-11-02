@@ -37,6 +37,10 @@ export function readLocalDb(): any {
       data.order_items = [];
       mutated = true;
     }
+    if (!data.feedbacks) {
+      data.feedbacks = [];
+      mutated = true;
+    }
 
     // Ensure at least one system administrator exists
     const adminEmail = (process.env.ADMIN_EMAIL || 'admin@krono.luxury').toLowerCase();
@@ -841,4 +845,84 @@ export async function deleteUser(id: string) {
   const [removed] = db.users.splice(idx, 1);
   writeLocalDb(db);
   return { success: true, user: removed };
+}
+
+// 🌟 Customer Feedback & Product Reviews 🌟
+export interface FeedbackRecord {
+  id: string;
+  product_id: string;
+  user_id?: string | null;
+  author: string;
+  rating: number;
+  title: string;
+  comment: string;
+  image_url?: string | null;
+  recommend?: 'yes' | 'no';
+  verified_buyer?: boolean;
+  created_at: string;
+}
+
+export async function getFeedbacks(productId?: string): Promise<FeedbackRecord[]> {
+  const supabaseData = await trySupabase(async () => {
+    let query = supabase!.from('feedbacks').select('*').order('created_at', { ascending: false });
+    if (productId) {
+      query = query.eq('product_id', productId);
+    }
+    const { data, error } = await query;
+    if (!error && data && data.length > 0) return data;
+    return null;
+  });
+
+  if (supabaseData) return supabaseData;
+
+  const db = readLocalDb();
+  let list: FeedbackRecord[] = db.feedbacks || [];
+  if (productId) {
+    list = list.filter((f: any) => String(f.product_id) === String(productId));
+  }
+  return [...list].sort((a: any, b: any) => {
+    const timeA = new Date(a.created_at || 0).getTime();
+    const timeB = new Date(b.created_at || 0).getTime();
+    return timeB - timeA;
+  });
+}
+
+export async function createFeedback(feedbackData: {
+  product_id: string;
+  author: string;
+  rating: number;
+  title?: string;
+  comment: string;
+  image_url?: string | null;
+  recommend?: 'yes' | 'no';
+  verified_buyer?: boolean;
+  user_id?: string | null;
+}): Promise<FeedbackRecord> {
+  const db = readLocalDb();
+  if (!db.feedbacks) db.feedbacks = [];
+
+  const newFeedback: FeedbackRecord = {
+    id: `fb-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    product_id: String(feedbackData.product_id),
+    user_id: feedbackData.user_id || null,
+    author: feedbackData.author?.trim() || 'Verified Collector',
+    rating: Math.max(1, Math.min(5, Number(feedbackData.rating) || 5)),
+    title: feedbackData.title?.trim() || 'Verified Customer Review',
+    comment: feedbackData.comment?.trim() || '',
+    image_url: feedbackData.image_url || null,
+    recommend: feedbackData.recommend === 'no' ? 'no' : 'yes',
+    verified_buyer: feedbackData.verified_buyer !== false,
+    created_at: new Date().toISOString(),
+  };
+
+  db.feedbacks.unshift(newFeedback);
+  writeLocalDb(db);
+
+  if (supabase) {
+    try {
+      await supabase.from('feedbacks').insert([newFeedback]);
+    } catch {}
+  }
+
+  return newFeedback;
 }
